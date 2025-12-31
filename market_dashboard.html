@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Live Market Dashboard</title>
+
+<!-- CSS LIBRARIES -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+  background:#0f172a;
+  color:#e5e7eb;
+  font-family:Poppins;
+}
+.card {
+  background:#020617;
+  border-radius:16px;
+  box-shadow:0 0 25px rgba(0,255,255,0.1);
+}
+.rise { color:#22c55e; }
+.fall { color:#ef4444; }
+</style>
+</head>
+
+<body class="container py-4">
+
+<h1 class="text-center mb-4 animate__animated animate__fadeInDown">
+📊 Live Indian Market Dashboard
+</h1>
+
+<div class="row g-4">
+
+<!-- NIFTY -->
+<div class="col-md-3">
+<div class="card p-3 text-center">
+<h5>NIFTY 50</h5>
+<h2 id="niftyPrice">--</h2>
+<p id="niftyChange">Loading...</p>
+<canvas id="niftyChart"></canvas>
+</div>
+</div>
+
+<!-- SENSEX -->
+<div class="col-md-3">
+<div class="card p-3 text-center">
+<h5>SENSEX</h5>
+<h2 id="sensexPrice">--</h2>
+<p id="sensexChange">Loading...</p>
+<canvas id="sensexChart"></canvas>
+</div>
+</div>
+
+<!-- GOLD -->
+<div class="col-md-3">
+<div class="card p-3 text-center">
+<h5>GOLD</h5>
+<h2 id="goldPrice">--</h2>
+<p id="goldChange">Loading...</p>
+<canvas id="goldChart"></canvas>
+</div>
+</div>
+
+<!-- SILVER -->
+<div class="col-md-3">
+<div class="card p-3 text-center">
+<h5>SILVER</h5>
+<h2 id="silverPrice">--</h2>
+<p id="silverChange">Loading...</p>
+<canvas id="silverChart"></canvas>
+</div>
+</div>
+
+</div>
+
+<!-- JS LIBRARIES -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const API_KEY = "b23a1dbb582e4dc1b4dfd4e1147bf3ad";
+
+// Example symbols (proxy symbols)
+const markets = {
+  nifty: "NIFTY",
+  sensex: "SENSEX",
+  gold: "XAU/USD",
+  silver: "XAG/USD"
+};
+
+async function loadMarket(symbol, priceId, changeId) {
+  try {
+    const url = `https://api.twelvedata.com/price?symbol=${symbol}&apikey=${API_KEY}`;
+    const res = await axios.get(url);
+    const price = parseFloat(res.data.price).toFixed(2);
+
+    document.getElementById(priceId).innerText = price;
+    document.getElementById(changeId).innerHTML =
+      `<span class="rise">Live Market Data</span>`;
+  } catch {
+    document.getElementById(changeId).innerText = "API Error";
+  }
+}
+
+loadMarket(markets.gold,"goldPrice","goldChange");
+loadMarket(markets.silver,"silverPrice","silverChange");
+
+// Refresh every 60 sec
+setInterval(() => {
+  loadMarket(markets.gold,"goldPrice","goldChange");
+  loadMarket(markets.silver,"silverPrice","silverChange");
+}, 60000);
+</script>
+
+</body>
+</html>
