@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌌 Science Explorer - NASA Gallery</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <!-- AOS (Animate On Scroll) -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Swiper.js -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    
+    <!-- GLightbox -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Particles Background -->
+    <div id="particles-js"></div>
+    
+    <!-- Header -->
+    <header class="animate__animated animate__fadeInDown">
+        <div class="container">
+            <h1><i class="fas fa-rocket"></i> Science Explorer</h1>
+            <p class="tagline" id="typed-text"></p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        
+        <!-- APOD Section -->
+        <section class="apod-section" data-aos="fade-up" data-aos-duration="1000">
+            <h2 class="section-title">
+                <i class="fas fa-star"></i> 
+                Astronomy Picture of the Day
+            </h2>
+            
+            <div class="apod-card" id="apod-container">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading APOD...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Info Panel -->
+        <section class="info-panel" data-aos="fade-up" data-aos-delay="200">
+            <div class="info-card">
+                <i class="fas fa-satellite"></i>
+                <h3>Real NASA Data</h3>
+                <p>Live images from NASA's public API</p>
+            </div>
+            <div class="info-card">
+                <i class="fas fa-globe-americas"></i>
+                <h3>Mars Exploration</h3>
+                <p>Photos from Curiosity & Perseverance rovers</p>
+            </div>
+            <div class="info-card">
+                <i class="fas fa-camera"></i>
+                <h3>Daily Updates</h3>
+                <p>Fresh astronomy content every day</p>
+            </div>
+        </section>
+
+        <!-- Mars Rover Section -->
+        <section class="mars-section" data-aos="fade-up" data-aos-delay="300">
+            <h2 class="section-title">
+                <i class="fas fa-meteor"></i>
+                Mars Rover Gallery
+            </h2>
+            
+            <div class="rover-controls">
+                <button class="rover-btn active" data-rover="curiosity">
+                    <i class="fas fa-robot"></i> Curiosity
+                </button>
+                <button class="rover-btn" data-rover="perseverance">
+                    <i class="fas fa-space-shuttle"></i> Perseverance
+                </button>
+            </div>
+
+            <div class="mars-gallery" id="mars-container">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading Mars photos...</p>
+                </div>
+            </div>
+
+            <!-- Swiper Carousel -->
+            <div class="swiper mars-swiper" id="mars-swiper" style="display: none;">
+                <div class="swiper-wrapper" id="swiper-wrapper"></div>
+                <div class="swiper-pagination"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+            </div>
+        </section>
+
+        <!-- Statistics Section -->
+        <section class="stats-section" data-aos="fade-up" data-aos-delay="400">
+            <div class="stat-box">
+                <i class="fas fa-calendar-day"></i>
+                <div class="stat-number" id="stat-days">0</div>
+                <p>Days of Exploration</p>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-images"></i>
+                <div class="stat-number" id="stat-photos">0</div>
+                <p>Photos Captured</p>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-mountain"></i>
+                <div class="stat-number" id="stat-distance">0</div>
+                <p>KM Traveled</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer data-aos="fade-up" data-aos-delay="500">
+        <p>
+            <i class="fas fa-code"></i> 
+            Powered by <a href="https://api.nasa.gov/" target="_blank">NASA API</a>
+        </p>
+        <p class="credits">
+            Built with passion for space exploration 🚀
+        </p>
+    </footer>
+
+    <!-- External Scripts -->
+    <!-- Particles.js -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <!-- Typed.js -->
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    
+    <!-- AOS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- Swiper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    
+    <!-- GLightbox -->
+    <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+    
+    <!-- CountUp.js -->
+    <script src="https://cdn.jsdelivr.net/npm/countup@1.8.2/countUp.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="main.js"></script>
+</body>
+</html>
