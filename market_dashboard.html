@@ -83,19 +83,23 @@ body {
 <script>
 const API_KEY = "b23a1dbb582e4dc1b4dfd4e1147bf3ad";
 
-// Example symbols (proxy symbols)
 const markets = {
-  nifty: "NIFTY",
-  sensex: "SENSEX",
+  nifty: "NIFTYBEES",
+  sensex: "SENSEXBEES",
   gold: "XAU/USD",
-  silver: "XAG/USD"
+  silver: "XAGUSD"
+
 };
 
 async function loadMarket(symbol, priceId, changeId) {
   try {
     const url = `https://api.twelvedata.com/price?symbol=${symbol}&apikey=${API_KEY}`;
     const res = await axios.get(url);
-    const price = parseFloat(res.data.price).toFixed(2);
+    if (!res.data || !res.data.price) {
+  throw "No price data";
+}
+const price = Number(res.data.price).toFixed(2);
+
 
     document.getElementById(priceId).innerText = price;
     document.getElementById(changeId).innerHTML =
