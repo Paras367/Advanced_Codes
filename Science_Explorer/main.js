@@ -1,9 +1,8 @@
 // ========== NASA API CONFIGURATION ==========
-// Get your free API key at: https://api.nasa.gov/
-const NASA_API_KEY = 'M1cH6dn6QgvYrqu7869uUwfWfcc8nWrOG8OmUYH0'; // Replace with your API key for higher rate limits
+const NASA_API_KEY = 'M1cH6dn6QgvYrqu7869uUwfWfcc8nWrOG8OmUYH0'; // Your API key
 const APOD_URL = `https://api.nasa.gov/planetary/apod?api_key=${NASA_API_KEY}`;
-const MARS_ROVER_URL = (rover, sol) => 
-    `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/photos?sol=${sol}&api_key=${NASA_API_KEY}`;
+const MARS_ROVER_LATEST_URL = (rover) =>
+    `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/latest_photos?api_key=${NASA_API_KEY}`;
 
 // ========== GLOBAL STATE ==========
 let currentRover = 'curiosity';
@@ -111,11 +110,10 @@ function initializeLightbox() {
 // ========== FETCH APOD ==========
 async function fetchAPOD() {
     const container = document.getElementById('apod-container');
-    
+
     try {
         const response = await fetch(APOD_URL);
         const data = await response.json();
-        
         displayAPOD(data);
     } catch (error) {
         console.error('Error fetching APOD:', error);
@@ -132,11 +130,11 @@ async function fetchAPOD() {
 // ========== DISPLAY APOD ==========
 function displayAPOD(data) {
     const container = document.getElementById('apod-container');
-    
-    const mediaHTML = data.media_type === 'video' 
+
+    const mediaHTML = data.media_type === 'video'
         ? `<iframe src="${data.url}" frameborder="0" allowfullscreen class="apod-video"></iframe>`
         : `<img src="${data.url}" alt="${data.title}" class="apod-image glightbox" data-glightbox="title: ${data.title}">`;
-    
+
     container.innerHTML = `
         <div class="apod-content animate__animated animate__fadeIn">
             <div class="apod-image-container">
@@ -153,7 +151,7 @@ function displayAPOD(data) {
             </div>
         </div>
     `;
-    
+
     // Reinitialize lightbox for new content
     if (lightbox) lightbox.destroy();
     initializeLightbox();
@@ -168,21 +166,21 @@ async function fetchMarsPhotos(rover) {
             <p>Loading ${rover} photos...</p>
         </div>
     `;
-    
+
     try {
-        // Use a random sol (Martian day) between 1000-3000 for variety
-        const randomSol = Math.floor(Math.random() * 2000) + 1000;
-        const response = await fetch(MARS_ROVER_URL(rover, randomSol));
+        // Use latest_photos endpoint to ensure images are always available
+        const response = await fetch(MARS_ROVER_LATEST_URL(rover));
         const data = await response.json();
-        
-        // If no photos for this sol, try a few more times
-        if (data.photos.length === 0) {
-            const alternateSol = Math.floor(Math.random() * 1000) + 500;
-            const altResponse = await fetch(MARS_ROVER_URL(rover, alternateSol));
-            const altData = await altResponse.json();
-            displayMarsPhotos(altData.photos.slice(0, 12), rover);
+
+        if (!data.latest_photos || data.latest_photos.length === 0) {
+            container.innerHTML = `
+                <div class="error">
+                    <i class="fas fa-info-circle"></i>
+                    <p>No photos available for this rover at the moment</p>
+                </div>
+            `;
         } else {
-            displayMarsPhotos(data.photos.slice(0, 12), rover);
+            displayMarsPhotos(data.latest_photos.slice(0, 12), rover);
         }
     } catch (error) {
         console.error('Error fetching Mars photos:', error);
@@ -200,7 +198,7 @@ function displayMarsPhotos(photos, rover) {
     const container = document.getElementById('mars-container');
     const swiperContainer = document.getElementById('mars-swiper');
     const swiperWrapper = document.getElementById('swiper-wrapper');
-    
+
     if (photos.length === 0) {
         container.innerHTML = `
             <div class="error">
@@ -211,7 +209,7 @@ function displayMarsPhotos(photos, rover) {
         `;
         return;
     }
-    
+
     // Display as grid
     container.innerHTML = photos.map(photo => `
         <div class="mars-photo-card animate__animated animate__fadeIn">
@@ -224,21 +222,21 @@ function displayMarsPhotos(photos, rover) {
             </div>
         </div>
     `).join('');
-    
+
     // Setup Swiper carousel
     swiperWrapper.innerHTML = photos.map(photo => `
         <div class="swiper-slide">
             <img src="${photo.img_src}" alt="${photo.camera.full_name}">
         </div>
     `).join('');
-    
+
     swiperContainer.style.display = 'block';
-    
+
     // Initialize Swiper
     if (marsSwiper) {
         marsSwiper.destroy(true, true);
     }
-    
+
     marsSwiper = new Swiper('.mars-swiper', {
         effect: 'coverflow',
         grabCursor: true,
@@ -264,7 +262,7 @@ function displayMarsPhotos(photos, rover) {
             disableOnInteraction: false,
         },
     });
-    
+
     // Reinitialize lightbox
     if (lightbox) lightbox.destroy();
     initializeLightbox();
@@ -273,12 +271,12 @@ function displayMarsPhotos(photos, rover) {
 // ========== ROVER BUTTON HANDLERS ==========
 function setupRoverButtons() {
     const buttons = document.querySelectorAll('.rover-btn');
-    
+
     buttons.forEach(btn => {
         btn.addEventListener('click', () => {
             buttons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
+
             currentRover = btn.dataset.rover;
             fetchMarsPhotos(currentRover);
         });
@@ -287,13 +285,12 @@ function setupRoverButtons() {
 
 // ========== ANIMATE STATISTICS ==========
 function animateStats() {
-    // Curiosity rover stats (approximate)
     const stats = {
         days: 4500,
         photos: 695000,
         distance: 31
     };
-    
+
     setTimeout(() => {
         animateValue('stat-days', 0, stats.days, 2000);
         animateValue('stat-photos', 0, stats.photos, 2000);
@@ -306,7 +303,7 @@ function animateValue(id, start, end, duration) {
     const range = end - start;
     const increment = range / (duration / 16);
     let current = start;
-    
+
     const timer = setInterval(() => {
         current += increment;
         if (current >= end) {
