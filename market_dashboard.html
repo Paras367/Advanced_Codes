@@ -95,19 +95,22 @@ async function loadMarket(symbol, priceId, changeId) {
   try {
     const url = `https://api.twelvedata.com/price?symbol=${symbol}&apikey=${API_KEY}`;
     const res = await axios.get(url);
-    if (!res.data || !res.data.price) 
-  throw "No price data";
-}
-const price = Number(res.data.price).toFixed(2);
 
+    if (!res.data || !res.data.price) {
+      throw "Invalid Data";
+    }
 
+    const price = Number(res.data.price).toFixed(2);
     document.getElementById(priceId).innerText = price;
     document.getElementById(changeId).innerHTML =
       `<span class="rise">Live Market Data</span>`;
   } catch {
-    document.getElementById(changeId).innerText = "API Error";
+    document.getElementById(priceId).innerText = "--";
+    document.getElementById(changeId).innerHTML =
+      `<span class="fall">Unavailable (Free API)</span>`;
   }
 }
+
 
 loadMarket(markets.gold,"goldPrice","goldChange");
 loadMarket(markets.silver,"silverPrice","silverChange");
