@@ -203,3 +203,54 @@ footer {
     #mars-gallery { gap: 10px; }
     #mars-gallery img { width: 150px; }
 }
+
+/* Cool text animation for dynamic info */
+.dynamic-text {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #00ffff;
+  text-shadow: 0 0 6px #00ffff, 0 0 12px #00bbff;
+  animation: flicker 2s linear infinite alternate;
+}
+
+/* =========================
+   Keyframes
+========================= */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+  20%, 22%, 24%, 55% { opacity: 0.6; }
+}
+
+/* =========================
+   Small Utility Classes
+========================= */
+.text-glow {
+  text-shadow: 0 0 6px #ffffff, 0 0 12px #00bbff, 0 0 20px #00ffff;
+}
+
+.text-fade {
+  animation: appear 1.5s ease forwards;
+}
+
+/* =========================
+   Hover Glow Effects for Links or Interactive Text
+========================= */
+a, .link-text {
+  color: #00c8ff;
+  text-decoration: none;
+  transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.3s ease;
+}
+
+a:hover, .link-text:hover {
+  color: #ffffff;
+  transform: scale(1.05);
+  text-shadow: 0 0 8px #00c8ff, 0 0 16px #00aaff;
+}
+
+
