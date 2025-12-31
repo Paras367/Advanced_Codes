@@ -1,0 +1,189 @@
+/* =========================
+   Reset & Base Styles
+========================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: radial-gradient(circle at top left, #0a0c1b, #000000);
+    color: #ffffff;
+    min-height: 100vh;
+    padding: 20px;
+    text-align: center;
+    line-height: 1.6;
+}
+
+/* =========================
+   Header
+========================= */
+header {
+    margin-bottom: 30px;
+}
+
+header h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #00c8ff;
+    text-shadow: 0 0 10px #00c8ff, 0 0 20px #00c8ff;
+    margin-bottom: 10px;
+    animation: fadeInDown 1s ease-in-out;
+}
+
+header p {
+    font-size: 1.2rem;
+    color: #a0d8ff;
+}
+
+/* =========================
+   APOD Section
+========================= */
+#apod-section {
+    padding: 20px;
+    background: rgba(0, 0, 40, 0.7);
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(0, 135, 255, 0.6);
+    margin-bottom: 50px;
+}
+
+#apod-card {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background: rgba(10, 10, 30, 0.85);
+    border-radius: 12px;
+    box-shadow: 0 0 15px #00bfff;
+    animation: appear 1s ease-in-out;
+    transition: transform 0.3s ease;
+}
+
+#apod-card:hover {
+    transform: scale(1.02);
+}
+
+#apod-card img {
+    width: 100%;
+    max-height: 500px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px #00bfff;
+    margin-bottom: 15px;
+}
+
+#apod-card h3 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    color: #00e5ff;
+}
+
+#apod-card p {
+    font-size: 1rem;
+    text-align: justify;
+    color: #c0e6ff;
+}
+
+/* =========================
+   Mars Rover Section
+========================= */
+#mars-section {
+    margin-top: 50px;
+    padding: 20px;
+}
+
+#mars-section h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #ffcc33;
+    text-shadow: 0 0 10px #ffcc33;
+}
+
+#mars-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+}
+
+#mars-gallery img {
+    width: 250px;
+    border-radius: 10px;
+    box-shadow: 0 0 12px #ff6600;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+#mars-gallery img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px #ff9900;
+}
+
+/* =========================
+   Footer
+========================= */
+footer {
+    margin-top: 60px;
+    padding: 20px;
+    font-size: 0.9rem;
+    color: #888;
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+/* =========================
+   Animations
+========================= */
+@keyframes appear {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes glow {
+    from { text-shadow: 0 0 6px #67aaff; }
+    to { text-shadow: 0 0 18px #00bbff; }
+}
+
+/* =========================
+   Loading Spinner
+========================= */
+.spinner {
+    border: 6px solid rgba(255,255,255,0.2);
+    border-top: 6px solid #ffffff;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1.5s linear infinite;
+    margin: 30px auto;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* =========================
+   Responsive
+========================= */
+@media (max-width: 1024px) {
+    #mars-gallery img {
+        width: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    header h1 { font-size: 2.2rem; }
+    #apod-card img { max-height: 350px; }
+    #mars-gallery img { width: 180px; }
+}
+
+@media (max-width: 480px) {
+    header h1 { font-size: 1.8rem; }
+    #apod-card { padding: 15px; }
+    #mars-gallery { gap: 10px; }
+    #mars-gallery img { width: 150px; }
+}
