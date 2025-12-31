@@ -2,125 +2,558 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Live Market Dashboard</title>
-
-<!-- CSS LIBRARIES -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Market Dashboard - Advanced</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
 body {
-  background:#0f172a;
-  color:#e5e7eb;
-  font-family:Poppins;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: #e5e7eb;
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
 }
-.card {
-  background:#020617;
-  border-radius:16px;
-  box-shadow:0 0 25px rgba(0,255,255,0.1);
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 50%, rgba(6, 182, 212, 0.05) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
 }
-.rise { color:#22c55e; }
-.fall { color:#ef4444; }
+
+.container { position: relative; z-index: 1; }
+
+.header {
+  text-align: center;
+  padding: 2rem 0;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #06b6d4 0%, #a855f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+}
+
+.header .subtitle {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  background: #22c55e;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.market-card {
+  background: rgba(2, 6, 23, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.market-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #06b6d4, #a855f7);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.market-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(6, 182, 212, 0.3);
+  box-shadow: 0 12px 48px rgba(6, 182, 212, 0.2);
+}
+
+.market-card:hover::before {
+  transform: scaleX(1);
+}
+
+.market-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.market-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #94a3b8;
+  letter-spacing: 1px;
+}
+
+.market-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(168, 85, 247, 0.1));
+}
+
+.price-section {
+  margin-bottom: 1rem;
+}
+
+.current-price {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.25rem;
+}
+
+.price-change {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.rise {
+  color: #22c55e;
+}
+
+.fall {
+  color: #ef4444;
+}
+
+.neutral {
+  color: #94a3b8;
+}
+
+.loading {
+  color: #06b6d4;
+}
+
+.chart-container {
+  position: relative;
+  height: 80px;
+  margin-top: 1rem;
+}
+
+.stats-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.stat-item {
+  text-align: center;
+  flex: 1;
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  color: #64748b;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.stat-value {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+.refresh-btn {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #06b6d4, #a855f7);
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(6, 182, 212, 0.4);
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.refresh-btn:hover {
+  transform: scale(1.1) rotate(180deg);
+  box-shadow: 0 6px 30px rgba(6, 182, 212, 0.6);
+}
+
+.refresh-btn:active {
+  transform: scale(0.95);
+}
+
+.refresh-btn.spinning {
+  animation: spin 1s linear;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.error-message {
+  color: #ef4444;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 4px;
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.last-update {
+  text-align: center;
+  color: #64748b;
+  font-size: 0.8rem;
+  margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+  .header h1 { font-size: 1.8rem; }
+  .current-price { font-size: 1.5rem; }
+  .refresh-btn { bottom: 1rem; right: 1rem; width: 50px; height: 50px; }
+}
 </style>
 </head>
+<body>
+<div class="container py-4">
+  <div class="header animate__animated animate__fadeInDown">
+    <h1><i class="fas fa-chart-line"></i> Live Indian Market Dashboard</h1>
+    <div class="subtitle">
+      <span class="status-indicator"></span>
+      <span>Real-time market data powered by Twelve Data API</span>
+    </div>
+  </div>
 
-<body class="container py-4">
+  <div class="row g-4">
+    <!-- NIFTY 50 -->
+    <div class="col-lg-3 col-md-6">
+      <div class="market-card animate__animated animate__fadeInUp" style="animation-delay: 0.1s">
+        <div class="market-header">
+          <span class="market-title">NIFTY 50</span>
+          <div class="market-icon" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.1));">
+            📈
+          </div>
+        </div>
+        <div class="price-section">
+          <div class="current-price" id="niftyPrice">--</div>
+          <div class="price-change" id="niftyChange">
+            <span class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</span>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="niftyChart"></canvas>
+        </div>
+        <div class="stats-row">
+          <div class="stat-item">
+            <div class="stat-label">High</div>
+            <div class="stat-value" id="niftyHigh">--</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Low</div>
+            <div class="stat-value" id="niftyLow">--</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<h1 class="text-center mb-4 animate__animated animate__fadeInDown">
-📊 Live Indian Market Dashboard
-</h1>
+    <!-- SENSEX -->
+    <div class="col-lg-3 col-md-6">
+      <div class="market-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
+        <div class="market-header">
+          <span class="market-title">SENSEX</span>
+          <div class="market-icon" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.1));">
+            📊
+          </div>
+        </div>
+        <div class="price-section">
+          <div class="current-price" id="sensexPrice">--</div>
+          <div class="price-change" id="sensexChange">
+            <span class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</span>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="sensexChart"></canvas>
+        </div>
+        <div class="stats-row">
+          <div class="stat-item">
+            <div class="stat-label">High</div>
+            <div class="stat-value" id="sensexHigh">--</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Low</div>
+            <div class="stat-value" id="sensexLow">--</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<div class="row g-4">
+    <!-- GOLD -->
+    <div class="col-lg-3 col-md-6">
+      <div class="market-card animate__animated animate__fadeInUp" style="animation-delay: 0.3s">
+        <div class="market-header">
+          <span class="market-title">GOLD</span>
+          <div class="market-icon" style="background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.1));">
+            🥇
+          </div>
+        </div>
+        <div class="price-section">
+          <div class="current-price" id="goldPrice">--</div>
+          <div class="price-change" id="goldChange">
+            <span class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</span>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="goldChart"></canvas>
+        </div>
+        <div class="stats-row">
+          <div class="stat-item">
+            <div class="stat-label">High</div>
+            <div class="stat-value" id="goldHigh">--</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Low</div>
+            <div class="stat-value" id="goldLow">--</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<!-- NIFTY -->
-<div class="col-md-3">
-<div class="card p-3 text-center">
-<h5>NIFTY 50</h5>
-<h2 id="niftyPrice">--</h2>
-<p id="niftyChange">Loading...</p>
-<canvas id="niftyChart"></canvas>
-</div>
+    <!-- SILVER -->
+    <div class="col-lg-3 col-md-6">
+      <div class="market-card animate__animated animate__fadeInUp" style="animation-delay: 0.4s">
+        <div class="market-header">
+          <span class="market-title">SILVER</span>
+          <div class="market-icon" style="background: linear-gradient(135deg, rgba(148, 163, 184, 0.2), rgba(100, 116, 139, 0.1));">
+            🥈
+          </div>
+        </div>
+        <div class="price-section">
+          <div class="current-price" id="silverPrice">--</div>
+          <div class="price-change" id="silverChange">
+            <span class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</span>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="silverChart"></canvas>
+        </div>
+        <div class="stats-row">
+          <div class="stat-item">
+            <div class="stat-label">High</div>
+            <div class="stat-value" id="silverHigh">--</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Low</div>
+            <div class="stat-value" id="silverLow">--</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="last-update">
+    <i class="far fa-clock"></i> Last updated: <span id="lastUpdate">--</span>
+  </div>
 </div>
 
-<!-- SENSEX -->
-<div class="col-md-3">
-<div class="card p-3 text-center">
-<h5>SENSEX</h5>
-<h2 id="sensexPrice">--</h2>
-<p id="sensexChange">Loading...</p>
-<canvas id="sensexChart"></canvas>
-</div>
-</div>
+<button class="refresh-btn" onclick="refreshAll()" title="Refresh Data">
+  <i class="fas fa-sync-alt"></i>
+</button>
 
-<!-- GOLD -->
-<div class="col-md-3">
-<div class="card p-3 text-center">
-<h5>GOLD</h5>
-<h2 id="goldPrice">--</h2>
-<p id="goldChange">Loading...</p>
-<canvas id="goldChart"></canvas>
-</div>
-</div>
-
-<!-- SILVER -->
-<div class="col-md-3">
-<div class="card p-3 text-center">
-<h5>SILVER</h5>
-<h2 id="silverPrice">--</h2>
-<p id="silverChange">Loading...</p>
-<canvas id="silverChart"></canvas>
-</div>
-</div>
-
-</div>
-
-<!-- JS LIBRARIES -->
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
 const API_KEY = "b23a1dbb582e4dc1b4dfd4e1147bf3ad";
 
 const markets = {
-  nifty: "NIFTYBEES",
-  sensex: "SENSEXBEES",
-  gold: "XAU/USD",
-  silver: "XAGUSD"
-
+  nifty: { symbol: "NIFTYBEES", name: "NIFTY 50" },
+  sensex: { symbol: "SENSEXBEES", name: "SENSEX" },
+  gold: { symbol: "XAU/USD", name: "GOLD" },
+  silver: { symbol: "XAG/USD", name: "SILVER" }
 };
 
-async function loadMarket(symbol, priceId, changeId) {
-  try {
-    const url = `https://api.twelvedata.com/price?symbol=${symbol}&apikey=${API_KEY}`;
-    const res = await axios.get(url);
+const charts = {};
+const historicalData = {
+  nifty: [],
+  sensex: [],
+  gold: [],
+  silver: []
+};
 
-    if (!res.data || !res.data.price) {
-      throw "Invalid Data";
+function createChart(canvasId, data, color) {
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  return new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: data.map((_, i) => ''),
+      datasets: [{
+        data: data,
+        borderColor: color,
+        backgroundColor: `${color}20`,
+        borderWidth: 2,
+        tension: 0.4,
+        fill: true,
+        pointRadius: 0,
+        pointHoverRadius: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+      scales: {
+        x: { display: false },
+        y: { display: false }
+      },
+      interaction: { mode: 'index', intersect: false }
+    }
+  });
+}
+
+async function loadMarket(marketKey, symbol, priceId, changeId, highId, lowId, chartId) {
+  try {
+    const quoteUrl = `https://api.twelvedata.com/quote?symbol=${symbol}&apikey=${API_KEY}`;
+    const quoteRes = await axios.get(quoteUrl);
+    
+    if (!quoteRes.data || quoteRes.data.status === 'error') {
+      throw new Error(quoteRes.data?.message || 'Invalid data');
     }
 
-    const price = Number(res.data.price).toFixed(2);
-    document.getElementById(priceId).innerText = price;
-    document.getElementById(changeId).innerHTML =
-      `<span class="rise">Live Market Data</span>`;
-  } catch {
-    document.getElementById(priceId).innerText = "--";
-    document.getElementById(changeId).innerHTML =
-      `<span class="fall">Unavailable (Free API)</span>`;
+    const data = quoteRes.data;
+    const price = parseFloat(data.close || data.price);
+    const prevClose = parseFloat(data.previous_close);
+    const change = price - prevClose;
+    const changePercent = ((change / prevClose) * 100).toFixed(2);
+    const high = parseFloat(data.high);
+    const low = parseFloat(data.low);
+
+    historicalData[marketKey].push(price);
+    if (historicalData[marketKey].length > 20) {
+      historicalData[marketKey].shift();
+    }
+
+    document.getElementById(priceId).innerText = price.toFixed(2);
+    document.getElementById(highId).innerText = high.toFixed(2);
+    document.getElementById(lowId).innerText = low.toFixed(2);
+
+    const isPositive = change >= 0;
+    const arrow = isPositive ? '↑' : '↓';
+    const colorClass = isPositive ? 'rise' : 'fall';
+    
+    document.getElementById(changeId).innerHTML = `
+      <span class="${colorClass}">
+        <i class="fas fa-${isPositive ? 'arrow-up' : 'arrow-down'}"></i>
+        ${arrow} ${Math.abs(change).toFixed(2)} (${Math.abs(changePercent)}%)
+      </span>
+    `;
+
+    const chartColor = isPositive ? '#22c55e' : '#ef4444';
+    if (charts[chartId]) {
+      charts[chartId].data.datasets[0].data = historicalData[marketKey];
+      charts[chartId].data.datasets[0].borderColor = chartColor;
+      charts[chartId].data.datasets[0].backgroundColor = `${chartColor}20`;
+      charts[chartId].update('none');
+    } else {
+      charts[chartId] = createChart(chartId, historicalData[marketKey], chartColor);
+    }
+
+  } catch (err) {
+    console.error(`Error loading ${marketKey}:`, err);
+    document.getElementById(priceId).innerText = '--';
+    document.getElementById(changeId).innerHTML = `
+      <span class="fall">
+        <i class="fas fa-exclamation-triangle"></i> Unavailable
+      </span>
+    `;
+    document.getElementById(highId).innerText = '--';
+    document.getElementById(lowId).innerText = '--';
   }
 }
 
+async function loadAllMarkets() {
+  const promises = [
+    loadMarket('gold', markets.gold.symbol, 'goldPrice', 'goldChange', 'goldHigh', 'goldLow', 'goldChart'),
+    loadMarket('silver', markets.silver.symbol, 'silverPrice', 'silverChange', 'silverHigh', 'silverLow', 'silverChart'),
+    loadMarket('nifty', markets.nifty.symbol, 'niftyPrice', 'niftyChange', 'niftyHigh', 'niftyLow', 'niftyChart'),
+    loadMarket('sensex', markets.sensex.symbol, 'sensexPrice', 'sensexChange', 'sensexHigh', 'sensexLow', 'sensexChart')
+  ];
 
-loadMarket(markets.gold,"goldPrice","goldChange");
-loadMarket(markets.silver,"silverPrice","silverChange");
+  await Promise.allSettled(promises);
+  updateLastUpdateTime();
+}
 
-// Refresh every 60 sec
-setInterval(() => {
-  loadMarket(markets.gold,"goldPrice","goldChange");
-  loadMarket(markets.silver,"silverPrice","silverChange");
-}, 60000);
+function updateLastUpdateTime() {
+  const now = new Date();
+  document.getElementById('lastUpdate').innerText = now.toLocaleTimeString('en-IN', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
+}
+
+function refreshAll() {
+  const btn = document.querySelector('.refresh-btn');
+  btn.classList.add('spinning');
+  loadAllMarkets().then(() => {
+    setTimeout(() => btn.classList.remove('spinning'), 1000);
+  });
+}
+
+loadAllMarkets();
+
+setInterval(loadAllMarkets, 60000);
 </script>
-
 </body>
 </html>
