@@ -6,15 +6,18 @@
   <title>EduVerse India | Smart Learning Hub</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #f5f7fa;
       --card: #ffffff;
       --accent: #1e3a8a;
+      --accent-light: #3b82f6;
       --highlight: #facc15;
+      --success: #10b981;
+      --error: #ef4444;
       --text: #1f2937;
-      --text-light: #4b5563;
+      --text-light: #6b7280;
       --border: #e2e8f0;
     }
 
@@ -35,22 +38,45 @@
     header {
       background: linear-gradient(135deg, #1e3a8a, #3b82f6);
       color: white;
-      padding: 1.5rem 2rem;
+      padding: 2rem;
       text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      animation: pulse 15s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
     }
 
     header h1 {
       font-family: 'Merriweather', serif;
       font-weight: 700;
-      font-size: 2.2rem;
+      font-size: 2.5rem;
       margin-bottom: 0.5rem;
+      position: relative;
+      z-index: 1;
     }
 
     header p {
-      opacity: 0.9;
+      opacity: 0.95;
       max-width: 600px;
       margin: 0 auto;
+      position: relative;
+      z-index: 1;
+      font-size: 1.1rem;
     }
 
     .container {
@@ -63,141 +89,228 @@
       background: var(--card);
       border-radius: 16px;
       box-shadow: 0 6px 20px rgba(0,0,0,0.04);
-      padding: 1.8rem;
+      padding: 2rem;
       margin-bottom: 2rem;
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: transform 0.3s, box-shadow 0.3s;
     }
 
     .card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.08);
     }
 
     .card h2 {
       font-family: 'Merriweather', serif;
       color: var(--accent);
-      margin-bottom: 1.2rem;
-      font-size: 1.6rem;
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     .card h3 {
-      font-size: 1.3rem;
-      margin: 1.2rem 0 0.8rem;
+      font-size: 1.4rem;
+      margin: 1.5rem 0 1rem;
       color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     .btn {
       display: inline-block;
       background: var(--accent);
       color: white;
-      padding: 0.75rem 1.5rem;
+      padding: 0.85rem 1.8rem;
       border-radius: 50px;
       text-decoration: none;
       font-weight: 500;
       border: none;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: all 0.3s;
+      box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
     }
 
     .btn:hover {
       background: #1a3678;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(30, 58, 138, 0.3);
     }
 
     .btn-outline {
       background: transparent;
       border: 2px solid var(--accent);
       color: var(--accent);
+      box-shadow: none;
     }
 
     .btn-outline:hover {
-      background: rgba(30, 58, 138, 0.05);
-    }
-
-    /* Smart Dashboard Grid */
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
+      background: var(--accent);
+      color: white;
     }
 
     /* Level Selector */
     .level-selector {
       display: flex;
       gap: 1rem;
-      margin: 1rem 0;
+      margin: 1.5rem 0;
+      flex-wrap: wrap;
     }
 
     .level-btn {
       flex: 1;
-      padding: 0.8rem;
+      min-width: 150px;
+      padding: 1rem;
       text-align: center;
       background: #f1f5f9;
       border: 2px solid #cbd5e1;
       border-radius: 12px;
       cursor: pointer;
-      font-weight: 500;
-      transition: all 0.2s;
+      font-weight: 600;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .level-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(30, 58, 138, 0.1);
+      transition: width 0.4s, height 0.4s, top 0.4s, left 0.4s;
+    }
+
+    .level-btn:hover::before {
+      width: 300px;
+      height: 300px;
+      top: calc(50% - 150px);
+      left: calc(50% - 150px);
     }
 
     .level-btn.active {
       background: var(--accent);
       color: white;
       border-color: var(--accent);
+      box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+    }
+
+    .level-btn span {
+      position: relative;
+      z-index: 1;
     }
 
     /* Accordion */
     .accordion {
-      margin: 1rem 0;
+      margin: 1.5rem 0;
     }
 
     .accordion-item {
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
 
     .accordion-header {
-      padding: 1rem;
-      background: #f1f9ff;
-      border-radius: 12px;
+      padding: 1.2rem;
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
       cursor: pointer;
-      font-weight: 500;
+      font-weight: 600;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      transition: background 0.3s;
+    }
+
+    .accordion-header:hover {
+      background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+    }
+
+    .accordion-icon {
+      transition: transform 0.3s;
+      font-size: 1.2rem;
+    }
+
+    .accordion-header.open .accordion-icon {
+      transform: rotate(180deg);
     }
 
     .accordion-content {
       max-height: 0;
       overflow: hidden;
-      transition: max-height 0.3s ease, padding 0.3s ease;
+      transition: max-height 0.4s ease, padding 0.4s ease;
       background: #f8fafc;
-      border-radius: 0 0 12px 12px;
-      padding: 0 1rem;
+      padding: 0 1.2rem;
     }
 
     .accordion-content.open {
-      max-height: 500px;
-      padding: 1rem;
+      max-height: 800px;
+      padding: 1.5rem 1.2rem;
+    }
+
+    .accordion-content p {
+      margin-bottom: 0.75rem;
+    }
+
+    .accordion-content code {
+      background: #e2e8f0;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
     }
 
     /* MCQ */
+    .mcq-container {
+      background: #f8fafc;
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin: 1.5rem 0;
+    }
+
+    .mcq-question {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+      color: var(--text);
+    }
+
     .mcq-options {
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
-      margin-top: 1rem;
     }
 
     .mcq-option {
-      padding: 0.75rem 1rem;
-      background: #f8fafc;
+      padding: 1rem 1.2rem;
+      background: white;
       border: 2px solid #e2e8f0;
       border-radius: 12px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 500;
+    }
+
+    .mcq-option::before {
+      content: '';
+      width: 20px;
+      height: 20px;
+      border: 2px solid #cbd5e1;
+      border-radius: 50%;
+      transition: all 0.3s;
     }
 
     .mcq-option:hover {
-      background: #edf2f7;
+      background: #f1f5f9;
+      border-color: var(--accent-light);
+      transform: translateX(5px);
     }
 
     .mcq-option.selected {
@@ -205,83 +318,261 @@
       background: rgba(30, 58, 138, 0.05);
     }
 
+    .mcq-option.selected::before {
+      border-color: var(--accent);
+      background: var(--accent);
+      box-shadow: inset 0 0 0 3px white;
+    }
+
     .mcq-option.correct {
-      border-color: #10b981;
+      border-color: var(--success);
       background: rgba(16, 185, 129, 0.1);
     }
 
-    .mcq-option.incorrect {
-      border-color: #ef4444;
-      background: rgba(239, 68, 68, 0.1);
-    }
-
-    /* Simulation placeholder */
-    .simulation {
-      background: #1e293b;
-      color: #e2e8f0;
-      height: 200px;
-      border-radius: 12px;
+    .mcq-option.correct::before {
+      border-color: var(--success);
+      background: var(--success);
+      content: '✓';
+      color: white;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+
+    .mcq-option.incorrect {
+      border-color: var(--error);
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .mcq-option.incorrect::before {
+      border-color: var(--error);
+      background: var(--error);
+      content: '✕';
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+
+    .mcq-feedback {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      display: none;
+    }
+
+    .mcq-feedback.show {
+      display: block;
+    }
+
+    .mcq-feedback.correct {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+      border-left: 4px solid var(--success);
+    }
+
+    .mcq-feedback.incorrect {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+      border-left: 4px solid var(--error);
+    }
+
+    /* Simulation */
+    .simulation {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      color: #e2e8f0;
+      min-height: 300px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       font-family: 'Inter', sans-serif;
-      margin: 1rem 0;
+      margin: 1.5rem 0;
       position: relative;
       overflow: hidden;
+      padding: 2rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+
+    .simulation-canvas {
+      width: 100%;
+      height: 250px;
+      position: relative;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      margin-bottom: 1rem;
     }
 
     .ball {
       width: 40px;
       height: 40px;
-      background: var(--highlight);
+      background: linear-gradient(135deg, #facc15 0%, #f59e0b 100%);
       border-radius: 50%;
       position: absolute;
       top: 20px;
       left: 50%;
       transform: translateX(-50%);
+      box-shadow: 0 4px 12px rgba(250, 204, 21, 0.4);
+      transition: all 0.05s linear;
+    }
+
+    .simulation-controls {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .sim-btn {
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border: 2px solid rgba(255,255,255,0.3);
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .sim-btn:hover {
+      background: rgba(255,255,255,0.2);
+      border-color: rgba(255,255,255,0.5);
+    }
+
+    .sim-btn:active {
+      transform: scale(0.95);
+    }
+
+    .simulation-info {
+      margin-top: 1rem;
+      text-align: center;
+      font-size: 0.95rem;
+      opacity: 0.9;
     }
 
     /* Study Path */
     .path-inputs {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1rem;
-      margin: 1rem 0;
+      gap: 1.5rem;
+      margin: 1.5rem 0;
     }
 
-    .path-inputs label {
+    .input-group label {
       display: block;
       margin-bottom: 0.5rem;
-      font-weight: 500;
+      font-weight: 600;
+      color: var(--text);
     }
 
     .path-inputs select, .path-inputs input {
       width: 100%;
-      padding: 0.75rem;
+      padding: 0.85rem;
       border: 2px solid var(--border);
       border-radius: 12px;
       font-family: inherit;
+      font-size: 1rem;
+      transition: all 0.3s;
+      background: white;
+    }
+
+    .path-inputs select:focus, .path-inputs input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
     }
 
     .roadmap {
-      background: #f0fdf4;
-      border-left: 4px solid #10b981;
-      padding: 1.2rem;
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+      border-left: 4px solid var(--success);
+      padding: 1.5rem;
       border-radius: 0 12px 12px 0;
       margin-top: 1.5rem;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
     }
 
-    /* Footer & Disclaimer */
+    .roadmap h3 {
+      color: var(--success);
+      margin-bottom: 1rem;
+    }
+
+    .roadmap ul {
+      padding-left: 1.5rem;
+      margin: 1rem 0;
+    }
+
+    .roadmap li {
+      margin-bottom: 0.75rem;
+      line-height: 1.6;
+    }
+
+    .roadmap strong {
+      color: var(--text);
+    }
+
+    /* Progress Bar */
+    .progress-container {
+      margin: 1.5rem 0;
+      background: #f1f5f9;
+      border-radius: 50px;
+      height: 12px;
+      overflow: hidden;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent-light) 100%);
+      border-radius: 50px;
+      transition: width 0.5s ease;
+      box-shadow: 0 2px 4px rgba(30, 58, 138, 0.3);
+    }
+
+    /* Resource Links */
+    .resource-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .resource-list li {
+      margin-bottom: 0.75rem;
+      padding: 0.75rem;
+      background: #f8fafc;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+
+    .resource-list li:hover {
+      background: #f1f5f9;
+      transform: translateX(5px);
+    }
+
+    .resource-list a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .resource-list a:hover {
+      color: var(--accent-light);
+    }
+
+    /* Footer & Modal */
     footer {
       text-align: center;
       margin-top: 3rem;
-      padding: 1.5rem;
+      padding: 2rem;
       color: var(--text-light);
-      font-size: 0.9rem;
-    }
-
-    .disclaimer-btn {
-      margin-top: 1rem;
+      font-size: 0.95rem;
     }
 
     .modal {
@@ -292,9 +583,16 @@
       width: 100%;
       height: 100%;
       background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
       z-index: 1000;
       justify-content: center;
       align-items: center;
+      animation: fadeIn 0.3s;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     .modal-content {
@@ -302,28 +600,103 @@
       width: 90%;
       max-width: 700px;
       border-radius: 16px;
-      padding: 2rem;
+      padding: 2.5rem;
       max-height: 80vh;
       overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      animation: slideUp 0.4s;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
 
     .close {
       float: right;
-      font-size: 1.5rem;
+      font-size: 1.8rem;
       cursor: pointer;
-      color: #6b7280;
+      color: var(--text-light);
+      line-height: 1;
+      transition: all 0.3s;
+    }
+
+    .close:hover {
+      color: var(--text);
+      transform: rotate(90deg);
+    }
+
+    .modal-content h2 {
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-content ul {
+      margin: 1rem 0;
+      padding-left: 1.5rem;
+    }
+
+    .modal-content li {
+      margin-bottom: 0.75rem;
+      line-height: 1.6;
+    }
+
+    /* Video Container */
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      margin: 1.5rem 0;
+    }
+
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    /* Formula Box */
+    .formula-box {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border-left: 4px solid var(--highlight);
+      margin: 1.5rem 0;
+    }
+
+    .formula-box code {
+      background: rgba(0,0,0,0.05);
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-weight: 600;
     }
 
     /* Responsive */
     @media (max-width: 768px) {
       header {
-        padding: 1.2rem;
+        padding: 1.5rem 1rem;
       }
       header h1 {
-        font-size: 1.8rem;
+        font-size: 2rem;
       }
       .container {
         padding: 0 1rem;
+      }
+      .card {
+        padding: 1.5rem;
+      }
+      .level-selector {
+        flex-direction: column;
+      }
+      .level-btn {
+        min-width: 100%;
       }
     }
   </style>
@@ -337,259 +710,232 @@
   <div class="container">
     <!-- Smart Topic Dashboard -->
     <section class="card">
-      <h2>🚀 Smart Topic Dashboard: <em>Newton’s Laws of Motion</em></h2>
+      <h2>🚀 Smart Topic Dashboard: <em>Newton's Laws of Motion</em></h2>
       
       <div class="level-selector">
-        <div class="level-btn active" data-level="beginner">Beginner</div>
-        <div class="level-btn" data-level="board">Board Level</div>
-        <div class="level-btn" data-level="jee">JEE Level</div>
+        <div class="level-btn active" data-level="beginner">
+          <span>📚 Beginner</span>
+        </div>
+        <div class="level-btn" data-level="board">
+          <span>📖 Board Level</span>
+        </div>
+        <div class="level-btn" data-level="jee">
+          <span>🎓 JEE Level</span>
+        </div>
       </div>
 
       <div class="content beginner-content">
         <h3>🧠 Concept Summary</h3>
-        <p><strong>Newton’s First Law:</strong> An object stays at rest or in uniform motion unless acted upon by a net force.</p>
-        <p><strong>Second Law:</strong> <code>F = ma</code> — Force equals mass times acceleration.</p>
-        <p><strong>Third Law:</strong> For every action, there's an equal & opposite reaction.</p>
+        <p><strong>Newton's First Law (Inertia):</strong> An object stays at rest or in uniform motion unless acted upon by a net external force. This is why you jerk forward when a car suddenly brakes!</p>
+        <p><strong>Newton's Second Law (F=ma):</strong> The acceleration of an object depends on the net force acting upon it and its mass. Mathematically: <code>F = ma</code></p>
+        <p><strong>Newton's Third Law (Action-Reaction):</strong> For every action, there's an equal and opposite reaction. When you push a wall, it pushes back with equal force!</p>
 
         <h3>🎥 Learn with Khan Academy</h3>
-        <div style="position:relative;height:0;padding-bottom:56.25%;">
+        <div class="video-container">
           <iframe 
             src="https://www.youtube.com/embed/kKKM8Y-u7ds" 
-            style="position:absolute;width:100%;height:100%;left:0;top:0;border:0;border-radius:12px;"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen>
           </iframe>
         </div>
 
         <h3>📌 Key Formulas</h3>
-        <ul>
-          <li><code>F_net = m·a</code></li>
-          <li><code>p = m·v</code> (Momentum)</li>
-          <li><code>F₁₂ = –F₂₁</code> (Action-Reaction)</li>
-        </ul>
+        <div class="formula-box">
+          <ul style="list-style: none; padding: 0;">
+            <li>✦ Net Force: <code>F_net = m × a</code></li>
+            <li>✦ Momentum: <code>p = m × v</code></li>
+            <li>✦ Action-Reaction: <code>F₁₂ = -F₂₁</code></li>
+            <li>✦ Impulse: <code>J = Δp = F × Δt</code></li>
+          </ul>
+        </div>
 
-        <h3>🧪 Interactive Simulation (JS Animation)</h3>
-        <div class="simulation" id="sim">
-          <div class="ball" id="ball"></div>
-          <p>Click to apply force → object accelerates!</p>
+        <h3>🧪 Interactive Simulation</h3>
+        <div class="simulation">
+          <div class="simulation-canvas" id="sim-canvas">
+            <div class="ball" id="ball"></div>
+          </div>
+          <div class="simulation-controls">
+            <button class="sim-btn" id="apply-force">⬆️ Apply Force</button>
+            <button class="sim-btn" id="reset-sim">🔄 Reset</button>
+            <button class="sim-btn" id="toggle-gravity">🌍 Toggle Gravity</button>
+          </div>
+          <div class="simulation-info">
+            <p id="sim-info">Click "Apply Force" to push the ball upward! Watch Newton's Laws in action.</p>
+          </div>
         </div>
 
         <h3>❓ Self-Test MCQ</h3>
-        <p>Which law explains why you lurch forward when a bus suddenly brakes?</p>
-        <div class="mcq-options" id="mcq">
-          <div class="mcq-option" data-correct="false">A) Newton’s Second Law</div>
-          <div class="mcq-option" data-correct="true">B) Newton’s First Law</div>
-          <div class="mcq-option" data-correct="false">C) Newton’s Third Law</div>
-          <div class="mcq-option" data-correct="false">D) Law of Gravitation</div>
+        <div class="mcq-container">
+          <div class="mcq-question">Which law explains why you lurch forward when a bus suddenly brakes?</div>
+          <div class="mcq-options" id="mcq">
+            <div class="mcq-option" data-correct="false">
+              <span>A) Newton's Second Law</span>
+            </div>
+            <div class="mcq-option" data-correct="true">
+              <span>B) Newton's First Law (Inertia)</span>
+            </div>
+            <div class="mcq-option" data-correct="false">
+              <span>C) Newton's Third Law</span>
+            </div>
+            <div class="mcq-option" data-correct="false">
+              <span>D) Law of Universal Gravitation</span>
+            </div>
+          </div>
+          <div class="mcq-feedback" id="mcq-feedback"></div>
         </div>
-        <div id="mcq-feedback" style="margin-top: 0.5rem; font-weight: 500;"></div>
 
-        <h3>🔗 External Resources (Legal Links)</h3>
-        <ul>
-          <li>📘 <a href="https://www.khanacademy.org/science/physics/forces-newtons-laws" target="_blank">Khan Academy: Forces & Newton’s Laws</a></li>
-          <li>🎓 <a href="https://www.pw.live/physics-newtons-laws" target="_blank">Physics Wallah Lecture (Redirect)</a></li>
+        <h3>🔗 External Resources</h3>
+        <ul class="resource-list">
+          <li>📘 <a href="https://www.khanacademy.org/science/physics/forces-newtons-laws" target="_blank">Khan Academy: Forces & Newton's Laws</a></li>
+          <li>🎓 <a href="https://www.pw.live" target="_blank">Physics Wallah Video Lectures</a></li>
           <li>🧪 <a href="https://phet.colorado.edu/sims/html/forces-and-motion-basics/latest/forces-and-motion-basics_en.html" target="_blank">PhET Simulation: Forces & Motion</a></li>
+          <li>📚 <a href="https://www.feynmanlectures.caltech.edu/" target="_blank">Feynman Lectures on Physics</a></li>
         </ul>
       </div>
 
       <div class="content board-content" style="display:none;">
         <h3>🧠 Board-Level Summary (CBSE/State)</h3>
-        <p>Focus: Numerical problem-solving, free-body diagrams, tension in strings, pulley systems, pseudo forces in non-inertial frames.</p>
+        <p>Focus: Numerical problem-solving, free-body diagrams, tension in strings, pulley systems, friction, and applications to real-world scenarios.</p>
+        
         <div class="accordion">
           <div class="accordion-item">
-            <div class="accordion-header">📌 Derivation: <code>F = dp/dt</code> → <code>F = ma</code></div>
+            <div class="accordion-header">
+              <span>📌 Derivation: <code>F = dp/dt</code> → <code>F = ma</code></span>
+              <span class="accordion-icon">▼</span>
+            </div>
             <div class="accordion-content">
-              <p>For constant mass: <code>p = mv</code> ⇒ <code>dp/dt = m·dv/dt = ma</code></p>
-              <p>Hence, <code>F = ma</code>.</p>
+              <p>Starting with momentum: <code>p = mv</code></p>
+              <p>Newton's Second Law states: <code>F = dp/dt</code></p>
+              <p>For constant mass: <code>F = d(mv)/dt = m(dv/dt) = ma</code></p>
+              <p>Hence, <code>F = ma</code> when mass is constant.</p>
+            </div>
+          </div>
+          
+          <div class="accordion-item">
+            <div class="accordion-header">
+              <span>🎯 Free Body Diagrams (FBD)</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+            <div class="accordion-content">
+              <p>A Free Body Diagram shows all forces acting on an object:</p>
+              <ul>
+                <li><strong>Weight (W):</strong> Always acts downward = mg</li>
+                <li><strong>Normal Force (N):</strong> Perpendicular to surface</li>
+                <li><strong>Tension (T):</strong> Along rope/string</li>
+                <li><strong>Friction (f):</strong> Opposes motion</li>
+              </ul>
+              <p>Key: Isolate the object and draw ALL forces as arrows from the center.</p>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header">
+              <span>⚙️ Pulley Systems & Constraint Relations</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+            <div class="accordion-content">
+              <p>For two masses connected by a string over a pulley:</p>
+              <p><code>a₁ + a₂ = 0</code> (if string length is constant)</p>
+              <p>Tensions are equal throughout massless strings.</p>
+              <p>Apply Newton's Second Law to each mass separately.</p>
             </div>
           </div>
         </div>
-        <p><a href="#mcq" class="btn btn-outline">Try the same MCQ</a></p>
+
+        <div class="mcq-container" style="margin-top: 2rem;">
+          <div class="mcq-question">A 5kg block is pulled with 20N force. If friction is 5N, what's the acceleration?</div>
+          <div class="mcq-options" id="mcq-board">
+            <div class="mcq-option" data-correct="false"><span>A) 2 m/s²</span></div>
+            <div class="mcq-option" data-correct="true"><span>B) 3 m/s²</span></div>
+            <div class="mcq-option" data-correct="false"><span>C) 4 m/s²</span></div>
+            <div class="mcq-option" data-correct="false"><span>D) 5 m/s²</span></div>
+          </div>
+          <div class="mcq-feedback" id="mcq-board-feedback"></div>
+        </div>
       </div>
 
+      <!-- ================= JEE LEVEL ================= -->
       <div class="content jee-content" style="display:none;">
-        <h3>🧠 JEE-Advanced Insight</h3>
-        <p>Non-inertial frames, constraint motion, variable mass systems (rocket propulsion), Lagrangian hints.</p>
-        <div class="accordion">
-          <div class="accordion-item">
-            <div class="accordion-header">🔥 Advanced: Variable Mass Systems</div>
-            <div class="accordion-content">
-              <p><code>F_ext + v_rel · (dm/dt) = m·a</code></p>
-              <p>Used in rocket equation: <code>Δv = v_exhaust · ln(m₀/m)</code></p>
-            </div>
-          </div>
+        <h3>🎓 JEE Advanced Insights</h3>
+        <p>
+          Emphasis on variable mass systems, pseudo force, non-inertial frames,
+          constraint equations, and multi-body dynamics.
+        </p>
+
+        <div class="formula-box">
+          <p><strong>Pseudo Force:</strong></p>
+          <code>Fₚ = -m a₀</code>
         </div>
+
+        <p>
+          Typical JEE problems combine Newton’s Laws with
+          <strong>work-energy</strong>, <strong>momentum conservation</strong>,
+          and <strong>relative acceleration</strong>.
+        </p>
       </div>
-    </section>
 
-    <!-- Study Path Builder -->
-    <section class="card">
-      <h2>🎯 Study Path Builder</h2>
-      <p>Select your goals → get a custom 7-day roadmap.</p>
-      <div class="path-inputs">
-        <div>
-          <label for="exam">Target Exam</label>
-          <select id="exam">
-            <option>CBSE Class 11</option>
-            <option selected>JEE Main</option>
-            <option>NEET</option>
-            <option>JEE Advanced</option>
-          </select>
-        </div>
-        <div>
-          <label for="time">Time Available/Day</label>
-          <select id="time">
-            <option>1 hour</option>
-            <option selected>2 hours</option>
-            <option>3+ hours</option>
-          </select>
-        </div>
-        <div>
-          <label for="weak">Weakest Subject</label>
-          <select id="weak">
-            <option>Physics</option>
-            <option selected>Chemistry</option>
-            <option>Maths</option>
-            <option>Biology</option>
-          </select>
-        </div>
-      </div>
-      <button class="btn" id="generate-path">Generate Roadmap</button>
-      <div id="roadmap-output"></div>
     </section>
-
-    <!-- Legal Resource Aggregator -->
-    <section class="card">
-      <h2>📚 Legal Resource Aggregator: <em>Kinematics</em></h2>
-      <pre style="background:#f8fafc;padding:1rem;border-radius:12px;font-family:monospace;font-size:0.95rem;">
-📘 Kinematics
-├── 🎥 <a href="https://www.khanacademy.org/science/physics/one-dimensional-motion" target="_blank">Khan Academy Video</a>
-├── 🎓 <a href="https://www.pw.live/kinematics" target="_blank">PW Lecture (Link Only)</a>
-├── 📝 <a href="#smart-dashboard">Your EduVerse Notes</a>
-├── ❓ 15 MCQs (Auto-generated)
-└── 🧪 <a href="https://phet.colorado.edu/sims/html/moving-man/latest/moving-man_en.html" target="_blank">PhET: Moving Man</a>
-      </pre>
-      <p style="margin-top:1rem; font-style:italic; color:#6b7280;">
-        ✅ All links respect copyright. No copying. Only organization & enhancement.
-      </p>
-    </section>
-
-    <!-- Footer + Disclaimer -->
-    <footer>
-      <button class="btn btn-outline disclaimer-btn" id="show-disclaimer">📜 View Legal Disclaimer</button>
-      <p>© 2026 EduVerse India — For Educational Reference Only</p>
-    </footer>
   </div>
 
-  <!-- Disclaimer Modal -->
-  <div class="modal" id="disclaimer-modal">
-    <div class="modal-content">
-      <span class="close" id="close-modal">&times;</span>
-      <h2 style="color:var(--accent);">🛡️ Legal Disclaimer</h2>
-      <p><strong>EduVerse India does NOT own or host third-party content.</strong></p>
-      <ul style="margin:1rem 0; padding-left:1.5rem;">
-        <li>All videos belong to their respective creators (e.g., Khan Academy, PW, YouTube).</li>
-        <li>We only <strong>link to</strong> or <strong>embed</strong> content legally (via YouTube iframe, official APIs, or open licenses like CC BY-NC-SA).</li>
-        <li>Notes, summaries, simulations, and explanations are <strong>original</strong> and written in our own words.</li>
-        <li>No PDFs, videos, or text are downloaded, re-uploaded, or copied.</li>
-      </ul>
-      <p>This platform is for <strong>educational reference and concept reinforcement only</strong>. We comply with fair use and Indian Copyright Act §52(1)(i) for instructional purposes.</p>
-      <p style="margin-top:1.5rem; font-weight:600;">✅ 100% Legal | ✅ Student-First | ✅ Engineering-Grade</p>
-    </div>
-  </div>
+  <footer>
+    © 2026 EduVerse India • Concept First, Student First
+  </footer>
 
-  <!-- Cloudflare Beacon (safe & legal) -->
-  <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"e440187263364c608909f8a9aa9016b8","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<!-- ================= JAVASCRIPT ================= -->
+<script>
+/* LEVEL SWITCHING */
+document.querySelectorAll('.level-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
 
-  <script>
-    // Level Selector
-    document.querySelectorAll('.level-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const level = btn.dataset.level;
-        document.querySelectorAll('.content').forEach(el => el.style.display = 'none');
-        document.querySelector(`.${level}-content`).style.display = 'block';
-      });
+    document.querySelectorAll('.content').forEach(c => c.style.display = 'none');
+    document.querySelector(`.${btn.dataset.level}-content`).style.display = 'block';
+  });
+});
+
+/* ACCORDION */
+document.querySelectorAll('.accordion-header').forEach(header => {
+  header.addEventListener('click', () => {
+    header.classList.toggle('open');
+    header.nextElementSibling.classList.toggle('open');
+  });
+});
+
+/* MCQ LOGIC */
+document.querySelectorAll('.mcq-options').forEach(mcq => {
+  mcq.querySelectorAll('.mcq-option').forEach(option => {
+    option.addEventListener('click', () => {
+      if (mcq.classList.contains('answered')) return;
+      mcq.classList.add('answered');
+
+      option.classList.add(option.dataset.correct === "true" ? 'correct' : 'incorrect');
     });
+  });
+});
 
-    // Accordion
-    document.querySelectorAll('.accordion-header').forEach(header => {
-      header.addEventListener('click', () => {
-        const content = header.nextElementSibling;
-        content.classList.toggle('open');
-        header.querySelector('span')?.textContent = content.classList.contains('open') ? '▼' : '▶';
-      });
-    });
+/* SIMULATION */
+let ball = document.getElementById('ball');
+let velocity = 0;
+let gravity = 0.6;
+let interval;
 
-    // MCQ Logic
-    document.getElementById('mcq').addEventListener('click', e => {
-      if (e.target.classList.contains('mcq-option')) {
-        document.querySelectorAll('.mcq-option').forEach(opt => {
-          opt.classList.remove('selected', 'correct', 'incorrect');
-        });
-        e.target.classList.add('selected');
-        const isCorrect = e.target.dataset.correct === 'true';
-        document.getElementById('mcq-feedback').innerHTML = 
-          isCorrect 
-            ? '<span style="color:#10b981;">✅ Correct! Inertia (1st Law) keeps you moving forward.</span>'
-            : '<span style="color:#ef4444;">❌ Incorrect — think about inertia!</span>';
-      }
-    });
+document.getElementById('apply-force').onclick = () => {
+  velocity = -12;
+  clearInterval(interval);
+  interval = setInterval(() => {
+    velocity += gravity;
+    ball.style.top = Math.min(160, ball.offsetTop + velocity) + "px";
+  }, 30);
+};
 
-    // Simple Physics Simulation (Ball Drop)
-    const sim = document.getElementById('sim');
-    const ball = document.getElementById('ball');
-    let velocity = 0;
-    let position = 20;
-    let gravity = 0.2;
-    let paused = false;
+document.getElementById('reset-sim').onclick = () => {
+  clearInterval(interval);
+  ball.style.top = "20px";
+  velocity = 0;
+};
+</script>
 
-    sim.addEventListener('click', () => {
-      velocity = -5; // upward "force"
-    });
-
-    function animate() {
-      if (!paused) {
-        velocity += gravity;
-        position += velocity;
-        if (position > sim.clientHeight - 40) {
-          position = sim.clientHeight - 40;
-          velocity *= -0.7; // bounce with damping
-        }
-        ball.style.top = position + 'px';
-      }
-      requestAnimationFrame(animate);
-    }
-    animate();
-
-    // Study Path Generator
-    document.getElementById('generate-path').addEventListener('click', () => {
-      const exam = document.getElementById('exam').value;
-      const time = document.getElementById('time').value;
-      const weak = document.getElementById('weak').value;
-
-      const roadmap = `
-        <div class="roadmap">
-          <h3>🗓️ Your 7-Day Roadmap for <em>${exam}</em></h3>
-          <ul style="padding-left:1.5rem; margin:1rem 0;">
-            <li><strong>Day 1–2:</strong> Revise ${weak} fundamentals (EduVerse notes + Khan videos)</li>
-            <li><strong>Day 3:</strong> Practice 15 MCQs on weak topics</li>
-            <li><strong>Day 4:</strong> Interactive simulation + derivation drills</li>
-            <li><strong>Day 5–6:</strong> Mixed problem sets (Board + ${exam} level)</li>
-            <li><strong>Day 7:</strong> Self-assessment test (timed)</li>
-          </ul>
-          <p>🕒 Daily: ${time} | 📚 Resources: Only legal links & original content</p>
-        </div>
-      `;
-      document.getElementById('roadmap-output').innerHTML = roadmap;
-    });
-
-    // Disclaimer Modal
-    const modal = document.getElementById('disclaimer-modal');
-    document.getElementById('show-disclaimer').onclick = () => modal.style.display = 'flex';
-    document.getElementById('close-modal').onclick = () => modal.style.display = 'none';
-    window.onclick = e => { if (e.target === modal) modal.style.display = 'none'; };
-  </script>
 </body>
 </html>
+<!--BY PARAS DHIMAN-->
