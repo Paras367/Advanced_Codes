@@ -36,6 +36,68 @@
   box-shadow: 0 20px 40px rgba(0,0,0,0.12);
 }
 
+    .card {
+  position: relative;
+  overflow: hidden;
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top left,
+    rgba(59,130,246,0.15),
+    transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.card:hover::after {
+  opacity: 1;
+}
+
+
+header::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.4),
+    transparent
+  );
+  animation: headerShine 6s infinite;
+}
+
+@keyframes headerShine {
+  0% { left: -120%; }
+  50% { left: 120%; }
+  100% { left: 120%; }
+}
+
+button, .btn {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+button:hover, .btn:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 12px 30px rgba(30,58,138,0.4);
+}
+
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 20%,rgba(59,130,246,0.12),transparent 40%),
+    radial-gradient(circle at 80% 80%,rgba(34,211,238,0.12),transparent 40%);
+  z-index: -1;
+}
     .progress-glow {
   height: 12px;
   border-radius: 50px;
@@ -717,6 +779,9 @@
         min-width: 100%;
       }
     }
+
+
+
   </style>
 </head>
 <body>
