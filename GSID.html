@@ -8,43 +8,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🌍 GSID — Global Situation Intelligence Dashboard</title>
-
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
-
-  <!-- Tailwind CSS (via CDN) -->
+  <title>🌍 GSID — Global Intelligence Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace'],
-          },
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
           colors: {
             primary: '#4f46e5',
             secondary: '#10b981',
             danger: '#ef4444',
-            warning: '#f59e0b',
-            glass: 'rgba(255, 255, 255, 0.08)',
+            warning: '#f59e0b'
           }
         }
       }
     }
   </script>
-
-  <!-- Chart.js (for visualizations) -->
-  <script src="https://cdn.jsdelivr.jsdelivr.net/npm/chart.js"></script>
-
-  <!-- React + ReactDOM (via unpkg) -->
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <!-- Babel for JSX (lightweight transform in-browser) -->
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
   <style>
     :root {
       --glass-bg: rgba(255, 255, 255, 0.08);
@@ -56,8 +39,6 @@
       --glass-border: rgba(255, 255, 255, 0.1);
       --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     }
-
-    /* 🪟 Glassmorphism */
     .glass {
       background: var(--glass-bg);
       backdrop-filter: blur(12px);
@@ -65,521 +46,428 @@
       border: 1px solid var(--glass-border);
       box-shadow: var(--glass-shadow);
       border-radius: 16px;
-      overflow: hidden;
     }
-
-    /* 🌐 Interactive SVG Map Styling */
-    .country-path {
-      transition: all 0.2s ease;
-      fill: #4b5563;
-      stroke: #1f2937;
-      stroke-width: 0.5;
-    }
-    .country-path:hover,
-    .country-path.active {
-      fill: #60a5fa;
-      cursor: pointer;
-    }
-
-    /* 🔁 Loader */
     .spinner {
       width: 24px; height: 24px;
-      border: 3px solid #e5e7eb;
+      border: 3px solid #374151;
       border-top: 3px solid #4f46e5;
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* 📰 News card animation */
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    .news-card { animation: fadeInUp 0.6s ease forwards; }
-
     body {
       font-family: 'Inter', sans-serif;
       background: linear-gradient(135deg, #0f172a, #1e293b);
       color: #f1f5f9;
-      min-height: 100vh;
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0;
     }
-
-    /* Scrollbar styling */
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+    .country-flag { width: 28px; height: 20px; object-fit: cover; border-radius: 4px; }
+    .fade-in { animation: fadeIn 0.5s ease forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body class="bg-gray-900 text-gray-100">
-  <div id="root"></div>
+  <div id="app" class="min-h-screen p-4 md:p-6"></div>
 
-  <script type="text/babel">
-    // 🔧 Utility: Cache with TTL
+  <script>
+    // $$###$$
+    const GNEWS_API_KEY = '2c54a1cba6fec4322a101abd10e3b514';
+    // %%**%%
+    
+    // Cache
     const cache = new Map();
-    const CACHE_TTL = 5 * 60 * 1000; // 5 min
+    const CACHE_TTL = 5 * 60 * 1000;
 
-    const cachedFetch = async (url, ttl = CACHE_TTL) => {
+    async function cachedFetch(url, options = {}) {
       const now = Date.now();
       if (cache.has(url)) {
         const { data, timestamp } = cache.get(url);
-        if (now - timestamp < ttl) return data;
+        if (now - timestamp < CACHE_TTL) return data;
       }
       try {
-        const res = await fetch(url);
+        const res = await fetch(url, options);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         cache.set(url, { data, timestamp: now });
         return data;
       } catch (err) {
-        console.warn('Fetch failed (using stale cache if available):', err);
         if (cache.has(url)) return cache.get(url).data;
         throw err;
       }
-    };
+    }
 
-    // 🗺️ Minimal SVG World Map (TopoJSON simplified → inline SVG paths for key countries)
-    // For brevity: only 5 countries shown. In real app: use full world SVG or embed via <img> + fetch.
-    const WorldMap = ({ onSelectCountry }) => (
-      <svg viewBox="0 0 1000 500" className="w-full h-96 cursor-pointer" onClick={(e) => {
-        const id = e.target.id || e.target.parentElement?.id;
-        if (id && id.startsWith('country-')) {
-          const code = id.split('-')[1];
-          onSelectCountry(code);
-        }
-      }}>
-        {/* Simplified country paths (ISO2 codes) */}
-        <path id="country-US" className="country-path" d="M200,150 L220,160 L215,175 L195,170 Z" />
-        <path id="country-IN" className="country-path" d="M580,200 L600,210 L590,230 L570,220 Z" />
-        <path id="country-BR" className="country-path" d="M300,350 L320,360 L310,380 L290,370 Z" />
-        <path id="country-DE" className="country-path" d="M480,180 L495,185 L490,195 L475,190 Z" />
-        <path id="country-AU" className="country-path" d="M750,320 L770,330 L760,350 L740,340 Z" />
-        <text x="205" y="145" className="text-xs fill-gray-400">USA</text>
-        <text x="585" y="195" className="text-xs fill-gray-400">IND</text>
-        <text x="305" y="345" className="text-xs fill-gray-400">BRA</text>
-        <text x="485" y="175" className="text-xs fill-gray-400">GER</text>
-        <text x="755" y="315" className="text-xs fill-gray-400">AUS</text>
-      </svg>
-    );
-
-    // 📊 Reusable Chart Component
-    const ChartCard = ({ title, type, data, options }) => {
-      const chartRef = React.useRef();
-      const canvasRef = React.useRef();
-
-      React.useEffect(() => {
-        if (chartRef.current) chartRef.current.destroy();
-        const ctx = canvasRef.current.getContext('2d');
-        chartRef.current = new Chart(ctx, {
-          type: type || 'line',
-          data: data,
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            ...options
-          }
-        });
-        return () => chartRef.current?.destroy();
-      }, [data, type]);
-
-      return (
-        <div className="glass p-4 h-64">
-          <h3 className="font-semibold mb-2">{title}</h3>
-          <canvas ref={canvasRef} className="w-full h-full"></canvas>
+    //  Build UI
+    const app = document.getElementById('app');
+    app.innerHTML = `
+      <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <div>
+          <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">🌐 GSID Dashboard</h1>
+          <p class="text-gray-400 text-sm">Real-time global intelligence — weather, quakes, air, news & time</p>
         </div>
-      );
-    };
+        <button id="themeToggle" class="px-4 py-2 glass rounded-lg flex items-center gap-2">🌙 Dark</button>
+      </header>
 
-    // 🌐 Main Dashboard
-    const Dashboard = () => {
-      const [selectedCountry, setSelectedCountry] = React.useState('US');
-      const [countryData, setCountryData] = React.useState(null);
-      const [weather, setWeather] = React.useState(null);
-      const [airQuality, setAirQuality] = React.useState(null);
-      const [earthquakes, setEarthquakes] = React.useState([]);
-      const [news, setNews] = React.useState([]);
-      const [clocks, setClocks] = React.useState({});
-      const [loading, setLoading] = React.useState({ country: true, weather: true, eq: true, news: true });
-      const [darkMode, setDarkMode] = React.useState(true);
-      const [error, setError] = React.useState(null);
+      <div id="errorBanner" class="hidden bg-red-900/30 border-l-4 border-red-500 p-4 mb-6">
+        <div class="flex items-center">
+          <span class="mr-2">⚠️</span>
+          <span id="errorMessage"></span>
+        </div>
+      </div>
 
-      // 🔄 Toggle theme
-      React.useEffect(() => {
-        if (darkMode) document.documentElement.classList.add('dark');
-        else document.documentElement.classList.remove('dark');
-      }, [darkMode]);
+      <!-- Map & Country Panel -->
+      <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <div class="lg:col-span-2 glass p-5">
+          <h2 class="font-semibold mb-4 flex items-center">
+            <span>🌍 World Intelligence Map</span>
+            <span class="ml-2 text-xs bg-blue-900/20 px-2 py-0.5 rounded">Click a country</span>
+          </h2>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+            ${[
+              { code: 'US', name: 'United States', flag: '🇺🇸' },
+              { code: 'IN', name: 'India', flag: '🇮🇳' },
+              { code: 'BR', name: 'Brazil', flag: '🇧🇷' },
+              { code: 'DE', name: 'Germany', flag: '🇩🇪' },
+              { code: 'AU', name: 'Australia', flag: '🇦🇺' },
+              { code: 'JP', name: 'Japan', flag: '🇯🇵' },
+              { code: 'ZA', name: 'South Africa', flag: '🇿🇦' },
+              { code: 'CA', name: 'Canada', flag: '🇨🇦' },
+              { code: 'FR', name: 'France', flag: '🇫🇷' },
+              { code: 'MX', name: 'Mexico', flag: '🇲🇽' }
+            ].map(c => `
+              <button class="country-btn bg-gray-800 hover:bg-gray-700 p-3 rounded-lg flex flex-col items-center gap-1 text-sm transition ${c.code === 'US' ? 'ring-2 ring-blue-500' : ''}" data-code="${c.code}">
+                <span class="text-lg">${c.flag}</span>
+                <span>${c.code}</span>
+              </button>
+            `).join('')}
+          </div>
+          <p class="text-xs text-gray-500 mt-4 text-center">Tip: More countries can be added easily.</p>
+        </div>
 
-      // 🧠 Fetch country + dependent data
-      const fetchCountryData = async (code) => {
-        setLoading(prev => ({ ...prev, country: true }));
-        try {
-          // 1. Country data
-          const countryRes = await cachedFetch(`https://restcountries.com/v3.1/alpha/${code}`);
-          const country = countryRes[0];
-          setCountryData(country);
-
-          const lat = country.latlng[0];
-          const lng = country.latlng[1];
-          const tz = country.timezones[0] || 'UTC';
-
-          // 2. Weather (Open-Meteo)
-          const weatherRes = await cachedFetch(
-            `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current_weather=true&hourly=temperature_2m,relativehumidity_2m,wind_speed_10m&forecast_days=1`
-          );
-          setWeather(weatherRes.current_weather);
-
-          // 3. Air Quality
-          const aqRes = await cachedFetch(
-            `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lng}&hourly=pm10,pm2_5,us_aqi`
-          );
-          setAirQuality(aqRes.hourly);
-
-          // 4. Time (WorldTimeAPI)
-          const timeRes = await cachedFetch(`https://worldtimeapi.org/api/timezone/${tz.replace('/', '_')}`);
-          setClocks(prev => ({ ...prev, [code]: timeRes.datetime }));
-
-          setLoading(prev => ({ ...prev, country: false, weather: false }));
-        } catch (err) {
-          setError(`Country data load failed: ${err.message}`);
-          setLoading(prev => ({ ...prev, country: false }));
-        }
-      };
-
-      // 🌍 Fetch global data (earthquakes, news)
-      React.useEffect(() => {
-        const fetchData = async () => {
-          // Earthquakes (USGS)
-          setLoading(prev => ({ ...prev, eq: true }));
-          try {
-            const eqRes = await cachedFetch(
-              'https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=' +
-              new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] +
-              '&minmagnitude=4.5'
-            );
-            setEarthquakes(eqRes.features);
-          } catch (err) {
-            console.warn('EQ fetch failed:', err);
-          } finally {
-            setLoading(prev => ({ ...prev, eq: false }));
-          }
-
-          // News (GNews fallback → Reddit JSON)
-          setLoading(prev => ({ ...prev, news: true }));
-          try {
-         
-             const newsRes = await cachedFetch(`https://gnews.io/api/v4/top-headlines?token=2c54a1cba6fec4322a101abd10e3b514&lang=en&max=6`);
-             setNews(newsRes.articles || []);
-
-            // Fallback: r/worldnews (no key)
-            const redditRes = await cachedFetch('https://www.reddit.com/r/worldnews/.json?limit=6');
-            const articles = redditRes.data.children.map(c => ({
-              title: c.data.title,
-              description: c.data.selftext || '',
-              url: c.data.url,
-              source: { name: 'Reddit /r/worldnews' },
-              publishedAt: new Date(c.data.created_utc * 1000).toISOString()
-            }));
-            setNews(articles);
-          } catch (err) {
-            console.warn('News fetch failed:', err);
-          } finally {
-            setLoading(prev => ({ ...prev, news: false }));
-          }
-        };
-
-        fetchData();
-        const interval = setInterval(fetchData, 10 * 60 * 1000); // refresh every 10 min
-        return () => clearInterval(interval);
-      }, []);
-
-      // 🇺🇸 Initial load
-      React.useEffect(() => {
-        fetchCountryData(selectedCountry);
-      }, [selectedCountry]);
-
-      // 🕒 Live clocks
-      React.useEffect(() => {
-        const interval = setInterval(() => {
-          const now = new Date();
-          const newClocks = {};
-          if (countryData?.timezones) {
-            countryData.timezones.slice(0, 3).forEach(tz => {
-              // Simulate: real app would fetch via WorldTimeAPI per zone
-              const offsetMatch = tz.match(/UTC([+-]\d+(:\d+)?)?/);
-              let offset = 0;
-              if (offsetMatch && offsetMatch[1]) {
-                const [h, m = '00'] = offsetMatch[1].split(':');
-                offset = parseInt(h) * 60 + (h.startsWith('-') ? -1 : 1) * parseInt(m);
-              }
-              const local = new Date(now.getTime() + offset * 60 * 1000);
-              newClocks[tz] = local.toLocaleTimeString('en-US', { hour12: false });
-            });
-          }
-          setClocks(prev => ({ ...prev, ...newClocks }));
-        }, 1000);
-        return () => clearInterval(interval);
-      }, [countryData]);
-
-      // 📈 AQI Chart Data
-      const aqiData = React.useMemo(() => {
-        if (!airQuality?.us_aqi) return null;
-        const labels = airQuality.time.slice(0, 12).map(t => new Date(t).getHours() + ':00');
-        const aqi = airQuality.us_aqi.slice(0, 12);
-        return {
-          labels,
-          datasets: [{
-            label: 'US AQI',
-            data: aqi,
-            borderColor: aqi.map(v => 
-              v < 50 ? '#10b981' :
-              v < 100 ? '#fbbf24' :
-              v < 150 ? '#f97316' :
-              v < 200 ? '#ef4444' : '#7c2d12'
-            ),
-            borderWidth: 2,
-            fill: false,
-            tension: 0.3
-          }]
-        };
-      }, [airQuality]);
-
-      // 🌍 EQ Magnitude Chart
-      const eqData = React.useMemo(() => {
-        if (earthquakes.length === 0) return null;
-        const mags = earthquakes.slice(0, 10).map(eq => eq.properties.mag);
-        const places = earthquakes.slice(0, 10).map(eq => 
-          eq.properties.place.split(',')[0].substring(0,12)
-        );
-        return {
-          labels: places,
-          datasets: [{
-            label: 'Magnitude',
-            data: mags,
-            backgroundColor: mags.map(m => 
-              m < 5 ? '#3b82f6' : m < 6 ? '#10b981' : m < 7 ? '#f59e0b' : '#ef4444'
-            )
-          }]
-        };
-      }, [earthquakes]);
-
-      // 🔴 AQI Health Warning
-      const getAQIInfo = (aqi) => {
-        if (!aqi) return { level: '—', color: 'gray', desc: 'No data' };
-        const val = Array.isArray(aqi) ? Math.max(...aqi.slice(-3)) : aqi;
-        if (val <= 50) return { level: 'Good', color: 'bg-green-500', desc: 'Air quality is satisfactory.' };
-        if (val <= 100) return { level: 'Moderate', color: 'bg-yellow-500', desc: 'Acceptable for most.' };
-        if (val <= 150) return { level: 'Unhealthy (SG)', color: 'bg-orange-500', desc: 'Sensitive groups affected.' };
-        if (val <= 200) return { level: 'Unhealthy', color: 'bg-red-500', desc: 'Everyone may be affected.' };
-        return { level: 'Hazardous', color: 'bg-gray-800 border-2 border-red-500', desc: 'Health alert: everyone affected.' };
-      };
-
-      const aqiStatus = getAQIInfo(airQuality?.us_aqi);
-
-      return (
-        <div className="min-h-screen p-4 md:p-6">
-          {/* 🎛️ Header */}
-          <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <div id="countryPanel" class="glass p-5 hidden">
+          <div class="flex items-start gap-3 mb-4">
+            <img id="flagImg" src="" alt="Flag" class="w-16 h-12 object-cover rounded shadow">
             <div>
-              <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
-                🌐 GSID Dashboard
-              </h1>
-              <p className="text-gray-400 text-sm">Real-time global intelligence • All APIs free & public</p>
+              <h2 id="countryName" class="text-xl font-bold"></h2>
+              <p id="countrySub" class="text-gray-400"></p>
             </div>
-            <button 
-              onClick={() => setDarkMode(!darkMode)}
-              className="px-4 py-2 glass rounded-lg flex items-center gap-2"
-            >
-              {darkMode ? '☀️ Light' : '🌙 Dark'}
-            </button>
-          </header>
-
-          {error && (
-            <div className="bg-red-900/30 border border-red-700 rounded-lg p-4 mb-6 flex items-center">
-              <span className="mr-2">⚠️</span> {error}
-            </div>
-          )}
-
-          {/* 🗺️ Map + Country Selector */}
-          <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-            <div className="lg:col-span-2 glass p-4">
-              <h2 className="font-semibold mb-3">🌍 Interactive World Map</h2>
-              <WorldMap onSelectCountry={setSelectedCountry} />
-              <p className="text-sm text-gray-400 mt-2">
-                Click a country (e.g., US, IN, BR) to load real-time intelligence.
-              </p>
-            </div>
-
-            {countryData && (
-              <div className="glass p-5">
-                <div className="flex items-start gap-3 mb-4">
-                  <img 
-                    src={countryData.flags.svg} 
-                    alt={countryData.name.common} 
-                    className="w-16 h-12 object-cover rounded"
-                    onError={(e) => e.target.src = 'https://via.placeholder.com/64x48/4f46e5/FFFFFF?text=FLAG'}
-                  />
-                  <div>
-                    <h2 className="text-xl font-bold">{countryData.name.common}</h2>
-                    <p className="text-gray-400">{countryData.region}, {countryData.subregion}</p>
-                  </div>
-                </div>
-                <div className="space-y-2 text-sm">
-                  <div><span className="text-gray-400">Capital:</span> {countryData.capital?.[0] || '—'}</div>
-                  <div><span className="text-gray-400">Population:</span> {new Intl.NumberFormat().format(countryData.population)}</div>
-                  <div><span className="text-gray-400">Currency:</span> {Object.values(countryData.currencies || {})[0]?.name || '—'}</div>
-                  <div><span className="text-gray-400">Timezone:</span> {countryData.timezones?.[0] || 'UTC'}</div>
-                </div>
-              </div>
-            )}
-          </section>
-
-          {/* 📊 Data Grid */}
-          <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-            {/* 🌤 Weather */}
-            <div className="glass p-5">
-              <h3 className="font-semibold mb-3">🌦 Weather</h3>
-              {loading.weather ? (
-                <div className="flex justify-center items-center h-24"><div className="spinner"></div></div>
-              ) : weather ? (
-                <div className="space-y-2">
-                  <div className="text-3xl font-bold">{Math.round(weather.temperature)}°C</div>
-                  <div>Wind: {weather.windspeed} km/h</div>
-                  <div>Clouds: {weather.cloudcover}%</div>
-                </div>
-              ) : <p className="text-gray-500">—</p>}
-            </div>
-
-            {/* 🌬 Air Quality */}
-            <div className="glass p-5">
-              <h3 className="font-semibold mb-3">🌬 Air Quality</h3>
-              {loading.weather ? (
-                <div className="flex justify-center items-center h-24"><div className="spinner"></div></div>
-              ) : airQuality?.us_aqi ? (
-                <div>
-                  <div className={`px-3 py-1 rounded inline-block text-xs font-bold ${aqiStatus.color} text-white`}>
-                    {aqiStatus.level} (AQI {Math.max(...airQuality.us_aqi.slice(-3))})
-                  </div>
-                  <p className="text-sm mt-2 text-gray-400">{aqiStatus.desc}</p>
-                </div>
-              ) : <p className="text-gray-500">—</p>}
-            </div>
-
-            {/* 🕒 Live Clocks */}
-            <div className="glass p-5">
-              <h3 className="font-semibold mb-3">⏰ Local Time</h3>
-              {countryData?.timezones ? (
-                <div className="space-y-1 text-sm">
-                  {countryData.timezones.slice(0, 3).map(tz => (
-                    <div key={tz} className="flex justify-between">
-                      <span className="text-gray-400">{tz.split('/')[1] || tz}</span>
-                      <span>{clocks[tz] || '—'}</span>
-                    </div>
-                  ))}
-                </div>
-              ) : <p className="text-gray-500">Select a country</p>}
-            </div>
-
-            {/* 🌍 Earthquakes (count) */}
-            <div className="glass p-5">
-              <h3 className="font-semibold mb-3">🌍 Recent EQs</h3>
-              {loading.eq ? (
-                <div className="flex justify-center items-center h-24"><div className="spinner"></div></div>
-              ) : (
-                <div>
-                  <div className="text-3xl font-bold text-red-400">{earthquakes.length}</div>
-                  <p className="text-sm text-gray-400">≥4.5M (last 7 days)</p>
-                  {earthquakes.length > 0 && (
-                    <p className="text-xs mt-1">
-                      Latest: {earthquakes[0]?.properties?.place} • {earthquakes[0]?.properties?.mag}M
-                    </p>
-                  )}
-                </div>
-              )}
-            </div>
-          </section>
-
-          {/* 📈 Charts */}
-          <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            {aqiData && (
-              <ChartCard 
-                title="Air Quality (Next 12h)" 
-                type="line" 
-                data={aqiData}
-                options={{ 
-                  scales: { 
-                    y: { beginAtZero: true, title: { text: 'US AQI', display: true } },
-                    x: { title: { text: 'Time', display: true } }
-                  }
-                }} 
-              />
-            )}
-            {eqData && (
-              <ChartCard 
-                title="Recent Earthquake Magnitudes" 
-                type="bar" 
-                data={eqData}
-                options={{ 
-                  indexAxis: 'y',
-                  scales: { 
-                    x: { beginAtZero: true, title: { text: 'Magnitude', display: true } }
-                  }
-                }} 
-              />
-            )}
-          </section>
-
-          {/* 📰 News Feed */}
-          <section className="glass p-5">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-semibold">📰 Global News Feed</h3>
-              <span className="text-xs bg-blue-900/30 px-2 py-1 rounded">r/worldnews</span>
-            </div>
-            {loading.news ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[1,2,3,4].map(i => (
-                  <div key={i} className="h-20 bg-gray-800/30 animate-pulse rounded"></div>
-                ))}
-              </div>
-            ) : news.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {news.slice(0,4).map((item, i) => (
-                  <a 
-                    key={i} 
-                    href={item.url} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="news-card bg-gray-800/20 p-3 rounded-lg hover:bg-gray-700/30 transition group"
-                  >
-                    <h4 className="font-medium group-hover:text-blue-300 line-clamp-2">{item.title}</h4>
-                    <p className="text-xs text-gray-400 mt-1">{item.source.name} • {new Date(item.publishedAt).toLocaleDateString()}</p>
-                  </a>
-                ))}
-              </div>
-            ) : <p className="text-gray-500">No news available.</p>}
-          </section>
-
-          {/* 📜 Footer */}
-          <footer className="mt-12 text-center text-gray-500 text-sm">
-            <p>GSID ● Built with ❤️ By - PARAS DHIMAN ● ©️SoftwareLabs
-             
-          </p>
-            <p className="mt-1 text-xs">
-              APIs: REST Countries, Open-Meteo, USGS, WorldTimeAPI, Reddit
-            </p>
-          </footer>
+          </div>
+          <div id="countryDetails" class="space-y-2 text-sm grid grid-cols-2 gap-y-2"></div>
         </div>
-      );
-    };
+      </section>
 
-    const App = () => (
-      <React.StrictMode>
-        <Dashboard />
-      </React.StrictMode>
-    );
+      <!-- Core Metrics -->
+      <section id="coreMetrics" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        <div class="glass p-5"><h3 class="font-semibold mb-3">🌦 Weather</h3><div id="weatherCard" class="h-28 flex items-center justify-center">Select a country</div></div>
+        <div class="glass p-5"><h3 class="font-semibold mb-3">🌬 Air Quality</h3><div id="aqiCard" class="h-28 flex items-center justify-center">Select a country</div></div>
+        <div class="glass p-5"><h3 class="font-semibold mb-3">⏰ Local Time</h3><div id="clockCard" class="space-y-1 text-sm h-28 flex flex-col justify-center">Select a country</div></div>
+        <div class="glass p-5"><h3 class="font-semibold mb-3">🌍 Earthquakes</h3><div id="eqCard" class="h-28 flex flex-col items-center justify-center"><div class="spinner"></div></div></div>
+      </section>
 
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
+      <!-- Charts -->
+      <section id="chartSection" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 hidden">
+        <div class="glass p-4 h-72">
+          <h3 class="font-semibold mb-2">🌬 Air Quality Forecast (12h)</h3>
+          <canvas id="aqiChart" class="w-full h-full"></canvas>
+        </div>
+        <div class="glass p-4 h-72">
+          <h3 class="font-semibold mb-2">🌍 Recent Quakes (M ≥ 4.5)</h3>
+          <canvas id="eqChart" class="w-full h-full"></canvas>
+        </div>
+      </section>
+
+      <!-- News -->
+      <section class="glass p-5">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="font-semibold">📰 Global News Feed</h3>
+          <span class="text-xs bg-blue-500 text-white px-2 py-1 rounded">GNews • Live</span>
+        </div>
+        <div id="newsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          ${[...Array(4)].map(() => `
+            <div class="bg-gray-800/20 p-3 rounded-lg animate-pulse">
+              <div class="h-4 bg-gray-700 rounded w-3/4 mb-2"></div>
+              <div class="h-3 bg-gray-700 rounded w-1/2"></div>
+            </div>
+          `).join('')}
+        </div>
+      </section>
+
+      <footer class="mt-10 text-center text-gray-500 text-sm border-t border-gray-800 pt-6">
+        <p>GSID — Global Situation Intelligence Dashboard • All data from free public APIs</p>
+        <p class="mt-1 text-xs">REST Countries • Open-Meteo • USGS • WorldTimeAPI • GNews</p>
+      </footer>
+    `;
+
+    // 🎨 Theme Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    let isDark = true;
+    themeToggle.addEventListener('click', () => {
+      isDark = !isDark;
+      document.documentElement.classList.toggle('dark', isDark);
+      themeToggle.innerHTML = isDark ? '🌙 Dark' : '☀️ Light';
+    });
+
+    // 📊 Charts
+    let aqiChart = null;
+    let eqChart = null;
+
+    // 🔄 Load country data
+    async function loadCountry(code) {
+      // Update active button
+      document.querySelectorAll('.country-btn').forEach(btn => btn.classList.remove('ring-2', 'ring-blue-500'));
+      const activeBtn = document.querySelector(`.country-btn[data-code="${code}"]`);
+      if (activeBtn) activeBtn.classList.add('ring-2', 'ring-blue-500');
+
+      const countryPanel = document.getElementById('countryPanel');
+      const weatherCard = document.getElementById('weatherCard');
+      const aqiCard = document.getElementById('aqiCard');
+      const clockCard = document.getElementById('clockCard');
+
+      // Show loading
+      weatherCard.innerHTML = '<div class="spinner"></div>';
+      aqiCard.innerHTML = '<div class="spinner"></div>';
+      clockCard.innerHTML = 'Loading...';
+      countryPanel.classList.add('hidden');
+      document.getElementById('errorBanner').classList.add('hidden');
+
+      try {
+        // ✅ FIXED: Use /v3.1/alpha/{code} — avoids 404
+        const countryData = await cachedFetch(`https://restcountries.com/v3.1/alpha/${code}`);
+        const country = countryData[0];
+
+        // 🏁 Country Panel
+        document.getElementById('flagImg').src = country.flags.svg || `https://flagcdn.com/w20/${code.toLowerCase()}.png`;
+        document.getElementById('countryName').textContent = country.name.common;
+        document.getElementById('countrySub').textContent = `${country.region} • ${country.subregion}`;
+        
+        const details = [
+          { k: 'Capital', v: country.capital?.[0] || '—' },
+          { k: 'Population', v: new Intl.NumberFormat().format(country.population) },
+          { k: 'Area', v: `${country.area?.toLocaleString() || '—'} km²` },
+          { k: 'Languages', v: Object.values(country.languages || {}).join(', ') || '—' },
+          { k: 'Currency', v: Object.values(country.currencies || {})[0]?.name || '—' },
+          { k: 'Timezone', v: country.timezones?.[0] || 'UTC' }
+        ];
+        document.getElementById('countryDetails').innerHTML = details.map(d => `
+          <div class="col-span-1"><span class="text-gray-400">${d.k}:</span></div>
+          <div class="col-span-1 font-medium">${d.v}</div>
+        `).join('');
+
+        countryPanel.classList.remove('hidden');
+
+        const lat = country.latlng[0];
+        const lng = country.latlng[1];
+        const tz = country.timezones?.[0] || 'UTC';
+
+        // 🌤 Weather (Open-Meteo)
+        const weather = await cachedFetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current_weather=true`
+        );
+        const w = weather.current_weather;
+        weatherCard.innerHTML = `
+          <div class="text-3xl font-bold">${Math.round(w.temperature)}°C</div>
+          <div class="text-sm mt-1">☁️ ${w.weathercode} • 💨 ${w.windspeed} km/h</div>
+        `;
+
+        // 🌬 Air Quality
+        const aqiData = await cachedFetch(
+          `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lng}&hourly=us_aqi&forecast_days=1`
+        );
+        const aqiVals = aqiData.hourly?.us_aqi || [];
+        const latest = aqiVals.length ? Math.max(...aqiVals.slice(-3)) : 0;
+
+        let level = '—', color = 'bg-gray-500', desc = 'No data';
+        if (latest > 0) {
+          if (latest <= 50) { level = 'Good'; color = 'bg-green-500'; desc = 'Air quality is satisfactory'; }
+          else if (latest <= 100) { level = 'Moderate'; color = 'bg-yellow-500'; desc = 'Acceptable for most'; }
+          else if (latest <= 150) { level = 'Unhealthy (SG)'; color = 'bg-orange-500'; }
+          else if (latest <= 200) { level = 'Unhealthy'; color = 'bg-red-500'; }
+          else { level = 'Hazardous'; color = 'bg-gray-800 border border-red-500'; }
+        }
+
+        aqiCard.innerHTML = `
+          <div class="flex items-center gap-2 mb-1">
+            <span class="px-2.5 py-1 text-xs font-bold ${color} text-white rounded">${level}</span>
+            <span class="text-lg font-bold">AQI ${latest || '—'}</span>
+          </div>
+          <p class="text-xs text-gray-400">${latest > 0 ? desc : '—'}</p>
+        `;
+
+        // 📈 AQI Chart
+        if (aqiVals.length >= 6 && window.Chart) {
+          const ctx = document.getElementById('aqiChart').getContext('2d');
+          if (aqiChart) aqiChart.destroy();
+          
+          const labels = aqiData.hourly.time.slice(0, 12).map(t => new Date(t).getHours() + ':00');
+          const data = aqiData.hourly.us_aqi.slice(0, 12);
+          
+          aqiChart = new Chart(ctx, {
+            type: 'line',
+             {
+              labels,
+              datasets: [{
+                label: 'US AQI',
+                 data,
+                borderColor: data.map(v => 
+                  v <= 50 ? '#10b981' : v <= 100 ? '#fbbf24' : v <= 150 ? '#f97316' : '#ef4444'
+                ),
+                borderWidth: 3,
+                fill: false,
+                tension: 0.3,
+                pointRadius: 0,
+                pointHoverRadius: 4
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                y: { 
+                  beginAtZero: true,
+                  ticks: { font: { size: 10 } }
+                },
+                x: { 
+                  ticks: { font: { size: 9 } }
+                }
+              }
+            }
+          });
+          document.getElementById('chartSection').classList.remove('hidden');
+        }
+
+        // ⏰ Live Clock (simulated — real: use WorldTimeAPI)
+        const updateClock = () => {
+          const now = new Date();
+          // Simulate offset: crude but works for demo
+          const offset = tz.includes('+') ? parseFloat(tz.split('+')[1]) : 
+                        tz.includes('-') ? -parseFloat(tz.split('-')[1]) : 0;
+          const localTime = new Date(now.getTime() + offset * 3600 * 1000);
+          clockCard.innerHTML = `
+            <div class="text-2xl font-mono font-bold">${localTime.toLocaleTimeString('en-US', { hour12: false })}</div>
+            <div class="text-sm text-gray-400 mt-1">${tz}</div>
+          `;
+        };
+        updateClock();
+        setInterval(updateClock, 1000);
+
+      } catch (err) {
+        console.error(`Country load error (${code}):`, err);
+        const msg = err.message.includes('404') 
+          ? `Country code "${code}" not found. Try another.` 
+          : `Failed to load ${code}: ${err.message || 'Network error'}`;
+        showError(msg);
+      }
+    }
+
+    // 🌍 Global Data (EQ + News)
+    async function loadGlobalData() {
+      try {
+        // 🌍 Earthquakes (USGS)
+        const start = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+        const eqData = await cachedFetch(
+          `https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=${start}&minmagnitude=4.5`
+        );
+        const quakes = eqData.features || [];
+        document.getElementById('eqCard').innerHTML = `
+          <div class="text-3xl font-bold text-red-400">${quakes.length}</div>
+          <p class="text-sm text-gray-400 mt-1">≥4.5M (last 7 days)</p>
+          ${quakes.length ? `<p class="text-xs mt-1 truncate">${quakes[0]?.properties?.place || ''}</p>` : ''}
+        `;
+
+        // 📈 EQ Chart
+        if (quakes.length >= 3 && window.Chart) {
+          const top10 = quakes.slice(0, 10);
+          const mags = top10.map(q => q.properties.mag);
+          const places = top10.map(q => q.properties.place.split(',')[0].substring(0, 12));
+          
+          const ctx = document.getElementById('eqChart').getContext('2d');
+          if (eqChart) eqChart.destroy();
+          
+          eqChart = new Chart(ctx, {
+            type: 'bar',
+             {
+              labels: places,
+              datasets: [{
+                label: 'Magnitude',
+                 mags,
+                backgroundColor: mags.map(m => 
+                  m < 5 ? '#3b82f6' : m < 6 ? '#10b981' : m < 7 ? '#f59e0b' : '#ef4444'
+                ),
+                borderColor: '#0f172a',
+                borderWidth: 1
+              }]
+            },
+            options: {
+              indexAxis: 'y',
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                x: { 
+                  beginAtZero: true,
+                  max: Math.ceil(Math.max(...mags)) + 0.5,
+                  ticks: { font: { size: 10 } }
+                },
+                y: { 
+                  ticks: { font: { size: 9 } }
+                }
+              }
+            }
+          });
+          document.getElementById('chartSection').classList.remove('hidden');
+        }
+
+        // 📰 News — GNews with YOUR KEY
+        const newsData = await cachedFetch(
+          `https://gnews.io/api/v4/top-headlines?token=${GNEWS_API_KEY}&lang=en&country=us&max=4`
+        );
+        const articles = newsData.articles || [];
+        const newsHTML = articles.map(a => `
+          <a href="${a.url}" target="_blank" rel="noopener noreferrer" class="news-item bg-gray-800/20 p-3 rounded-lg hover:bg-gray-700/30 transition group fade-in">
+            <h4 class="font-medium line-clamp-2 group-hover:text-blue-300">${a.title}</h4>
+            <p class="text-xs text-gray-400 mt-1">${a.source.name} • ${new Date(a.publishedAt).toLocaleDateString()}</p>
+          </a>
+        `).join('');
+        
+        document.getElementById('newsGrid').innerHTML = newsHTML || `
+          <p class="text-amber-400 col-span-2 text-center py-4">⚠️ No news. Check API key.</p>
+        `;
+
+      } catch (err) {
+        console.warn('Global data error:', err);
+        document.getElementById('eqCard').innerHTML = '<span class="text-gray-500">—</span>';
+        document.getElementById('newsGrid').innerHTML = `
+          <p class="text-red-400 col-span-2 text-center py-4">⚠️ GNews Error: ${err.message || 'Invalid key?'}</p>
+        `;
+      }
+    }
+
+    // 🚨 Error Banner
+    function showError(message) {
+      document.getElementById('errorMessage').textContent = message;
+      document.getElementById('errorBanner').classList.remove('hidden');
+      setTimeout(() => document.getElementById('errorBanner').classList.add('hidden'), 8000);
+    }
+
+    // 🚀 Initialize
+    document.querySelectorAll('.country-btn').forEach(btn => {
+      btn.addEventListener('click', () => loadCountry(btn.dataset.code));
+    });
+
+    // Start with USA
+    loadCountry('US');
+    loadGlobalData();
+    setInterval(loadGlobalData, 10 * 60 * 1000); // refresh every 10 min
+
+    // Auto-hide spinner after initial load (fallback)
+    setTimeout(() => {
+      const spinners = document.querySelectorAll('.spinner');
+      spinners.forEach(s => {
+        if (s.parentElement && s.parentElement.textContent === '') {
+          s.parentElement.innerHTML = '<span class="text-gray-500">—</span>';
+        }
+      });
+    }, 5000);
   </script>
 </body>
 </html>
