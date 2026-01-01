@@ -1,18 +1,12 @@
-<!-- BY - PARAS DHIMAN -->
-<!-- MIT LICENSE ● Do Not Copy -->
-<!-- SOFTWARELABS -->
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🌍 GSID — Global Intelligence Dashboard</title>
-  <!-- ✅ Google Fonts (fixed URL) -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
   <style>
-    /* 🎨 Minimal CSS — replaces Tailwind */
     :root {
       --bg: #0f172a;
       --bg2: #1e293b;
@@ -21,100 +15,94 @@
       --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
       --text: #f1f5f9;
       --text2: #9ca3af;
-      --primary: #4f46e5;
-      --success: #10b981;
-      --warning: #f59e0b;
-      --danger: #ef4444;
     }
-    .dark { --bg: #0f172a; --bg2: #1e293b; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      margin: 0;
-      padding: 0;
       background: linear-gradient(135deg, var(--bg), var(--bg2));
       color: var(--text);
       font-family: 'Inter', sans-serif;
       min-height: 100vh;
+      padding: 1rem;
     }
-    .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 1rem; }
+    .container { max-width: 1200px; margin: 0 auto; }
     .glass {
       background: var(--glass-bg);
       backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
       border: 1px solid var(--glass-border);
       box-shadow: var(--glass-shadow);
       border-radius: 16px;
       padding: 1.25rem;
     }
     .grid { display: grid; gap: 1.5rem; }
-    .grid-cols-1 { grid-template-columns: 1fr; }
-    @media (min-width: 768px) { .md\:grid-cols-2 { grid-template-columns: 1fr 1fr; } }
-    @media (min-width: 1024px) { .lg\:grid-cols-3 { grid-template-columns: 2fr 1fr; } .lg\:grid-cols-4 { grid-template-columns: repeat(4, 1fr); } }
+    .grid-1 { grid-template-columns: 1fr; }
+    .grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+    @media (min-width: 1024px) { 
+      .lg-grid-3 { grid-template-columns: 2fr 1fr; }
+    }
     .flex { display: flex; }
     .items-center { align-items: center; }
     .justify-between { justify-content: space-between; }
+    .flex-col { flex-direction: column; }
     .gap-2 { gap: 0.5rem; }
     .gap-3 { gap: 0.75rem; }
     .gap-4 { gap: 1rem; }
-    .flex-col { flex-direction: column; }
     .text-center { text-align: center; }
     .font-bold { font-weight: 700; }
     .font-semibold { font-weight: 600; }
     .text-sm { font-size: 0.875rem; }
+    .text-xs { font-size: 0.75rem; }
     .text-lg { font-size: 1.125rem; }
     .text-xl { font-size: 1.25rem; }
     .text-2xl { font-size: 1.5rem; }
     .text-3xl { font-size: 1.875rem; }
     .mb-2 { margin-bottom: 0.5rem; }
     .mb-4 { margin-bottom: 1rem; }
+    .mb-6 { margin-bottom: 1.5rem; }
+    .mt-1 { margin-top: 0.25rem; }
     .mt-2 { margin-top: 0.5rem; }
     .mt-4 { margin-top: 1rem; }
+    .mt-10 { margin-top: 2.5rem; }
     .p-3 { padding: 0.75rem; }
     .p-4 { padding: 1rem; }
-    .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+    .p-5 { padding: 1.25rem; }
+    .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+    .px-4 { padding-left: 1rem; padding-right: 1rem; }
     .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
     .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+    .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+    .py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
     .rounded { border-radius: 0.25rem; }
     .rounded-lg { border-radius: 0.5rem; }
     .bg-gray-800 { background-color: #1f2937; }
-    .bg-blue-600 { background-color: #2563eb; }
-    .bg-green-600 { background-color: #059669; }
-    .bg-red-600 { background-color: #dc2626; }
-    .text-gray-400 { color: #9ca3af; }
+    .bg-gray-700 { background-color: #374151; }
+    .bg-blue-500 { background-color: #3b82f6; }
+    .bg-blue-900 { background-color: rgba(30, 58, 138, 0.2); }
+    .bg-green-500 { background-color: #10b981; }
+    .bg-yellow-500 { background-color: #eab308; }
+    .bg-orange-500 { background-color: #f97316; }
+    .bg-red-500 { background-color: #ef4444; }
+    .bg-red-900 { background-color: rgba(127, 29, 29, 0.3); }
     .text-white { color: #fff; }
-    .hover\:bg-blue-500:hover { background-color: #3b82f6; }
-    .hover\:bg-gray-700:hover { background-color: #374151; }
-    .ring-2 { outline: 2px solid transparent; outline-offset: 2px; }
-    .ring-blue-500 { outline-color: #3b82f6; }
+    .text-gray-400 { color: #9ca3af; }
+    .text-gray-500 { color: #6b7280; }
+    .text-blue-300 { color: #93c5fd; }
+    .text-blue-400 { color: #60a5fa; }
+    .text-emerald-400 { color: #34d399; }
+    .text-red-400 { color: #f87171; }
+    .text-amber-400 { color: #fbbf24; }
+    .border { border-width: 1px; }
+    .border-l-4 { border-left-width: 4px; }
+    .border-t { border-top-width: 1px; }
+    .border-gray-800 { border-color: #1f2937; }
+    .border-red-500 { border-color: #ef4444; }
     .hidden { display: none; }
-    .spinner {
-      width: 24px; height: 24px;
-      border: 3px solid #374151;
-      border-top: 3px solid #4f46e5;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .flag { width: 28px; height: 20px; object-fit: cover; border-radius: 3px; }
-    canvas { display: block; width: 100% !important; height: auto !important; }
-  </style>
-  <style>
-    :root {
-      --glass-bg: rgba(255, 255, 255, 0.08);
-      --glass-border: rgba(255, 255, 255, 0.18);
-      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    }
-    .dark {
-      --glass-bg: rgba(30, 30, 40, 0.6);
-      --glass-border: rgba(255, 255, 255, 0.1);
-      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    }
-    .glass {
-      background: var(--glass-bg);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid var(--glass-border);
-      box-shadow: var(--glass-shadow);
-      border-radius: 16px;
+    .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .line-clamp-2 { 
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
     .spinner {
       width: 24px; height: 24px;
@@ -124,37 +112,171 @@
       animation: spin 1s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #0f172a, #1e293b);
-      color: #f1f5f9;
-      margin: 0; padding: 0;
+    
+    .country-btn {
+      background-color: #1f2937;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.875rem;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.2s;
     }
-    .country-flag { width: 28px; height: 20px; object-fit: cover; border-radius: 4px; }
+    .country-btn:hover { background-color: #374151; }
+    .country-btn.active { border-color: #3b82f6; }
+    
+    .flag-img {
+      width: 64px;
+      height: 48px;
+      object-fit: cover;
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    
+    .news-item {
+      background-color: rgba(31, 41, 55, 0.2);
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      transition: all 0.2s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .news-item:hover { 
+      background-color: rgba(55, 65, 81, 0.3);
+    }
+    .news-item:hover h4 { color: #93c5fd; }
+    
+    .gradient-text {
+      background: linear-gradient(to right, #60a5fa, #34d399);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    canvas { max-height: 250px !important; }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
     .fade-in { animation: fadeIn 0.5s ease forwards; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
-<body class="bg-gray-900 text-gray-100">
-  <div id="app" class="min-h-screen p-4 md:p-6"></div>
+<body>
+  <div class="container">
+    <header class="flex flex-col gap-4 mb-6">
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="text-3xl font-bold gradient-text">🌐 GSID Dashboard</h1>
+          <p class="text-gray-400 text-sm mt-1">Real-time global intelligence — weather, quakes, air, news & time</p>
+        </div>
+        <button id="themeToggle" class="px-4 py-2 glass rounded-lg flex items-center gap-2">🌙 Dark</button>
+      </div>
+    </header>
+
+    <div id="errorBanner" class="hidden bg-red-900 border-l-4 border-red-500 p-4 mb-6 rounded">
+      <div class="flex items-center">
+        <span class="mr-2">⚠️</span>
+        <span id="errorMessage"></span>
+      </div>
+    </div>
+
+    <section class="grid lg-grid-3 mb-6">
+      <div class="glass p-5">
+        <h2 class="font-semibold mb-4 flex items-center gap-2">
+          <span>🌍 World Intelligence Map</span>
+          <span class="text-xs bg-blue-900 px-2 py-1 rounded">Click a country</span>
+        </h2>
+        <div id="countryGrid" class="grid grid-2 gap-3"></div>
+        <p class="text-xs text-gray-500 mt-4 text-center">Tip: More countries can be added easily.</p>
+      </div>
+
+      <div id="countryPanel" class="glass p-5 hidden">
+        <div class="flex items-start gap-3 mb-4">
+          <img id="flagImg" src="" alt="Flag" class="flag-img">
+          <div>
+            <h2 id="countryName" class="text-xl font-bold"></h2>
+            <p id="countrySub" class="text-gray-400 text-sm"></p>
+          </div>
+        </div>
+        <div id="countryDetails" class="grid grid-2 gap-2 text-sm"></div>
+      </div>
+    </section>
+
+    <section id="coreMetrics" class="grid grid-4 mb-6">
+      <div class="glass p-5">
+        <h3 class="font-semibold mb-3">🌦 Weather</h3>
+        <div id="weatherCard" class="flex items-center justify-center" style="min-height: 100px;">Select a country</div>
+      </div>
+      <div class="glass p-5">
+        <h3 class="font-semibold mb-3">🌬 Air Quality</h3>
+        <div id="aqiCard" class="flex items-center justify-center" style="min-height: 100px;">Select a country</div>
+      </div>
+      <div class="glass p-5">
+        <h3 class="font-semibold mb-3">⏰ Local Time</h3>
+        <div id="clockCard" class="flex flex-col justify-center text-sm" style="min-height: 100px;">Select a country</div>
+      </div>
+      <div class="glass p-5">
+        <h3 class="font-semibold mb-3">🌍 Earthquakes</h3>
+        <div id="eqCard" class="flex flex-col items-center justify-center" style="min-height: 100px;">
+          <div class="spinner"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="chartSection" class="grid grid-2 mb-6 hidden">
+      <div class="glass p-4">
+        <h3 class="font-semibold mb-2">🌬 Air Quality Forecast (12h)</h3>
+        <canvas id="aqiChart"></canvas>
+      </div>
+      <div class="glass p-4">
+        <h3 class="font-semibold mb-2">🌍 Recent Quakes (M ≥ 4.5)</h3>
+        <canvas id="eqChart"></canvas>
+      </div>
+    </section>
+
+    <section class="glass p-5 mb-6">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-semibold">📰 Global News Feed</h3>
+        <span class="text-xs bg-blue-500 text-white px-2 py-1 rounded">GNews • Live</span>
+      </div>
+      <div id="newsGrid" class="grid grid-2 gap-4">
+        <div class="bg-gray-800 p-3 rounded-lg">
+          <div style="height: 1rem; background: #374151; border-radius: 0.25rem; width: 75%; margin-bottom: 0.5rem;"></div>
+          <div style="height: 0.75rem; background: #374151; border-radius: 0.25rem; width: 50%;"></div>
+        </div>
+        <div class="bg-gray-800 p-3 rounded-lg">
+          <div style="height: 1rem; background: #374151; border-radius: 0.25rem; width: 75%; margin-bottom: 0.5rem;"></div>
+          <div style="height: 0.75rem; background: #374151; border-radius: 0.25rem; width: 50%;"></div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="mt-10 text-center text-gray-500 text-sm border-t border-gray-800 py-6">
+      <p>GSID — Global Situation Intelligence Dashboard • All data from free public APIs</p>
+      <p class="mt-1 text-xs">REST Countries • Open-Meteo • USGS • WorldTimeAPI • GNews</p>
+    </footer>
+  </div>
 
   <script>
-    // $$###$$
     const GNEWS_API_KEY = '2c54a1cba6fec4322a101abd10e3b514';
-    // %%**%%
     
-    // Cache
     const cache = new Map();
     const CACHE_TTL = 5 * 60 * 1000;
 
-    async function cachedFetch(url, options = {}) {
+    async function cachedFetch(url) {
       const now = Date.now();
       if (cache.has(url)) {
         const { data, timestamp } = cache.get(url);
         if (now - timestamp < CACHE_TTL) return data;
       }
       try {
-        const res = await fetch(url, options);
+        const res = await fetch(url);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         cache.set(url, { data, timestamp: now });
@@ -165,146 +287,52 @@
       }
     }
 
-    //  Build UI
-    const app = document.getElementById('app');
-    app.innerHTML = `
-      <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-        <div>
-          <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">🌐 GSID Dashboard</h1>
-          <p class="text-gray-400 text-sm">Real-time global intelligence — weather, quakes, air, news & time</p>
-        </div>
-        <button id="themeToggle" class="px-4 py-2 glass rounded-lg flex items-center gap-2">🌙 Dark</button>
-      </header>
+    const countries = [
+      { code: 'US', name: 'United States', flag: '🇺🇸' },
+      { code: 'IN', name: 'India', flag: '🇮🇳' },
+      { code: 'BR', name: 'Brazil', flag: '🇧🇷' },
+      { code: 'DE', name: 'Germany', flag: '🇩🇪' },
+      { code: 'AU', name: 'Australia', flag: '🇦🇺' },
+      { code: 'JP', name: 'Japan', flag: '🇯🇵' },
+      { code: 'ZA', name: 'South Africa', flag: '🇿🇦' },
+      { code: 'CA', name: 'Canada', flag: '🇨🇦' },
+      { code: 'FR', name: 'France', flag: '🇫🇷' },
+      { code: 'MX', name: 'Mexico', flag: '🇲🇽' }
+    ];
 
-      <div id="errorBanner" class="hidden bg-red-900/30 border-l-4 border-red-500 p-4 mb-6">
-        <div class="flex items-center">
-          <span class="mr-2">⚠️</span>
-          <span id="errorMessage"></span>
-        </div>
-      </div>
-
-      <!-- Map & Country Panel -->
-      <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        <div class="lg:col-span-2 glass p-5">
-          <h2 class="font-semibold mb-4 flex items-center">
-            <span>🌍 World Intelligence Map</span>
-            <span class="ml-2 text-xs bg-blue-900/20 px-2 py-0.5 rounded">Click a country</span>
-          </h2>
-          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-            ${[
-              { code: 'US', name: 'United States', flag: '🇺🇸' },
-              { code: 'IN', name: 'India', flag: '🇮🇳' },
-              { code: 'BR', name: 'Brazil', flag: '🇧🇷' },
-              { code: 'DE', name: 'Germany', flag: '🇩🇪' },
-              { code: 'AU', name: 'Australia', flag: '🇦🇺' },
-              { code: 'JP', name: 'Japan', flag: '🇯🇵' },
-              { code: 'ZA', name: 'South Africa', flag: '🇿🇦' },
-              { code: 'CA', name: 'Canada', flag: '🇨🇦' },
-              { code: 'FR', name: 'France', flag: '🇫🇷' },
-              { code: 'MX', name: 'Mexico', flag: '🇲🇽' }
-            ].map(c => `
-              <button class="country-btn bg-gray-800 hover:bg-gray-700 p-3 rounded-lg flex flex-col items-center gap-1 text-sm transition ${c.code === 'US' ? 'ring-2 ring-blue-500' : ''}" data-code="${c.code}">
-                <span class="text-lg">${c.flag}</span>
-                <span>${c.code}</span>
-              </button>
-            `).join('')}
-          </div>
-          <p class="text-xs text-gray-500 mt-4 text-center">Tip: More countries can be added easily.</p>
-        </div>
-
-        <div id="countryPanel" class="glass p-5 hidden">
-          <div class="flex items-start gap-3 mb-4">
-            <img id="flagImg" src="" alt="Flag" class="w-16 h-12 object-cover rounded shadow">
-            <div>
-              <h2 id="countryName" class="text-xl font-bold"></h2>
-              <p id="countrySub" class="text-gray-400"></p>
-            </div>
-          </div>
-          <div id="countryDetails" class="space-y-2 text-sm grid grid-cols-2 gap-y-2"></div>
-        </div>
-      </section>
-
-      <!-- Core Metrics -->
-      <section id="coreMetrics" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-        <div class="glass p-5"><h3 class="font-semibold mb-3">🌦 Weather</h3><div id="weatherCard" class="h-28 flex items-center justify-center">Select a country</div></div>
-        <div class="glass p-5"><h3 class="font-semibold mb-3">🌬 Air Quality</h3><div id="aqiCard" class="h-28 flex items-center justify-center">Select a country</div></div>
-        <div class="glass p-5"><h3 class="font-semibold mb-3">⏰ Local Time</h3><div id="clockCard" class="space-y-1 text-sm h-28 flex flex-col justify-center">Select a country</div></div>
-        <div class="glass p-5"><h3 class="font-semibold mb-3">🌍 Earthquakes</h3><div id="eqCard" class="h-28 flex flex-col items-center justify-center"><div class="spinner"></div></div></div>
-      </section>
-
-      <!-- Charts -->
-      <section id="chartSection" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 hidden">
-        <div class="glass p-4 h-72">
-          <h3 class="font-semibold mb-2">🌬 Air Quality Forecast (12h)</h3>
-          <canvas id="aqiChart" class="w-full h-full"></canvas>
-        </div>
-        <div class="glass p-4 h-72">
-          <h3 class="font-semibold mb-2">🌍 Recent Quakes (M ≥ 4.5)</h3>
-          <canvas id="eqChart" class="w-full h-full"></canvas>
-        </div>
-      </section>
-
-      <!-- News -->
-      <section class="glass p-5">
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="font-semibold">📰 Global News Feed</h3>
-          <span class="text-xs bg-blue-500 text-white px-2 py-1 rounded">GNews • Live</span>
-        </div>
-        <div id="newsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          ${[...Array(4)].map(() => `
-            <div class="bg-gray-800/20 p-3 rounded-lg animate-pulse">
-              <div class="h-4 bg-gray-700 rounded w-3/4 mb-2"></div>
-              <div class="h-3 bg-gray-700 rounded w-1/2"></div>
-            </div>
-          `).join('')}
-        </div>
-      </section>
-
-      <footer class="mt-10 text-center text-gray-500 text-sm border-t border-gray-800 pt-6">
-        <p>GSID — Global Situation Intelligence Dashboard • All data from free public APIs</p>
-        <p class="mt-1 text-xs">REST Countries • Open-Meteo • USGS • WorldTimeAPI • GNews</p>
-      </footer>
-    `;
-
-    // 🎨 Theme Toggle
-    const themeToggle = document.getElementById('themeToggle');
-    let isDark = true;
-    themeToggle.addEventListener('click', () => {
-      isDark = !isDark;
-      document.documentElement.classList.toggle('dark', isDark);
-      themeToggle.innerHTML = isDark ? '🌙 Dark' : '☀️ Light';
+    const countryGrid = document.getElementById('countryGrid');
+    countries.forEach(c => {
+      const btn = document.createElement('button');
+      btn.className = 'country-btn' + (c.code === 'US' ? ' active' : '');
+      btn.dataset.code = c.code;
+      btn.innerHTML = `<span style="font-size: 1.125rem;">${c.flag}</span><span>${c.code}</span>`;
+      btn.onclick = () => loadCountry(c.code);
+      countryGrid.appendChild(btn);
     });
 
-    // 📊 Charts
     let aqiChart = null;
     let eqChart = null;
 
-    // 🔄 Load country data
     async function loadCountry(code) {
-      // Update active button
-      document.querySelectorAll('.country-btn').forEach(btn => btn.classList.remove('ring-2', 'ring-blue-500'));
+      document.querySelectorAll('.country-btn').forEach(b => b.classList.remove('active'));
       const activeBtn = document.querySelector(`.country-btn[data-code="${code}"]`);
-      if (activeBtn) activeBtn.classList.add('ring-2', 'ring-blue-500');
+      if (activeBtn) activeBtn.classList.add('active');
 
-      const countryPanel = document.getElementById('countryPanel');
       const weatherCard = document.getElementById('weatherCard');
       const aqiCard = document.getElementById('aqiCard');
       const clockCard = document.getElementById('clockCard');
 
-      // Show loading
       weatherCard.innerHTML = '<div class="spinner"></div>';
       aqiCard.innerHTML = '<div class="spinner"></div>';
       clockCard.innerHTML = 'Loading...';
-      countryPanel.classList.add('hidden');
+      document.getElementById('countryPanel').classList.add('hidden');
       document.getElementById('errorBanner').classList.add('hidden');
 
       try {
-        // ✅ FIXED: Use /v3.1/alpha/{code} — avoids 404
         const countryData = await cachedFetch(`https://restcountries.com/v3.1/alpha/${code}`);
         const country = countryData[0];
 
-        // 🏁 Country Panel
-        document.getElementById('flagImg').src = country.flags.svg || `https://flagcdn.com/w20/${code.toLowerCase()}.png`;
+        document.getElementById('flagImg').src = country.flags.svg;
         document.getElementById('countryName').textContent = country.name.common;
         document.getElementById('countrySub').textContent = `${country.region} • ${country.subregion}`;
         
@@ -316,33 +344,33 @@
           { k: 'Currency', v: Object.values(country.currencies || {})[0]?.name || '—' },
           { k: 'Timezone', v: country.timezones?.[0] || 'UTC' }
         ];
+        
         document.getElementById('countryDetails').innerHTML = details.map(d => `
-          <div class="col-span-1"><span class="text-gray-400">${d.k}:</span></div>
-          <div class="col-span-1 font-medium">${d.v}</div>
+          <div><span class="text-gray-400">${d.k}:</span></div>
+          <div class="font-semibold">${d.v}</div>
         `).join('');
 
-        countryPanel.classList.remove('hidden');
+        document.getElementById('countryPanel').classList.remove('hidden');
 
         const lat = country.latlng[0];
         const lng = country.latlng[1];
-        const tz = country.timezones?.[0] || 'UTC';
 
-        // 🌤 Weather (Open-Meteo)
         const weather = await cachedFetch(
           `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current_weather=true`
         );
         const w = weather.current_weather;
         weatherCard.innerHTML = `
-          <div class="text-3xl font-bold">${Math.round(w.temperature)}°C</div>
-          <div class="text-sm mt-1">☁️ ${w.weathercode} • 💨 ${w.windspeed} km/h</div>
+          <div>
+            <div class="text-3xl font-bold">${Math.round(w.temperature)}°C</div>
+            <div class="text-sm mt-1 text-gray-400">💨 ${w.windspeed} km/h</div>
+          </div>
         `;
 
-        // 🌬 Air Quality
         const aqiData = await cachedFetch(
           `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lng}&hourly=us_aqi&forecast_days=1`
         );
         const aqiVals = aqiData.hourly?.us_aqi || [];
-        const latest = aqiVals.length ? Math.max(...aqiVals.slice(-3)) : 0;
+        const latest = aqiVals.length ? Math.round(Math.max(...aqiVals.slice(-3))) : 0;
 
         let level = '—', color = 'bg-gray-500', desc = 'No data';
         if (latest > 0) {
@@ -354,15 +382,16 @@
         }
 
         aqiCard.innerHTML = `
-          <div class="flex items-center gap-2 mb-1">
-            <span class="px-2.5 py-1 text-xs font-bold ${color} text-white rounded">${level}</span>
-            <span class="text-lg font-bold">AQI ${latest || '—'}</span>
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="px-2 py-1 text-xs font-bold ${color} text-white rounded">${level}</span>
+              <span class="text-lg font-bold">AQI ${latest || '—'}</span>
+            </div>
+            <p class="text-xs text-gray-400">${desc}</p>
           </div>
-          <p class="text-xs text-gray-400">${latest > 0 ? desc : '—'}</p>
         `;
 
-        // 📈 AQI Chart
-        if (aqiVals.length >= 6 && window.Chart) {
+        if (aqiVals.length >= 6) {
           const ctx = document.getElementById('aqiChart').getContext('2d');
           if (aqiChart) aqiChart.destroy();
           
@@ -371,67 +400,47 @@
           
           aqiChart = new Chart(ctx, {
             type: 'line',
-             {
+            data: {
               labels,
               datasets: [{
                 label: 'US AQI',
-                 data,
-                borderColor: data.map(v => 
-                  v <= 50 ? '#10b981' : v <= 100 ? '#fbbf24' : v <= 150 ? '#f97316' : '#ef4444'
-                ),
-                borderWidth: 3,
+                data,
+                borderColor: '#3b82f6',
+                borderWidth: 2,
                 fill: false,
-                tension: 0.3,
-                pointRadius: 0,
-                pointHoverRadius: 4
+                tension: 0.3
               }]
             },
             options: {
               responsive: true,
-              maintainAspectRatio: false,
+              maintainAspectRatio: true,
               plugins: { legend: { display: false } },
               scales: {
-                y: { 
-                  beginAtZero: true,
-                  ticks: { font: { size: 10 } }
-                },
-                x: { 
-                  ticks: { font: { size: 9 } }
-                }
+                y: { beginAtZero: true }
               }
             }
           });
           document.getElementById('chartSection').classList.remove('hidden');
         }
 
-        // ⏰ Live Clock (simulated — real: use WorldTimeAPI)
         const updateClock = () => {
           const now = new Date();
-          // Simulate offset: crude but works for demo
-          const offset = tz.includes('+') ? parseFloat(tz.split('+')[1]) : 
-                        tz.includes('-') ? -parseFloat(tz.split('-')[1]) : 0;
-          const localTime = new Date(now.getTime() + offset * 3600 * 1000);
           clockCard.innerHTML = `
-            <div class="text-2xl font-mono font-bold">${localTime.toLocaleTimeString('en-US', { hour12: false })}</div>
-            <div class="text-sm text-gray-400 mt-1">${tz}</div>
+            <div class="text-2xl font-bold" style="font-family: monospace;">${now.toLocaleTimeString('en-US', { hour12: false })}</div>
+            <div class="text-sm text-gray-400 mt-1">${country.timezones?.[0] || 'UTC'}</div>
           `;
         };
         updateClock();
         setInterval(updateClock, 1000);
 
       } catch (err) {
-        console.error(`Country load error (${code}):`, err);
-        const msg = err.message.includes('404') 
-          ? `Country code "${code}" not found. Try another.` 
-          : `Failed to load ${code}: ${err.message || 'Network error'}`;
-        showError(msg);
+        console.error(err);
+        showError(`Failed to load ${code}: ${err.message}`);
       }
     }
 
-    // 🌍 Global Data (EQ + News)
     async function loadGlobalData() {
       try {
-        // 🌍 Earthquakes (USGS)
         const start = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
         const eqData = await cachedFetch(
           `https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=${start}&minmagnitude=4.5`
@@ -440,111 +449,68 @@
         document.getElementById('eqCard').innerHTML = `
           <div class="text-3xl font-bold text-red-400">${quakes.length}</div>
           <p class="text-sm text-gray-400 mt-1">≥4.5M (last 7 days)</p>
-          ${quakes.length ? `<p class="text-xs mt-1 truncate">${quakes[0]?.properties?.place || ''}</p>` : ''}
         `;
 
-        // 📈 EQ Chart
-        if (quakes.length >= 3 && window.Chart) {
+        if (quakes.length >= 3) {
           const top10 = quakes.slice(0, 10);
           const mags = top10.map(q => q.properties.mag);
-          const places = top10.map(q => q.properties.place.split(',')[0].substring(0, 12));
+          const places = top10.map(q => q.properties.place.split(',')[0].substring(0, 15));
           
           const ctx = document.getElementById('eqChart').getContext('2d');
           if (eqChart) eqChart.destroy();
           
           eqChart = new Chart(ctx, {
             type: 'bar',
-             {
+            data: {
               labels: places,
               datasets: [{
                 label: 'Magnitude',
-                 mags,
-                backgroundColor: mags.map(m => 
-                  m < 5 ? '#3b82f6' : m < 6 ? '#10b981' : m < 7 ? '#f59e0b' : '#ef4444'
-                ),
-                borderColor: '#0f172a',
-                borderWidth: 1
+                data: mags,
+                backgroundColor: '#3b82f6'
               }]
             },
             options: {
               indexAxis: 'y',
               responsive: true,
-              maintainAspectRatio: false,
+              maintainAspectRatio: true,
               plugins: { legend: { display: false } },
               scales: {
-                x: { 
-                  beginAtZero: true,
-                  max: Math.ceil(Math.max(...mags)) + 0.5,
-                  ticks: { font: { size: 10 } }
-                },
-                y: { 
-                  ticks: { font: { size: 9 } }
-                }
+                x: { beginAtZero: true }
               }
             }
           });
-          document.getElementById('chartSection').classList.remove('hidden');
         }
 
-        // 📰 News — GNews with YOUR KEY
         const newsData = await cachedFetch(
           `https://gnews.io/api/v4/top-headlines?token=${GNEWS_API_KEY}&lang=en&country=us&max=4`
         );
         const articles = newsData.articles || [];
-        const newsHTML = articles.map(a => `
-          <a href="${a.url}" target="_blank" rel="noopener noreferrer" class="news-item bg-gray-800/20 p-3 rounded-lg hover:bg-gray-700/30 transition group fade-in">
-            <h4 class="font-medium line-clamp-2 group-hover:text-blue-300">${a.title}</h4>
+        document.getElementById('newsGrid').innerHTML = articles.map(a => `
+          <a href="${a.url}" target="_blank" rel="noopener noreferrer" class="news-item fade-in">
+            <h4 class="font-semibold line-clamp-2">${a.title}</h4>
             <p class="text-xs text-gray-400 mt-1">${a.source.name} • ${new Date(a.publishedAt).toLocaleDateString()}</p>
           </a>
-        `).join('');
-        
-        document.getElementById('newsGrid').innerHTML = newsHTML || `
-          <p class="text-amber-400 col-span-2 text-center py-4">⚠️ No news. Check API key.</p>
-        `;
+        `).join('') || '<p class="text-amber-400 text-center py-4">⚠️ No news available</p>';
 
       } catch (err) {
         console.warn('Global data error:', err);
-        document.getElementById('eqCard').innerHTML = '<span class="text-gray-500">—</span>';
-        document.getElementById('newsGrid').innerHTML = `
-          <p class="text-red-400 col-span-2 text-center py-4">⚠️ GNews Error: ${err.message || 'Invalid key?'}</p>
-        `;
       }
     }
 
-    // 🚨 Error Banner
     function showError(message) {
       document.getElementById('errorMessage').textContent = message;
       document.getElementById('errorBanner').classList.remove('hidden');
       setTimeout(() => document.getElementById('errorBanner').classList.add('hidden'), 8000);
     }
 
-    // 🚀 Initialize
-    document.querySelectorAll('.country-btn').forEach(btn => {
-      btn.addEventListener('click', () => loadCountry(btn.dataset.code));
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+      themeToggle.textContent = themeToggle.textContent.includes('Dark') ? '☀️ Light' : '🌙 Dark';
     });
 
-    // Start with USA
     loadCountry('US');
     loadGlobalData();
-    setInterval(loadGlobalData, 10 * 60 * 1000); // refresh every 10 min
-
-    // Auto-hide spinner after initial load (fallback)
-    setTimeout(() => {
-      const spinners = document.querySelectorAll('.spinner');
-      spinners.forEach(s => {
-        if (s.parentElement && s.parentElement.textContent === '') {
-          s.parentElement.innerHTML = '<span class="text-gray-500">—</span>';
-        }
-      });
-    }, 5000);
+    setInterval(loadGlobalData, 10 * 60 * 1000);
   </script>
 </body>
 </html>
-
-<!-- BY - PARAS DHIMAN-->
-<!-- MIT LICENSE ● DO NOT COPY ● SoftwareLabs-->
-<!-- VISIt: softwarelabs.lovable.app-->
-
-<!-- For More Advanced Codes, Visit: https://github.com/Paras367/Advanced_Codes/ -->
-
-<!-- BY - CyberVex(Paras Dhiman) -->
