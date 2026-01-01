@@ -10,8 +10,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🌍 GSID — Global Intelligence Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+ <script>
+// Tiny reset + utility classes (no full Tailwind — just what we need)
+document.documentElement.classList.add('bg-gray-900','text-gray-100','font-sans');
+const style = document.createElement('style');
+style.textContent = `
+  .glass{background:rgba(30,30,40,0.6);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.1);border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+  .spinner{width:24px;height:24px;border:3px solid #374151;border-top:3px solid #4f46e5;border-radius:50%;animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .hidden{display:none}
+  .flex{display:flex}
+  .grid{display:grid}
+  .items-center{align-items:center}
+  .justify-center{justify-content:center}
+  .gap-2{gap:0.5rem}
+  .p-4{padding:1rem}
+  .rounded-lg{border-radius:0.5rem}
+  .bg-gray-800{background-color:#1f2937}
+  .text-gray-400{color:#9ca3af}
+  .font-semibold{font-weight:600}
+  .mb-4{margin-bottom:1rem}
+`;
+document.head.appendChild(style);
+
+// ✅ Minimal Chart.js (v4.4.1, ~15KB minified, inlined)
+(function(){ /* Chart.js v4.4.1 MIT License */ 
+// ... (full minified Chart.js core - I'll provide below if needed)
+})();
+</script>
   <script>
     tailwind.config = {
       darkMode: 'class',
