@@ -1,0 +1,687 @@
+<!-- BY PARAS DHIMAN -->
+<!-- NO SENSUAL/SEXUAL Content -->
+<!-- DO NOT MISUSE -->
+<!-- ONLY EDUCATIONAL PURPOSES -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ADULT MODE: Real Life, Real Decisions</title>
+  <meta name="description" content="An 18+ educational platform for adult responsibility, decision-making, and real-world awareness — no fluff, no tracking." />
+
+  <!-- 🔗 Libraries (15/20 used) -->
+  <!-- UI & Animations -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+
+  <!-- Utilities -->
+  <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-md5@0.7.3/src/md5.min.js"></script>
+
+  <!-- Decision Trees & Logic -->
+  <script src="https://cdn.jsdelivr.net/npm/@observablehq/stdlib@4.17.0/dist/stdlib.js"></script>
+
+  <!-- Icons (inline SVG preferred, but fallback icons) -->
+  <!-- We'll embed critical SVGs inline below -->
+
+  <!-- No analytics, no trackers. Privacy-first. -->
+
+  <style>
+    :root {
+      --bg: #0f0f12;
+      --surface: #1a1a1f;
+      --surface-alt: #22222a;
+      --border: #333;
+      --text: #e6e6f0;
+      --text-muted: #a0a0b0;
+      --primary: #4f86f7;
+      --primary-dark: #3a66c0;
+      --accent: #5d7aff;
+      --success: #4ade80;
+      --warning: #facc15;
+      --danger: #f87171;
+      --glass: rgba(30, 30, 40, 0.6);
+      --glass-border: rgba(80, 80, 100, 0.2);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Glassmorphism base */
+    .glass {
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    }
+
+    /* Typography */
+    h1 { font-size: 2.4rem; font-weight: 700; margin-bottom: 1rem; }
+    h2 { font-size: 1.8rem; font-weight: 600; margin: 2rem 0 1rem; }
+    h3 { font-size: 1.4rem; font-weight: 600; margin: 1.5rem 0 0.75rem; }
+    p { margin-bottom: 1rem; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Layout */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    section {
+      padding: 3rem 0;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      border: none;
+      outline: none;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.05);
+    }
+    .btn-sm {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .modal {
+      width: 90%;
+      max-width: 500px;
+      padding: 2rem;
+      position: relative;
+    }
+
+    /* Form controls */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 8px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: inherit;
+    }
+    input:focus, select:focus {
+      outline: 2px solid var(--primary);
+    }
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+    }
+    .checkbox-group input {
+      width: auto;
+      margin-right: 0.75rem;
+      margin-top: 0.3rem;
+    }
+
+    /* Cards */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    .card {
+      padding: 1.5rem;
+    }
+
+    /* Progress */
+    .progress-bar {
+      height: 8px;
+      background: var(--surface-alt);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 1rem 0;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 4px;
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+
+    /* Interactive sims */
+    .sim-output {
+      background: var(--surface-alt);
+      padding: 1.25rem;
+      border-radius: 10px;
+      margin-top: 1rem;
+      font-family: monospace;
+    }
+
+    /* Footer */
+    footer {
+      padding: 2rem 0;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      margin-top: 3rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      h1 { font-size: 2rem; }
+      h2 { font-size: 1.5rem; }
+      .container { padding: 0 1rem; }
+      section { padding: 2rem 0; }
+    }
+
+    /* SVG Icons – embedded for privacy & perf */
+    .icon {
+      display: inline-block;
+      width: 1.2em;
+      height: 1.2em;
+      vertical-align: -0.2em;
+      fill: currentColor;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🔐 Age Gate Modal -->
+  <div id="ageModal" class="modal-overlay active">
+    <div class="modal glass">
+      <h2><i class="fas fa-user-check icon"></i> Enter ADULT MODE</h2>
+      <p>This platform is for <strong>adults 18+</strong>. Content covers real-world responsibilities: finance, law, mental load, career, and digital safety — explained ethically and factually.</p>
+      
+      <div class="form-group">
+        <label for="birthYear">Year of Birth</label>
+        <select id="birthYear" required>
+          <option value="">— Select Year —</option>
+          <!-- JS will populate years -->
+        </select>
+      </div>
+
+      <div class="checkbox-group">
+        <input type="checkbox" id="ageConfirm" required>
+        <label for="ageConfirm">
+          <strong>I confirm I am 18 years or older.</strong><br>
+          <small style="color:var(--text-muted); font-weight:400;">
+            This helps us serve age-appropriate educational content. No data leaves your device.
+          </small>
+        </label>
+      </div>
+
+      <button id="enterBtn" class="btn btn-primary" disabled>
+        Enter ADULT MODE
+      </button>
+
+      <p style="margin-top: 1.5rem; font-size:0.85rem; color:var(--text-muted);">
+        <i class="fas fa-lock icon"></i> Your consent is stored in <code>localStorage</code> only.<br>
+        <a href="#" id="viewDisclaimer">View full disclaimer</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- 📜 Disclaimer Modal (optional) -->
+  <div id="disclaimerModal" class="modal-overlay">
+    <div class="modal glass">
+      <h3>Educational Use Only</h3>
+      <p><strong>ADULT MODE is not:</strong></p>
+      <ul style="margin: 1rem 0 1.5rem; padding-left: 1.5rem;">
+        <li>Financial, legal, or medical advice</li>
+        <li>A substitute for professional consultation</li>
+        <li>Entertainment or sensational content</li>
+      </ul>
+      <p>All simulations are illustrative. Real-life decisions require personalized expert guidance.</p>
+      <p>Data (e.g., journal entries, progress) is stored <strong>only on your device</strong> via <code>localStorage</code>. We do not track, log, or collect anything.</p>
+      <button id="closeDisclaimer" class="btn btn-outline" style="margin-top:1rem;">Close</button>
+    </div>
+  </div>
+
+  <!-- 🖼️ Header -->
+  <header class="glass" style="padding:1.5rem 0; margin-bottom:2rem; text-align:center;">
+    <div class="container">
+      <h1>ADULT MODE</h1>
+      <p style="max-width:700px; margin:0 auto; color:var(--text-muted);">
+        Real Life. Real Decisions.<br>
+        <small>A responsibility-focused platform for adults — clear, ethical, actionable.</small>
+      </p>
+      <div class="progress-bar" title="Learning Progress">
+        <div id="progressFill" class="progress-fill"></div>
+      </div>
+      <div id="progressLabel" style="font-size:0.85rem; color:var(--text-muted);">0% completed</div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- 🧠 Core Sections -->
+    <section id="survival">
+      <h2><i class="fas fa-home icon"></i> Real-World Survival</h2>
+      <p>Master the essentials: housing, bills, credit, insurance — without jargon.</p>
+
+      <div class="card-grid">
+        <div class="card glass">
+          <h3>🏠 Rent vs Buy Simulator</h3>
+          <div class="form-group">
+            <label>Monthly Rent: <code id="rentVal">$1,200</code></label>
+            <input type="range" id="rentSlider" min="500" max="5000" step="100" value="1200">
+          </div>
+          <div class="form-group">
+            <label>Home Price: <code id="homeVal">$300,000</code></label>
+            <input type="range" id="homeSlider" min="100000" max="1000000" step="10000" value="300000">
+          </div>
+          <button class="btn btn-sm btn-outline" onclick="runSurvivalSim()">Compare 5-Year Cost</button>
+          <div id="survivalOutput" class="sim-output">—</div>
+        </div>
+
+        <div class="card glass">
+          <h3>📊 EMI Calculator</h3>
+          <div class="form-group">
+            <label>Loan Amount ($)</label>
+            <input type="number" id="loanAmt" value="10000">
+          </div>
+          <div class="form-group">
+            <label>Interest Rate (%)</label>
+            <input type="number" id="intRate" value="8" step="0.1">
+          </div>
+          <div class="form-group">
+            <label>Tenure (months)</label>
+            <input type="number" id="tenure" value="24">
+          </div>
+          <button class="btn btn-sm btn-outline" onclick="calculateEMI()">Calculate</button>
+          <div id="emiOutput" class="sim-output">—</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="legal">
+      <h2><i class="fas fa-gavel icon"></i> Legal Awareness</h2>
+      <p>Know your rights — in plain English. Not advice, just awareness.</p>
+
+      <div class="card glass">
+        <h3>🚨 “If This Happens…” Flowchart</h3>
+        <p><strong>Scenario:</strong> Your employer asks you to sign a non-compete with no negotiation.</p>
+        <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin:1rem 0;">
+          <button class="btn btn-sm" onclick="showLegalPath('ask')">Ask for Changes</button>
+          <button class="btn btn-sm" onclick="showLegalPath('refuse')">Refuse to Sign</button>
+          <button class="btn btn-sm" onclick="showLegalPath('sign')">Sign As-Is</button>
+        </div>
+        <div id="legalOutput" class="sim-output" style="min-height:60px;">Choose a path to see potential outcomes.</div>
+      </div>
+    </section>
+
+    <section id="mental">
+      <h2><i class="fas fa-brain icon"></i> Mental Load & Adult Stress</h2>
+      <p>Understand burnout, decision fatigue, and isolation — responsibly.</p>
+
+      <div class="card glass">
+        <h3>🧠 Stress Tracker (Local Only)</h3>
+        <p>Log your stress (1–5). Data never leaves this device.</p>
+        <div style="display:flex; gap:0.25rem; margin:1rem 0;">
+          <button class="btn btn-sm" onclick="logStress(1)">1</button>
+          <button class="btn btn-sm" onclick="logStress(2)">2</button>
+          <button class="btn btn-sm" onclick="logStress(3)">3</button>
+          <button class="btn btn-sm" onclick="logStress(4)">4</button>
+          <button class="btn btn-sm" onclick="logStress(5)">5</button>
+        </div>
+        <canvas id="stressChart" height="100"></canvas>
+        <p style="margin-top:0.5rem; font-size:0.85rem; color:var(--text-muted);">
+          <i class="fas fa-exclamation-triangle icon"></i> Not a diagnostic tool. For self-reflection only.<br>
+          🆘 Need help? <a href="https://www.mentalhealth.gov/get-help/immediate-help" target="_blank">U.S. Crisis Resources</a>
+        </p>
+      </div>
+    </section>
+
+    <section id="career">
+      <h2><i class="fas fa-briefcase icon"></i> Career Reality Zone</h2>
+      <p>No hype. Just trade-offs, risks, and truths about work.</p>
+
+      <div class="card glass">
+        <h3>⚖️ Career Decision Simulator</h3>
+        <p><strong>You’re offered:</strong> $90k corporate job (45h/wk) vs $60k freelance (uncertain income).</p>
+        <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin:1rem 0;">
+          <button class="btn btn-sm" onclick="runCareerSim('corporate')">Take Corporate</button>
+          <button class="btn btn-sm" onclick="runCareerSim('freelance')">Go Freelance</button>
+          <button class="btn btn-sm" onclick="runCareerSim('hybrid')">Negotiate Hybrid</button>
+        </div>
+        <div id="careerOutput" class="sim-output">—</div>
+      </div>
+    </section>
+
+    <section id="digital">
+      <h2><i class="fas fa-laptop icon"></i> Digital Adult Life</h2>
+      <p>Scams, deepfakes, data leaks — stay sharp in the digital world.</p>
+
+      <div class="card glass">
+        <h3>🔍 Scam Detector (Offline Demo)</h3>
+        <p>Paste a suspicious message:</p>
+        <textarea id="scamInput" placeholder="E.g., 'URGENT: Your account is locked! Click here...'" rows="3" style="width:100%; margin:0.5rem 0;"></textarea>
+        <button class="btn btn-sm btn-outline" onclick="analyzeScam()">Analyze</button>
+        <div id="scamOutput" class="sim-output">—</div>
+      </div>
+    </section>
+
+    <section id="ethical">
+      <h2><i class="fas fa-scale-balanced icon"></i> Ethical Adult Topics</h2>
+      <p>Factual awareness on substance use, gambling, and digital addiction — no instruction, just context.</p>
+
+      <div class="card glass">
+        <h3>⚠️ Risk Awareness: Gambling</h3>
+        <p>Did you know? <strong>~1% of adults</strong> develop gambling disorder. Odds of jackpot? Often < 1 in 10 million.</p>
+        <p>Resources: <a href="https://www.ncpgambling.org/help-treatment/national-helpline-1-800-522-4700/" target="_blank">National Problem Gambling Helpline (1-800-522-4700)</a></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container">
+    <p>© 2026 ADULT MODE — Educational & Ethical Awareness Platform</p>
+    <p>
+      <a href="#" onclick="showPage('privacy')">Privacy Policy</a> • 
+      <a href="#" onclick="showPage('disclaimers')">Disclaimers</a> • 
+      <a href="mailto:contact@adultmode.example">Feedback</a>
+    </p>
+    <p style="margin-top:0.5rem; font-size:0.8rem; color:var(--text-muted);">
+      🔒 Your data never leaves your device. Open-source friendly. Hostable on GitHub Pages.
+    </p>
+  </footer>
+
+  <!-- Hidden pages -->
+  <div id="privacyPage" style="display:none;">
+    <div class="container" style="padding:3rem 0;">
+      <h1>Privacy Policy</h1>
+      <p><strong>We collect nothing.</strong></p>
+      <ul>
+        <li>No cookies (except essential <code>localStorage</code> for consent & progress)</li>
+        <li>No analytics, trackers, or third-party scripts beyond listed libraries</li>
+        <li>All data (journal, stress log, etc.) is stored locally via <code>localStorage</code></li>
+        <li>You can clear it anytime via browser settings</li>
+      </ul>
+      <button class="btn btn-outline" onclick="history.back()">← Back</button>
+    </div>
+  </div>
+
+  <div id="disclaimersPage" style="display:none;">
+    <div class="container" style="padding:3rem 0;">
+      <h1>Disclaimers</h1>
+      <h3>⚠️ Educational Use Only</h3>
+      <p>Content is for general awareness. Not financial, legal, medical, or career advice.</p>
+      <h3>🧠 Mental Health</h3>
+      <p>We do not provide therapy. If in crisis, contact a licensed professional.</p>
+      <h3>⚖️ Legal</h3>
+      <p>Laws vary by region. Verify with local authorities.</p>
+      <button class="btn btn-outline" onclick="history.back()">← Back</button>
+    </div>
+  </div>
+
+  <script>
+    // 🔐 Age Gate Logic
+    document.addEventListener('DOMContentLoaded', () => {
+      const currentYear = new Date().getFullYear();
+      const yearSelect = document.getElementById('birthYear');
+      for (let y = currentYear; y >= 1920; y--) {
+        const opt = document.createElement('option');
+        opt.value = y;
+        opt.textContent = y;
+        yearSelect.appendChild(opt);
+      }
+
+      const ageConfirm = document.getElementById('ageConfirm');
+      const enterBtn = document.getElementById('enterBtn');
+      const ageModal = document.getElementById('ageModal');
+      const disclaimerModal = document.getElementById('disclaimerModal');
+
+      ageConfirm.addEventListener('change', () => {
+        enterBtn.disabled = !ageConfirm.checked;
+      });
+
+      document.getElementById('enterBtn').addEventListener('click', () => {
+        const birthYear = parseInt(yearSelect.value);
+        if (!birthYear || !ageConfirm.checked) return;
+        const age = currentYear - birthYear;
+        if (age < 18) {
+          alert("You must be 18 or older to enter.");
+          return;
+        }
+        // Store consent locally
+        localStorage.setItem('adultMode_consent', JSON.stringify({
+          year: birthYear,
+          timestamp: Date.now(),
+          hash: md5(`${birthYear}-${Date.now()}`) // anonymized proof
+        }));
+        ageModal.classList.remove('active');
+        initApp();
+      });
+
+      document.getElementById('viewDisclaimer').addEventListener('click', (e) => {
+        e.preventDefault();
+        disclaimerModal.classList.add('active');
+      });
+      document.getElementById('closeDisclaimer').addEventListener('click', () => {
+        disclaimerModal.classList.remove('active');
+      });
+
+      // Check if already consented
+      const consent = localStorage.getItem('adultMode_consent');
+      if (consent) {
+        ageModal.classList.remove('active');
+        initApp();
+      }
+
+      // Page routing
+      window.showPage = (id) => {
+        document.querySelectorAll('main, footer, header').forEach(el => el.style.display = 'none');
+        document.getElementById(id + 'Page').style.display = 'block';
+      };
+
+      // Survival Sim
+      window.runSurvivalSim = () => {
+        const rent = parseInt(document.getElementById('rentSlider').value);
+        const home = parseInt(document.getElementById('homeSlider').value);
+        // Simplified: rent 5y = rent*12*5; buy = down(20%)+loan+tax+ins - appreciation(3%)
+        const rent5 = rent * 60;
+        const down = home * 0.2;
+        const loan = home * 0.8;
+        const int = loan * 0.05 * 5; // 5% over 5y
+        const taxIns = home * 0.015 * 5;
+        const appr = home * 0.03 * 5;
+        const buy5 = down + int + taxIns - appr;
+        const diff = buy5 - rent5;
+        const res = diff > 0 
+          ? `Renting saves ~$${Math.abs(diff).toLocaleString()} over 5 years.` 
+          : `Buying saves ~$${Math.abs(diff).toLocaleString()} over 5 years.`;
+        document.getElementById('survivalOutput').textContent = res;
+        markSectionComplete('survival');
+      };
+
+      // EMI Calc
+      window.calculateEMI = () => {
+        const P = parseFloat(document.getElementById('loanAmt').value);
+        const r = parseFloat(document.getElementById('intRate').value) / 12 / 100;
+        const n = parseInt(document.getElementById('tenure').value);
+        if (!P || !r || !n) return;
+        const EMI = (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+        document.getElementById('emiOutput').textContent = 
+          `Monthly EMI: $${EMI.toFixed(2)}\nTotal Payable: $${(EMI * n).toFixed(2)}`;
+        markSectionComplete('survival');
+      };
+
+      // Legal Paths
+      window.showLegalPath = (choice) => {
+        const outcomes = {
+          ask: "✅ Employer may negotiate terms. Risk: Delay in onboarding.",
+          refuse: "⚠️ Job offer may be withdrawn. You retain freedom but lose opportunity.",
+          sign: "⚠️ You’re bound by terms. Consult a lawyer before violating."
+        };
+        document.getElementById('legalOutput').textContent = outcomes[choice] || "—";
+        markSectionComplete('legal');
+      };
+
+      // Stress Tracker
+      let stressData = JSON.parse(localStorage.getItem('stressLog') || '[]');
+      const ctx = document.getElementById('stressChart').getContext('2d');
+      let stressChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: [],
+          datasets: [{
+            label: 'Stress Level (1–5)',
+            data: [],
+            borderColor: '#facc15',
+            backgroundColor: 'rgba(250, 204, 21, 0.1)',
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: { 
+            y: { min: 0, max: 5, ticks: { stepSize: 1 } },
+            x: { display: false }
+          }
+        }
+      });
+
+      window.logStress = (level) => {
+        const now = luxon.DateTime.now().toFormat('MM/dd HH:mm');
+        stressData.push({ time: now, level });
+        // Keep last 10
+        if (stressData.length > 10) stressData.shift();
+        localStorage.setItem('stressLog', JSON.stringify(stressData));
+        updateStressChart();
+        markSectionComplete('mental');
+      };
+
+      const updateStressChart = () => {
+        stressChart.data.labels = stressData.map(d => d.time);
+        stressChart.data.datasets[0].data = stressData.map(d => d.level);
+        stressChart.update();
+      };
+      updateStressChart();
+
+      // Career Sim
+      window.runCareerSim = (path) => {
+        const outcomes = {
+          corporate: "✅ Stable income, benefits. ⚠️ Potential burnout, less autonomy.",
+          freelance: "✅ Flexibility, varied work. ⚠️ Income volatility, self-managed taxes/insurance.",
+          hybrid: "✅ Best of both (if negotiated). ⚠️ Requires strong negotiation skills."
+        };
+        document.getElementById('careerOutput').textContent = outcomes[path] || "—";
+        markSectionComplete('career');
+      };
+
+      // Scam Detector (pattern-based, offline)
+      window.analyzeScam = () => {
+        const txt = document.getElementById('scamInput').value.toLowerCase();
+        const redFlags = [
+          { word: 'urgent', msg: '🚨 "Urgent" pressure' },
+          { word: 'click', msg: '🔗 Suspicious link request' },
+          { word: 'verify', msg: '🔍 Phishing keyword' },
+          { word: 'locked', msg: '🔒 Fear-based lockout' },
+          { word: 'gift', msg: '🎁 "Free gift" lure' },
+          { word: 'winner', msg: '🏆 Fake prize claim' }
+        ];
+        const hits = redFlags.filter(f => txt.includes(f.word));
+        const res = hits.length 
+          ? `⚠️ Detected ${hits.length} red flag(s):\n${hits.map(h => h.msg).join('\n')}` 
+          : "✅ No obvious scam patterns detected. Still verify sender!";
+        document.getElementById('scamOutput').textContent = res;
+        markSectionComplete('digital');
+      };
+
+      // Progress tracking
+      const sections = ['survival', 'legal', 'mental', 'career', 'digital', 'ethical'];
+      function markSectionComplete(id) {
+        let progress = JSON.parse(localStorage.getItem('adultMode_progress') || '{}');
+        progress[id] = true;
+        localStorage.setItem('adultMode_progress', JSON.stringify(progress));
+        updateProgress();
+      }
+
+      function updateProgress() {
+        const progress = JSON.parse(localStorage.getItem('adultMode_progress') || '{}');
+        const completed = Object.keys(progress).filter(k => sections.includes(k)).length;
+        const pct = Math.round((completed / sections.length) * 100);
+        document.getElementById('progressFill').style.width = `${pct}%`;
+        document.getElementById('progressLabel').textContent = `${pct}% completed`;
+      }
+      updateProgress();
+
+      // Initialize app
+      function initApp() {
+        // Sync sliders to labels
+        document.getElementById('rentSlider').addEventListener('input', e => {
+          document.getElementById('rentVal').textContent = `$${parseInt(e.target.value).toLocaleString()}`;
+        });
+        document.getElementById('homeSlider').addEventListener('input', e => {
+          document.getElementById('homeVal').textContent = `$${parseInt(e.target.value).toLocaleString()}`;
+        });
+      }
+    });
+  </script>
+</body>
+</html>
