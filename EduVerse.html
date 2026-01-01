@@ -8,56 +8,67 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg: #f5f7fa;
-      --card: #ffffff;
-      --accent: #1e3a8a;
-      --accent-light: #3b82f6;
-      --highlight: #facc15;
-      --success: #10b981;
-      --error: #ef4444;
-      --text: #1f2937;
-      --text-light: #6b7280;
-      --border: #e2e8f0;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    .glass-card {
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+   /* ================= ROOT VARIABLES ================= */
+:root {
+  --bg: #f5f7fa;
+  --card: #ffffff;
+  --accent: #1e3a8a;
+  --accent-light: #3b82f6;
+  --highlight: #facc15;
+  --success: #10b981;
+  --error: #ef4444;
+  --text: #1f2937;
+  --text-light: #6b7280;
+  --border: #e2e8f0;
 }
 
-    .card {
+/* ================= RESET ================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ================= BODY & BACKGROUND ================= */
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  padding-bottom: 4rem;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(59,130,246,0.12), transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(34,211,238,0.12), transparent 40%);
+  z-index: -1;
+}
+
+/* ================= HEADER ================= */
+header {
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+  color: white;
+  padding: 2rem;
+  text-align: center;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-    .card::after {
-  content: "";
+header::before {
+  content: '';
   position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at top left,
-    rgba(59,130,246,0.15),
-    transparent 60%);
-  opacity: 0;
-  transition: opacity 0.4s ease;
+  inset: -50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1), transparent 70%);
+  animation: pulse 15s ease-in-out infinite;
 }
 
-   .card:hover::after {
-  opacity: 1;
-}
-
-
-    header::after {
+header::after {
   content: "";
   position: absolute;
   top: 0;
@@ -73,150 +84,107 @@
   animation: headerShine 6s infinite;
 }
 
-    @keyframes headerShine {
-  0% { left: -120%; }
-  50% { left: 120%; }
-  100% { left: 120%; }
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
 }
 
-    button, .btn {
+@keyframes headerShine {
+  0% { left: -120%; }
+  50%,100% { left: 120%; }
+}
+
+header h1 {
+  font-family: 'Merriweather', serif;
+  font-size: 2.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+header p {
+  max-width: 600px;
+  margin: auto;
+  opacity: 0.95;
+  position: relative;
+  z-index: 1;
+}
+
+/* ================= LAYOUT ================= */
+.container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+}
+
+/* ================= CARD ================= */
+.card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.04);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top left,
+    rgba(59,130,246,0.15),
+    transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+}
+
+.card:hover::after {
+  opacity: 1;
+}
+
+/* ================= GLASS CARD (OPTIONAL) ================= */
+.glass-card {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* ================= HEADINGS ================= */
+.card h2,
+.card h3 {
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ================= BUTTONS ================= */
+button,
+.btn {
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-    button:hover, .btn:hover {
+button:hover,
+.btn:hover {
   transform: translateY(-4px) scale(1.05);
   box-shadow: 0 12px 30px rgba(30,58,138,0.4);
 }
 
-
-    body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(circle at 20% 20%,rgba(59,130,246,0.12),transparent 40%),
-    radial-gradient(circle at 80% 80%,rgba(34,211,238,0.12),transparent 40%);
-  z-index: -1;
-}
-    .progress-glow {
+/* ================= PROGRESS ================= */
+.progress-glow {
   height: 12px;
   border-radius: 50px;
-  background: linear-gradient(90deg,#22c55e,#3b82f6);
+  background: linear-gradient(90deg, #22c55e, #3b82f6);
   box-shadow: 0 0 12px rgba(34,197,94,0.6);
   transition: width 0.5s ease;
 }
-
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      padding-bottom: 4rem;
-    }
-
-    header {
-      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
-      color: white;
-      padding: 2rem;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      position: relative;
-      overflow: hidden;
-    }
-
-    header::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-      animation: pulse 15s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-    }
-
-    header h1 {
-      font-family: 'Merriweather', serif;
-      font-weight: 700;
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
-      position: relative;
-      z-index: 1;
-    }
-
-    header p {
-      opacity: 0.95;
-      max-width: 600px;
-      margin: 0 auto;
-      position: relative;
-      z-index: 1;
-      font-size: 1.1rem;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 2rem auto;
-      padding: 0 1.5rem;
-    }
-
-    .card {
-      background: var(--card);
-      border-radius: 16px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.04);
-      padding: 2rem;
-      margin-bottom: 2rem;
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.08);
-    }
-
-    .card h2 {
-      font-family: 'Merriweather', serif;
-      color: var(--accent);
-      margin-bottom: 1.5rem;
-      font-size: 1.8rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .card h3 {
-      font-size: 1.4rem;
-      margin: 1.5rem 0 1rem;
-      color: var(--accent);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .btn {
-      display: inline-block;
-      background: var(--accent);
-      color: white;
-      padding: 0.85rem 1.8rem;
-      border-radius: 50px;
-      text-decoration: none;
-      font-weight: 500;
-      border: none;
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
-    }
-
-    .btn:hover {
-      background: #1a3678;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(30, 58, 138, 0.3);
-    }
 
     .btn-outline {
       background: transparent;
