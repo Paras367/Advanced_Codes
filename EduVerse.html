@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EduVerse India | Smart Learning Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f7fa;
+      --card: #ffffff;
+      --accent: #1e3a8a;
+      --highlight: #facc15;
+      --text: #1f2937;
+      --text-light: #4b5563;
+      --border: #e2e8f0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding-bottom: 4rem;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      color: white;
+      padding: 1.5rem 2rem;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    header h1 {
+      font-family: 'Merriweather', serif;
+      font-weight: 700;
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.04);
+      padding: 1.8rem;
+      margin-bottom: 2rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    .card h2 {
+      font-family: 'Merriweather', serif;
+      color: var(--accent);
+      margin-bottom: 1.2rem;
+      font-size: 1.6rem;
+    }
+
+    .card h3 {
+      font-size: 1.3rem;
+      margin: 1.2rem 0 0.8rem;
+      color: var(--accent);
+    }
+
+    .btn {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background: #1a3678;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--accent);
+      color: var(--accent);
+    }
+
+    .btn-outline:hover {
+      background: rgba(30, 58, 138, 0.05);
+    }
+
+    /* Smart Dashboard Grid */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* Level Selector */
+    .level-selector {
+      display: flex;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .level-btn {
+      flex: 1;
+      padding: 0.8rem;
+      text-align: center;
+      background: #f1f5f9;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .level-btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    /* Accordion */
+    .accordion {
+      margin: 1rem 0;
+    }
+
+    .accordion-item {
+      margin-bottom: 0.5rem;
+    }
+
+    .accordion-header {
+      padding: 1rem;
+      background: #f1f9ff;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 500;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      background: #f8fafc;
+      border-radius: 0 0 12px 12px;
+      padding: 0 1rem;
+    }
+
+    .accordion-content.open {
+      max-height: 500px;
+      padding: 1rem;
+    }
+
+    /* MCQ */
+    .mcq-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .mcq-option {
+      padding: 0.75rem 1rem;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .mcq-option:hover {
+      background: #edf2f7;
+    }
+
+    .mcq-option.selected {
+      border-color: var(--accent);
+      background: rgba(30, 58, 138, 0.05);
+    }
+
+    .mcq-option.correct {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .mcq-option.incorrect {
+      border-color: #ef4444;
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    /* Simulation placeholder */
+    .simulation {
+      background: #1e293b;
+      color: #e2e8f0;
+      height: 200px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', sans-serif;
+      margin: 1rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ball {
+      width: 40px;
+      height: 40px;
+      background: var(--highlight);
+      border-radius: 50%;
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    /* Study Path */
+    .path-inputs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .path-inputs label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .path-inputs select, .path-inputs input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-family: inherit;
+    }
+
+    .roadmap {
+      background: #f0fdf4;
+      border-left: 4px solid #10b981;
+      padding: 1.2rem;
+      border-radius: 0 12px 12px 0;
+      margin-top: 1.5rem;
+    }
+
+    /* Footer & Disclaimer */
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding: 1.5rem;
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+
+    .disclaimer-btn {
+      margin-top: 1rem;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: white;
+      width: 90%;
+      max-width: 700px;
+      border-radius: 16px;
+      padding: 2rem;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .close {
+      float: right;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #6b7280;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header {
+        padding: 1.2rem;
+      }
+      header h1 {
+        font-size: 1.8rem;
+      }
+      .container {
+        padding: 0 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🌟 EduVerse India</h1>
+    <p>Smart Learning Hub — Legal, Student-First, Concept-Driven</p>
+  </header>
+
+  <div class="container">
+    <!-- Smart Topic Dashboard -->
+    <section class="card">
+      <h2>🚀 Smart Topic Dashboard: <em>Newton’s Laws of Motion</em></h2>
+      
+      <div class="level-selector">
+        <div class="level-btn active" data-level="beginner">Beginner</div>
+        <div class="level-btn" data-level="board">Board Level</div>
+        <div class="level-btn" data-level="jee">JEE Level</div>
+      </div>
+
+      <div class="content beginner-content">
+        <h3>🧠 Concept Summary</h3>
+        <p><strong>Newton’s First Law:</strong> An object stays at rest or in uniform motion unless acted upon by a net force.</p>
+        <p><strong>Second Law:</strong> <code>F = ma</code> — Force equals mass times acceleration.</p>
+        <p><strong>Third Law:</strong> For every action, there's an equal & opposite reaction.</p>
+
+        <h3>🎥 Learn with Khan Academy</h3>
+        <div style="position:relative;height:0;padding-bottom:56.25%;">
+          <iframe 
+            src="https://www.youtube.com/embed/kKKM8Y-u7ds" 
+            style="position:absolute;width:100%;height:100%;left:0;top:0;border:0;border-radius:12px;"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        </div>
+
+        <h3>📌 Key Formulas</h3>
+        <ul>
+          <li><code>F_net = m·a</code></li>
+          <li><code>p = m·v</code> (Momentum)</li>
+          <li><code>F₁₂ = –F₂₁</code> (Action-Reaction)</li>
+        </ul>
+
+        <h3>🧪 Interactive Simulation (JS Animation)</h3>
+        <div class="simulation" id="sim">
+          <div class="ball" id="ball"></div>
+          <p>Click to apply force → object accelerates!</p>
+        </div>
+
+        <h3>❓ Self-Test MCQ</h3>
+        <p>Which law explains why you lurch forward when a bus suddenly brakes?</p>
+        <div class="mcq-options" id="mcq">
+          <div class="mcq-option" data-correct="false">A) Newton’s Second Law</div>
+          <div class="mcq-option" data-correct="true">B) Newton’s First Law</div>
+          <div class="mcq-option" data-correct="false">C) Newton’s Third Law</div>
+          <div class="mcq-option" data-correct="false">D) Law of Gravitation</div>
+        </div>
+        <div id="mcq-feedback" style="margin-top: 0.5rem; font-weight: 500;"></div>
+
+        <h3>🔗 External Resources (Legal Links)</h3>
+        <ul>
+          <li>📘 <a href="https://www.khanacademy.org/science/physics/forces-newtons-laws" target="_blank">Khan Academy: Forces & Newton’s Laws</a></li>
+          <li>🎓 <a href="https://www.pw.live/physics-newtons-laws" target="_blank">Physics Wallah Lecture (Redirect)</a></li>
+          <li>🧪 <a href="https://phet.colorado.edu/sims/html/forces-and-motion-basics/latest/forces-and-motion-basics_en.html" target="_blank">PhET Simulation: Forces & Motion</a></li>
+        </ul>
+      </div>
+
+      <div class="content board-content" style="display:none;">
+        <h3>🧠 Board-Level Summary (CBSE/State)</h3>
+        <p>Focus: Numerical problem-solving, free-body diagrams, tension in strings, pulley systems, pseudo forces in non-inertial frames.</p>
+        <div class="accordion">
+          <div class="accordion-item">
+            <div class="accordion-header">📌 Derivation: <code>F = dp/dt</code> → <code>F = ma</code></div>
+            <div class="accordion-content">
+              <p>For constant mass: <code>p = mv</code> ⇒ <code>dp/dt = m·dv/dt = ma</code></p>
+              <p>Hence, <code>F = ma</code>.</p>
+            </div>
+          </div>
+        </div>
+        <p><a href="#mcq" class="btn btn-outline">Try the same MCQ</a></p>
+      </div>
+
+      <div class="content jee-content" style="display:none;">
+        <h3>🧠 JEE-Advanced Insight</h3>
+        <p>Non-inertial frames, constraint motion, variable mass systems (rocket propulsion), Lagrangian hints.</p>
+        <div class="accordion">
+          <div class="accordion-item">
+            <div class="accordion-header">🔥 Advanced: Variable Mass Systems</div>
+            <div class="accordion-content">
+              <p><code>F_ext + v_rel · (dm/dt) = m·a</code></p>
+              <p>Used in rocket equation: <code>Δv = v_exhaust · ln(m₀/m)</code></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Study Path Builder -->
+    <section class="card">
+      <h2>🎯 Study Path Builder</h2>
+      <p>Select your goals → get a custom 7-day roadmap.</p>
+      <div class="path-inputs">
+        <div>
+          <label for="exam">Target Exam</label>
+          <select id="exam">
+            <option>CBSE Class 11</option>
+            <option selected>JEE Main</option>
+            <option>NEET</option>
+            <option>JEE Advanced</option>
+          </select>
+        </div>
+        <div>
+          <label for="time">Time Available/Day</label>
+          <select id="time">
+            <option>1 hour</option>
+            <option selected>2 hours</option>
+            <option>3+ hours</option>
+          </select>
+        </div>
+        <div>
+          <label for="weak">Weakest Subject</label>
+          <select id="weak">
+            <option>Physics</option>
+            <option selected>Chemistry</option>
+            <option>Maths</option>
+            <option>Biology</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn" id="generate-path">Generate Roadmap</button>
+      <div id="roadmap-output"></div>
+    </section>
+
+    <!-- Legal Resource Aggregator -->
+    <section class="card">
+      <h2>📚 Legal Resource Aggregator: <em>Kinematics</em></h2>
+      <pre style="background:#f8fafc;padding:1rem;border-radius:12px;font-family:monospace;font-size:0.95rem;">
+📘 Kinematics
+├── 🎥 <a href="https://www.khanacademy.org/science/physics/one-dimensional-motion" target="_blank">Khan Academy Video</a>
+├── 🎓 <a href="https://www.pw.live/kinematics" target="_blank">PW Lecture (Link Only)</a>
+├── 📝 <a href="#smart-dashboard">Your EduVerse Notes</a>
+├── ❓ 15 MCQs (Auto-generated)
+└── 🧪 <a href="https://phet.colorado.edu/sims/html/moving-man/latest/moving-man_en.html" target="_blank">PhET: Moving Man</a>
+      </pre>
+      <p style="margin-top:1rem; font-style:italic; color:#6b7280;">
+        ✅ All links respect copyright. No copying. Only organization & enhancement.
+      </p>
+    </section>
+
+    <!-- Footer + Disclaimer -->
+    <footer>
+      <button class="btn btn-outline disclaimer-btn" id="show-disclaimer">📜 View Legal Disclaimer</button>
+      <p>© 2026 EduVerse India — For Educational Reference Only</p>
+    </footer>
+  </div>
+
+  <!-- Disclaimer Modal -->
+  <div class="modal" id="disclaimer-modal">
+    <div class="modal-content">
+      <span class="close" id="close-modal">&times;</span>
+      <h2 style="color:var(--accent);">🛡️ Legal Disclaimer</h2>
+      <p><strong>EduVerse India does NOT own or host third-party content.</strong></p>
+      <ul style="margin:1rem 0; padding-left:1.5rem;">
+        <li>All videos belong to their respective creators (e.g., Khan Academy, PW, YouTube).</li>
+        <li>We only <strong>link to</strong> or <strong>embed</strong> content legally (via YouTube iframe, official APIs, or open licenses like CC BY-NC-SA).</li>
+        <li>Notes, summaries, simulations, and explanations are <strong>original</strong> and written in our own words.</li>
+        <li>No PDFs, videos, or text are downloaded, re-uploaded, or copied.</li>
+      </ul>
+      <p>This platform is for <strong>educational reference and concept reinforcement only</strong>. We comply with fair use and Indian Copyright Act §52(1)(i) for instructional purposes.</p>
+      <p style="margin-top:1.5rem; font-weight:600;">✅ 100% Legal | ✅ Student-First | ✅ Engineering-Grade</p>
+    </div>
+  </div>
+
+  <!-- Cloudflare Beacon (safe & legal) -->
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"e440187263364c608909f8a9aa9016b8","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+
+  <script>
+    // Level Selector
+    document.querySelectorAll('.level-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const level = btn.dataset.level;
+        document.querySelectorAll('.content').forEach(el => el.style.display = 'none');
+        document.querySelector(`.${level}-content`).style.display = 'block';
+      });
+    });
+
+    // Accordion
+    document.querySelectorAll('.accordion-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const content = header.nextElementSibling;
+        content.classList.toggle('open');
+        header.querySelector('span')?.textContent = content.classList.contains('open') ? '▼' : '▶';
+      });
+    });
+
+    // MCQ Logic
+    document.getElementById('mcq').addEventListener('click', e => {
+      if (e.target.classList.contains('mcq-option')) {
+        document.querySelectorAll('.mcq-option').forEach(opt => {
+          opt.classList.remove('selected', 'correct', 'incorrect');
+        });
+        e.target.classList.add('selected');
+        const isCorrect = e.target.dataset.correct === 'true';
+        document.getElementById('mcq-feedback').innerHTML = 
+          isCorrect 
+            ? '<span style="color:#10b981;">✅ Correct! Inertia (1st Law) keeps you moving forward.</span>'
+            : '<span style="color:#ef4444;">❌ Incorrect — think about inertia!</span>';
+      }
+    });
+
+    // Simple Physics Simulation (Ball Drop)
+    const sim = document.getElementById('sim');
+    const ball = document.getElementById('ball');
+    let velocity = 0;
+    let position = 20;
+    let gravity = 0.2;
+    let paused = false;
+
+    sim.addEventListener('click', () => {
+      velocity = -5; // upward "force"
+    });
+
+    function animate() {
+      if (!paused) {
+        velocity += gravity;
+        position += velocity;
+        if (position > sim.clientHeight - 40) {
+          position = sim.clientHeight - 40;
+          velocity *= -0.7; // bounce with damping
+        }
+        ball.style.top = position + 'px';
+      }
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // Study Path Generator
+    document.getElementById('generate-path').addEventListener('click', () => {
+      const exam = document.getElementById('exam').value;
+      const time = document.getElementById('time').value;
+      const weak = document.getElementById('weak').value;
+
+      const roadmap = `
+        <div class="roadmap">
+          <h3>🗓️ Your 7-Day Roadmap for <em>${exam}</em></h3>
+          <ul style="padding-left:1.5rem; margin:1rem 0;">
+            <li><strong>Day 1–2:</strong> Revise ${weak} fundamentals (EduVerse notes + Khan videos)</li>
+            <li><strong>Day 3:</strong> Practice 15 MCQs on weak topics</li>
+            <li><strong>Day 4:</strong> Interactive simulation + derivation drills</li>
+            <li><strong>Day 5–6:</strong> Mixed problem sets (Board + ${exam} level)</li>
+            <li><strong>Day 7:</strong> Self-assessment test (timed)</li>
+          </ul>
+          <p>🕒 Daily: ${time} | 📚 Resources: Only legal links & original content</p>
+        </div>
+      `;
+      document.getElementById('roadmap-output').innerHTML = roadmap;
+    });
+
+    // Disclaimer Modal
+    const modal = document.getElementById('disclaimer-modal');
+    document.getElementById('show-disclaimer').onclick = () => modal.style.display = 'flex';
+    document.getElementById('close-modal').onclick = () => modal.style.display = 'none';
+    window.onclick = e => { if (e.target === modal) modal.style.display = 'none'; };
+  </script>
+</body>
+</html>
