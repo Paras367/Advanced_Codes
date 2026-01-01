@@ -41,7 +41,7 @@
   overflow: hidden;
 }
 
-.card::after {
+    .card::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -52,12 +52,12 @@
   transition: opacity 0.4s ease;
 }
 
-.card:hover::after {
+   .card:hover::after {
   opacity: 1;
 }
 
 
-header::after {
+    header::after {
   content: "";
   position: absolute;
   top: 0;
@@ -73,23 +73,23 @@ header::after {
   animation: headerShine 6s infinite;
 }
 
-@keyframes headerShine {
+    @keyframes headerShine {
   0% { left: -120%; }
   50% { left: 120%; }
   100% { left: 120%; }
 }
 
-button, .btn {
+    button, .btn {
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-button:hover, .btn:hover {
+    button:hover, .btn:hover {
   transform: translateY(-4px) scale(1.05);
   box-shadow: 0 12px 30px rgba(30,58,138,0.4);
 }
 
 
-body::before {
+    body::before {
   content: "";
   position: fixed;
   inset: 0;
