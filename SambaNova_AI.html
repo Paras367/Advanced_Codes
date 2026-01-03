@@ -12,20 +12,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 
   <!-- 🎨 Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <!-- ✨ Animations -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-  <link rel="stylesheet" href="https://unpkg.com/hover.css@2.3.2/css/hover-min.css" />
-
-  <!-- 📊 Charts -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <!-- 🔤 Typed.js for typing effect -->
   <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.16"></script>
 
   <!-- 🌈 Prism.js (code highlighting) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" integrity="sha512-..." crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" crossorigin="anonymous" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
@@ -34,7 +30,6 @@
 
   <!-- 🍞 Toast notifications -->
   <style>
-    /* Minimal toast lib — self-contained */
     .toast {
       position: fixed; top: 20px; right: 20px; z-index: 9999;
       padding: 12px 20px; border-radius: 8px; color: white;
@@ -48,17 +43,10 @@
   </style>
 
   <style>
-    /* ==================================================
-       🎨 CUSTOM CSS 
-       Uses CSS variables, glassmorphism, custom scroll,
-       chat bubbles, tilt, etc.
-       ================================================== */
-
     :root {
       --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
 
-      /* Light Theme */
       --light-bg: #f9fafb;
       --light-surface: #ffffff;
       --light-card: #f3f4f6;
@@ -69,7 +57,6 @@
       --light-primary-hover: #4338ca;
       --light-highlight: #dbeafe;
 
-      /* Dark Theme (default) */
       --dark-bg: #0f172a;
       --dark-surface: #1e293b;
       --dark-card: #334155;
@@ -80,13 +67,11 @@
       --dark-primary-hover: #6366f1;
       --dark-highlight: #1e293b;
 
-      /* Shared */
       --radius: 12px;
       --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       --shadow: 0 4px 20px rgba(0,0,0,0.1);
       --shadow-lg: 0 10px 30px rgba(0,0,0,0.2);
 
-      /* Theme-dependent vars (switched via JS) */
       --bg: var(--dark-bg);
       --surface: var(--dark-surface);
       --card: var(--dark-card);
@@ -138,7 +123,6 @@
       background: var(--primary);
     }
 
-    /* Glassmorphism base */
     .glass {
       background: rgba(255,255,255,0.05);
       backdrop-filter: blur(12px);
@@ -147,7 +131,6 @@
       border-radius: var(--radius);
     }
 
-    /* Header */
     header {
       padding: 1.2rem 2rem;
       display: flex;
@@ -199,7 +182,6 @@
       color: white;
     }
 
-    /* Main */
     main {
       max-width: 900px;
       margin: 0 auto;
@@ -209,7 +191,6 @@
       gap: 1.5rem;
     }
 
-    /* Mode Selector */
     .mode-selector {
       display: flex;
       gap: 0.5rem;
@@ -236,7 +217,6 @@
       border-color: var(--primary);
     }
 
-    /* Chat Area */
     .chat-container {
       flex: 1;
       display: flex;
@@ -250,7 +230,6 @@
       border: 1px solid var(--border);
     }
 
-    /* Message Bubbles */
     .message {
       display: flex;
       gap: 1rem;
@@ -307,7 +286,6 @@
       border-top-left-radius: 4px;
     }
 
-    /* AI thinking animation */
     .thinking {
       display: flex;
       align-items: center;
@@ -330,7 +308,6 @@
       50% { opacity: 1; transform: scale(1); }
     }
 
-    /* Input area */
     .input-area {
       display: flex;
       gap: 0.8rem;
@@ -382,7 +359,6 @@
       cursor: not-allowed;
     }
 
-    /* Token usage */
     .token-bar {
       width: 100%;
       height: 6px;
@@ -405,7 +381,6 @@
       margin-top: 4px;
     }
 
-    /* Privacy Panel */
     .privacy {
       background: var(--card);
       padding: 1rem;
@@ -421,7 +396,6 @@
       gap: 6px;
     }
 
-    /* Footer */
     footer {
       text-align: center;
       padding: 1.5rem;
@@ -431,7 +405,6 @@
       margin-top: auto;
     }
 
-    /* Responsive */
     @media (max-width: 768px) {
       header { padding: 1rem; }
       main { padding: 1rem; }
@@ -506,15 +479,9 @@
     <a href="https://workers.cloudflare.com" target="_blank" style="color:var(--primary);">Cloudflare Workers</a>
   </footer>
 
-  <!-- 🧠 Scripts -->
   <script>
-    // ==================================================
-    // 🚀 FRONTEND LOGIC — NO API KEY HERE!
-    // Backend URL placeholder — change to your deployed URL
-    
-    // ==================================================
-    const BACKEND_URL = '
-falling-queen-f2d7.dhimanparas605.workers.dev/api/chat'; // ⚠️ 
+    // ⚠️ 
+    const BACKEND_URL = 'https://falling-queen-f2d7.dhimanparas605.workers.dev/api/chat';
 
     // DOM Elements
     const chatContainer = document.getElementById('chatContainer');
@@ -554,7 +521,7 @@ falling-queen-f2d7.dhimanparas605.workers.dev/api/chat'; // ⚠️
       });
     });
 
-    // 🔄 Quick Mode Cycle (for demo)
+    // 🔄 Quick Mode Cycle
     modeToggleBtn.addEventListener('click', () => {
       const modes = ['study', 'code', 'doubt'];
       const idx = modes.indexOf(currentMode);
@@ -579,17 +546,14 @@ falling-queen-f2d7.dhimanparas605.workers.dev/api/chat'; // ⚠️
       const text = userInput.value.trim();
       if (!text || isProcessing) return;
 
-      // Add user message
       addMessage(text, 'user');
       userInput.value = '';
       userInput.style.height = 'auto';
       isProcessing = true;
       sendBtn.disabled = true;
 
-      // Show AI thinking
       addThinkingBubble();
 
-      // 🚨 SECURITY: All requests go to YOUR backend — never to SambaNova directly
       fetch(BACKEND_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -603,7 +567,6 @@ falling-queen-f2d7.dhimanparas605.workers.dev/api/chat'; // ⚠️
         return res.json();
       })
       .then(data => {
-        // Simulate streaming-like typing effect
         removeThinkingBubble();
         simulateStreamingResponse(data.response || 'No response received.', data.tokens_used || 0);
       })
@@ -630,12 +593,11 @@ falling-queen-f2d7.dhimanparas605.workers.dev/api/chat'; // ⚠️
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
       
-      // If contains code fences, render with Prism (simplified)
       let content = escaped;
       if (escaped.includes('```')) {
         content = escaped.replace(/```(\w*)\n([\s\S]*?)\n```/g, (match, lang, code) => {
           const cleanCode = code.trim();
-          return `<pre class="language-${lang || 'text'}"><code class="language-${lang || 'text'}">${Prism.util.encode(cleanCode)}</code></pre>`;
+          return `<pre class="language-${lang || 'text'}"><code class="language-${lang || 'text'}">${cleanCode}</code></pre>`;
         });
       }
 
@@ -643,12 +605,10 @@ falling-queen-f2d7.dhimanparas605.workers.dev/api/chat'; // ⚠️
       chatContainer.appendChild(div);
       chatContainer.scrollTop = chatContainer.scrollHeight;
 
-      // Highlight code blocks
-      if (content.includes('<pre')) {
+      if (content.includes('<pre') && typeof Prism !== 'undefined') {
         Prism.highlightAllUnder(div);
       }
 
-      // Add copy button to code blocks
       const codeBlocks = div.querySelectorAll('pre');
       codeBlocks.forEach(block => {
         const copyBtn = document.createElement('button');
@@ -663,10 +623,17 @@ falling-queen-f2d7.dhimanparas605.workers.dev/api/chat'; // ⚠️
         block.style.position = 'relative';
         block.appendChild(copyBtn);
 
-        new ClipboardJS(copyBtn, {
-          text: () => block.querySelector('code').textContent
+        if (typeof ClipboardJS !== 'undefined') {
+          new ClipboardJS(copyBtn, {
+            text: () => block.querySelector('code').textContent
+          });
+        }
+        copyBtn.addEventListener('click', () => {
+          const code = block.querySelector('code').textContent;
+          navigator.clipboard.writeText(code).then(() => {
+            showToast('Copied to clipboard!', 'success');
+          });
         });
-        copyBtn.addEventListener('click', () => showToast('Copied to clipboard!', 'success'));
       });
     }
 
@@ -695,7 +662,7 @@ falling-queen-f2d7.dhimanparas605.workers.dev/api/chat'; // ⚠️
       }
     }
 
-    // 🎞️ Simulate streaming response (for demo — real backend can stream!)
+    // 🎞️ Simulate streaming response
     function simulateStreamingResponse(text, tokens) {
       const words = text.split(' ');
       let i = 0;
@@ -712,15 +679,15 @@ falling-queen-f2d7.dhimanparas605.workers.dev/api/chat'; // ⚠️
           chatContainer.scrollTop = chatContainer.scrollHeight;
         } else {
           clearInterval(interval);
-          // Finalize code blocks
           if (text.includes('```')) {
             contentDiv.innerHTML = contentDiv.textContent
               .replace(/```(\w*)\n([\s\S]*?)\n```/g, (match, lang, code) => {
                 const cleanCode = code.trim();
-                return `<pre class="language-${lang || 'text'}"><code class="language-${lang || 'text'}">${Prism.util.encode(cleanCode)}</code></pre>`;
+                return `<pre class="language-${lang || 'text'}"><code class="language-${lang || 'text'}">${cleanCode}</code></pre>`;
               });
-            Prism.highlightAllUnder(bubble);
-            // Add copy buttons
+            if (typeof Prism !== 'undefined') {
+              Prism.highlightAllUnder(bubble);
+            }
             const codeBlocks = bubble.querySelectorAll('pre');
             codeBlocks.forEach(block => {
               const copyBtn = document.createElement('button');
@@ -734,20 +701,26 @@ falling-queen-f2d7.dhimanparas605.workers.dev/api/chat'; // ⚠️
               `;
               block.style.position = 'relative';
               block.appendChild(copyBtn);
-              new ClipboardJS(copyBtn, {
-                text: () => block.querySelector('code').textContent
+              if (typeof ClipboardJS !== 'undefined') {
+                new ClipboardJS(copyBtn, {
+                  text: () => block.querySelector('code').textContent
+                });
+              }
+              copyBtn.addEventListener('click', () => {
+                const code = block.querySelector('code').textContent;
+                navigator.clipboard.writeText(code).then(() => {
+                  showToast('Copied!', 'success');
+                });
               });
-              copyBtn.addEventListener('click', () => showToast('Copied!', 'success'));
             });
           }
         }
-      }, 30 + Math.random() * 40); // Variable speed
+      }, 30 + Math.random() * 40);
 
-      // Update token bar
       updateTokenUsage(tokens);
     }
 
-    // 📊 Token visualization (simulated)
+    // 📊 Token visualization
     function updateTokenUsage(tokens) {
       tokenUsage = Math.min(tokenUsage + tokens, 4096);
       const pct = (tokenUsage / 4096) * 100;
@@ -773,33 +746,6 @@ falling-queen-f2d7.dhimanparas605.workers.dev/api/chat'; // ⚠️
       userInput.style.height = 'auto';
       userInput.style.height = Math.min(userInput.scrollHeight, 150) + 'px';
     });
-
-    // 📝 License & Security Comments 
-    /*
-     * ====================================================
-     * SambaNova AI Web Lab — Frontend 
-     * 
-     * © 2026 PARAS DHIMAN
-     * MIT License (https://opensource.org/licenses/MIT)
-     * 
-     * 🔐 SECURITY NOTICE:
-     * - SambaNova API key is NEVER in this file.
-     * - All requests go to backend (Cloudflare/Vercel/Netlify).
-    
-     * 
-     * 🚫 DO NOT:
-     * - Commit API keys to Git
-     * - Expose backend secrets
-     * - Assume AI output is 100% correct
-     * 
-     * ✅ DO:
-     * - Credit libraries (see HTML footer)
-     * - Use for education/experimentation
-     * - Verify critical outputs
-     * 
-     * Third-party libraries used under their respective licenses.
-     * ====================================================
-     */
 
     // Initial focus
     userInput.focus();
