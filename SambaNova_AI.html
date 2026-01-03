@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SambaNova AI Web Lab</title>
+  <meta name="description" content="AI-powered study helper, code explainer & doubt solver — privacy-first, open & educational." />
+
+  <!-- 🌐 Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <!-- 🎨 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- ✨ Animations -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/hover.css@2.3.2/css/hover-min.css" />
+
+  <!-- 📊 Charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- 🔤 Typed.js for typing effect -->
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.16"></script>
+
+  <!-- 🌈 Prism.js (code highlighting) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" integrity="sha512-..." crossorigin="anonymous" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+  <!-- 📋 Clipboard.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+
+  <!-- 🍞 Toast notifications -->
+  <style>
+    /* Minimal toast lib — self-contained */
+    .toast {
+      position: fixed; top: 20px; right: 20px; z-index: 9999;
+      padding: 12px 20px; border-radius: 8px; color: white;
+      font-weight: 500; font-size: 0.9rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transform: translateX(200%); transition: transform 0.3s ease;
+    }
+    .toast.show { transform: translateX(0); }
+    .toast.success { background: #10b981; }
+    .toast.error { background: #ef4444; }
+  </style>
+
+  <style>
+    /* ==================================================
+       🎨 CUSTOM CSS 
+       Uses CSS variables, glassmorphism, custom scroll,
+       chat bubbles, tilt, etc.
+       ================================================== */
+
+    :root {
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      /* Light Theme */
+      --light-bg: #f9fafb;
+      --light-surface: #ffffff;
+      --light-card: #f3f4f6;
+      --light-border: #e5e7eb;
+      --light-text: #1f2937;
+      --light-secondary: #6b7280;
+      --light-primary: #4f46e5;
+      --light-primary-hover: #4338ca;
+      --light-highlight: #dbeafe;
+
+      /* Dark Theme (default) */
+      --dark-bg: #0f172a;
+      --dark-surface: #1e293b;
+      --dark-card: #334155;
+      --dark-border: #475569;
+      --dark-text: #f1f5f9;
+      --dark-secondary: #94a3b8;
+      --dark-primary: #818cf8;
+      --dark-primary-hover: #6366f1;
+      --dark-highlight: #1e293b;
+
+      /* Shared */
+      --radius: 12px;
+      --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --shadow: 0 4px 20px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 30px rgba(0,0,0,0.2);
+
+      /* Theme-dependent vars (switched via JS) */
+      --bg: var(--dark-bg);
+      --surface: var(--dark-surface);
+      --card: var(--dark-card);
+      --border: var(--dark-border);
+      --text: var(--dark-text);
+      --secondary: var(--dark-secondary);
+      --primary: var(--dark-primary);
+      --primary-hover: var(--dark-primary-hover);
+      --highlight: var(--dark-highlight);
+    }
+
+    [data-theme="light"] {
+      --bg: var(--light-bg);
+      --surface: var(--light-surface);
+      --card: var(--light-card);
+      --border: var(--light-border);
+      --text: var(--light-text);
+      --secondary: var(--light-secondary);
+      --primary: var(--light-primary);
+      --primary-hover: var(--light-primary-hover);
+      --highlight: var(--light-highlight);
+    }
+
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: var(--transition);
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary);
+    }
+
+    /* Glassmorphism base */
+    .glass {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    /* Header */
+    header {
+      padding: 1.2rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary);
+    }
+
+    .logo i {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .controls {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .mode-btn, .theme-toggle {
+      background: var(--card);
+      border: none;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .mode-btn:hover, .theme-toggle:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* Main */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* Mode Selector */
+    .mode-selector {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .mode-option {
+      padding: 0.6rem 1.2rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .mode-option:hover {
+      background: var(--highlight);
+    }
+
+    .mode-option.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* Chat Area */
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      height: 50vh;
+      overflow-y: auto;
+      padding: 1rem;
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+
+    /* Message Bubbles */
+    .message {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem;
+      max-width: 85%;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message.user {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .message.ai {
+      align-self: flex-start;
+    }
+
+    .avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-weight: bold;
+      background: var(--primary);
+      color: white;
+    }
+
+    .message.user .avatar { background: #60a5fa; }
+    .message.ai .avatar { background: var(--primary); }
+
+    .bubble {
+      padding: 1rem 1.2rem;
+      border-radius: 18px;
+      position: relative;
+      overflow: hidden;
+      word-break: break-word;
+    }
+
+    .message.user .bubble {
+      background: var(--primary);
+      color: white;
+      border-top-right-radius: 4px;
+    }
+
+    .message.ai .bubble {
+      background: var(--card);
+      border-top-left-radius: 4px;
+    }
+
+    /* AI thinking animation */
+    .thinking {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--secondary);
+      font-style: italic;
+    }
+
+    .dot {
+      width: 8px; height: 8px;
+      background: var(--primary);
+      border-radius: 50%;
+      animation: pulseDot 1.5s infinite ease-in-out;
+    }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Input area */
+    .input-area {
+      display: flex;
+      gap: 0.8rem;
+      background: var(--surface);
+      padding: 1.2rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+
+    textarea {
+      flex: 1;
+      background: var(--card);
+      border: none;
+      border-radius: var(--radius);
+      padding: 1rem;
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      color: var(--text);
+      resize: none;
+      max-height: 150px;
+      min-height: 60px;
+      outline: none;
+    }
+
+    textarea::placeholder {
+      color: var(--secondary);
+    }
+
+    button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    button:hover {
+      background: var(--primary-hover);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* Token usage */
+    .token-bar {
+      width: 100%;
+      height: 6px;
+      background: var(--card);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .token-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #10b981, #3b82f6);
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+
+    .token-label {
+      font-size: 0.8rem;
+      color: var(--secondary);
+      text-align: right;
+      margin-top: 4px;
+    }
+
+    /* Privacy Panel */
+    .privacy {
+      background: var(--card);
+      padding: 1rem;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      color: var(--secondary);
+    }
+
+    .privacy h3 {
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--secondary);
+      border-top: 1px solid var(--border);
+      margin-top: auto;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header { padding: 1rem; }
+      main { padding: 1rem; }
+      .message { max-width: 95%; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <i class="fas fa-fire"></i>
+      <span>SambaNova AI Web Lab</span>
+    </div>
+    <div class="controls">
+      <button class="mode-btn" id="modeToggle" title="Switch Study/Code/Doubt">
+        <i class="fas fa-sync-alt"></i>
+      </button>
+      <button class="theme-toggle" id="themeToggle" title="Toggle Dark/Light Mode">
+        <i class="fas fa-moon"></i>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <div class="mode-selector">
+      <div class="mode-option active" data-mode="study">📚 Study Helper</div>
+      <div class="mode-option" data-mode="code">💻 Code Explainer</div>
+      <div class="mode-option" data-mode="doubt">❓ Doubt Solver</div>
+    </div>
+
+    <div class="chat-container" id="chatContainer">
+      <div class="message ai">
+        <div class="avatar">AI</div>
+        <div class="bubble">
+          Hello! I'm your AI study partner. Ask me anything — explain concepts, debug code, or solve doubts. 🔍
+          <br><br>
+          <em>💡 Tip: Try "Explain quantum superposition like I'm 15" or "Why does my Python recursion crash?"</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="token-usage">
+      <div class="token-bar">
+        <div class="token-fill" id="tokenFill"></div>
+      </div>
+      <div class="token-label">Estimated tokens used: <span id="tokenCount">0</span>/4096</div>
+    </div>
+    
+    <div class="input-area">
+      <textarea id="userInput" placeholder="Type your question here... (e.g., 'How does HTTPS work?')"></textarea>
+      <button id="sendBtn">
+        <i class="fas fa-paper-plane"></i> Send
+      </button>
+    </div>
+
+    <div class="privacy">
+      <h3><i class="fas fa-lock"></i> Privacy Notice</h3>
+      <p>
+        ✅ All requests are routed via our secure backend — <strong>your prompts never touch public logs</strong>.<br>
+        ✅ No conversations are stored. Responses are ephemeral.<br>
+        ✅ API key is held server-side only (Cloudflare Workers).<br>
+        ⚠️ AI may hallucinate — verify critical info.
+      </p>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2026 PARAS DHIMAN • Educational & Experimental Use Only<br>
+    MIT License • No user data stored • AI responses not guaranteed correct<br>
+    Powered by <a href="https://sambanovasystems.com" target="_blank" style="color:var(--primary);">SambaNova</a> + 
+    <a href="https://workers.cloudflare.com" target="_blank" style="color:var(--primary);">Cloudflare Workers</a>
+  </footer>
+
+  <!-- 🧠 Scripts -->
+  <script>
+    // ==================================================
+    // 🚀 FRONTEND LOGIC — NO API KEY HERE!
+    // Backend URL placeholder — change to your deployed URL
+    
+    // ==================================================
+    const BACKEND_URL = 'https://your-backend-url-here/api/chat'; // ⚠️ 
+
+    // DOM Elements
+    const chatContainer = document.getElementById('chatContainer');
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const modeOptions = document.querySelectorAll('.mode-option');
+    const themeToggle = document.getElementById('themeToggle');
+    const tokenFill = document.getElementById('tokenFill');
+    const tokenCountEl = document.getElementById('tokenCount');
+    const modeToggleBtn = document.getElementById('modeToggle');
+
+    // State
+    let currentMode = 'study';
+    let isProcessing = false;
+    let tokenUsage = 0;
+
+    // 🌓 Theme Toggle
+    themeToggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      themeToggle.innerHTML = `<i class="fas fa-${next === 'dark' ? 'moon' : 'sun'}"></i>`;
+      localStorage.setItem('theme', next);
+    });
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    themeToggle.innerHTML = `<i class="fas fa-${savedTheme === 'dark' ? 'moon' : 'sun'}"></i>`;
+
+    // 📚 Mode Switching
+    modeOptions.forEach(opt => {
+      opt.addEventListener('click', () => {
+        modeOptions.forEach(o => o.classList.remove('active'));
+        opt.classList.add('active');
+        currentMode = opt.dataset.mode;
+      });
+    });
+
+    // 🔄 Quick Mode Cycle (for demo)
+    modeToggleBtn.addEventListener('click', () => {
+      const modes = ['study', 'code', 'doubt'];
+      const idx = modes.indexOf(currentMode);
+      const nextMode = modes[(idx + 1) % modes.length];
+      modeOptions.forEach(o => {
+        if (o.dataset.mode === nextMode) {
+          o.click();
+        }
+      });
+    });
+
+    // 📤 Send Message
+    sendBtn.addEventListener('click', sendMessage);
+    userInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    function sendMessage() {
+      const text = userInput.value.trim();
+      if (!text || isProcessing) return;
+
+      // Add user message
+      addMessage(text, 'user');
+      userInput.value = '';
+      userInput.style.height = 'auto';
+      isProcessing = true;
+      sendBtn.disabled = true;
+
+      // Show AI thinking
+      addThinkingBubble();
+
+      // 🚨 SECURITY: All requests go to YOUR backend — never to SambaNova directly
+      fetch(BACKEND_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: text,
+          mode: currentMode
+        })
+      })
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then(data => {
+        // Simulate streaming-like typing effect
+        removeThinkingBubble();
+        simulateStreamingResponse(data.response || 'No response received.', data.tokens_used || 0);
+      })
+      .catch(err => {
+        console.error('Request failed:', err);
+        removeThinkingBubble();
+        addMessage('⚠️ Oops! Backend error — check console or network.', 'ai');
+        showToast('Connection failed. Is backend deployed?', 'error');
+      })
+      .finally(() => {
+        isProcessing = false;
+        sendBtn.disabled = false;
+      });
+    }
+
+    // 💬 Add message to chat
+    function addMessage(text, sender = 'ai') {
+      const div = document.createElement('div');
+      div.className = `message ${sender}`;
+      
+      const avatar = `<div class="avatar">${sender === 'user' ? 'U' : 'AI'}</div>`;
+      const escaped = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+      
+      // If contains code fences, render with Prism (simplified)
+      let content = escaped;
+      if (escaped.includes('```')) {
+        content = escaped.replace(/```(\w*)\n([\s\S]*?)\n```/g, (match, lang, code) => {
+          const cleanCode = code.trim();
+          return `<pre class="language-${lang || 'text'}"><code class="language-${lang || 'text'}">${Prism.util.encode(cleanCode)}</code></pre>`;
+        });
+      }
+
+      div.innerHTML = `${avatar}<div class="bubble">${content}</div>`;
+      chatContainer.appendChild(div);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+
+      // Highlight code blocks
+      if (content.includes('<pre')) {
+        Prism.highlightAllUnder(div);
+      }
+
+      // Add copy button to code blocks
+      const codeBlocks = div.querySelectorAll('pre');
+      codeBlocks.forEach(block => {
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'copy-btn';
+        copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
+        copyBtn.style.cssText = `
+          position: absolute; top: 4px; right: 4px;
+          background: rgba(0,0,0,0.2); color: white; border: none;
+          width: 24px; height: 24px; border-radius: 4px; cursor: pointer;
+          font-size: 0.7rem;
+        `;
+        block.style.position = 'relative';
+        block.appendChild(copyBtn);
+
+        new ClipboardJS(copyBtn, {
+          text: () => block.querySelector('code').textContent
+        });
+        copyBtn.addEventListener('click', () => showToast('Copied to clipboard!', 'success'));
+      });
+    }
+
+    // ⏳ Thinking bubble
+    let thinkingBubble = null;
+    function addThinkingBubble() {
+      thinkingBubble = document.createElement('div');
+      thinkingBubble.className = 'message ai';
+      thinkingBubble.innerHTML = `
+        <div class="avatar">AI</div>
+        <div class="bubble">
+          <div class="thinking">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+        </div>
+      `;
+      chatContainer.appendChild(thinkingBubble);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    function removeThinkingBubble() {
+      if (thinkingBubble && thinkingBubble.parentNode) {
+        thinkingBubble.remove();
+      }
+    }
+
+    // 🎞️ Simulate streaming response (for demo — real backend can stream!)
+    function simulateStreamingResponse(text, tokens) {
+      const words = text.split(' ');
+      let i = 0;
+      const bubble = document.createElement('div');
+      bubble.className = 'message ai';
+      bubble.innerHTML = `<div class="avatar">AI</div><div class="bubble"></div>`;
+      chatContainer.appendChild(bubble);
+      const contentDiv = bubble.querySelector('.bubble');
+
+      const interval = setInterval(() => {
+        if (i < words.length) {
+          contentDiv.textContent += (i === 0 ? '' : ' ') + words[i];
+          i++;
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+        } else {
+          clearInterval(interval);
+          // Finalize code blocks
+          if (text.includes('```')) {
+            contentDiv.innerHTML = contentDiv.textContent
+              .replace(/```(\w*)\n([\s\S]*?)\n```/g, (match, lang, code) => {
+                const cleanCode = code.trim();
+                return `<pre class="language-${lang || 'text'}"><code class="language-${lang || 'text'}">${Prism.util.encode(cleanCode)}</code></pre>`;
+              });
+            Prism.highlightAllUnder(bubble);
+            // Add copy buttons
+            const codeBlocks = bubble.querySelectorAll('pre');
+            codeBlocks.forEach(block => {
+              const copyBtn = document.createElement('button');
+              copyBtn.className = 'copy-btn';
+              copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
+              copyBtn.style.cssText = `
+                position: absolute; top: 4px; right: 4px;
+                background: rgba(0,0,0,0.2); color: white; border: none;
+                width: 24px; height: 24px; border-radius: 4px; cursor: pointer;
+                font-size: 0.7rem;
+              `;
+              block.style.position = 'relative';
+              block.appendChild(copyBtn);
+              new ClipboardJS(copyBtn, {
+                text: () => block.querySelector('code').textContent
+              });
+              copyBtn.addEventListener('click', () => showToast('Copied!', 'success'));
+            });
+          }
+        }
+      }, 30 + Math.random() * 40); // Variable speed
+
+      // Update token bar
+      updateTokenUsage(tokens);
+    }
+
+    // 📊 Token visualization (simulated)
+    function updateTokenUsage(tokens) {
+      tokenUsage = Math.min(tokenUsage + tokens, 4096);
+      const pct = (tokenUsage / 4096) * 100;
+      tokenFill.style.width = `${pct}%`;
+      tokenCountEl.textContent = tokenUsage;
+    }
+
+    // 🍞 Toast notifications
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+      }, 2500);
+    }
+
+    // 📏 Auto-resize textarea
+    userInput.addEventListener('input', () => {
+      userInput.style.height = 'auto';
+      userInput.style.height = Math.min(userInput.scrollHeight, 150) + 'px';
+    });
+
+    // 📝 License & Security Comments 
+    /*
+     * ====================================================
+     * SambaNova AI Web Lab — Frontend 
+     * 
+     * © 2026 PARAS DHIMAN
+     * MIT License (https://opensource.org/licenses/MIT)
+     * 
+     * 🔐 SECURITY NOTICE:
+     * - SambaNova API key is NEVER in this file.
+     * - All requests go to backend (Cloudflare/Vercel/Netlify).
+    
+     * 
+     * 🚫 DO NOT:
+     * - Commit API keys to Git
+     * - Expose backend secrets
+     * - Assume AI output is 100% correct
+     * 
+     * ✅ DO:
+     * - Credit libraries (see HTML footer)
+     * - Use for education/experimentation
+     * - Verify critical outputs
+     * 
+     * Third-party libraries used under their respective licenses.
+     * ====================================================
+     */
+
+    // Initial focus
+    userInput.focus();
+  </script>
+</body>
+</html>
