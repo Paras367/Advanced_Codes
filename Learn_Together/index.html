@@ -24,6 +24,12 @@
 </noscript>
   <link rel="stylesheet" href="./assets/css/additional_css.css" type="text/css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+</style>
 
   
 
@@ -121,9 +127,41 @@ document.addEventListener("DOMContentLoaded", function () {
           <strong>Learn Loud</strong>
         </h1>
         
-        <p class="mbr-fonts-style mbr-text mbr-white mb-4 display-7">Where Students and Teachers Unite for Epic Learning Adventures!</p>
-        <div class="mbr-section-btn"><a class="btn btn-danger display-7" href="https://softwarelabs.lovable.app">Get Started</a></div>
-      </div>
+       <p class="hero-subtitle">
+  Where Students and Teachers Unite for Epic Learning Adventures!
+</p>
+<div class="hero-btn">
+  <a href="https://softwarelabs.lovable.app" class="btn btn-primary">Get Started</a>
+</div>
+
+<style>
+.hero-subtitle {
+  font-size: 1.25rem; /* ~20px */
+  font-weight: 500;
+  line-height: 1.6;
+  color: white;
+  margin-bottom: 1.5rem;
+  max-width: 600px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.hero-btn .btn {
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 0.75rem 2rem;
+  border-radius: 50px;
+  background-color: #e53935; /* vibrant red, like btn-danger */
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(229, 57, 53, 0.3);
+}
+.hero-btn .btn:hover {
+  background-color: #d32f2f;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(229, 57, 53, 0.4);
+}
+</style>
+      
     </div>
   </div>
 </section>
@@ -762,5 +800,6 @@ document.addEventListener("DOMContentLoaded", function () {
 </body>
 
 </html>
+
 
 
