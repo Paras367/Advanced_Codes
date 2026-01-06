@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PW-Style Study Platform</title>
+
+    <link rel="icon" href="https://i.pinimg.com/originals/55/71/3c/55713c85d9b7bbc8bbeb682a24cfafa9.jpg" type="image/svg+xml" />
+
+    
+    <!-- Preconnect to PW Resources -->
+    <link rel="preconnect" href="https://static.pw.live" />
+    
+    <!-- Google Fonts for Modern Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Animate.css for Animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <!-- PW Auth SDK - Official Integration -->
+    <script src="https://static.pw.live/web/sdk/auth/pw-auth-sdk-loader.js?version=1.1.64"></script>
+    
+    <!-- PW Study Resources (Note: These may require proper authentication) -->
+    <script defer src="https://www.pw.live/study-v2/static/js/51.228aa25f.js"></script>
+    <script defer src="https://www.pw.live/study-v2/static/js/index.e6e3c539.js"></script>
+    
+    <style>
+        /* ============================================
+           GLOBAL STYLES & CSS VARIABLES
+           ============================================ */
+        :root {
+            /* Primary Brand Colors - Customize these to match your branding */
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary-color: #ec4899;
+            --accent-color: #f59e0b;
+            
+            /* Neutral Colors */
+            --dark-bg: #0f172a;
+            --dark-card: #1e293b;
+            --dark-border: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            
+            /* Spacing */
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+            
+            /* Typography */
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-size-sm: 0.875rem;
+            --font-size-base: 1rem;
+            --font-size-lg: 1.125rem;
+            --font-size-xl: 1.25rem;
+            --font-size-2xl: 1.5rem;
+            --font-size-3xl: 2rem;
+            
+            /* Border Radius */
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+            --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.3);
+            
+            /* Transitions */
+            --transition-fast: 0.15s ease;
+            --transition-base: 0.3s ease;
+            --transition-slow: 0.5s ease;
+        }
+        
+        /* ============================================
+           RESET & BASE STYLES
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-main);
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* ============================================
+           LOADING SPINNER
+           ============================================ */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity var(--transition-base), visibility var(--transition-base);
+        }
+        
+        .loading-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--dark-border);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* ============================================
+           HEADER / NAVIGATION
+           ============================================ */
+        header {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--dark-border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+        }
+        
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--spacing-sm) var(--spacing-md);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--spacing-md);
+        }
+        
+        .logo {
+            font-size: var(--font-size-xl);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            cursor: pointer;
+            transition: transform var(--transition-fast);
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color var(--transition-fast);
+            position: relative;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width var(--transition-base);
+        }
+        
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        .btn {
+            padding: 0.625rem 1.5rem;
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            border: none;
+            font-size: var(--font-size-base);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--dark-border);
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--primary-color);
+            background: rgba(99, 102, 241, 0.1);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: var(--font-size-xl);
+            cursor: pointer;
+        }
+        
+        /* ============================================
+           HERO SECTION
+           ============================================ */
+        .hero {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--spacing-xl) var(--spacing-md);
+            text-align: center;
+            position: relative;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.8; }
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: var(--spacing-md);
+            background: linear-gradient(135deg, #fff, var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: var(--font-size-lg);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-lg);
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .hero-cta {
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .stats {
+            display: flex;
+            gap: var(--spacing-xl);
+            justify-content: center;
+            margin-top: var(--spacing-xl);
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: var(--font-size-3xl);
+            font-weight: 800;
+            color: var(--primary-color);
+            display: block;
+        }
+        
+        .stat-label {
+            color: var(--text-muted);
+            font-size: var(--font-size-sm);
+        }
+        
+        /* ============================================
+           SEARCH BAR
+           ============================================ */
+        .search-section {
+            max-width: 1400px;
+            margin: 0 auto var(--spacing-xl);
+            padding: 0 var(--spacing-md);
+        }
+        
+        .search-bar {
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 1rem 3rem 1rem 3rem;
+            border-radius: var(--radius-xl);
+            border: 2px solid var(--dark-border);
+            background: var(--dark-card);
+            color: var(--text-primary);
+            font-size: var(--font-size-base);
+            transition: all var(--transition-base);
+        }
+        
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: var(--shadow-glow);
+        }
+        
+        .search-bar .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+        
+        .search-bar .filter-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color var(--transition-fast);
+        }
+        
+        .search-bar .filter-icon:hover {
+            color: var(--primary-color);
+        }
+        
+        /* ============================================
+           COURSE CARDS SECTION
+           ============================================ */
+        .courses-section {
+            max-width: 1400px;
+            margin: 0 auto var(--spacing-xl);
+            padding: 0 var(--spacing-md);
+        }
+        
+        .section-header {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .section-header h2 {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .section-header p {
+            color: var(--text-secondary);
+        }
+        
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+        }
+        
+        .course-card {
+            background: var(--dark-card);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            border: 1px solid var(--dark-border);
+            transition: all var(--transition-base);
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-color);
+        }
+        
+        .course-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            transform: scaleX(0);
+            transition: transform var(--transition-base);
+        }
+        
+        .course-card:hover::after {
+            transform: scaleX(1);
+        }
+        
+        .course-thumbnail {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .course-thumbnail::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.1));
+        }
+        
+        .course-content {
+            padding: var(--spacing-md);
+        }
+        
+        .course-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary-light);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .course-title {
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-primary);
+        }
+        
+        .course-description {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--spacing-md);
+            line-height: 1.5;
+        }
+        
+        .course-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: var(--spacing-sm);
+            border-top: 1px solid var(--dark-border);
+        }
+        
+        .course-instructor {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            color: var(--text-muted);
+            font-size: var(--font-size-sm);
+        }
+        
+        .course-price {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: var(--font-size-lg);
+        }
+        
+        .course-price.free {
+            color: var(--accent-color);
+        }
+        
+        /* ============================================
+           FEATURES SECTION
+           ============================================ */
+        .features-section {
+            max-width: 1400px;
+            margin: var(--spacing-xl) auto;
+            padding: var(--spacing-xl) var(--spacing-md);
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--dark-border);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-lg);
+        }
+        
+        .feature-item {
+            text-align: center;
+            padding: var(--spacing-md);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-md);
+            font-size: var(--font-size-2xl);
+        }
+        
+        .feature-item h3 {
+            font-size: var(--font-size-lg);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .feature-item p {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+        
+        /* ============================================
+           FOOTER
+           ============================================ */
+        footer {
+            background: var(--dark-bg);
+            border-top: 1px solid var(--dark-border);
+            padding: var(--spacing-xl) var(--spacing-md) var(--spacing-md);
+            margin-top: var(--spacing-xl);
+        }
+        
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .footer-section h3 {
+            margin-bottom: var(--spacing-md);
+            font-size: var(--font-size-lg);
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .footer-section a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+        
+        .footer-section a:hover {
+            color: var(--primary-color);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-md);
+        }
+        
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: var(--dark-card);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-base);
+        }
+        
+        .social-links a:hover {
+            background: var(--primary-color);
+            transform: translateY(-3px);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: var(--spacing-md);
+            border-top: 1px solid var(--dark-border);
+            color: var(--text-muted);
+            font-size: var(--font-size-sm);
+        }
+        
+        /* ============================================
+           RESPONSIVE DESIGN
+           ============================================ */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .auth-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-cta {
+                flex-direction: column;
+            }
+            
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                gap: var(--spacing-md);
+            }
+        }
+        
+        /* ============================================
+           UTILITY CLASSES
+           ============================================ */
+        .hidden {
+            display: none !important;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-1 { margin-top: var(--spacing-sm); }
+        .mt-2 { margin-top: var(--spacing-md); }
+        .mt-3 { margin-top: var(--spacing-lg); }
+        
+        .mb-1 { margin-bottom: var(--spacing-sm); }
+        .mb-2 { margin-bottom: var(--spacing-md); }
+        .mb-3 { margin-bottom: var(--spacing-lg); }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Main App Root -->
+    <div id="root"></div>
+    
+    <!-- JavaScript Application -->
+    <script type="module">
+        /* ============================================
+           CONFIGURATION & CONSTANTS
+           ============================================
+           
+           IMPORTANT LEGAL & ETHICAL NOTES:
+           1. This is a DEMONSTRATION boilerplate only
+           2. DO NOT use real PW APIs without permission
+           3. Request official licensing for logos/branding
+           4. Respect CORS policies and rate limits
+           5. Do not scrape or reverse-engineer private APIs
+           6. Always attribute resources properly
+           
+           TO DEPLOY THIS:
+           - Replace sample data with your own content
+           - Obtain proper API keys and permissions
+           - Test authentication flow thoroughly
+           - Bundle with Vite: npm create vite@latest
+           - Or use simple static server: npx serve
+           ============================================ */
+        
+        const CONFIG = {
+            appName: 'PW-Style Study',
+            apiEndpoint: '/api', // Replace with your actual API
+            authEnabled: false, // Set true when PW SDK is properly configured
+        };
+        
+        /* ============================================
+           SAMPLE COURSE DATA
+           Replace with real API calls when available
+           ============================================ */
+        const SAMPLE_COURSES = [
+            {
+                id: 1,
+                title: 'Complete JEE Main 2026',
+                description: 'Comprehensive course covering Physics, Chemistry, and Mathematics for JEE Main preparation.',
+                category: 'Engineering',
+                instructor: 'Expert Faculty',
+                price: 'Free',
+                thumbnail: '📐',
+                students: '50K+',
+                rating: 4.8
+            },
+            {
+                id: 2,
+                title: 'NEET 2026 Crash Course',
+                description: 'Fast-track your NEET preparation with targeted lessons and practice tests.',
+                category: 'Medical',
+                instructor: 'Dr. Sharma',
+                price: '₹999',
+                thumbnail: '🔬',
+                students: '35K+',
+                rating: 4.9
+            },
+            {
+                id: 3,
+                title: 'Class 12 CBSE Board',
+                description: 'Complete board exam preparation with chapter-wise videos and MCQs.',
+                category: 'School',
+                instructor: 'Board Experts',
+                price: 'Free',
+                thumbnail: '📚',
+                students: '100K+',
+                rating: 4.7
+            },
+            {
+                id: 4,
+                title: 'Advanced Mathematics',
+                description: 'Deep dive into calculus, algebra, and trigonometry for competitive exams.',
+                category: 'Mathematics',
+                instructor: 'Prof. Kumar',
+                price: '₹1499',
+                thumbnail: '∑',
+                students: '25K+',
+                rating: 4.9
+            },
+            {
+                id: 5,
+                title: 'Organic Chemistry Master',
+                description: 'Master organic chemistry reactions, mechanisms, and problem-solving.',
+                category: 'Chemistry',
+                instructor: 'Dr. Patel',
+                price: '₹1299',
+                thumbnail: '⚗️',
+                students: '30K+',
+                rating: 4.8
+            },
+            {
+                id: 6,
+                title: 'Physics for NEET',
+                description: 'Complete physics syllabus for NEET with numerical problem-solving.',
+                category: 'Physics',
+                instructor: 'Dr. Singh',
+                price: 'Free',
+                thumbnail: '⚛️',
+                students: '45K+',
+                rating: 4.6
+            }
+        ];
+        
+        /* ============================================
+           STATE MANAGEMENT
+           ============================================ */
+        const state = {
+            isAuthenticated: false,
+            user: null,
+            courses: [],
+            filteredCourses: [],
+            searchQuery: '',
+            isLoading: true
+        };
+        
+        /* ============================================
+           PW AUTH SDK INTEGRATION
+           This demonstrates how to integrate the PW Auth SDK
+           In production, you'll need proper API keys and permissions
+           ============================================ */
+        function initAuth() {
+            console.log('🔐 Initializing PW Auth SDK...');
+            
+            // Check if PW Auth SDK is loaded
+            if (typeof window.PWAuth !== 'undefined') {
+                console.log('✅ PW Auth SDK detected');
+                
+                // Initialize the SDK (pseudo-code - actual implementation depends on SDK documentation)
+                try {
+                    // window.PWAuth.init({
+                    //     appId: 'YOUR_APP_ID', // Get from PW Developer Portal
+                    //     onSuccess: handleAuthSuccess,
+                    //     onError: handleAuthError
+                    // });
+                    
+                    console.log('⚠️ PW Auth SDK found but not configured. Add your credentials.');
+                } catch (error) {
+                    console.error('❌ Error initializing PW Auth:', error);
+                }
+            } else {
+                console.log('ℹ️ PW Auth SDK not loaded - using demo mode');
+            }
+        }
+        
+        function handleAuthSuccess(userData) {
+            console.log('✅ Authentication successful:', userData);
+            state.isAuthenticated = true;
+            state.user = userData;
+            renderHeader();
+        }
+        
+        function handleAuthError(error) {
+            console.error('❌ Authentication error:', error);
+            state.isAuthenticated = false;
+            state.user = null;
+        }
+        
+        // Demo login function (replace with real PW Auth flow)
+        function demoLogin() {
+            alert('🔐 Demo Login\n\nIn production, this would:\n1. Open PW Auth modal\n2. Handle OAuth flow\n3. Store auth tokens\n4. Redirect to dashboard');
+            
+            // Simulate successful login
+            state.isAuthenticated = true;
+            state.user = {
+                name: 'Demo User',
+                email: 'demo@example.com',
+                avatar: '👤'
+            };
+            renderHeader();
+        }
+        
+        function demoLogout() {
+            state.isAuthenticated = false;
+            state.user = null;
+            renderHeader();
+        }
+        
+        /* ============================================
+           UI RENDERING FUNCTIONS
+           ============================================ */
+        function renderHeader() {
+            return `
+                <header class="animate__animated animate__fadeInDown">
+                    <nav>
+                        <div class="logo">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span>${CONFIG.appName}</span>
+                        </div>
+                        
+                        <div class="nav-links">
+                            <a href="#courses">Courses</a>
+                            <a href="#exams">Exams</a>
+                            <a href="#practice">Practice</a>
+                            <a href="#results">Results</a>
+                        </div>
+                        
+                        <div class="auth-buttons">
+                            ${state.isAuthenticated ? `
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <span style="color: var(--text-secondary);">
+                                        ${state.user.avatar} ${state.user.name}
+                                    </span>
+                                    <button class="btn btn-secondary" onclick="window.app.demoLogout()">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        Logout
+                                    </button>
+                                </div>
+                            ` : `
+                                <button class="btn btn-secondary" onclick="window.app.demoLogin()">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                    Login
+                                </button>
+                                <button class="btn btn-primary" onclick="window.app.demoLogin()">
+                                    <i class="fas fa-user-plus"></i>
+                                    Sign Up
+                                </button>
+                            `}
+                        </div>
+                        
+                        <button class="mobile-menu-btn">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                    </nav>
+                </header>
+            `;
+        }
+        
+        function renderHero() {
+            return `
+                <section class="hero animate__animated animate__fadeIn">
+                    <div class="hero-content">
+                        <h1>Transform Your Learning Journey</h1>
+                        <p>Access world-class courses, expert faculty, and comprehensive study materials for JEE, NEET, and Board exams</p>
+                        
+                        <div class="hero-cta">
+                            <button class="btn btn-primary" onclick="window.app.scrollToCourses()">
+                                <i class="fas fa-play-circle"></i>
+                                Start Learning
+                            </button>
+                            <button class="btn btn-secondary" onclick="alert('Demo: Explore features')">
+                                <i class="fas fa-compass"></i>
+                                Explore Features
+                            </button>
+                        </div>
+                        
+                        <div class="stats">
+                            <div class="stat-item animate__animated animate__fadeInUp">
+                                <span class="stat-number">500K+</span>
+                                <span class="stat-label">Active Students</span>
+                            </div>
+                            <div class="stat-item animate__animated animate__fadeInUp animate__delay-1s">
+                                <span class="stat-number">1000+</span>
+                                <span class="stat-label">Expert Teachers</span>
+                            </div>
+                            <div class="stat-item animate__animated animate__fadeInUp animate__delay-2s">
+                                <span class="stat-number">5000+</span>
+                                <span class="stat-label">Video Lessons</span>
+                            </div>
+                            <div class="stat-item animate__animated animate__fadeInUp animate__delay-3s">
+                                <span class="stat-number">95%</span>
+                                <span class="stat-label">Success Rate</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+        
+        function renderSearchBar() {
+            return `
+                <section class="search-section">
+                    <div class="search-bar">
+                        <i class="fas fa-search search-icon"></i>
+                        <input 
+                            type="text" 
+                            placeholder="Search courses, exams, subjects..." 
+                            id="searchInput"
+                            value="${state.searchQuery}"
+                        />
+                        <i class="fas fa-filter filter-icon" onclick="alert('Demo: Filter options')"></i>
+                    </div>
+                </section>
+            `;
+        }
+        
+        function renderCourseCard(course) {
+            return `
+                <div class="course-card animate__animated animate__fadeInUp" onclick="window.app.openCourse(${course.id})">
+                    <div class="course-thumbnail">
+                        <span>${course.thumbnail}</span>
+                    </div>
+                    <div class="course-content">
+                        <span class="course-badge">${course.category}</span>
+                        <h3 class="course-title">${course.title}</h3>
+                        <p class="course-description">${course.description}</p>
+                        <div class="course-meta">
+                            <div class="course-instructor">
+                                <i class="fas fa-user-circle"></i>
+                                <span>${course.instructor}</span>
+                            </div>
+                            <div class="course-price ${course.price === 'Free' ? 'free' : ''}">
+                                ${course.price}
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 0.75rem; font-size: 0.875rem; color: var(--text-muted);">
+                            <span>
+                                <i class="fas fa-users"></i>
+                                ${course.students}
+                            </span>
+                            <span>
+                                <i class="fas fa-star" style="color: var(--accent-color);"></i>
+                                ${course.rating}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderCourses() {
+            const coursesToDisplay = state.filteredCourses.length > 0 ? state.filteredCourses : state.courses;
+            
+            return `
+                <section class="courses-section" id="coursesSection">
+                    <div class="section-header">
+                        <h2>Popular Courses</h2>
+                        <p>Choose from our extensive collection of courses designed by experts</p>
+                    </div>
+                    <div class="courses-grid">
+                        ${coursesToDisplay.map(course => renderCourseCard(course)).join('')}
+                    </div>
+                </section>
+            `;
+        }
+        
+        function renderFeatures() {
+            return `
+                <section class="features-section">
+                    <div class="section-header text-center">
+                        <h2>Why Choose Us</h2>
+                        <p>Everything you need to excel in your exams</p>
+                    </div>
+                    <div class="features-grid">
+                        <div class="feature-item animate__animated animate__fadeInUp">
+                            <div class="feature-icon">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <h3>HD Video Lectures</h3>
+                            <p>Crystal clear video content with detailed explanations</p>
+                        </div>
+                        <div class="feature-item animate__animated animate__fadeInUp animate__delay-1s">
+                            <div class="feature-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <h3>Study Materials</h3>
+                            <p>Comprehensive notes, PDFs, and practice questions</p>
+                        </div>
+                        <div class="feature-item animate__animated animate__fadeInUp animate__delay-2s">
+                            <div class="feature-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h3>Track Progress</h3>
+                            <p>Monitor your performance with detailed analytics</p>
+                        </div>
+                        <div class="feature-item animate__animated animate__fadeInUp animate__delay-3s">
+                            <div class="feature-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <h3>Doubt Solving</h3>
+                            <p>24/7 doubt resolution from expert teachers</p>
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+        
+        function renderFooter() {
+            return `
+                <footer>
+                    <div class="footer-content">
+                        <div class="footer-section">
+                            <h3>${CONFIG.appName}</h3>
+                            <p style="color: var(--text-secondary); margin-top: 1rem;">
+                                Empowering students to achieve their academic dreams through quality education.
+                            </p>
+                            <div class="social-links">
+                                <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                                <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                                <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+                                <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                            </div>
+                        </div>
+                        
+                        <div class="footer-section">
+                            <h3>Quick Links</h3>
+                            <ul>
+                                <li><a href="#about">About Us</a></li>
+                                <li><a href="#courses">Courses</a></li>
+                                <li><a href="#exams">Exam Prep</a></li>
+                                <li><a href="#results">Results</a></li>
+                                <li><a href="#blog">Blog</a></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="footer-section">
+                            <h3>Support</h3>
+                            <ul>
+                                <li><a href="#help">Help Center</a></li>
+                                <li><a href="#faq">FAQs</a></li>
+                                <li><a href="#contact">Contact Us</a></li>
+                                <li><a href="#privacy">Privacy Policy</a></li>
+                                <li><a href="#terms">Terms of Service</a></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="footer-section">
+                            <h3>Download App</h3>
+                            <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                                Learn on the go with our mobile app
+                            </p>
+                            <button class="btn btn-primary" style="width: 100%; margin-bottom: 0.5rem;">
+                                <i class="fab fa-google-play"></i>
+                                Google Play
+                            </button>
+                            <button class="btn btn-primary" style="width: 100%;">
+                                <i class="fab fa-apple"></i>
+                                App Store
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="footer-bottom">
+                        <p>© 2025 ${CONFIG.appName}. Built as a demonstration boilerplate.</p>
+                        <p style="margin-top: 0.5rem; font-size: 0.75rem;">
+                            ⚠️ Demo Only: Not affiliated with Physics Wallah. For educational purposes only.
+                        </p>
+                    </div>
+                </footer>
+            `;
+        }
+        
+        /* ============================================
+           MAIN APP INITIALIZATION
+           ============================================ */
+        function renderApp() {
+            const root = document.getElementById('root');
+            root.innerHTML = `
+                ${renderHeader()}
+                ${renderHero()}
+                ${renderSearchBar()}
+                ${renderCourses()}
+                ${renderFeatures()}
+                ${renderFooter()}
+            `;
+        }
+        
+        /* ============================================
+           EVENT HANDLERS & INTERACTIONS
+           ============================================ */
+        function attachEventHandlers() {
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    state.searchQuery = e.target.value.toLowerCase();
+                    filterCourses();
+                });
+            }
+            
+            // Smooth scrolling for navigation
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const target = document.querySelector(anchor.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        }
+        
+        function filterCourses() {
+            if (state.searchQuery === '') {
+                state.filteredCourses = [];
+            } else {
+                state.filteredCourses = state.courses.filter(course => 
+                    course.title.toLowerCase().includes(state.searchQuery) ||
+                    course.description.toLowerCase().includes(state.searchQuery) ||
+                    course.category.toLowerCase().includes(state.searchQuery)
+                );
+            }
+            
+            // Re-render courses section
+            const coursesSection = document.getElementById('coursesSection');
+            if (coursesSection) {
+                coursesSection.outerHTML = renderCourses();
+            }
+        }
+        
+        function scrollToCourses() {
+            const coursesSection = document.getElementById('coursesSection');
+            if (coursesSection) {
+                coursesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+        
+        function openCourse(courseId) {
+            const course = state.courses.find(c => c.id === courseId);
+            if (course) {
+                alert(`🎓 Opening Course: ${course.title}\n\nIn production, this would:\n1. Navigate to course detail page\n2. Show course curriculum\n3. Enable enrollment\n4. Start video playback`);
+            }
+        }
+        
+        /* ============================================
+           DATA FETCHING
+           Replace with real API calls in production
+           ============================================ */
+        async function fetchCourses() {
+            try {
+                // Simulate API call delay
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // In production, replace with:
+                // const response = await fetch(`${CONFIG.apiEndpoint}/courses`);
+                // const data = await response.json();
+                // return data;
+                
+                return SAMPLE_COURSES;
+            } catch (error) {
+                console.error('Error fetching courses:', error);
+                return SAMPLE_COURSES; // Fallback to sample data
+            }
+        }
+        
+        /* ============================================
+           INITIALIZATION
+           ============================================ */
+        async function init() {
+            console.log('🚀 Initializing PW-Style Study Platform...');
+            
+            // Initialize authentication
+            initAuth();
+            
+            // Load course data
+            state.courses = await fetchCourses();
+            
+            // Render initial UI
+            renderApp();
+            
+            // Attach event listeners
+            attachEventHandlers();
+            
+            // Hide loading overlay
+            setTimeout(() => {
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                loadingOverlay.classList.add('hidden');
+                state.isLoading = false;
+            }, 500);
+            
+            console.log('✅ Application initialized successfully');
+        }
+        
+        /* ============================================
+           EXPOSE PUBLIC API
+           Make functions available globally for onclick handlers
+           ============================================ */
+        window.app = {
+            demoLogin,
+            demoLogout,
+            scrollToCourses,
+            openCourse,
+            state // For debugging
+        };
+        
+        // Start the application
+        init();
+        
+        /* ============================================
+           PRODUCTION DEPLOYMENT CHECKLIST
+           ============================================
+           
+           Before deploying to production:
+           
+           ✅ LEGAL & COMPLIANCE:
+           □ Obtain permission to use PW branding/logos
+           □ Secure proper API access and keys
+           □ Review and comply with PW's Terms of Service
+           □ Add proper attribution where required
+           □ Ensure GDPR/privacy compliance
+           □ Add cookie consent if needed
+           
+           ✅ TECHNICAL:
+           □ Replace sample data with real API endpoints
+           □ Configure PW Auth SDK with valid credentials
+           □ Set up environment variables (.env file)
+           □ Enable HTTPS for production
+           □ Configure CORS policies
+           □ Add error tracking (Sentry, etc.)
+           □ Set up analytics (Google Analytics, etc.)
+           □ Optimize images and assets
+           □ Add service worker for PWA (optional)
+           □ Test on multiple browsers and devices
+           
+           ✅ BUNDLING OPTIONS:
+           
+           Option 1 - Vite (Recommended):
+           $ npm create vite@latest my-pw-app
+           $ cd my-pw-app
+           $ npm install
+           $ npm run dev     # Development
+           $ npm run build   # Production build
+           
+           Option 2 - Simple Static Server:
+           $ npx serve .     # Serves current directory
+           
+           Option 3 - Deploy to Netlify/Vercel:
+           - Just drag and drop your files
+           - Or connect to Git repository
+           
+           ✅ SECURITY:
+           □ Never expose API keys in client-side code
+           □ Use environment variables
+           □ Implement rate limiting
+           □ Sanitize user inputs
+           □ Add CSRF protection
+           □ Enable Content Security Policy (CSP)
+           
+           ✅ PERFORMANCE:
+           □ Minify CSS and JavaScript
+           □ Compress images (WebP format)
+           □ Enable lazy loading
+           □ Add caching headers
+           □ Use CDN for static assets
+           □ Implement code splitting
+           
+           ✅ ACCESSIBILITY:
+           □ Add proper ARIA labels
+           □ Test with screen readers
+           □ Ensure keyboard navigation works
+           □ Meet WCAG 2.1 AA standards
+           □ Add alt text for images
+           
+           ============================================ */
+    </script>
+</body>
+</html>

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Hybrid Clock</title>
+    
+    <!-- External CDN Resources -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-glow: #00ffff;
+            --secondary-glow: #ff00ff;
+            --accent-color: #ffd700;
+            --morning-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --afternoon-bg: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --evening-bg: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --night-bg: linear-gradient(135deg, #0c0c0c 0%, #434343 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--night-bg);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            transition: background 2s ease-in-out;
+        }
+
+        .clock-container {
+            position: relative;
+            width: 400px;
+            height: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                inset 0 2px 10px rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(1deg); }
+        }
+
+        .digital-display {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-glow);
+            text-shadow: 
+                0 0 10px var(--primary-glow),
+                0 0 20px var(--primary-glow),
+                0 0 30px var(--primary-glow);
+            margin-bottom: 20px;
+            letter-spacing: 3px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-glow), 0 0 30px var(--primary-glow); }
+            to { text-shadow: 0 0 20px var(--primary-glow), 0 0 30px var(--primary-glow), 0 0 40px var(--primary-glow); }
+        }
+
+        .date-display {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .analog-clock {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: 
+                conic-gradient(from 0deg, 
+                    var(--primary-glow) 0deg, 
+                    var(--secondary-glow) 90deg, 
+                    var(--accent-color) 180deg, 
+                    var(--primary-glow) 270deg, 
+                    var(--secondary-glow) 360deg);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: rotate-border 20s linear infinite;
+        }
+
+        @keyframes rotate-border {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .clock-face {
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at center, 
+                    rgba(255, 255, 255, 0.1) 0%, 
+                    rgba(0, 0, 0, 0.3) 70%);
+            border-radius: 50%;
+            position: relative;
+            backdrop-filter: blur(10px);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .hour-markers {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .hour-marker {
+            position: absolute;
+            width: 4px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.6);
+            top: 10px;
+            left: 50%;
+            transform-origin: 50% 120px;
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .hour-marker.active {
+            background: var(--accent-color);
+            box-shadow: 0 0 20px var(--accent-color);
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .minute-markers {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .minute-marker {
+            position: absolute;
+            width: 2px;
+            height: 15px;
+            background: rgba(255, 255, 255, 0.3);
+            top: 15px;
+            left: 50%;
+            transform-origin: 50% 115px;
+            border-radius: 1px;
+        }
+
+        .clock-hands {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .hand {
+            position: absolute;
+            transform-origin: 50% 100%;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
+        }
+
+        .hour-hand {
+            width: 6px;
+            height: 70px;
+            background: linear-gradient(180deg, var(--primary-glow) 0%, rgba(0, 255, 255, 0.5) 100%);
+            top: -70px;
+            left: -3px;
+            z-index: 3;
+        }
+
+        .minute-hand {
+            width: 4px;
+            height: 90px;
+            background: linear-gradient(180deg, var(--secondary-glow) 0%, rgba(255, 0, 255, 0.5) 100%);
+            top: -90px;
+            left: -2px;
+            z-index: 2;
+        }
+
+        .second-hand {
+            width: 2px;
+            height: 100px;
+            background: linear-gradient(180deg, var(--accent-color) 0%, rgba(255, 215, 0, 0.5) 100%);
+            top: -100px;
+            left: -1px;
+            z-index: 4;
+        }
+
+        .center-dot {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: radial-gradient(circle, var(--accent-color) 0%, var(--primary-glow) 100%);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            box-shadow: 
+                0 0 20px var(--accent-color),
+                inset 0 2px 4px rgba(255, 255, 255, 0.3);
+            animation: center-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes center-pulse {
+            0%, 100% { 
+                transform: translate(-50%, -50%) scale(1);
+                box-shadow: 0 0 20px var(--accent-color), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(1.3);
+                box-shadow: 0 0 30px var(--accent-color), inset 0 2px 4px rgba(255, 255, 255, 0.5);
+            }
+        }
+
+        .progress-ring {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-ring-circle {
+            stroke: var(--accent-color);
+            stroke-width: 3;
+            stroke-linecap: round;
+            fill: none;
+            filter: drop-shadow(0 0 10px var(--accent-color));
+            animation: ring-glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes ring-glow {
+            from { filter: drop-shadow(0 0 10px var(--accent-color)); }
+            to { filter: drop-shadow(0 0 20px var(--accent-color)); }
+        }
+
+        .clock-icons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .clock-icon {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.6);
+            animation: icon-float 3s ease-in-out infinite;
+        }
+
+        .clock-icon:nth-child(2) {
+            animation-delay: 1s;
+        }
+
+        .clock-icon:nth-child(3) {
+            animation-delay: 2s;
+        }
+
+        @keyframes icon-float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        /* Time-based background classes */
+        .morning { background: var(--morning-bg); }
+        .afternoon { background: var(--afternoon-bg); }
+        .evening { background: var(--evening-bg); }
+        .night { background: var(--night-bg); }
+
+        /* Number labels */
+        .number {
+            position: absolute;
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .number-12 { top: 20px; left: 50%; transform: translateX(-50%); }
+        .number-3 { right: 20px; top: 50%; transform: translateY(-50%); }
+        .number-6 { bottom: 20px; left: 50%; transform: translateX(-50%); }
+        .number-9 { left: 20px; top: 50%; transform: translateY(-50%); }
+    </style>
+</head>
+<body>
+    <div class="clock-container animate__animated animate__fadeIn">
+        <div class="clock-icons">
+            <i class="fas fa-sun clock-icon"></i>
+            <i class="fas fa-moon clock-icon"></i>
+            <i class="fas fa-star clock-icon"></i>
+        </div>
+        
+        <div class="digital-display" id="digitalTime">00:00:00</div>
+        <div class="date-display" id="dateDisplay">Loading...</div>
+        
+        <div class="analog-clock">
+            <svg class="progress-ring" width="300" height="300">
+                <circle class="progress-ring-circle" 
+                        cx="150" cy="150" r="145" 
+                        stroke-dasharray="911"
+                        stroke-dashoffset="911"
+                        id="secondsProgress">
+                </circle>
+            </svg>
+            
+            <div class="clock-face">
+                <div class="number number-12">12</div>
+                <div class="number number-3">3</div>
+                <div class="number number-6">6</div>
+                <div class="number number-9">9</div>
+                
+                <div class="hour-markers" id="hourMarkers"></div>
+                <div class="minute-markers" id="minuteMarkers"></div>
+                
+                <div class="clock-hands">
+                    <div class="hand hour-hand" id="hourHand"></div>
+                    <div class="hand minute-hand" id="minuteHand"></div>
+                    <div class="hand second-hand" id="secondHand"></div>
+                </div>
+                
+                <div class="center-dot"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class ModernClock {
+            constructor() {
+                this.hourHand = document.getElementById('hourHand');
+                this.minuteHand = document.getElementById('minuteHand');
+                this.secondHand = document.getElementById('secondHand');
+                this.digitalTime = document.getElementById('digitalTime');
+                this.dateDisplay = document.getElementById('dateDisplay');
+                this.secondsProgress = document.getElementById('secondsProgress');
+                this.body = document.body;
+                
+                this.init();
+                this.createMarkers();
+                this.updateTime();
+                this.startClock();
+            }
+
+            init() {
+                // Initialize GSAP timeline for smooth animations
+                this.tl = gsap.timeline({ repeat: -1 });
+                
+                // Set initial progress ring
+                this.secondsProgress.style.strokeDasharray = '911';
+                this.secondsProgress.style.strokeDashoffset = '911';
+            }
+
+            createMarkers() {
+                const hourMarkersContainer = document.getElementById('hourMarkers');
+                const minuteMarkersContainer = document.getElementById('minuteMarkers');
+                
+                // Create hour markers
+                for (let i = 0; i < 12; i++) {
+                    const marker = document.createElement('div');
+                    marker.className = 'hour-marker';
+                    marker.style.transform = `translateX(-50%) rotate(${i * 30}deg)`;
+                    marker.id = `hour-marker-${i === 0 ? 12 : i}`;
+                    hourMarkersContainer.appendChild(marker);
+                }
+                
+                // Create minute markers (excluding hour positions)
+                for (let i = 0; i < 60; i++) {
+                    if (i % 5 !== 0) { // Skip hour marker positions
+                        const marker = document.createElement('div');
+                        marker.className = 'minute-marker';
+                        marker.style.transform = `translateX(-50%) rotate(${i * 6}deg)`;
+                        minuteMarkersContainer.appendChild(marker);
+                    }
+                }
+            }
+
+            updateTime() {
+                const now = new Date();
+                const hours = now.getHours();
+                const minutes = now.getMinutes();
+                const seconds = now.getSeconds();
+                const milliseconds = now.getMilliseconds();
+
+                // Update digital display
+                this.digitalTime.textContent = 
+                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                // Update date display
+                const options = { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                };
+                this.dateDisplay.textContent = now.toLocaleDateString('en-US', options);
+
+                // Calculate angles for smooth movement
+                const secondAngle = (seconds + milliseconds / 1000) * 6;
+                const minuteAngle = (minutes + seconds / 60) * 6;
+                const hourAngle = ((hours % 12) + minutes / 60 + seconds / 3600) * 30;
+
+                // Smooth hand animations using GSAP
+                gsap.to(this.secondHand, {
+                    duration: 0.1,
+                    rotation: secondAngle,
+                    ease: "power2.out"
+                });
+                
+                gsap.to(this.minuteHand, {
+                    duration: 0.5,
+                    rotation: minuteAngle,
+                    ease: "power2.out"
+                });
+                
+                gsap.to(this.hourHand, {
+                    duration: 0.5,
+                    rotation: hourAngle,
+                    ease: "power2.out"
+                });
+
+                // Update seconds progress ring
+                const circumference = 2 * Math.PI * 145;
+                const offset = circumference - (seconds / 60) * circumference;
+                this.secondsProgress.style.strokeDashoffset = offset;
+
+                // Highlight current hour marker
+                this.highlightCurrentHour(hours);
+
+                // Update background based on time of day
+                this.updateBackground(hours);
+            }
+
+            highlightCurrentHour(hours) {
+                // Remove previous active markers
+                document.querySelectorAll('.hour-marker').forEach(marker => {
+                    marker.classList.remove('active');
+                });
+
+                // Add active class to current hour marker
+                const currentHour = hours === 0 ? 12 : (hours > 12 ? hours - 12 : hours);
+                const activeMarker = document.getElementById(`hour-marker-${currentHour}`);
+                if (activeMarker) {
+                    activeMarker.classList.add('active');
+                }
+            }
+
+            updateBackground(hours) {
+                this.body.classList.remove('morning', 'afternoon', 'evening', 'night');
+                
+                if (hours >= 6 && hours < 12) {
+                    this.body.classList.add('morning');
+                } else if (hours >= 12 && hours < 17) {
+                    this.body.classList.add('afternoon');
+                } else if (hours >= 17 && hours < 20) {
+                    this.body.classList.add('evening');
+                } else {
+                    this.body.classList.add('night');
+                }
+            }
+
+            startClock() {
+                this.updateTime();
+                setInterval(() => {
+                    this.updateTime();
+                }, 50); // Update every 50ms for smooth second hand movement
+            }
+        }
+
+        // Initialize the clock when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new ModernClock();
+        });
+
+        // Add some extra visual flair with particle effects
+        function createParticles() {
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'fixed';
+                particle.style.width = '2px';
+                particle.style.height = '2px';
+                particle.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                particle.style.borderRadius = '50%';
+                particle.style.pointerEvents = 'none';
+                particle.style.left = Math.random() * window.innerWidth + 'px';
+                particle.style.top = Math.random() * window.innerHeight + 'px';
+                particle.style.animation = `float ${Math.random() * 10 + 5}s ease-in-out infinite`;
+                document.body.appendChild(particle);
+
+                // Remove particle after animation
+                setTimeout(() => {
+                    if (particle.parentNode) {
+                        particle.parentNode.removeChild(particle);
+                    }
+                }, (Math.random() * 10 + 5) * 1000);
+            }
+        }
+
+        // Create particles periodically
+        setInterval(createParticles, 5000);
+        createParticles(); // Initial particles
+    </script>
+</body>
+</html>
