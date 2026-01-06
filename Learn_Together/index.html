@@ -31,9 +31,28 @@
   }
 </style>
 
-  
+
 
 <style>
+.faq-answer {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 1.05rem;     
+  font-weight: 400;
+  line-height: 1.6;
+  color: #444;
+  margin: 0.75rem 0;
+  padding: 0 1.25rem;      
+}
+
+
+.card-header h6 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: #222;
+  margin: 0;
+}
+	
 .sign {
     display: inline-block;
     transition: transform 0.35s ease;
@@ -46,6 +65,17 @@
 </style>
 
 <script>
+	
+.sign {
+  display: inline-block;
+  margin-left: 0.75rem;
+  transition: transform 0.3s ease;
+  font-size: 1rem;
+  color: #555;
+}
+.sign.rotate {
+  transform: rotate(180deg);
+}
 document.addEventListener("DOMContentLoaded", function () {
 
     document.querySelectorAll(".panel-collapse").forEach(collapse => {
@@ -149,7 +179,7 @@ document.addEventListener("DOMContentLoaded", function () {
   font-weight: 600;
   padding: 0.75rem 2rem;
   border-radius: 50px;
-  background-color: #e53935; /* vibrant red, like btn-danger */
+  background-color: #e53935; 
   color: white;
   text-decoration: none;
   transition: all 0.3s ease;
@@ -436,7 +466,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             </div>
                             <div id="collapse1_7" class="panel-collapse noScroll collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" data-bs-parent="#bootstrap-accordion_7">
                                 <div class="panel-body">
-                                    <p class="mbr-fonts-style panel-text display-7">We’re here to make learning fun and engaging for everyone!</p>
+                                    <p class="faq-answer">We’re here to make learning fun and engaging for everyone!</p>
                                 </div>
                             </div>
                         </div>
@@ -449,7 +479,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             </div>
                             <div id="collapse2_7" class="panel-collapse noScroll collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" data-bs-parent="#bootstrap-accordion_7">
                                 <div class="panel-body">
-                                    <p class="mbr-fonts-style panel-text display-7">Students, teachers, and anyone who loves learning!</p>
+                                    <p class="faq-answer">Students, teachers, and anyone who loves learning!</p>
                                 </div>
                             </div>
                         </div>
@@ -462,7 +492,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             </div>
                             <div id="collapse3_7" class="panel-collapse noScroll collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" data-bs-parent="#bootstrap-accordion_7">
                                 <div class="panel-body">
-                                    <p class="mbr-fonts-style panel-text display-7">Absolutely! We have tons of resources to help you teach better!</p>
+                                    <p class="faq-answer">Absolutely! We have tons of resources to help you teach better!</p>
                                 </div>
                             </div>
                         </div>
@@ -475,7 +505,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             </div>
                             <div id="collapse4_7" class="panel-collapse noScroll collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" data-bs-parent="#bootstrap-accordion_7">
                                 <div class="panel-body">
-                                    <p class="mbr-fonts-style panel-text display-7">Yes! We love student creativity and encourage contributions!</p>
+                                    <p class="faq-answer">Yes! We love student creativity and encourage contributions!</p>
                                 </div>
                             </div>
                         </div>
@@ -488,7 +518,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             </div>
                             <div id="collapse5_7" class="panel-collapse noScroll collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" data-bs-parent="#bootstrap-accordion_7">
                                 <div class="panel-body">
-                                    <p class="mbr-fonts-style panel-text display-7">Sign up, explore, and start sharing your ideas!</p>
+                                   <p class="faq-answer">Sign up, explore, and start sharing your ideas!</p>
                                 </div>
                             </div>
                         </div>
@@ -800,6 +830,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </body>
 
 </html>
+
 
 
 
