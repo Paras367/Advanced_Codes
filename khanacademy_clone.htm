@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khan Academy - Free Online Learning</title>
+    
+    <!-- Khan Academy Official Stylesheets -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.kastatic.org/khanacademy/khanacademy.00364bde5dc81fa9.css"/>
+    <link rel="shortcut icon" href="https://cdn.kastatic.org/images/favicon.ico?logo">
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png"/>
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="https://cdn.kastatic.org/images/apple-touch-icon-72x72-precomposed.new.png"/>
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="https://cdn.kastatic.org/images/apple-touch-icon-114x114-precomposed.new.png"/>
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://cdn.kastatic.org/images/apple-touch-icon-144x144-precomposed.new.png"/>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: #f7f8fa;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        body.dark-mode {
+            background: #1a1d2e;
+            color: #e0e0e0;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: background 0.3s;
+        }
+
+        body.dark-mode .navbar {
+            background: #242836;
+        }
+
+        .navbar-logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #14bf96;
+            text-decoration: none;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .navbar-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        body.dark-mode .navbar-links a {
+            color: #e0e0e0;
+        }
+
+        .navbar-links a:hover {
+            color: #14bf96;
+        }
+
+        .btn-primary {
+            background: #14bf96;
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(20, 191, 150, 0.3);
+        }
+
+        .dark-mode-toggle {
+            background: #f0f0f0;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        body.dark-mode .dark-mode-toggle {
+            background: #3a3f52;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5rem 2rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: fadeInDown 1s;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Courses Section */
+        .courses-section {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+
+        body.dark-mode .section-title {
+            color: #e0e0e0;
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .course-card {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        body.dark-mode .course-card {
+            background: #2a2f3f;
+        }
+
+        .course-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(20, 191, 150, 0.3);
+        }
+
+        .course-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .course-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        body.dark-mode .course-title {
+            color: #e0e0e0;
+        }
+
+        .course-description {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        body.dark-mode .course-description {
+            color: #a0a0a0;
+        }
+
+        /* Interactive Learning Area */
+        .learning-area {
+            display: none;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        .learning-area.active {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .video-section {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        body.dark-mode .video-section {
+            background: #2a2f3f;
+        }
+
+        .video-placeholder {
+            width: 100%;
+            height: 300px;
+            background: #000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .notes-section {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            max-height: 500px;
+        }
+
+        body.dark-mode .notes-section {
+            background: #2a2f3f;
+        }
+
+        /* Quiz Section */
+        .quiz-section {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 800px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        body.dark-mode .quiz-section {
+            background: #2a2f3f;
+        }
+
+        .quiz-section.active {
+            display: block;
+        }
+
+        .question {
+            margin-bottom: 1.5rem;
+        }
+
+        .question h3 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        body.dark-mode .question h3 {
+            color: #e0e0e0;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .option {
+            padding: 1rem;
+            background: #f0f0f0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        body.dark-mode .option {
+            background: #3a3f52;
+        }
+
+        .option:hover {
+            background: #e0e0e0;
+        }
+
+        body.dark-mode .option:hover {
+            background: #4a4f62;
+        }
+
+        .option.correct {
+            background: #4caf50;
+            color: white;
+        }
+
+        .option.incorrect {
+            background: #f44336;
+            color: white;
+        }
+
+        /* Progress Tracker */
+        .progress-section {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 800px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        body.dark-mode .progress-section {
+            background: #2a2f3f;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #14bf96, #0c9f7c);
+            transition: width 0.5s;
+        }
+
+        /* Badge System */
+        .badge-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: white;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            text-align: center;
+            z-index: 2000;
+            transition: transform 0.3s;
+        }
+
+        body.dark-mode .badge-popup {
+            background: #2a2f3f;
+        }
+
+        .badge-popup.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .badge-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: #333;
+            color: white;
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: #14bf96;
+        }
+
+        .footer-section a {
+            display: block;
+            color: #ccc;
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: #14bf96;
+        }
+
+        .back-button {
+            background: #666;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+
+        .back-button:hover {
+            background: #555;
+        }
+
+        @media (max-width: 768px) {
+            .learning-area.active {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .navbar-links {
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="#" class="navbar-logo">🎓 Khan Academy</a>
+        <div class="navbar-links">
+            <a href="#courses">Courses</a>
+            <a href="#progress">My Progress</a>
+            <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙</button>
+            <button class="btn-primary">Sign In</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>You can learn anything</h1>
+        <p>For free. For everyone. Forever.</p>
+        <button class="btn-primary" onclick="scrollToCourses()">Start Learning</button>
+    </section>
+
+    <!-- Courses Section -->
+    <section id="courses" class="courses-section">
+        <h2 class="section-title">Featured Courses</h2>
+        <div class="courses-grid" id="coursesGrid"></div>
+    </section>
+
+    <!-- Interactive Learning Area -->
+    <div class="learning-area" id="learningArea">
+        <div class="video-section">
+            <button class="back-button" onclick="backToCourses()">← Back to Courses</button>
+            <h2 id="lessonTitle">Lesson Title</h2>
+            <div class="video-placeholder">
+                📹 Video Player
+            </div>
+            <button class="btn-primary" style="margin-top: 1rem;" onclick="startQuiz()">Take Practice Quiz</button>
+        </div>
+        <div class="notes-section">
+            <h3>Lesson Notes</h3>
+            <div id="lessonNotes"></div>
+        </div>
+    </div>
+
+    <!-- Quiz Section -->
+    <div class="quiz-section" id="quizSection">
+        <button class="back-button" onclick="backToLesson()">← Back to Lesson</button>
+        <h2>Practice Quiz</h2>
+        <div id="quizContainer"></div>
+        <button class="btn-primary" id="submitQuiz" style="margin-top: 1rem;" onclick="submitQuiz()">Submit Answers</button>
+    </div>
+
+    <!-- Progress Section -->
+    <section id="progress" class="progress-section">
+        <h2 class="section-title">Your Progress</h2>
+        <div id="progressStats"></div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+        <p style="margin-top: 1rem; text-align: center;">Keep going! You're doing great!</p>
+    </section>
+
+    <!-- Badge Popup -->
+    <div class="badge-popup" id="badgePopup">
+        <div class="badge-icon">🏆</div>
+        <h2 id="badgeTitle">Achievement Unlocked!</h2>
+        <p id="badgeDescription">You've earned a new badge!</p>
+        <button class="btn-primary" onclick="closeBadge()">Awesome!</button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About</h3>
+                <a href="https://www.khanacademy.org/about">Our Mission</a>
+                <a href="https://www.khanacademy.org/about/the-team">Our Team</a>
+                <a href="https://www.khanacademy.org/careers">Careers</a>
+            </div>
+            <div class="footer-section">
+                <h3>Help</h3>
+                <a href="https://khanacademy.zendesk.com/hc/en-us">Help Center</a>
+                <a href="https://khanacademy.zendesk.com/hc/en-us/community/topics">Support Community</a>
+                <a href="https://www.khanacademy.org/">Contact Us</a>
+            </div>
+            <div class="footer-section">
+                <h3>Donate</h3>
+                <a href="https://india.khanacademy.org/donate">Support Us</a>
+                            </div>
+            <div class="footer-section">
+                <h3>Connect</h3>
+                <a href="https://www.facebook.com/khanacademy">Facebook</a>
+                <a href="https://twitter.com/khanacademy">Twitter</a>
+                <a href="https://www.instagram.com/khanacademy">Instagram</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Khan Academy Official Scripts -->
+    <script src="https://cdn.kastatic.org/khanacademy/runtime.4ed5183148286faa.js"></script>
+    <script src="https://cdn.kastatic.org/khanacademy/khanacademy.edefb16099c9125e.js"></script>
+
+    <script>
+        // Course Data
+        const courses = [
+            {
+                id: 'math',
+                icon: '🔢',
+                title: 'Mathematics',
+                description: 'From basic arithmetic to advanced calculus',
+                lessons: [
+                    {
+                        title: 'Introduction to Algebra',
+                        notes: '<h4>What is Algebra?</h4><p>Algebra is a branch of mathematics that uses symbols to represent numbers and quantities in formulas and equations.</p><h4>Key Concepts:</h4><ul><li>Variables and constants</li><li>Expressions and equations</li><li>Solving for unknowns</li></ul>'
+                    }
+                ],
+                quiz: [
+                    {
+                        question: 'What is 2 + 2?',
+                        options: ['3', '4', '5', '6'],
+                        correct: 1
+                    },
+                    {
+                        question: 'Solve for x: x + 5 = 10',
+                        options: ['3', '5', '10', '15'],
+                        correct: 1
+                    }
+                ]
+            },
+            {
+                id: 'science',
+                icon: '🔬',
+                title: 'Science',
+                description: 'Explore physics, chemistry, and biology',
+                lessons: [
+                    {
+                        title: 'Introduction to Physics',
+                        notes: '<h4>What is Physics?</h4><p>Physics is the natural science that studies matter, motion, energy, and force.</p><h4>Key Topics:</h4><ul><li>Motion and forces</li><li>Energy and work</li><li>Waves and light</li></ul>'
+                    }
+                ],
+                quiz: [
+                    {
+                        question: 'What is the speed of light?',
+                        options: ['300,000 km/s', '150,000 km/s', '500,000 km/s', '100,000 km/s'],
+                        correct: 0
+                    }
+                ]
+            },
+            {
+                id: 'computing',
+                icon: '💻',
+                title: 'Computing',
+                description: 'Learn programming and computer science',
+                lessons: [
+                    {
+                        title: 'Introduction to Programming',
+                        notes: '<h4>What is Programming?</h4><p>Programming is the process of creating instructions for computers to follow.</p><h4>Core Concepts:</h4><ul><li>Variables and data types</li><li>Control structures</li><li>Functions and algorithms</li></ul>'
+                    }
+                ],
+                quiz: [
+                    {
+                        question: 'What does HTML stand for?',
+                        options: ['Hyper Text Markup Language', 'High Tech Modern Language', 'Home Tool Markup Language', 'Hyperlinks and Text Markup Language'],
+                        correct: 0
+                    }
+                ]
+            },
+            {
+                id: 'arts',
+                icon: '🎨',
+                title: 'Arts & Humanities',
+                description: 'Discover history, art, and culture',
+                lessons: [
+                    {
+                        title: 'Introduction to Art History',
+                        notes: '<h4>Understanding Art</h4><p>Art history is the study of objects of art in their historical development and stylistic contexts.</p>'
+                    }
+                ],
+                quiz: [
+                    {
+                        question: 'Who painted the Mona Lisa?',
+                        options: ['Michelangelo', 'Leonardo da Vinci', 'Raphael', 'Donatello'],
+                        correct: 1
+                    }
+                ]
+            },
+            {
+                id: 'economics',
+                icon: '📊',
+                title: 'Economics',
+                description: 'Master finance and economics principles',
+                lessons: [
+                    {
+                        title: 'Introduction to Economics',
+                        notes: '<h4>What is Economics?</h4><p>Economics is the study of how people allocate scarce resources.</p>'
+                    }
+                ],
+                quiz: [
+                    {
+                        question: 'What is supply and demand?',
+                        options: ['A pricing mechanism', 'A type of tax', 'A government policy', 'A business strategy'],
+                        correct: 0
+                    }
+                ]
+            },
+            {
+                id: 'test-prep',
+                icon: '📝',
+                title: 'Test Prep',
+                description: 'Prepare for SAT, ACT, and more',
+                lessons: [
+                    {
+                        title: 'SAT Math Fundamentals',
+                        notes: '<h4>SAT Math Overview</h4><p>The SAT Math section tests algebra, problem solving, and data analysis.</p>'
+                    }
+                ],
+                quiz: [
+                    {
+                        question: 'The SAT Math section has how many questions?',
+                        options: ['40', '50', '58', '60'],
+                        correct: 2
+                    }
+                ]
+            }
+        ];
+
+        let currentCourse = null;
+        let userAnswers = {};
+        let progress = JSON.parse(localStorage.getItem('kaProgress') || '{}');
+
+        // Initialize
+        function init() {
+            renderCourses();
+            updateProgress();
+        }
+
+        // Render Courses
+        function renderCourses() {
+            const grid = document.getElementById('coursesGrid');
+            grid.innerHTML = courses.map(course => `
+                <div class="course-card" onclick="openCourse('${course.id}')">
+                    <div class="course-icon">${course.icon}</div>
+                    <h3 class="course-title">${course.title}</h3>
+                    <p class="course-description">${course.description}</p>
+                </div>
+            `).join('');
+        }
+
+        // Open Course
+        function openCourse(courseId) {
+            currentCourse = courses.find(c => c.id === courseId);
+            document.getElementById('courses').style.display = 'none';
+            document.getElementById('learningArea').classList.add('active');
+            document.getElementById('lessonTitle').textContent = currentCourse.lessons[0].title;
+            document.getElementById('lessonNotes').innerHTML = currentCourse.lessons[0].notes;
+        }
+
+        // Back to Courses
+        function backToCourses() {
+            document.getElementById('courses').style.display = 'block';
+            document.getElementById('learningArea').classList.remove('active');
+            currentCourse = null;
+        }
+
+        // Start Quiz
+        function startQuiz() {
+            document.getElementById('learningArea').classList.remove('active');
+            document.getElementById('quizSection').classList.add('active');
+            renderQuiz();
+        }
+
+        // Back to Lesson
+        function backToLesson() {
+            document.getElementById('quizSection').classList.remove('active');
+            document.getElementById('learningArea').classList.add('active');
+        }
+
+        // Render Quiz
+        function renderQuiz() {
+            const container = document.getElementById('quizContainer');
+            userAnswers = {};
+            container.innerHTML = currentCourse.quiz.map((q, idx) => `
+                <div class="question">
+                    <h3>Question ${idx + 1}: ${q.question}</h3>
+                    <div class="options">
+                        ${q.options.map((opt, optIdx) => `
+                            <div class="option" onclick="selectAnswer(${idx}, ${optIdx})" data-question="${idx}" data-option="${optIdx}">
+                                ${opt}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Select Answer
+        function selectAnswer(questionIdx, optionIdx) {
+            const options = document.querySelectorAll(`[data-question="${questionIdx}"]`);
+            options.forEach(opt => opt.classList.remove('correct', 'incorrect'));
+            userAnswers[questionIdx] = optionIdx;
+        }
+
+        // Submit Quiz
+        function submitQuiz() {
+            let correct = 0;
+            currentCourse.quiz.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                const options = document.querySelectorAll(`[data-question="${idx}"]`);
+                options.forEach((opt, optIdx) => {
+                    if (optIdx === q.correct) {
+                        opt.classList.add('correct');
+                    } else if (optIdx === userAns) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+                if (userAns === q.correct) correct++;
+            });
+
+            // Update progress
+            if (!progress[currentCourse.id]) progress[currentCourse.id] = 0;
+            progress[currentCourse.id] += correct * 10;
+            localStorage.setItem('kaProgress', JSON.stringify(progress));
+            updateProgress();
+
+            // Show badge if score is high
+            if (correct === currentCourse.quiz.length) {
+                showBadge(currentCourse.title + ' Master', 'You aced the quiz!');
+            }
+
+            document.getElementById('submitQuiz').disabled = true;
+        }
+
+        // Show Badge
+        function showBadge(title, description) {
+            document.getElementById('badgeTitle').textContent = title;
+            document.getElementById('badgeDescription').textContent = description;
+            document.getElementById('badgePopup').classList.add('show');
+        }
+
+        // Close Badge
+        function closeBadge() {
+            document.getElementById('badgePopup').classList.remove('show');
+        }
+
+        // Update Progress
+        function updateProgress() {
+            const stats = document.getElementById('progressStats');
+            const totalPoints = Object.values(progress).reduce((a, b) => a + b, 0);
+            stats.innerHTML = `<h3>Total Points: ${totalPoints}</h3>`;
+            document.getElementById('progressFill').style.width = Math.min(totalPoints / 10, 100) + '%';
+        }
+
+        // Dark Mode
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        }
+
+        // Scroll to Courses
+        function scrollToCourses() {
+            document.getElementById('courses').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Load dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
