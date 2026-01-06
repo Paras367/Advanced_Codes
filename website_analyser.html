@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>✨ SiteSage — Advanced Website Analyzer</title>
+  <meta name="description" content="Extract title, meta, headings, links, images, readability & more. Powered by Cloudflare.">
+
+  <!-- 🎨 CSS (All in one file — no external deps needed) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #e2e8f0; }
+    .card { @apply bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 shadow-xl; }
+    .heading-badge { @apply inline-block px-2 py-0.5 text-xs font-bold rounded; }
+    .h1 { @apply heading-badge bg-red-500/20 text-red-300 border-l-4 border-red-500 pl-3; }
+    .h2 { @apply heading-badge bg-orange-500/20 text-orange-300 border-l-4 border-orange-500 pl-3; }
+    .h3 { @apply heading-badge bg-amber-500/20 text-amber-300 border-l-4 border-amber-500 pl-3; }
+    .h4 { @apply heading-badge bg-emerald-500/20 text-emerald-300 border-l-4 border-emerald-500 pl-3; }
+    .h5 { @apply heading-badge bg-blue-500/20 text-blue-300 border-l-4 border-blue-500 pl-3; }
+    .h6 { @apply heading-badge bg-violet-500/20 text-violet-300 border-l-4 border-violet-500 pl-3; }
+    .toast { @apply fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-lg bg-emerald-600 text-white flex items-center gap-2 animate__animated animate__fadeInUp; }
+    .progress-bar { @apply h-1 w-full bg-slate-700 rounded-full overflow-hidden mb-6 hidden; }
+    .progress-fill { @apply h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500; }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- 🍞 Navbar -->
+  <nav class="py-4 px-6 flex justify-between items-center border-b border-slate-700/50">
+    <div class="flex items-center gap-3">
+      <i class="fas fa-brain text-indigo-400 text-2xl"></i>
+      <h1 class="text-xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">SiteSage</h1>
+    </div>
+    <div class="text-sm text-slate-400">
+      <i class="fas fa-cloud"></i> Cloud-Powered • Zero Cost • Open Source
+    </div>
+  </nav>
+
+  <div class="container mx-auto px-4 py-8 max-w-6xl">
+    <!-- 🎯 Hero -->
+    <div class="text-center mb-12 animate__animated animate__fadeIn">
+      <h1 class="text-4xl md:text-5xl font-bold mb-4">Advanced Website Analyzer</h1>
+      <p class="text-lg text-slate-300 max-w-2xl mx-auto">
+        Extract <span class="text-indigo-300">metadata</span>, <span class="text-amber-300">headings</span>, 
+        <span class="text-emerald-300">links</span>, <span class="text-rose-300">images</span>, 
+        and <span class="text-cyan-300">readability</span> — in seconds.
+      </p>
+    </div>
+
+    <!-- 🔍 Input -->
+    <div class="card mb-8 animate__animated animate__fadeInUp">
+      <div class="flex flex-col md:flex-row gap-4">
+        <div class="flex-1 relative">
+          <i class="fas fa-link absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input 
+            type="text" 
+            id="urlInput" 
+            placeholder="https://example.com" 
+            class="w-full pl-12 pr-4 py-4 bg-slate-900/70 border border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+            value="https://developer.mozilla.org"
+          >
+        </div>
+        <button 
+          id="analyzeBtn" 
+          class="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 rounded-xl font-semibold flex items-center justify-center gap-2 transition transform hover:-translate-y-0.5 shadow-lg"
+        >
+          <i class="fas fa-search"></i> Analyze
+        </button>
+      </div>
+      <div class="mt-4 text-xs text-amber-400 flex items-center gap-1">
+        <i class="fas fa-shield-alt"></i>
+        <span>✅ Secure • No data stored • Powered by Cloudflare</span>
+      </div>
+    </div>
+
+    <!-- 📊 Progress -->
+    <div id="progressBar" class="progress-bar">
+      <div class="progress-fill w-0"></div>
+    </div>
+
+    <!-- 🚨 Alert -->
+    <div id="alertBox" class="hidden card bg-rose-900/30 border-rose-800/50 text-rose-200"></div>
+
+    <!-- 🌀 Loading -->
+    <div id="loading" class="hidden flex flex-col items-center justify-center py-16">
+      <div class="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+      <p class="text-xl font-medium">Analyzing site...</p>
+      <p class="text-slate-400 mt-2">Fetching and parsing content</p>
+    </div>
+
+    <!-- 📋 Results -->
+    <div id="results" class="hidden space-y-6">
+      <!-- 📄 Summary -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="card bg-gradient-to-br from-indigo-900/50 to-purple-900/50">
+          <div class="text-indigo-300"><i class="fas fa-file-alt text-xl"></i></div>
+          <h3 class="mt-2 text-lg font-semibold">Title</h3>
+          <p id="summaryTitle" class="mt-1 text-slate-200 line-clamp-2">—</p>
+        </div>
+        <div class="card bg-gradient-to-br from-amber-900/50 to-yellow-900/50">
+          <div class="text-amber-300"><i class="fas fa-align-left text-xl"></i></div>
+          <h3 class="mt-2 text-lg font-semibold">Headings</h3>
+          <p id="summaryHeadings" class="mt-1 text-slate-200">—</p>
+        </div>
+        <div class="card bg-gradient-to-br from-emerald-900/50 to-teal-900/50">
+          <div class="text-emerald-300"><i class="fas fa-link text-xl"></i></div>
+          <h3 class="mt-2 text-lg font-semibold">Links</h3>
+          <p id="summaryLinks" class="mt-1 text-slate-200">—</p>
+        </div>
+        <div class="card bg-gradient-to-br from-cyan-900/50 to-blue-900/50">
+          <div class="text-cyan-300"><i class="fas fa-book-reader text-xl"></i></div>
+          <h3 class="mt-2 text-lg font-semibold">Readability</h3>
+          <p id="summaryReadability" class="mt-1 text-slate-200">—</p>
+        </div>
+      </div>
+
+      <!-- 🗂️ Tabs -->
+      <div class="flex border-b border-slate-700 overflow-x-auto">
+        <button data-tab="meta" class="tab-btn py-3 px-6 font-medium border-b-2 border-indigo-500 text-indigo-300">Meta</button>
+        <button data-tab="headings" class="tab-btn py-3 px-6 font-medium text-slate-400 hover:text-slate-200">Headings</button>
+        <button data-tab="content" class="tab-btn py-3 px-6 font-medium text-slate-400 hover:text-slate-200">Content</button>
+        <button data-tab="links" class="tab-btn py-3 px-6 font-medium text-slate-400 hover:text-slate-200">Links</button>
+      </div>
+
+      <!-- 📄 Tab Contents -->
+      <div id="tabContent" class="space-y-6">
+        <!-- Meta -->
+        <div id="tab-meta" class="tab-content">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="metaGrid"></div>
+        </div>
+        <!-- Headings -->
+        <div id="tab-headings" class="tab-content hidden">
+          <div id="headingsList" class="space-y-3"></div>
+        </div>
+        <!-- Content -->
+        <div id="tab-content" class="tab-content hidden">
+          <div class="flex gap-4 mb-4">
+            <span class="px-3 py-1 bg-slate-700/50 rounded-lg"><i class="fas fa-font"></i> <span id="wordCount">—</span> words</span>
+            <span class="px-3 py-1 bg-slate-700/50 rounded-lg"><i class="fas fa-comment"></i> <span id="sentenceCount">—</span> sentences</span>
+            <span class="px-3 py-1 bg-slate-700/50 rounded-lg"><i class="fas fa-graduation-cap"></i> <span id="gradeLevel">—</span></span>
+          </div>
+          <div id="paragraphsList" class="space-y-4"></div>
+        </div>
+        <!-- Links -->
+        <div id="tab-links" class="tab-content hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4" id="linksGrid"></div>
+        </div>
+      </div>
+
+      <!-- 📤 Export -->
+      <div class="card flex flex-wrap gap-3">
+        <button id="copyJSON" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg flex items-center gap-2">
+          <i class="fas fa-copy"></i> Copy JSON
+        </button>
+        <button id="downloadJSON" class="px-4 py-2 bg-indigo-700 hover:bg-indigo-600 rounded-lg flex items-center gap-2">
+          <i class="fas fa-download"></i> Download JSON
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Toast -->
+  <div id="toast" class="toast hidden">
+    <i class="fas fa-check-circle"></i>
+    <span id="toastMessage">Copied!</span>
+  </div>
+
+  <!-- 🚀 MAIN SCRIPT -->
+  <script>
+    // 🔧 CONFIG — YOUR WORKER (CORRECTED)
+    const WORKER_URL = 'https://mute-rain-a64a.dhimanparas605.workers.dev';
+
+    // DOM
+    const urlInput = document.getElementById('urlInput');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const loading = document.getElementById('loading');
+    const results = document.getElementById('results');
+    const alertBox = document.getElementById('alertBox');
+    const progressBar = document.getElementById('progressBar');
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toastMessage');
+    let lastData = null;
+
+    // 🎯 Tab Switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('text-indigo-300', 'border-indigo-500'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+        btn.classList.add('text-indigo-300', 'border-indigo-500');
+        document.getElementById(`tab-${btn.dataset.tab}`).classList.remove('hidden');
+      });
+    });
+
+    // 🚨 Alert
+    function showAlert(message, type = 'error') {
+      alertBox.textContent = message;
+      alertBox.className = `card ${type === 'error' ? 'bg-rose-900/30 border-rose-800/50 text-rose-200' : 'bg-emerald-900/30 border-emerald-800/50 text-emerald-200'}`;
+      alertBox.classList.remove('hidden');
+      setTimeout(() => alertBox.classList.add('hidden'), 5000);
+    }
+
+    // ✅ Toast
+    function showToast(msg) {
+      toastMessage.textContent = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 2000);
+    }
+
+    // 📈 Simulate progress
+    function simulateProgress() {
+      const bar = document.querySelector('.progress-fill');
+      let width = 0;
+      progressBar.classList.remove('hidden');
+      const interval = setInterval(() => {
+        width += Math.random() * 10;
+        if (width >= 100) {
+          width = 100;
+          clearInterval(interval);
+          setTimeout(() => progressBar.classList.add('hidden'), 300);
+        }
+        bar.style.width = `${width}%`;
+      }, 200);
+    }
+
+    // 🌐 Analyze — FULLY CORRECTED
+    async function analyzeWebsite() {
+      // ✅ CRITICAL: Sanitize URL (remove ALL spaces)
+      let url = urlInput.value.trim().replace(/\s+/g, '');
+      if (!url) return showAlert('Please enter a URL', 'error');
+      if (!url.startsWith('http')) url = 'https://' + url;
+
+      loading.classList.remove('hidden');
+      results.classList.add('hidden');
+      alertBox.classList.add('hidden');
+      simulateProgress();
+
+      try {
+        // ✅ Call YOUR WORKER (no format=json — not supported)
+        const resp = await fetch(`${WORKER_URL}/?url=${encodeURIComponent(url)}`);
+        const data = await resp.json();
+
+        if (data.error) throw new Error(data.error);
+        lastData = data;
+        renderResults(data);
+        showAlert('✅ Analysis complete!', 'success');
+      } catch (err) {
+        console.error('Error:', err);
+        showAlert(`❌ ${err.message || 'Failed to analyze'}`, 'error');
+      } finally {
+        loading.classList.add('hidden');
+      }
+    }
+
+    // 🎨 Render — MATCHES YOUR WORKER'S JSON
+    function renderResults(data) {
+      // Metadata
+      const title = data.metadata?.title || 'Untitled';
+      document.getElementById('summaryTitle').textContent = title;
+
+      const headings = data.content?.headings || [];
+      document.getElementById('summaryHeadings').textContent = `${headings.length} headings`;
+
+      const links = data.content?.links || [];
+      document.getElementById('summaryLinks').textContent = `${links.length} links`;
+
+      const readability = data.content?.readability || {};
+      document.getElementById('summaryReadability').textContent = 
+        `${readability.grade || '—'} ${readability.flesch ? `(Flesch: ${readability.flesch})` : ''}`;
+
+      // Meta
+      const metaGrid = document.getElementById('metaGrid');
+      metaGrid.innerHTML = '';
+      const metaFields = {
+        title: 'Title',
+        description: 'Description',
+        keywords: 'Keywords',
+        author: 'Author',
+        'og:title': 'OG Title',
+        'og:description': 'OG Description',
+        viewport: 'Viewport'
+      };
+      Object.entries(metaFields).forEach(([key, label]) => {
+        const value = data.metadata?.[key] || '—';
+        metaGrid.innerHTML += `
+          <div class="card">
+            <div class="text-xs text-slate-400">${label}</div>
+            <div class="mt-1 font-mono text-sm text-slate-200 truncate">${escapeHtml(value)}</div>
+          </div>
+        `;
+      });
+
+      // Headings
+      const headingsList = document.getElementById('headingsList');
+      headingsList.innerHTML = headings.length ? 
+        headings.map(h => `<div class="${h.level}">${escapeHtml(h.text)}</div>`).join('') :
+        `<div class="text-slate-500 italic">No headings found</div>`;
+
+      // Content
+      document.getElementById('wordCount').textContent = readability.words || '—';
+      document.getElementById('sentenceCount').textContent = readability.sentences || '—';
+      document.getElementById('gradeLevel').textContent = readability.grade || '—';
+
+      const paragraphs = data.content?.paragraphs || [];
+      const paragraphsList = document.getElementById('paragraphsList');
+      paragraphsList.innerHTML = paragraphs.length ?
+        paragraphs.map(p => `<div class="card"><p class="leading-relaxed">${escapeHtml(p)}</p></div>`).join('') :
+        `<div class="text-slate-500 italic">No paragraphs found</div>`;
+
+      // Links
+      const linksGrid = document.getElementById('linksGrid');
+      linksGrid.innerHTML = links.length ?
+        links.slice(0, 12).map(link => `
+          <a href="${escapeHtml(link.href)}" target="_blank" class="card hover:bg-slate-700/50 transition">
+            <div class="font-medium text-indigo-300 truncate">${escapeHtml(link.text || '🔗 Link')}</div>
+            <div class="text-xs text-slate-400 truncate mt-1">${escapeHtml(link.href)}</div>
+            ${link.isExternal ? '<span class="text-xs bg-amber-900/50 text-amber-300 px-2 py-0.5 rounded mt-2 inline-block">External</span>' : ''}
+          </a>
+        `).join('') :
+        `<div class="col-span-2 text-slate-500 italic">No links found</div>`;
+
+      results.classList.remove('hidden');
+    }
+
+    // 🛡️ Utils
+    function escapeHtml(str) {
+      if (typeof str !== 'string') return String(str);
+      return str.replace(/[&<>"']/g, tag => 
+        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[tag])
+      );
+    }
+
+    // 📥 Export
+    document.getElementById('copyJSON').addEventListener('click', () => {
+      if (!lastData) return showToast('No data to copy');
+      navigator.clipboard.writeText(JSON.stringify(lastData, null, 2))
+        .then(() => showToast('✅ JSON copied!'))
+        .catch(() => showToast('❌ Failed to copy'));
+    });
+
+    document.getElementById('downloadJSON').addEventListener('click', () => {
+      if (!lastData) return showAlert('No data to download', 'error');
+      const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(lastData, null, 2))}`;
+      const a = document.createElement('a');
+      a.href = dataStr;
+      a.download = `site-analysis-${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+    });
+
+    // ⌨️ Enter key
+    urlInput.addEventListener('keypress', e => { if (e.key === 'Enter') analyzeWebsite(); });
+    analyzeBtn.addEventListener('click', analyzeWebsite);
+
+    // 💡 Optional: Auto-analyze example on load
+    // setTimeout(() => analyzeWebsite(), 500);
+  </script>
+</body>
+</html>
