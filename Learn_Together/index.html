@@ -66,16 +66,6 @@
 
 <script>
 	
-.sign {
-  display: inline-block;
-  margin-left: 0.75rem;
-  transition: transform 0.3s ease;
-  font-size: 1rem;
-  color: #555;
-}
-.sign.rotate {
-  transform: rotate(180deg);
-}
 document.addEventListener("DOMContentLoaded", function () {
 
     document.querySelectorAll(".panel-collapse").forEach(collapse => {
@@ -95,6 +85,18 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
+
+.sign {
+  display: inline-block;
+  margin-left: 0.75rem;
+  transition: transform 0.3s ease;
+  font-size: 1rem;
+  color: #555;
+}
+.sign.rotate {
+  transform: rotate(180deg);
+}
+	
 </script>
 
   
@@ -153,7 +155,7 @@ document.addEventListener("DOMContentLoaded", function () {
   <div class="container-fluid">
     <div class="row">
       <div class="content-wrap col-12 col-md-12">
-        <h1 class="mbr-section-title mbr-fonts-style mbr-white mb-4 display-1">
+        <h1 class="hero-title">
           <strong>Learn Loud</strong>
         </h1>
         
@@ -830,6 +832,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </body>
 
 </html>
+
 
 
 
