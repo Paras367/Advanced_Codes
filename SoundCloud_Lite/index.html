@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SoundCloud Lite</title>
+  <title>SoundCloud Lite | PARAS</title>
   <style>
     :root { --bg: #121212; --card: #1e1e1e; --text: #fff; --subtext: #aaa; --accent: #ff5500; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -63,15 +63,15 @@
             <div class="track-title">Electronic Essentials</div>
             <div class="track-user">Electronic Music</div>
           </div>
-          <div class="track-card" data-url="https://soundcloud.com/chillhopmusic/sets/chillhop-essentials-winter-2025">
+          <div class="track-card" data-url="https://soundcloud.com/jashan-saini-411493296/balenci-shubh">
             <div class="track-art">❄️</div>
-            <div class="track-title">Chillhop Essentials</div>
-            <div class="track-user">Chillhop Music</div>
+            <div class="track-title">Punjabi Hip-Hop</div>
+            <div class="track-user">Punjabi Hip-Hop</div>
           </div>
-          <div class="track-card" data-url="https://soundcloud.com/ambientmusicguide/sets/deep-ambient">
-            <div class="track-art">🌌</div>
-            <div class="track-title">Deep Ambient</div>
-            <div class="track-user">Ambient Guide</div>
+          <div class="track-card" data-url="https://soundcloud.com/mahnoor-khan-51/songspk-arijit-singh-07-raabta">
+            <div class="track-art">💞</div>
+            <div class="track-title">Romantic / Love</div>
+            <div class="track-user">Romantic / Love</div>
           </div>
         </div>
       </div>
@@ -102,7 +102,7 @@
   </div>
 
   <script>
-    // ✅ 100% working in 2026 — uses SoundCloud's official widget embed (no API key, no CORS)
+   
     function loadPlayer(url) {
       const iframe = document.getElementById('sc-player');
       const embedUrl = new URL('https://w.soundcloud.com/player/');
@@ -118,18 +118,16 @@
       iframe.src = embedUrl.toString();
     }
 
-    // Card & filter click → update player
     document.querySelectorAll('[data-url]').forEach(el => {
       el.addEventListener('click', () => {
         const url = el.getAttribute('data-url');
         loadPlayer(url);
-        // Visual feedback
+        
         document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
         el.classList.add('active');
       });
     });
 
-    // Init with default
     loadPlayer('https://soundcloud.com/lofigirl/sets/lofi-chill');
   </script>
 </body>
