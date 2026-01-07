@@ -12,212 +12,219 @@
         integrity="sha512-yuYB8Q8f4QqQX+7B7J6U9cV4F+YQj7Qj8Q+8Z8h5d4+Y9Y7Z8h5d4+Y9Y7Z8h5d4+Y9Y7Z8h5d4+Y9Y7Z8h5d4+Y9" 
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-  <style>
-    :root {
-      --bg: #0a0a0a;
-      --card: #161616;
-      --text: #f0f0f0;
-      --subtext: #a0a0a0;
-      --accent: #ff2a6d;
-      --social-fb: #1877f2;
-      --social-tw: #1da1f2;
-      --social-ig: #e1306c;
-      --social-sc: #fffc00;
-      --social-tt: #000000;
-    }
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --card: #161616;
+    --text: #f0f0f0;
+    --subtext: #a0a0a0;
+    --accent: #ff2a6d;
+    --social-fb: #1877f2;
+    --social-tw: #000000;
+    --social-ig: #e1306c;
+    --social-sc: #fffc00;
+    --social-tt: #69C9D0;
+  }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Poppins', sans-serif;
-      line-height: 1.6;
-      padding-bottom: 30px;
-    }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+    padding-bottom: 60px;
+  }
 
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 20px;
-    }
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+  }
 
-    header {
-      text-align: center;
-      margin: 30px 0;
-    }
+  header {
+    text-align: center;
+    margin: 30px 0;
+  }
 
-    .logo {
-      font-size: 36px;
-      font-weight: 700;
-      background: linear-gradient(90deg, #ff2a6d, #4d79ff);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      margin-bottom: 10px;
-    }
+  .logo {
+    font-size: 36px;
+    font-weight: 700;
+    background: linear-gradient(90deg, #ff2a6d, #4d79ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 10px;
+  }
 
-    .tagline {
-      font-size: 18px;
-      color: var(--subtext);
-      max-width: 600px;
-      margin: 0 auto;
-    }
+  .tagline {
+    font-size: 18px;
+    color: var(--subtext);
+    max-width: 600px;
+    margin: 0 auto;
+  }
 
-    /* 🎵 Tracks Grid */
-    .section-title {
-      font-size: 24px;
-      font-weight: 600;
-      margin: 40px 0 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .section-title i {
-      color: var(--accent);
-    }
+  /* Tracks Grid */
+  .section-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 40px 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 28px;
-    }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 28px;
+  }
 
-    .track-card {
-      background: var(--card);
-      border-radius: 20px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-    }
-    .track-card:hover {
-      transform: translateY(-10px) scale(1.02);
-      box-shadow: 0 15px 35px rgba(255, 42, 109, 0.4);
-    }
-    .track-card.playing {
-      border: 2px solid var(--accent);
-      background: rgba(255, 42, 109, 0.08);
-    }
+  .track-card {
+    background: var(--card);
+    border-radius: 20px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  }
+  .track-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(255, 42, 109, 0.4);
+  }
+  .track-card.playing {
+    border: 2px solid var(--accent);
+    background: rgba(255, 42, 109, 0.08);
+  }
 
-    .art {
-      height: 200px;
-      background: linear-gradient(135deg, #222, #333);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 72px;
-      color: #555;
-    }
+  .art {
+    height: 200px;
+    background: linear-gradient(135deg, #222, #333);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 72px;
+    color: #555;
+  }
 
-    .info {
-      padding: 22px;
-    }
+  .info {
+    padding: 22px;
+  }
 
-    .title {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
+  .title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
 
-    .artist {
-      font-size: 14px;
-      color: var(--subtext);
-      font-weight: 400;
-    }
+  .artist {
+    font-size: 14px;
+    color: var(--subtext);
+  }
 
-    /* ▶️ Player */
-    .player-box {
-      background: var(--card);
-      border-radius: 20px;
-      padding: 30px;
-      margin-top: 40px;
-      text-align: center;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    }
+  /* Player */
+  .player-box {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 30px;
+    margin-top: 40px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
 
-    .status {
-      font-size: 18px;
-      margin: 15px 0;
-      min-height: 24px;
-    }
+  .status {
+    font-size: 18px;
+    margin: 15px 0;
+    min-height: 24px;
+  }
 
-    #sc-player {
-      width: 100%;
-      max-width: 800px;
-      margin: 20px auto;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
-    }
-
-    /* 🌐 Social Links */
-    .social-section {
-      margin-top: 50px;
-      text-align: center;
-    }
-
-    .social-title {
-      font-size: 20px;
-      margin-bottom: 20px;
-      color: var(--subtext);
-    }
-
-    .social-icons {
-      display: flex;
-      justify-content: center;
-      gap: 24px;
-      flex-wrap: wrap;
-    }
-
-    .social-btn {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      color: white;
-      text-decoration: none;
-      transition: all 0.3s;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
-
-    .social-btn:hover {
-      transform: translateY(-4px) scale(1.1);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-    }
-
-    .fb { background: var(--social-fb); }
-    .tw { background: var(--social-tw); }
-    .ig { background: var(--social-ig); }
-    .sc { background: var(--social-sc); color: black; }
-    .tt { background: var(--social-tt); }
-
-    /* Footer */
-    footer {
-      text-align: center;
-      margin-top: 60px;
-      color: var(--subtext);
-      font-size: 14px;
-    }
-
-    @media (max-width: 600px) {
-      .grid { grid-template-columns: 1fr; }
-      .social-icons { gap: 16px; }
-      .social-btn { width: 50px; height: 50px; font-size: 20px; }
-    }
+  #sc-player {
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  }
 
  
-   
-    
-  
-  </style>
+  .social-section {
+    margin-top: 50px;
+    text-align: center;
+  }
+
+  .social-title {
+    font-size: 20px;
+    margin-bottom: 24px;
+    color: var(--subtext);
+  }
+
+  .social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .social-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .social-icon:hover {
+    transform: translateY(-6px) scale(1.12);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    z-index: 2;
+  }
+
+  /* Brand Colors */
+  .fb { background: var(--social-fb); }
+  .tw { background: var(--social-tw); }
+  .ig { background: var(--social-ig); }
+  .sc { 
+    background: #000; 
+    color: var(--social-sc);
+  }
+  .tt { 
+    background: linear-gradient(45deg, var(--social-tt), #FE2C55);
+  }
+
+  /* Snapchat fix */
+  .sc .fa-snapchat-ghost {
+    position: relative;
+  }
+  .sc .fa-snapchat-ghost::before {
+    color: var(--social-sc) !important;
+  }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    margin-top: 40px;
+    color: var(--subtext);
+    font-size: 14px;
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: 1fr; }
+    .social-icons { gap: 16px; }
+    .social-icon { width: 54px; height: 54px; font-size: 22px; }
+  }
+</style>
 </head>
 <body>
   <div class="container">
