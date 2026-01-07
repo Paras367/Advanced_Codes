@@ -212,6 +212,111 @@
       .social-icons { gap: 16px; }
       .social-btn { width: 50px; height: 50px; font-size: 20px; }
     }
+
+ 
+    body {
+      background: #0f0f0f;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    
+    .icon-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      justify-content: center;
+      padding: 30px;
+      background: #1a1a1a;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      max-width: 800px;
+    }
+    
+    .social-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      color: white;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    
+    .social-icon:hover {
+      transform: translateY(-6px) scale(1.1);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      z-index: 2;
+    }
+    
+    .social-icon:active {
+      transform: scale(0.95);
+    }
+    
+    /* Official Brand Colors */
+    .fb { background: #1877f2; }
+    .tw { background: #000000; } /* X/Twitter black */
+    .ig { background: #e1306c; }
+    .sc { 
+      background: #000000; 
+      color: #fffc00;
+    }
+    .tt { 
+      background: #000000; 
+      background: linear-gradient(45deg, #69C9D0, #FE2C55);
+    }
+    
+    /* Snapchat ghost fix */
+    .sc .fa-snapchat-ghost {
+      position: relative;
+    }
+    .sc .fa-snapchat-ghost::before {
+      color: #fffc00 !important;
+    }
+    
+    /* Tooltip */
+    .social-icon::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: -36px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    
+    .social-icon:hover::after {
+      opacity: 1;
+    }
+    
+    @media (max-width: 500px) {
+      .icon-container {
+        gap: 16px;
+        padding: 20px;
+      }
+      .social-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 26px;
+      }
+    }
+  
   </style>
 </head>
 <body>
@@ -266,13 +371,32 @@
     </div>
 
     <!-- 🌐 Social Media Links -->
-    <div style="font-size: 28px; display: flex; gap: 20px; justify-content: center; margin: 20px 0;">
-  <i class="fab fa-facebook" style="color: #1877f2;"></i>
-  <i class="fab fa-x-twitter" style="color: #000000;"></i> <!-- Updated for X -->
-  <i class="fab fa-instagram" style="color: #e1306c;"></i>
-  <i class="fab fa-snapchat" style="color: #fffc00; background: #000; border-radius: 50%; padding: 4px;"></i>
-  <i class="fab fa-tiktok" style="color: #000000;"></i>
-</div>
+    <div class="icon-container">
+    <!-- Facebook -->
+    <a href="https://facebook.com" target="_blank" class="social-icon fb" data-tooltip="Facebook">
+      <i class="fab fa-facebook-f"></i>
+    </a>
+    
+    <!-- Twitter / X -->
+    <a href="https://twitter.com" target="_blank" class="social-icon tw" data-tooltip="Twitter / X">
+      <i class="fab fa-x-twitter"></i>
+    </a>
+    
+    <!-- Instagram -->
+    <a href="https://instagram.com" target="_blank" class="social-icon ig" data-tooltip="Instagram">
+      <i class="fab fa-instagram"></i>
+    </a>
+    
+    <!-- Snapchat -->
+    <a href="https://snapchat.com" target="_blank" class="social-icon sc" data-tooltip="Snapchat">
+      <i class="fab fa-snapchat-ghost"></i>
+    </a>
+    
+    <!-- TikTok -->
+    <a href="https://tiktok.com" target="_blank" class="social-icon tt" data-tooltip="TikTok">
+      <i class="fab fa-tiktok"></i>
+    </a>
+  </div>
     </div>
 
     <footer>
