@@ -8,9 +8,7 @@
   
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" 
-        integrity="sha512-yuYB8Q8f4QqQX+7B7J6U9cV4F+YQj7Qj8Q+8Z8h5d4+Y9Y7Z8h5d4+Y9Y7Z8h5d4+Y9Y7Z8h5d4+Y9Y7Z8h5d4+Y9" 
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
 
 <style>
   :root {
@@ -23,7 +21,7 @@
     --social-tw: #000000;
     --social-ig: #e1306c;
     --social-sc: #fffc00;
-    --social-tt: #69C9D0;
+    --social-tt: linear-gradient(45deg, #69C9D0, #FE2C55);
   }
 
   * {
@@ -38,14 +36,17 @@
     font-family: 'Poppins', sans-serif;
     line-height: 1.6;
     padding-bottom: 60px;
+    position: relative;
   }
 
   .container {
     max-width: 1100px;
     margin: 0 auto;
     padding: 20px;
+    position: relative;
   }
 
+  /* 🎵 Your existing content */
   header {
     text-align: center;
     margin: 30px 0;
@@ -68,7 +69,6 @@
     margin: 0 auto;
   }
 
-  /* Tracks Grid */
   .section-title {
     font-size: 24px;
     font-weight: 600;
@@ -126,7 +126,6 @@
     color: var(--subtext);
   }
 
-  /* Player */
   .player-box {
     background: var(--card);
     border-radius: 20px;
@@ -151,42 +150,37 @@
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
   }
 
- 
-  .social-section {
-    margin-top: 50px;
-    text-align: center;
-  }
-
-  .social-title {
-    font-size: 20px;
-    margin-bottom: 24px;
-    color: var(--subtext);
-  }
-
-  .social-icons {
+  /* ✅ VERTICAL SIDEBAR ICONS (LEFT SIDE) */
+  .sidebar-icons {
+    position: fixed;
+    top: 50%;
+    left: 20px;
+    transform: translateY(-50%);
     display: flex;
-    justify-content: center;
-    gap: 24px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 20px;
+    z-index: 1000;
   }
 
-  .social-icon {
-    width: 64px;
-    height: 64px;
+  .sidebar-icon {
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 26px;
+    font-size: 24px;
     color: white;
     text-decoration: none;
-    transition: all 0.3s;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    backdrop-filter: blur(10px);
+    background: rgba(0,0,0,0.5);
   }
 
-  .social-icon:hover {
-    transform: translateY(-6px) scale(1.12);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  .sidebar-icon:hover {
+    transform: scale(1.2) translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
     z-index: 2;
   }
 
@@ -199,7 +193,7 @@
     color: var(--social-sc);
   }
   .tt { 
-    background: linear-gradient(45deg, var(--social-tt), #FE2C55);
+    background: var(--social-tt);
   }
 
   /* Snapchat fix */
@@ -210,7 +204,6 @@
     color: var(--social-sc) !important;
   }
 
-  /* Footer */
   footer {
     text-align: center;
     margin-top: 40px;
@@ -218,11 +211,15 @@
     font-size: 14px;
   }
 
-  /* Responsive */
-  @media (max-width: 600px) {
-    .grid { grid-template-columns: 1fr; }
-    .social-icons { gap: 16px; }
-    .social-icon { width: 54px; height: 54px; font-size: 22px; }
+  @media (max-width: 768px) {
+    .sidebar-icons {
+      left: 10px;
+    }
+    .sidebar-icon {
+      width: 48px;
+      height: 48px;
+      font-size: 20px;
+    }
   }
 </style>
 </head>
