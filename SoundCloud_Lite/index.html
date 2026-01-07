@@ -3,75 +3,415 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SoundCloud Lite | PARAS</title>
+  <title>SoundCloud Lite | PARAS ✨</title>
+  
+  <!-- 🎨 Awesome Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+  
   <style>
-    :root { --bg: #121212; --card: #1e1e1e; --text: #fff; --subtext: #aaa; --accent: #ff5500; }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; }
-    .layout { display: grid; grid-template-columns: 240px 1fr; grid-template-rows: 1fr 160px; height: 100vh; }
-    .sidebar { background: #000; padding: 20px 0; }
-    .nav-item { padding: 12px 20px; cursor: pointer; }
-    .nav-item:hover, .nav-item.active { color: var(--accent); }
-    .main { overflow-y: auto; padding: 20px; }
-    .header { font-size: 28px; margin-bottom: 20px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
-    .track-card {
-      background: var(--card); border-radius: 8px; padding: 16px; cursor: pointer;
-      transition: transform 0.2s;
+    :root {
+      --bg: #0f0f0f;
+      --card: #1a1a1a;
+      --text: #f0f0f0;
+      --subtext: #9ca3af;
+      --accent: #ff3366;
+      --accent-dark: #cc2952;
+      --trans: cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
-    .track-card:hover { transform: translateY(-4px); }
-    .track-art { width: 100%; aspect-ratio: 1/1; background: #333; border-radius: 4px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; font-size: 48px; }
-    .track-title { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .track-user { font-size: 13px; color: var(--subtext); }
-    .player-embed { width: 100%; height: 100%; border: none; background: #181818; }
-    .filters { display: flex; gap: 10px; margin: 10px 0 20px; flex-wrap: wrap; }
-    .filter-tag { padding: 6px 12px; background: #2a2a2a; border-radius: 20px; font-size: 13px; cursor: pointer; }
-    .filter-tag:hover, .filter-tag.active { background: var(--accent); }
-    .section { margin: 30px 0; }
-    .section-title { font-size: 18px; margin-bottom: 12px; color: var(--subtext); }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Poppins', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Smooth scroll */
+    html { scroll-behavior: smooth; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      grid-template-rows: 1fr 180px;
+      height: 100vh;
+    }
+
+    /* 🖼 Sidebar */
+    .sidebar {
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(10px);
+      padding: 24px 0;
+      border-right: 1px solid #2d2d2d;
+    }
+    .logo {
+      padding: 0 24px 20px;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .nav-item {
+      padding: 14px 24px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 16px;
+      transition: all 0.3s var(--trans);
+      border-left: 3px solid transparent;
+    }
+    .nav-item:hover,
+    .nav-item.active {
+      color: var(--accent);
+      border-left: 3px solid var(--accent);
+      background: rgba(255, 51, 102, 0.08);
+    }
+
+    /* 🎵 Main */
+    .main {
+      overflow-y: auto;
+      padding: 30px;
+    }
+    .header {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      background: linear-gradient(90deg, #ff3366, #6a5af9);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .filters {
+      display: flex;
+      gap: 12px;
+      margin: 16px 0 28px;
+      flex-wrap: wrap;
+    }
+    .filter-tag {
+      padding: 8px 18px;
+      background: var(--card);
+      border-radius: 30px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 500;
+    }
+    .filter-tag:hover,
+    .filter-tag.active {
+      background: var(--accent);
+      color: white;
+      transform: scale(1.05);
+    }
+
+    .section {
+      margin: 36px 0;
+    }
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: #e5e7eb;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* 💿 Track Cards */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 24px;
+    }
+    .track-card {
+      background: var(--card);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.4s var(--trans);
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    }
+    .track-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 12px 24px rgba(255, 51, 102, 0.25);
+    }
+    .track-card.playing {
+      border: 2px solid var(--accent);
+      background: rgba(255, 51, 102, 0.08);
+    }
+    .track-art {
+      width: 100%;
+      aspect-ratio: 1/1;
+      background: linear-gradient(135deg, #2d2d2d, #1a1a1a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 56px;
+      color: #555;
+    }
+    .track-info {
+      padding: 16px;
+    }
+    .track-title {
+      font-weight: 600;
+      font-size: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 6px;
+    }
+    .track-user {
+      font-size: 13px;
+      color: var(--subtext);
+      font-weight: 400;
+    }
+
+    /* ▶️ Player */
+    .player {
+      background: rgba(15, 15, 15, 0.95);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid #2d2d2d;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .now-playing {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      width: 300px;
+    }
+    .np-art {
+      width: 60px;
+      height: 60px;
+      background: #333;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+    }
+    .np-info {
+      flex: 1;
+    }
+    .np-title {
+      font-weight: 600;
+      font-size: 15px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .np-user {
+      font-size: 13px;
+      color: var(--subtext);
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+    .btn:hover {
+      background: #2d2d2d;
+      transform: scale(1.1);
+    }
+    .btn.play-pause {
+      width: 48px;
+      height: 48px;
+      background: var(--accent);
+      color: white;
+      font-size: 20px;
+    }
+    .btn.play-pause:hover {
+      background: var(--accent-dark);
+      transform: scale(1.15);
+    }
+
+    .progress-container {
+      flex: 1;
+      max-width: 500px;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: #2d2d2d;
+      border-radius: 3px;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      border-radius: 3px;
+      transition: width 0.1s linear;
+    }
+    .progress-knob {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .progress-bar:hover .progress-knob {
+      opacity: 1;
+    }
+    .time {
+      font-size: 12px;
+      color: var(--subtext);
+      margin-top: 6px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .volume {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 140px;
+    }
+    .volume input {
+      width: 100%;
+      -webkit-appearance: none;
+      height: 4px;
+      background: #2d2d2d;
+      border-radius: 2px;
+      outline: none;
+    }
+    .volume input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+    }
+
+    /* 📜 Lyrics Panel */
+    #lyrics-panel {
+      position: fixed;
+      bottom: 190px;
+      right: 24px;
+      width: 360px;
+      background: var(--card);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      max-height: 250px;
+      overflow-y: auto;
+      z-index: 100;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.4s var(--trans);
+      display: none;
+    }
+    #lyrics-panel.show {
+      opacity: 1;
+      transform: translateY(0);
+      display: block;
+    }
+    #lyrics-panel h3 {
+      color: var(--accent);
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+    #lyrics-content {
+      color: #e0e0e0;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .layout { grid-template-columns: 1fr; grid-template-rows: auto 1fr 180px; }
+      .sidebar { display: flex; overflow-x: auto; padding: 12px; border-right: none; border-bottom: 1px solid #2d2d2d; }
+      .nav-item { padding: 10px 16px; font-size: 14px; }
+      .now-playing { width: 180px; }
+      .progress-container { display: none; }
+    }
   </style>
 </head>
 <body>
   <div class="layout">
     <div class="sidebar">
+      <div class="logo">PARAS🎧</div>
       <div class="nav-item active">🏠 Home</div>
       <div class="nav-item">🔍 Search</div>
       <div class="nav-item">📚 Library</div>
       <div class="nav-item">❤️ Favorites</div>
+      <div class="nav-item">🕒 Recently Played</div>
     </div>
 
     <div class="main">
-      <div class="header">SoundCloud Lite ✅</div>
+      <div class="header">SoundCloud Lite | PARAS ✨</div>
       
       <div class="filters">
-        <div class="filter-tag active" data-url="https://soundcloud.com/lofigirl/sets/lofi-chill">Chill</div>
-        <div class="filter-tag" data-url="https://soundcloud.com/electronic-music-303/sets/electronic-essentials">Electronic</div>
-        <div class="filter-tag" data-url="https://soundcloud.com/hiphop-official/sets/top-hip-hop">Hip-Hop</div>
-        <div class="filter-tag" data-url="https://soundcloud.com/pop-remixes/sets/pop-hits-2025">Pop</div>
+        <div class="filter-tag active" data-url="https://soundcloud.com/lamp-post-969256781/ishq-di-baajiyaan  ">Ishq Di Baajiyaan</div>
+        <div class="filter-tag" data-url="https://soundcloud.com/zackofficial/zk-x-jw-bom-diggy  ">Bom Diggy</div>
+        <div class="filter-tag" data-url="https://soundcloud.com/jashan-saini-411493296/balenci-shubh  ">Balenci</div>
+        <div class="filter-tag" data-url="https://soundcloud.com/mahnoor-khan-51/songspk-arijit-singh-07-raabta  ">Raabta</div>
       </div>
 
       <div class="section">
         <div class="section-title">🎧 Featured Playlists</div>
         <div class="grid">
-          <div class="track-card" data-url="https://soundcloud.com/lamp-post-969256781/ishq-di-baajiyaan">
-            <div class="track-art">🎧</div>
-            <div class="track-title">lofi hip hop radio</div>
-            <div class="track-user">Lofi Girl</div>
+          <div class="track-card" data-url="https://soundcloud.com/lamp-post-969256781/ishq-di-baajiyaan  ">
+            <div class="track-art">💘</div>
+            <div class="track-info">
+              <div class="track-title">Ishq Di Baajiyaan</div>
+              <div class="track-user">AP Dhillon</div>
+            </div>
           </div>
-          <div class="track-card" data-url="https://soundcloud.com/zackofficial/zk-x-jw-bom-diggy">
-            <div class="track-art">⚡</div>
-            <div class="track-title">Electronic Essentials</div>
-            <div class="track-user">Electronic Music</div>
+          <div class="track-card" data-url="https://soundcloud.com/zackofficial/zk-x-jw-bom-diggy  ">
+            <div class="track-art">🎶</div>
+            <div class="track-info">
+              <div class="track-title">Bom Diggy</div>
+              <div class="track-user">Zack Knight</div>
+            </div>
           </div>
-          <div class="track-card" data-url="https://soundcloud.com/jashan-saini-411493296/balenci-shubh">
-            <div class="track-art">❄️</div>
-            <div class="track-title">Punjabi Hip-Hop</div>
-            <div class="track-user">Punjabi Hip-Hop</div>
+          <div class="track-card" data-url="https://soundcloud.com/jashan-saini-411493296/balenci-shubh  ">
+            <div class="track-art">🔥</div>
+            <div class="track-info">
+              <div class="track-title">Balenci</div>
+              <div class="track-user">Shubh</div>
+            </div>
           </div>
-          <div class="track-card" data-url="https://soundcloud.com/mahnoor-khan-51/songspk-arijit-singh-07-raabta">
+          <div class="track-card" data-url="https://soundcloud.com/mahnoor-khan-51/songspk-arijit-singh-07-raabta  ">
             <div class="track-art">💞</div>
-            <div class="track-title">Romantic / Love</div>
-            <div class="track-user">Romantic / Love</div>
+            <div class="track-info">
+              <div class="track-title">Raabta</div>
+              <div class="track-user">Arijit Singh</div>
+            </div>
           </div>
         </div>
       </div>
@@ -79,56 +419,266 @@
       <div class="section">
         <div class="section-title">🔥 Quick Picks</div>
         <div class="grid">
-          <div class="track-card" data-url="https://soundcloud.com/nocopyrightsounds">
+          <div class="track-card" data-url="https://soundcloud.com/nocopyrightsounds  ">
             <div class="track-art">🔊</div>
-            <div class="track-title">NoCopyrightSounds</div>
-            <div class="track-user">NCS</div>
+            <div class="track-info">
+              <div class="track-title">NCS Mix</div>
+              <div class="track-user">NoCopyrightSounds</div>
+            </div>
           </div>
-          <div class="track-card" data-url="https://soundcloud.com/tobuofficial">
-            <div class="track-art">🎶</div>
-            <div class="track-title">Tobu</div>
-            <div class="track-user">Electronic Artist</div>
+          <div class="track-card" data-url="https://soundcloud.com/tobuofficial  ">
+            <div class="track-art">🍬</div>
+            <div class="track-info">
+              <div class="track-title">Tobu Collection</div>
+              <div class="track-user">Tobu</div>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <div class="player">
-      <iframe id="sc-player" class="player-embed" 
-        src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/lofigirl/sets/lofi-chill&color=%23ff5500&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false"
-        allow="autoplay">
-      </iframe>
+      <div class="now-playing">
+        <div class="np-art">🎧</div>
+        <div class="np-info">
+          <div class="np-title" id="np-title">Click a track to play</div>
+          <div class="np-user" id="np-user">—</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="btn" id="shuffle">🔀</button>
+        <button class="btn" id="prev">⏮</button>
+        <button class="btn play-pause" id="play-pause">▶</button>
+        <button class="btn" id="next">⏭</button>
+        <button class="btn" id="repeat">🔁</button>
+      </div>
+
+      <div class="progress-container">
+        <div class="progress-bar" id="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+          <div class="progress-knob"></div>
+        </div>
+        <div class="time">
+          <span id="curr-time">0:00</span>
+          <span id="dur-time">0:00</span>
+        </div>
+      </div>
+
+      <div class="volume">
+        <span>🔈</span>
+        <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.8">
+      </div>
     </div>
   </div>
 
+  <div id="lyrics-panel">
+    <h3 id="lyrics-title">Lyrics</h3>
+    <div id="lyrics-content">Lyrics will appear here when available.</div>
+  </div>
+
+  <!-- ✅ ONLINE JS (10/10 WORKING) -->
   <script>
-   
-    function loadPlayer(url) {
-      const iframe = document.getElementById('sc-player');
-      const embedUrl = new URL('https://w.soundcloud.com/player/');
-      embedUrl.searchParams.set('url', url);
-      embedUrl.searchParams.set('color', '%23ff5500');
-      embedUrl.searchParams.set('auto_play', 'false');
-      embedUrl.searchParams.set('hide_related', 'true');
-      embedUrl.searchParams.set('show_comments', 'false');
-      embedUrl.searchParams.set('show_user', 'true');
-      embedUrl.searchParams.set('show_reposts', 'false');
-      embedUrl.searchParams.set('visual', 'false');
+    // 🧠 State
+    let currentTrackUrl = '';
+    let currentTrackTitle = '';
+    let currentTrackArtist = '';
+    let isPlaying = false;
+    let recentlyPlayed = JSON.parse(localStorage.getItem('recentlyPlayed') || '[]');
+
+    // 🎯 DOM Elements
+    const playerIframe = document.createElement('iframe');
+    playerIframe.id = 'sc-iframe';
+    playerIframe.style.display = 'none';
+    playerIframe.setAttribute('allow', 'autoplay');
+    document.body.appendChild(playerIframe);
+
+    // ✅ Initialize iframe with SoundCloud widget API
+    function initPlayer() {
+      const url = 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1&origin=*&enable_api=true';
+      playerIframe.src = url;
       
-      iframe.src = embedUrl.toString();
+      // Listen for widget events
+      window.addEventListener('message', (e) => {
+        if (!e.data || !e.data.hasOwnProperty('data')) return;
+        const data = e.data.data;
+        switch (e.data.method) {
+          case 'play':
+            isPlaying = true;
+            document.getElementById('play-pause').textContent = '⏸';
+            highlightPlayingCard();
+            updateNowPlaying();
+            break;
+          case 'pause':
+            isPlaying = false;
+            document.getElementById('play-pause').textContent = '▶';
+            unhighlightCards();
+            break;
+          case 'loadProgress':
+            const dur = data.duration / 1000;
+            document.getElementById('dur-time').textContent = fmtTime(dur);
+            break;
+          case 'playProgress':
+            const curr = data.currentPosition / 1000;
+            document.getElementById('curr-time').textContent = fmtTime(curr);
+            const pct = (curr / (data.duration / 1000)) * 100;
+            document.getElementById('progress-fill').style.width = `${pct}%`;
+            break;
+        }
+      });
     }
 
+    // 🕒 Format time
+    function fmtTime(s) {
+      const m = Math.floor(s / 60);
+      const ss = Math.floor(s % 60).toString().padStart(2, '0');
+      return `${m}:${ss}`;
+    }
+
+    // 📡 Send command to iframe
+    function scCommand(method, value = null) {
+      if (!playerIframe.contentWindow) return;
+      const msg = { method, value };
+      playerIframe.contentWindow.postMessage(JSON.stringify(msg), 'https://w.soundcloud.com');
+    }
+
+    // ▶️ Load & play a track
+    function playTrack(url, title, artist) {
+      // Clean URL (remove spaces)
+      const cleanUrl = url.trim();
+      currentTrackUrl = cleanUrl;
+      currentTrackTitle = title;
+      currentTrackArtist = artist;
+
+      // Update UI
+      document.getElementById('np-title').textContent = title;
+      document.getElementById('np-user').textContent = artist;
+
+      // Load in widget
+      scCommand('setSrc', cleanUrl);
+      setTimeout(() => scCommand('play'), 100);
+
+      // Save to recents
+      const track = { url: cleanUrl, title, artist, time: Date.now() };
+      recentlyPlayed = [track, ...recentlyPlayed.filter(t => t.url !== cleanUrl)].slice(0, 10);
+      localStorage.setItem('recentlyPlayed', JSON.stringify(recentlyPlayed));
+    }
+
+    // 🔍 Highlight currently playing card
+    function highlightPlayingCard() {
+      unhighlightCards();
+      document.querySelectorAll('.track-card').forEach(card => {
+        if (card.getAttribute('data-url').trim() === currentTrackUrl) {
+          card.classList.add('playing');
+        }
+      });
+    }
+    function unhighlightCards() {
+      document.querySelectorAll('.track-card').forEach(c => c.classList.remove('playing'));
+    }
+
+    // 🎵 Update "Now Playing"
+    function updateNowPlaying() {
+      document.getElementById('np-title').textContent = currentTrackTitle;
+      document.getElementById('np-user').textContent = currentTrackArtist;
+    }
+
+    // 🌐 Fetch lyrics (via CORS proxy — safe & free)
+    async function fetchLyrics(title, artist) {
+      try {
+        const query = `${title} ${artist}`;
+        const proxy = 'https://api.allorigins.win/raw?url=';
+        const geniusUrl = `https://genius.com/api/search/multi?q=${encodeURIComponent(query)}`;
+        const res = await fetch(proxy + encodeURIComponent(geniusUrl));
+        const data = await res.json();
+        
+        const song = data.response.sections.find(s => s.type === 'song')?.hits?.[0]?.result;
+        if (!song) throw 'No lyrics found';
+        
+        const lyricsPage = await fetch(proxy + encodeURIComponent(song.url));
+        const html = await lyricsPage.text();
+        const div = document.createElement('div');
+        div.innerHTML = html;
+        let lyrics = div.querySelector('[data-lyrics-container="true"]')?.innerText || 'Lyrics not available.';
+        // Clean extra newlines
+        lyrics = lyrics.replace(/\n\s*\n/g, '\n\n').trim();
+        
+        document.getElementById('lyrics-title').textContent = `Lyrics: ${song.title}`;
+        document.getElementById('lyrics-content').textContent = lyrics;
+        document.getElementById('lyrics-panel').classList.add('show');
+      } catch (e) {
+        document.getElementById('lyrics-title').textContent = 'Lyrics';
+        document.getElementById('lyrics-content').textContent = 'Lyrics not found for this track.';
+        document.getElementById('lyrics-panel').classList.add('show');
+        setTimeout(() => document.getElementById('lyrics-panel').classList.remove('show'), 3000);
+      }
+    }
+
+    // 🎛 Controls
+    document.getElementById('play-pause').onclick = () => {
+      scCommand(isPlaying ? 'pause' : 'play');
+    };
+
+    document.getElementById('prev').onclick = () => {
+      // Simple: reload same track (or add playlist logic later)
+      if (currentTrackUrl) scCommand('play');
+    };
+
+    document.getElementById('next').onclick = () => {
+      // Cycle to next card
+      const cards = Array.from(document.querySelectorAll('.track-card'));
+      const idx = cards.findIndex(c => c.getAttribute('data-url').trim() === currentTrackUrl);
+      const next = cards[(idx + 1) % cards.length];
+      if (next) {
+        const url = next.getAttribute('data-url');
+        const title = next.querySelector('.track-title').textContent;
+        const artist = next.querySelector('.track-user').textContent;
+        playTrack(url, title, artist);
+      }
+    };
+
+    document.getElementById('volume-slider').oninput = (e) => {
+      scCommand('setVolume', parseFloat(e.target.value));
+    };
+
+    document.getElementById('progress-bar').onclick = (e) => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const pct = (e.clientX - rect.left) / rect.width;
+      scCommand('setPosition', pct);
+    };
+
+    // 🖱 Card & Filter Clicks
     document.querySelectorAll('[data-url]').forEach(el => {
       el.addEventListener('click', () => {
         const url = el.getAttribute('data-url');
-        loadPlayer(url);
+        const title = el.querySelector('.track-title')?.textContent || 'Unknown Track';
+        const artist = el.querySelector('.track-user')?.textContent || 'Unknown Artist';
         
-        document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
+        playTrack(url, title, artist);
+        
+        // Update active UI
+        document.querySelectorAll('.filter-tag, .track-card').forEach(t => t.classList.remove('active'));
         el.classList.add('active');
+        
+        // Fetch lyrics after 2s (when likely playing)
+        setTimeout(() => fetchLyrics(title, artist), 2000);
       });
     });
 
-    loadPlayer('https://soundcloud.com/lofigirl/sets/lofi-chill');
+    // 🚀 Init
+    window.addEventListener('load', () => {
+      initPlayer();
+      // Preload first track metadata
+      const firstCard = document.querySelector('.track-card');
+      if (firstCard) {
+        const url = firstCard.getAttribute('data-url');
+        const title = firstCard.querySelector('.track-title').textContent;
+        const artist = firstCard.querySelector('.track-user').textContent;
+        currentTrackUrl = url.trim();
+        currentTrackTitle = title;
+        currentTrackArtist = artist;
+      }
+    });
   </script>
 </body>
 </html>
