@@ -1,47 +1,39 @@
-// api.js - Backend Communication (FIXED FOR SAMBANOVA)
-
+// api.js - Fixed for SambaNova + Your UI
 const BACKEND_URL = 'https://falling-queen-f2d7.dhimanparas605.workers.dev/api/chat';
 
 class APIHandler {
     constructor() {
-        this.timeout = 30000; // 30 seconds
+        this.timeout = 30000;
         this.retryAttempts = 3;
     }
 
     async sendMessage(message) {
         aiState.updateStatus('Thinking');
-        
         const startTime = Date.now();
         
         try {
             const response = await this.makeRequest(message);
             const endTime = Date.now();
-            
             document.getElementById('response-time').textContent = `${endTime - startTime}ms`;
             aiState.updateStatus('Online');
             return response;
         } catch (error) {
-            console.error('❌ FULL API ERROR:', error);
+            console.error('❌ API ERROR:', error);
             aiState.updateStatus('Error');
             setTimeout(() => aiState.updateStatus('Online'), 2000);
             throw error;
         }
     }
 
-    // 🔑 Maps UI modes to valid backend modes
-    mapMode(uiMode) {
-        const modeMap = {
-            'Short': 'study',
-            'Detailed': 'study',
-            'Technical': 'code',
-            'Study': 'study',
-            'Code': 'code',
-            'Doubt': 'doubt',
-            'study': 'study',
-            'code': 'code',
-            'doubt': 'doubt'
-        };
-        return modeMap[uiMode] || 'study';
+    // 🔑 CRITICAL: Convert UI modes to valid backend modes
+    getValidMode() {
+        const mode = aiState.responseMode;
+        if (!mode) return 'study';
+        
+        // Map your UI values to backend values
+        if (mode.includes('Code') || mode.includes('Technical')) return 'code';
+        if (mode.includes('Doubt') || mode.includes('Question')) return 'doubt';
+        return 'study'; // Default for "Short", "Detailed", "Study", etc.
     }
 
     async makeRequest(message, attempt = 1) {
@@ -51,57 +43,47 @@ class APIHandler {
         // ✅ Always send 'prompt' + valid mode
         const payload = {
             prompt: message,
-            mode: this.mapMode(aiState.responseMode || 'study')
+            mode: this.getValidMode()
         };
 
-        // 🔍 Debug log
-        console.log('📤 Sending to AI backend:', payload);
+        console.log('📤 Sending:', payload); // Debug
 
         try {
             const response = await fetch(BACKEND_URL, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
                 signal: controller.signal
             });
 
             clearTimeout(timeoutId);
 
-            // 🔍 Log backend errors
             if (!response.ok) {
-                const errorText = await response.text();
-                console.error('🤖 Backend error response:', response.status, errorText);
+                const text = await response.text();
+                console.error('🤖 Backend error:', response.status, text);
                 throw new Error(`HTTP ${response.status}`);
             }
 
             const data = await response.json();
-            console.log('✅ AI Response received:', data);
-            return data.response || data.message || 'No response from AI';
+            console.log('✅ Success:', data);
+            return data.response || 'No response from AI';
             
         } catch (error) {
             clearTimeout(timeoutId);
-            
             if (attempt < this.retryAttempts && !controller.signal.aborted) {
-                console.log(`⏳ Retry attempt ${attempt} after error:`, error.message);
                 await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
                 return this.makeRequest(message, attempt + 1);
             }
-            
-            console.error('💥 Final API failure after retries:', error);
             throw error;
         }
     }
 
-    // Simulate streaming for better UX
     async simulateStreaming(response, callback) {
         const words = response.split(' ');
-        let currentText = '';
-        
+        let current = '';
         for (let i = 0; i < words.length; i++) {
-            currentText += words[i] + ' ';
-            callback(currentText.trim());
+            current += words[i] + ' ';
+            callback(current.trim());
             await new Promise(resolve => setTimeout(resolve, 50 + Math.random() * 100));
         }
     }
