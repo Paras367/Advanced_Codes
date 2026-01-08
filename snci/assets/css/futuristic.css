@@ -1,0 +1,121 @@
+/* Futuristic Animations and Effects */
+
+/* Animated Grid Background */
+.grid {
+    background-image:
+        linear-gradient(rgba(0, 206, 209, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 206, 209, 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: gridMove 20s linear infinite;
+}
+
+@keyframes gridMove {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(50px, 50px); }
+}
+
+/* Glow Effects */
+.glow {
+    box-shadow: 0 0 20px rgba(0, 206, 209, 0.5);
+}
+
+.glow-purple {
+    box-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+}
+
+.glow-blue {
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+/* Hover Animations */
+.hover-glow:hover {
+    box-shadow: 0 0 30px rgba(0, 206, 209, 0.8);
+    transition: box-shadow 0.3s ease;
+}
+
+/* Message Animations */
+.message-enter {
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* AI Avatar Animation */
+.ai-avatar {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 20px rgba(0, 206, 209, 0.5);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 30px rgba(0, 206, 209, 0.8);
+    }
+}
+
+/* Typing Indicator */
+.typing-dot {
+    animation: typing 1.4s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing {
+    0%, 60%, 100% {
+        transform: translateY(0);
+    }
+    30% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Status Bar Glow */
+.status-glow {
+    animation: statusPulse 3s infinite;
+}
+
+@keyframes statusPulse {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+    }
+}
+
+/* Processing Glow */
+.processing {
+    animation: processingGlow 1s infinite alternate;
+}
+
+@keyframes processingGlow {
+    from {
+        box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+    }
+    to {
+        box-shadow: 0 0 40px rgba(255, 0, 255, 0.8);
+    }
+}
+
+/* Smooth Transitions */
+* {
+    transition: all 0.3s ease;
+}
