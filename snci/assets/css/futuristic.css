@@ -115,7 +115,27 @@
     }
 }
 
+/* 💬 Brighter AI Message Text */
+#messages .justify-start .text-cyan-400 {
+    color: #6fffe9 !important; /* Bright cyan */
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.7); /* Neon glow */
+    font-weight: 400;
+}
+
+/* 💬 User message contrast */
+#messages .justify-end .text-white {
+    color: #ffffff !important;
+    text-shadow: 0 0 6px rgba(138, 43, 226, 0.5); /* Purple glow */
+}
+
+/* ✨ Ensure messages stand out */
+.message-enter .glow {
+    background: rgba(10, 20, 30, 0.85) !important;
+    border: 1px solid rgba(0, 255, 255, 0.3) !important;
+}
+
 /* Smooth Transitions */
 * {
     transition: all 0.3s ease;
+
 }
