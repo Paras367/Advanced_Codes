@@ -44,10 +44,8 @@ class APIHandler {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    message: message,
-                    personality: aiState.personality,
-                    mode: aiState.responseMode,
-                    context: aiState.memoryEnabled ? aiState.conversation.slice(-5) : []
+                    prompt: message,
+                    mode: aiState.responseMode || 'study'
                 }),
                 signal: controller.signal
             });
