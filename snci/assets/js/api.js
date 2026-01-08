@@ -73,16 +73,26 @@ class APIHandler {
     }
 
     // Simulate streaming for better UX
-    async simulateStreaming(response, callback) {
-        const words = response.split(' ');
-        let currentText = '';
-        
-        for (let i = 0; i < words.length; i++) {
-            currentText += words[i] + ' ';
-            callback(currentText.trim());
-            await new Promise(resolve => setTimeout(resolve, 50 + Math.random() * 100));
-        }
-    }
+    async sendMessage(message) {
+  aiState.updateStatus('Thinking');
+  const startTime = Date.now();
+  
+  try {
+    const response = await this.makeRequest(message);
+    const endTime = Date.now();
+    document.getElementById('response-time').textContent = `${endTime - startTime}ms`;
+    aiState.updateStatus('Online');
+    return response;
+  } catch (error) {
+   
+    console.error('❌ FULL API ERROR:', error.message, error.stack);
+    
+    aiState.updateStatus('Error');
+    setTimeout(() => aiState.updateStatus('Online'), 2000);
+    throw error;
+  }
+
 }
 
 const apiHandler = new APIHandler();
+
