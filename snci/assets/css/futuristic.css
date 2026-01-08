@@ -115,18 +115,7 @@
     }
 }
 
-/* 💬 Brighter AI Message Text */
-#messages .justify-start .text-cyan-400 {
-    color: #6fffe9 !important; /* Bright cyan */
-    text-shadow: 0 0 8px rgba(0, 255, 255, 0.7); /* Neon glow */
-    font-weight: 400;
-}
 
-/* 💬 User message contrast */
-#messages .justify-end .text-white {
-    color: #ffffff !important;
-    text-shadow: 0 0 6px rgba(138, 43, 226, 0.5); /* Purple glow */
-}
 
 /* ✨ Ensure messages stand out */
 .message-enter .glow {
@@ -134,8 +123,35 @@
     border: 1px solid rgba(0, 255, 255, 0.3) !important;
 }
 
+/* 💬 Fix dim chat window */
+#chat-window {
+    /* Replace bg-gray-900 bg-opacity-30 with a brighter base */
+    background: rgba(15, 23, 42, 0.85) !important; /* slate-900 with 85% opacity */
+    backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(138, 43, 226, 0.3); /* subtle purple border */
+    box-shadow: inset 0 0 20px rgba(0, 255, 255, 0.1); /* inner glow */
+}
+
+/* Ensure messages stand out */
+#messages .justify-start .glow {
+    background: rgba(20, 25, 40, 0.9) !important; /* AI bubble */
+    border: 1px solid rgba(0, 206, 209, 0.4) !important;
+}
+
+#messages .justify-end .glow {
+    background: rgba(138, 43, 226, 0.9) !important; /* User bubble */
+}
+
+#chat-window:hover {
+    box-shadow: 
+        inset 0 0 25px rgba(0, 255, 255, 0.2),
+        0 0 20px rgba(138, 43, 226, 0.3);
+    transition: box-shadow 0.3s ease;
+}
+
 /* Smooth Transitions */
 * {
     transition: all 0.3s ease;
 
 }
+
