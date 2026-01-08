@@ -33,8 +33,6 @@ snci/
 │   │   ├── api.js            # Backend communication
 │   │   ├── ui.js             # UI effects and interactions
 │   │   └── state.js          # AI state management
-│   ├── icons/                # Custom icons (future use)
-│   └── fonts/                # Custom fonts (future use)
 └── README.md
 ```
 
@@ -69,4 +67,5 @@ snci/
 ## Credits
 
 Owned and Made by PARAS DHIMAN  
+
 © 2026 SoftwareLabs - Neural Systems Division
