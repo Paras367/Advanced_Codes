@@ -72,7 +72,7 @@ class App {
         
         try {
             aiState.updateStatus('Responding');
-            const response = await apiHandler.sendMessage(message);
+            const response = await sendMessageToAI(message);
             
             // Simulate streaming
             let currentText = '';
@@ -139,4 +139,5 @@ class App {
 // Initialize app when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     new App();
+
 });
