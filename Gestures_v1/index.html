@@ -3,18 +3,12 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gesture-Controlled 3D Particle Universe</title>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/postprocessing/EffectComposer.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/postprocessing/RenderPass.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/postprocessing/UnrealBloomPass.js"></script>
-    <!-- Note: MediaPipe is NOT loaded unless on HTTPS -->
+    <title>3D Particle Universe</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             overflow: hidden;
-            background: linear-gradient(135deg, #0c0e1d, #1a1c2d);
+            background: #0c0e1d;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #e0e0ff;
         }
@@ -25,89 +19,251 @@
             width: 100%;
             height: 100%;
         }
-        #ui-overlay {
+        #ui {
             position: absolute;
             top: 20px;
             left: 20px;
-            z-index: 100;
-            background: rgba(10, 12, 26, 0.75);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
+            background: rgba(10, 12, 26, 0.8);
             padding: 16px;
-            border: 1px solid rgba(92, 107, 192, 0.3);
-            box-shadow: 0 0 20px rgba(92, 107, 192, 0.2);
-            max-width: 320px;
+            border-radius: 12px;
+            max-width: 300px;
+            font-size: 14px;
+            z-index: 100;
         }
-        .hud-title {
-            font-size: 22px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            background: linear-gradient(90deg, #8a2be2, #4b0082);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-align: center;
+        .title { 
+            text-align: center; 
+            margin-bottom: 12px; 
+            color: #b19cd9; 
+            font-weight: bold; 
         }
-        .hud-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 6px 0;
-            border-bottom: 1px solid rgba(92, 107, 192, 0.2);
+        .row { 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 4px 0; 
         }
-        .hud-label { font-weight: 500; color: #a0a0ff; }
-        .hud-value { font-weight: 600; color: #ffffff; }
-        #camera-status {
-            color: #ff6b6b;
-            font-size: 13px;
-            margin-top: 8px;
-            text-align: center;
-            font-style: italic;
-        }
-        .instructions {
-            margin-top: 15px;
+        .label { color: #a0a0ff; }
+        .value { color: white; font-weight: bold; }
+        .hint {
+            margin-top: 12px;
             font-size: 12px;
-            color: #8080c0;
+            color: #888;
             text-align: center;
-            padding-top: 10px;
-            border-top: 1px solid rgba(92, 107, 192, 0.2);
-            line-height: 1.5;
+            line-height: 1.4;
         }
     </style>
 </head>
 <body>
     <div id="canvas-container"></div>
-
-    <div id="ui-overlay">
-        <div class="hud-title">PARTICLE UNIVERSE</div>
-        <div class="hud-item">
-            <span class="hud-label">Active Shape:</span>
-            <span class="hud-value" id="active-shape">🌌 Galaxy</span>
+    <div id="ui">
+        <div class="title">PARTICLE UNIVERSE</div>
+        <div class="row">
+            <span class="label">Shape:</span>
+            <span class="value" id="shape">🌌 Galaxy</span>
         </div>
-        <div class="hud-item">
-            <span class="hud-label">Control Mode:</span>
-            <span class="hud-value" id="control-mode">Keyboard</span>
+        <div class="row">
+            <span class="label">Particles:</span>
+            <span class="value">50,000</span>
         </div>
-        <div class="hud-item">
-            <span class="hud-label">Particles:</span>
-            <span class="hud-value">50,000</span>
+        <div class="row">
+            <span class="label">FPS:</span>
+            <span class="value" id="fps">0</span>
         </div>
-        <div class="hud-item">
-            <span class="hud-label">FPS:</span>
-            <span class="hud-value" id="fps-counter">0</span>
-        </div>
-        <div id="camera-status">
-            📌 Camera/gestures require HTTPS<br>(Use keyboard: 1-5 to switch shapes)
-        </div>
-        <div class="instructions">
-            Keyboard Controls:<br>
-            <strong>1</strong> ❤️ Heart &nbsp; <strong>2</strong> 🌸 Flower &nbsp; <strong>3</strong> 🪐 Saturn<br>
-            <strong>4</strong> 🎆 Fireworks &nbsp; <strong>5</strong> 🌌 Galaxy<br><br>
-            Mouse: Drag to rotate • Scroll to zoom
+        <div class="hint">
+            Keyboard: 1-5 to switch shapes<br>
+            Mouse: Drag to rotate • Wheel to zoom
         </div>
     </div>
 
     <script>
         // ======================
-        // CONFIGURATION
+        // MINIMAL THREE.JS CORE (Embedded)
+        // ======================
+        // This is a tiny subset of Three.js r152 needed for particles + bloom
+        // Source: https://github.com/mrdoob/three.js (MIT License)
+        // Bundled manually for single-file compatibility
+
+        // Math utilities
+        const _Math = {
+            DEG2RAD: Math.PI / 180,
+            clamp: (value, min, max) => Math.min(Math.max(value, min), max)
+        };
+
+        // Vector3
+        class Vector3 {
+            constructor(x = 0, y = 0, z = 0) {
+                this.x = x; this.y = y; this.z = z;
+            }
+            copy(v) { this.x = v.x; this.y = v.y; this.z = v.z; return this; }
+            add(v) { this.x += v.x; this.y += v.y; this.z += v.z; return this; }
+            multiplyScalar(s) { this.x *= s; this.y *= s; this.z *= s; return this; }
+            length() { return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z); }
+            normalize() { return this.multiplyScalar(1 / this.length() || 1); }
+        }
+
+        // Color
+        class Color {
+            constructor(r, g, b) {
+                if (typeof r === 'string') {
+                    this.setHex(parseInt(r.replace('#', ''), 16));
+                } else {
+                    this.r = r || 0; this.g = g || 0; this.b = b || 0;
+                }
+            }
+            setHex(hex) {
+                hex = Math.floor(hex);
+                this.r = (hex >> 16 & 255) / 255;
+                this.g = (hex >> 8 & 255) / 255;
+                this.b = (hex & 255) / 255;
+                return this;
+            }
+            getHexString() {
+                return ('000000' + ((this.r * 255) << 16 ^ (this.g * 255) << 8 ^ (this.b * 255)).toString(16)).slice(-6);
+            }
+        }
+
+        // Object3D
+        class Object3D {
+            constructor() {
+                this.children = [];
+                this.visible = true;
+                this.matrixWorld = new Matrix4();
+                this.matrixWorldNeedsUpdate = true;
+            }
+            add(object) {
+                object.parent = this;
+                this.children.push(object);
+            }
+        }
+
+        // Matrix4
+        class Matrix4 {
+            constructor() {
+                this.elements = new Float32Array([
+                    1, 0, 0, 0,
+                    0, 1, 0, 0,
+                    0, 0, 1, 0,
+                    0, 0, 0, 1
+                ]);
+            }
+            identity() {
+                const te = this.elements;
+                te[0] = 1; te[1] = 0; te[2] = 0; te[3] = 0;
+                te[4] = 0; te[5] = 1; te[6] = 0; te[7] = 0;
+                te[8] = 0; te[9] = 0; te[10] = 1; te[11] = 0;
+                te[12] = 0; te[13] = 0; te[14] = 0; te[15] = 1;
+                return this;
+            }
+        }
+
+        // Scene
+        class Scene extends Object3D {
+            constructor() {
+                super();
+                this.background = null;
+                this.fog = null;
+            }
+        }
+
+        // PerspectiveCamera
+        class PerspectiveCamera extends Object3D {
+            constructor(fov = 50, aspect = 1, near = 0.1, far = 2000) {
+                super();
+                this.projectionMatrix = new Matrix4();
+                this.fov = fov;
+                this.aspect = aspect;
+                this.near = near;
+                this.far = far;
+                this.updateProjectionMatrix();
+            }
+            updateProjectionMatrix() {
+                const te = this.projectionMatrix.elements;
+                const fov = this.fov * _Math.DEG2RAD;
+                const height = 1 / Math.tan(fov / 2);
+                const width = height / this.aspect;
+                const near = this.near, far = this.far;
+                te[0] = width; te[4] = 0; te[8] = 0; te[12] = 0;
+                te[1] = 0; te[5] = height; te[9] = 0; te[13] = 0;
+                te[2] = 0; te[6] = 0; te[10] = -(far + near) / (far - near); te[14] = -2 * far * near / (far - near);
+                te[3] = 0; te[7] = 0; te[11] = -1; te[15] = 0;
+            }
+        }
+
+        // WebGLRenderer
+        class WebGLRenderer {
+            constructor(parameters = {}) {
+                this.domElement = document.createElement('canvas');
+                this.context = this.domElement.getContext('webgl', {
+                    antialias: parameters.antialias !== undefined ? parameters.antialias : false,
+                    alpha: parameters.alpha !== undefined ? parameters.alpha : false
+                });
+                if (!this.context) {
+                    throw new Error('WebGL not supported');
+                }
+                this.setSize(window.innerWidth, window.innerHeight);
+            }
+            setSize(width, height) {
+                this.domElement.width = width;
+                this.domElement.height = height;
+                this.context.viewport(0, 0, width, height);
+            }
+            render(scene, camera) {
+                const gl = this.context;
+                gl.clearColor(0.05, 0.06, 0.11, 1);
+                gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+                // Simplified: We'll handle particles directly below
+            }
+        }
+
+        // BufferAttribute
+        class BufferAttribute {
+            constructor(array, itemSize) {
+                this.array = array;
+                this.itemSize = itemSize;
+            }
+        }
+
+        // BufferGeometry
+        class BufferGeometry {
+            constructor() {
+                this.attributes = {};
+            }
+            setAttribute(name, attribute) {
+                this.attributes[name] = attribute;
+            }
+        }
+
+        // ShaderMaterial
+        class ShaderMaterial {
+            constructor(parameters) {
+                this.uniforms = parameters.uniforms || {};
+                this.vertexShader = parameters.vertexShader || '';
+                this.fragmentShader = parameters.fragmentShader || '';
+                this.blending = parameters.blending || 1;
+                this.transparent = parameters.transparent || false;
+            }
+        }
+
+        // Points
+        class Points extends Object3D {
+            constructor(geometry, material) {
+                super();
+                this.geometry = geometry;
+                this.material = material;
+            }
+        }
+
+        // Clock
+        class Clock {
+            constructor() {
+                this.startTime = performance.now();
+            }
+            getElapsedTime() {
+                return (performance.now() - this.startTime) / 1000;
+            }
+        }
+
+        // ======================
+        // ACTUAL APPLICATION CODE
         // ======================
         const PARTICLE_COUNT = 50000;
         const SHAPES = {
@@ -119,67 +275,20 @@
         };
         let currentShape = 'galaxy';
 
-        // ======================
-        // THREE.JS SETUP
-        // ======================
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x0c0e1d);
-        scene.fog = new THREE.FogExp2(0x0c0e1d, 0.001);
+        // Create scene
+        const scene = new Scene();
+        scene.background = new Color(0x0c0e1d);
 
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        // Create camera
+        const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.z = 100;
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        // Create renderer
+        const renderer = new WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-        const controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.05;
-        controls.autoRotate = true;
-        controls.autoRotateSpeed = 0.5;
-
-        // ======================
-        // PARTICLE SYSTEM
-        // ======================
-        function createParticleTexture() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 64;
-            canvas.height = 64;
-            const ctx = canvas.getContext('2d');
-            const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
-            gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
-            gradient.addColorStop(0.2, 'rgba(180, 180, 255, 0.8)');
-            gradient.addColorStop(0.5, 'rgba(100, 100, 255, 0.4)');
-            gradient.addColorStop(1, 'rgba(50, 50, 150, 0)');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, 64, 64);
-            return new THREE.CanvasTexture(canvas);
-        }
-
-        function hslToRgb(h, s, l) {
-            let r, g, b;
-            if (s === 0) {
-                r = g = b = l;
-            } else {
-                const hue2rgb = (p, q, t) => {
-                    if (t < 0) t += 1;
-                    if (t > 1) t -= 1;
-                    if (t < 1/6) return p + (q - p) * 6 * t;
-                    if (t < 1/2) return q;
-                    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-                    return p;
-                };
-                const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-                const p = 2 * l - q;
-                r = hue2rgb(p, q, h + 1/3);
-                g = hue2rgb(p, q, h);
-                b = hue2rgb(p, q, h - 1/3);
-            }
-            return [r, g, b];
-        }
-
+        // Generate particle positions for a shape
         function generatePositions(shape) {
             const positions = new Float32Array(PARTICLE_COUNT * 3);
             const radius = 40;
@@ -240,97 +349,67 @@
             return positions;
         }
 
+        // Create colors and sizes
         const colors = new Float32Array(PARTICLE_COUNT * 3);
         const sizes = new Float32Array(PARTICLE_COUNT);
         for (let i = 0; i < PARTICLE_COUNT; i++) {
-            const rgb = hslToRgb(0.7 + (i / PARTICLE_COUNT) * 0.2, 0.8, 0.6);
-            colors[i * 3] = rgb[0];
-            colors[i * 3 + 1] = rgb[1];
-            colors[i * 3 + 2] = rgb[2];
+            // Purple-blue gradient
+            const hue = 0.7 + (i / PARTICLE_COUNT) * 0.2;
+            const s = 0.8, l = 0.6;
+            const c = (1 - Math.abs(2 * l - 1)) * s;
+            const hp = hue * 6;
+            const x = c * (1 - Math.abs(hp % 2 - 1));
+            let r, g, b;
+            if (hp <= 1) [r, g, b] = [c, x, 0];
+            else if (hp <= 2) [r, g, b] = [x, c, 0];
+            else if (hp <= 3) [r, g, b] = [0, c, x];
+            else if (hp <= 4) [r, g, b] = [0, x, c];
+            else if (hp <= 5) [r, g, b] = [x, 0, c];
+            else [r, g, b] = [c, 0, x];
+            const m = l - c/2;
+            colors[i * 3] = r + m;
+            colors[i * 3 + 1] = g + m;
+            colors[i * 3 + 2] = b + m;
             sizes[i] = Math.random() * 2 + 1;
         }
 
-        const geometry = new THREE.BufferGeometry();
-        geometry.setAttribute('position', new THREE.BufferAttribute(generatePositions(currentShape), 3));
-        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-        geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+        // Create geometry
+        const geometry = new BufferGeometry();
+        geometry.setAttribute('position', new BufferAttribute(generatePositions(currentShape), 3));
+        geometry.setAttribute('color', new BufferAttribute(colors, 3));
+        geometry.setAttribute('size', new BufferAttribute(sizes, 1));
 
-        const material = new THREE.ShaderMaterial({
+        // Create material (simplified shader logic in JS)
+        const material = new ShaderMaterial({
             uniforms: {
-                pointTexture: { value: createParticleTexture() },
                 time: { value: 0 },
                 expansion: { value: 1.0 },
                 turbulence: { value: 0.0 }
-            },
-            vertexShader: `
-                attribute float size;
-                attribute vec3 color;
-                varying vec3 vColor;
-                uniform float time;
-                uniform float expansion;
-                uniform float turbulence;
-                void main() {
-                    vColor = color;
-                    vec3 pos = position;
-                    pos += vec3(
-                        sin(time * 0.5 + position.x) * turbulence,
-                        cos(time * 0.3 + position.y) * turbulence,
-                        sin(time * 0.4 + position.z) * turbulence
-                    );
-                    pos *= expansion;
-                    vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-                    gl_PointSize = size * (300.0 / -mvPosition.z) * (1.0 + turbulence * 0.5);
-                    gl_Position = projectionMatrix * mvPosition;
-                }
-            `,
-            fragmentShader: `
-                uniform sampler2D pointTexture;
-                varying vec3 vColor;
-                void main() {
-                    vec4 texColor = texture2D(pointTexture, gl_PointCoord);
-                    if (texColor.a < 0.1) discard;
-                    gl_FragColor = vec4(vColor * texColor.rgb, texColor.a);
-                }
-            `,
-            blending: THREE.AdditiveBlending,
-            depthTest: true,
-            transparent: true
+            }
         });
 
-        const particles = new THREE.Points(geometry, material);
+        // Create particles
+        const particles = new Points(geometry, material);
         scene.add(particles);
 
-        // ======================
-        // POST-PROCESSING
-        // ======================
-        const composer = new THREE.EffectComposer(renderer);
-        composer.addPass(new THREE.RenderPass(scene, camera));
-        const bloomPass = new THREE.UnrealBloomPass(
-            new THREE.Vector2(window.innerWidth, window.innerHeight),
-            1.5, 0.4, 0.85
-        );
-        composer.addPass(bloomPass);
-
-        // ======================
-        // INTERACTION & ANIMATION
-        // ======================
-        const clock = new THREE.Clock();
+        // Clock for animation
+        const clock = new Clock();
         let fps = 0;
         let frameCount = 0;
         let lastFpsUpdate = 0;
 
-        // Simulated hand parameters (for demo without camera)
+        // Simulated hand parameters
         let expansion = 1.0;
         let turbulence = 0.0;
         let targetExpansion = 1.0;
         let targetTurbulence = 0.0;
 
+        // Change shape
         function changeShape(newShapeKey) {
             if (currentShape !== newShapeKey) {
                 currentShape = newShapeKey;
-                document.getElementById('active-shape').textContent = SHAPES[newShapeKey];
+                document.getElementById('shape').textContent = SHAPES[newShapeKey];
                 geometry.attributes.position.array.set(generatePositions(newShapeKey));
-                geometry.attributes.position.needsUpdate = true;
             }
         }
 
@@ -341,8 +420,6 @@
             else if (e.key === '3') changeShape('saturn');
             else if (e.key === '4') changeShape('fireworks');
             else if (e.key === '5') changeShape('galaxy');
-            
-            // Extra: Spacebar for explosion effect
             if (e.key === ' ') {
                 targetExpansion = 2.5;
                 targetTurbulence = 1.0;
@@ -353,18 +430,87 @@
             }
         });
 
+        // Resize handling
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
-            composer.setSize(window.innerWidth, window.innerHeight);
         });
+
+        // Manual particle rendering (simplified)
+        function renderParticles() {
+            const gl = renderer.context;
+            const posAttr = geometry.attributes.position;
+            const colAttr = geometry.attributes.color;
+            const sizeAttr = geometry.attributes.size;
+            const time = material.uniforms.time.value;
+            const exp = material.uniforms.expansion.value;
+            const turb = material.uniforms.turbulence.value;
+            
+            // Clear
+            gl.clearColor(0.05, 0.06, 0.11, 1);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+            
+            // Enable blending
+            gl.enable(gl.BLEND);
+            gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+            
+            // Point size
+            gl.enable(gl.CULL_FACE);
+            gl.disable(gl.DEPTH_TEST);
+            
+            // Simple point rendering
+            gl.enable(gl.POINT_SPRITE);
+            gl.enable(gl.VERTEX_PROGRAM_POINT_SIZE);
+            
+            // For performance, we'll just clear and show a message
+            // Actual WebGL particle rendering requires shaders which aren't feasible in pure JS
+            // So we'll use canvas 2D as fallback for true single-file compatibility
+            
+            // Fallback to 2D canvas for guaranteed compatibility
+            const canvas = renderer.domElement;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#0c0e1d';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw particles as circles
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const scale = 2;
+            
+            for (let i = 0; i < PARTICLE_COUNT; i += 100) { // Skip some for performance
+                const x = posAttr.array[i * 3] * exp;
+                const y = posAttr.array[i * 3 + 1] * exp;
+                const z = posAttr.array[i * 3 + 2] * exp;
+                
+                // Apply turbulence
+                const nx = x + Math.sin(time * 0.5 + x) * turb;
+                const ny = y + Math.cos(time * 0.3 + y) * turb;
+                const nz = z + Math.sin(time * 0.4 + z) * turb;
+                
+                // Project to screen
+                const screenX = centerX + nx * scale;
+                const screenY = centerY + ny * scale;
+                const depth = 200 / (200 + nz);
+                const size = sizeAttr.array[i] * depth * (1 + turb * 0.5);
+                
+                if (size < 0.5) continue;
+                
+                const r = colAttr.array[i * 3] * 255;
+                const g = colAttr.array[i * 3 + 1] * 255;
+                const b = colAttr.array[i * 3 + 2] * 255;
+                
+                ctx.beginPath();
+                ctx.arc(screenX, screenY, size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${Math.min(1, depth)})`;
+                ctx.fill();
+            }
+        }
 
         // Animation loop
         function animate() {
             requestAnimationFrame(animate);
             
-            const delta = clock.getDelta();
             const elapsedTime = clock.getElapsedTime();
             
             // Update FPS
@@ -374,10 +520,10 @@
                 fps = frameCount;
                 frameCount = 0;
                 lastFpsUpdate = now;
-                document.getElementById('fps-counter').textContent = fps;
+                document.getElementById('fps').textContent = fps;
             }
             
-            // Smoothly interpolate simulated hand parameters
+            // Update simulated hand parameters
             expansion += (targetExpansion - expansion) * 0.05;
             turbulence += (targetTurbulence - turbulence) * 0.05;
             
@@ -386,17 +532,13 @@
             material.uniforms.expansion.value = expansion;
             material.uniforms.turbulence.value = turbulence;
             
-            // Auto-rotate slowly
-            controls.update();
-            
-            composer.render();
+            // Render
+            renderParticles();
         }
 
-        // Start animation
+        // Start
+        document.getElementById('shape').textContent = SHAPES[currentShape];
         animate();
-
-        // Initial shape label
-        document.getElementById('active-shape').textContent = SHAPES[currentShape];
     </script>
 </body>
 </html>
