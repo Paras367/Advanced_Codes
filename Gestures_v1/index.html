@@ -1,30 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gesture-Controlled 3D Particle Universe</title>
     <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/postprocessing/EffectComposer.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/postprocessing/RenderPass.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/postprocessing/UnrealBloomPass.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-    <script src="https://cdn.jsdelivr.com/npm/@mediapipe/hands/hands.js"></script>
+    <!-- Note: MediaPipe is NOT loaded unless on HTTPS -->
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             overflow: hidden;
             background: linear-gradient(135deg, #0c0e1d, #1a1c2d);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #e0e0ff;
         }
-        
         #canvas-container {
             position: absolute;
             top: 0;
@@ -32,23 +25,21 @@
             width: 100%;
             height: 100%;
         }
-        
         #ui-overlay {
             position: absolute;
             top: 20px;
             left: 20px;
             z-index: 100;
-            background: rgba(10, 12, 26, 0.7);
+            background: rgba(10, 12, 26, 0.75);
             backdrop-filter: blur(10px);
             border-radius: 16px;
             padding: 16px;
             border: 1px solid rgba(92, 107, 192, 0.3);
             box-shadow: 0 0 20px rgba(92, 107, 192, 0.2);
-            max-width: 300px;
+            max-width: 320px;
         }
-        
         .hud-title {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 600;
             margin-bottom: 12px;
             background: linear-gradient(90deg, #8a2be2, #4b0082);
@@ -56,98 +47,21 @@
             -webkit-text-fill-color: transparent;
             text-align: center;
         }
-        
         .hud-item {
             display: flex;
             justify-content: space-between;
             padding: 6px 0;
             border-bottom: 1px solid rgba(92, 107, 192, 0.2);
         }
-        
-        .hud-label {
-            font-weight: 500;
-            color: #a0a0ff;
-        }
-        
-        .hud-value {
-            font-weight: 600;
-            color: #ffffff;
-        }
-        
-        #camera-feed {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            width: 180px;
-            height: 135px;
-            border-radius: 12px;
-            border: 2px solid rgba(92, 107, 192, 0.5);
-            display: none;
-            transform: scaleX(-1);
-        }
-        
-        #loading {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #0c0e1d, #1a1c2d);
-            z-index: 200;
-            transition: opacity 0.5s ease;
-        }
-        
-        .loader {
-            width: 60px;
-            height: 60px;
-            border: 5px solid rgba(92, 107, 192, 0.3);
-            border-top: 5px solid #8a2be2;
-            border-radius: 50%;
-            animation: spin 1.5s linear infinite;
-            margin-bottom: 20px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        #loading-text {
-            font-size: 18px;
+        .hud-label { font-weight: 500; color: #a0a0ff; }
+        .hud-value { font-weight: 600; color: #ffffff; }
+        #camera-status {
+            color: #ff6b6b;
+            font-size: 13px;
+            margin-top: 8px;
             text-align: center;
-            max-width: 80%;
-            line-height: 1.5;
-            color: #a0a0ff;
+            font-style: italic;
         }
-        
-        #error-message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(20, 20, 40, 0.9);
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            max-width: 80%;
-            display: none;
-            z-index: 200;
-            border: 1px solid #ff4d4d;
-        }
-        
-        .shape-indicator {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            margin-right: 8px;
-            border-radius: 4px;
-            background: linear-gradient(45deg, #8a2be2, #4b0082);
-        }
-        
         .instructions {
             margin-top: 15px;
             font-size: 12px;
@@ -155,364 +69,97 @@
             text-align: center;
             padding-top: 10px;
             border-top: 1px solid rgba(92, 107, 192, 0.2);
+            line-height: 1.5;
         }
     </style>
 </head>
 <body>
-    <div id="loading">
-        <div class="loader"></div>
-        <div id="loading-text">Initializing particle universe...<br>Grant camera access for gesture control</div>
-    </div>
-    
-    <div id="error-message">
-        Camera access required for gesture control.<br>
-        Please enable camera permissions and refresh.
-    </div>
-    
     <div id="canvas-container"></div>
-    
+
     <div id="ui-overlay">
         <div class="hud-title">PARTICLE UNIVERSE</div>
         <div class="hud-item">
             <span class="hud-label">Active Shape:</span>
-            <span class="hud-value" id="active-shape">Galaxy</span>
+            <span class="hud-value" id="active-shape">🌌 Galaxy</span>
         </div>
         <div class="hud-item">
-            <span class="hud-label">Gesture:</span>
-            <span class="hud-value" id="gesture-status">Detecting...</span>
+            <span class="hud-label">Control Mode:</span>
+            <span class="hud-value" id="control-mode">Keyboard</span>
         </div>
         <div class="hud-item">
             <span class="hud-label">Particles:</span>
-            <span class="hud-value" id="particle-count">50,000</span>
+            <span class="hud-value">50,000</span>
         </div>
         <div class="hud-item">
             <span class="hud-label">FPS:</span>
             <span class="hud-value" id="fps-counter">0</span>
         </div>
+        <div id="camera-status">
+            📌 Camera/gestures require HTTPS<br>(Use keyboard: 1-5 to switch shapes)
+        </div>
         <div class="instructions">
-            Hand open/close → Expand/Contract<br>
-            Two hands → Morph shapes<br>
-            Keyboard: 1-5 to switch shapes
+            Keyboard Controls:<br>
+            <strong>1</strong> ❤️ Heart &nbsp; <strong>2</strong> 🌸 Flower &nbsp; <strong>3</strong> 🪐 Saturn<br>
+            <strong>4</strong> 🎆 Fireworks &nbsp; <strong>5</strong> 🌌 Galaxy<br><br>
+            Mouse: Drag to rotate • Scroll to zoom
         </div>
     </div>
-    
-    <video id="camera-feed" autoplay playsinline></video>
 
     <script>
-        // Main application state
-        const state = {
-            particles: 50000,
-            currentShape: 'galaxy',
-            shapes: ['heart', 'flower', 'saturn', 'fireworks', 'galaxy'],
-            shapeNames: {
-                heart: '❤️ Heart',
-                flower: '🌸 Flower',
-                saturn: '🪐 Saturn',
-                fireworks: '🎆 Fireworks',
-                galaxy: '🌌 Galaxy'
-            },
-            gesture: 'none',
-            handOpen: false,
-            handDistance: 0.5,
-            handSpeed: 0,
-            twoHands: false,
-            fps: 0,
-            lastFrameTime: 0,
-            frameCount: 0,
-            lastFpsUpdate: 0,
-            cameraEnabled: false,
-            initialized: false
+        // ======================
+        // CONFIGURATION
+        // ======================
+        const PARTICLE_COUNT = 50000;
+        const SHAPES = {
+            heart: '❤️ Heart',
+            flower: '🌸 Flower',
+            saturn: '🪐 Saturn',
+            fireworks: '🎆 Fireworks',
+            galaxy: '🌌 Galaxy'
         };
+        let currentShape = 'galaxy';
 
-        // DOM elements
-        const canvasContainer = document.getElementById('canvas-container');
-        const cameraFeed = document.getElementById('camera-feed');
-        const loadingScreen = document.getElementById('loading');
-        const errorMessage = document.getElementById('error-message');
-        const activeShapeEl = document.getElementById('active-shape');
-        const gestureStatusEl = document.getElementById('gesture-status');
-        const particleCountEl = document.getElementById('particle-count');
-        const fpsCounterEl = document.getElementById('fps-counter');
+        // ======================
+        // THREE.JS SETUP
+        // ======================
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0c0e1d);
+        scene.fog = new THREE.FogExp2(0x0c0e1d, 0.001);
 
-        // Initialize Three.js scene
-        let scene, camera, renderer, composer, controls;
-        let particleSystem, particleMaterial, particleGeometry;
-        let clock = new THREE.Clock();
-        let uniforms;
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 100;
 
-        // Initialize MediaPipe Hands
-        let hands, cameraUtils;
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-        // Noise function for organic movement
-        const noise = (x, y, z) => {
-            // Simple 3D noise approximation
-            return Math.sin(x * 0.1) * Math.cos(y * 0.1) + 
-                   Math.sin(y * 0.1) * Math.cos(z * 0.1) + 
-                   Math.sin(z * 0.1) * Math.cos(x * 0.1);
-        };
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.5;
 
-        // Initialize the scene
-        function initScene() {
-            // Create scene
-            scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x0c0e1d);
-            scene.fog = new THREE.FogExp2(0x0c0e1d, 0.001);
-
-            // Create camera
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.z = 100;
-
-            // Create renderer
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            canvasContainer.appendChild(renderer.domElement);
-
-            // Add orbit controls
-            controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.05;
-            controls.autoRotate = true;
-            controls.autoRotateSpeed = 0.5;
-
-            // Create particle system
-            createParticleSystem();
-
-            // Setup post-processing
-            setupPostProcessing();
-
-            // Handle window resize
-            window.addEventListener('resize', onWindowResize);
-
-            // Setup keyboard controls
-            setupKeyboardControls();
-
-            state.initialized = true;
-            loadingScreen.style.opacity = '0';
-            setTimeout(() => {
-                loadingScreen.style.display = 'none';
-                if (state.cameraEnabled) {
-                    cameraFeed.style.display = 'block';
-                }
-            }, 500);
-        }
-
-        // Create particle system
-        function createParticleSystem() {
-            // Create geometry
-            particleGeometry = new THREE.BufferGeometry();
-            
-            // Create positions
-            const positions = new Float32Array(state.particles * 3);
-            const colors = new Float32Array(state.particles * 3);
-            const sizes = new Float32Array(state.particles);
-            
-            // Generate initial positions based on current shape
-            generateShapePositions(positions, state.currentShape);
-            
-            // Set colors and sizes
-            for (let i = 0; i < state.particles; i++) {
-                // Color with purple/blue gradient
-                const hue = 0.7 + (i / state.particles) * 0.2;
-                const rgb = hslToRgb(hue, 0.8, 0.6);
-                
-                colors[i * 3] = rgb[0];
-                colors[i * 3 + 1] = rgb[1];
-                colors[i * 3 + 2] = rgb[2];
-                
-                // Random sizes
-                sizes[i] = Math.random() * 2 + 1;
-            }
-            
-            particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-            particleGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-            
-            // Create material
-            particleMaterial = new THREE.ShaderMaterial({
-                uniforms: {
-                    pointTexture: { value: createParticleTexture() },
-                    time: { value: 0 },
-                    handOpen: { value: 0 },
-                    handDistance: { value: 0.5 },
-                    handSpeed: { value: 0 },
-                    twoHands: { value: 0 },
-                    shapeProgress: { value: 0 }
-                },
-                vertexShader: `
-                    attribute float size;
-                    attribute vec3 color;
-                    varying vec3 vColor;
-                    uniform float time;
-                    uniform float handOpen;
-                    uniform float handDistance;
-                    uniform float handSpeed;
-                    uniform float twoHands;
-                    uniform float shapeProgress;
-                    
-                    void main() {
-                        vColor = color;
-                        
-                        // Base position from buffer
-                        vec3 pos = position;
-                        
-                        // Apply hand-based transformations
-                        float expansion = mix(1.0, 3.0, handOpen);
-                        float density = mix(0.5, 1.5, handDistance);
-                        float turbulence = handSpeed * 0.1;
-                        
-                        // Apply shape morphing when two hands detected
-                        if (twoHands > 0.5) {
-                            // Morph to next shape
-                            vec3 targetPos = position;
-                            // In a real implementation, we would calculate target positions
-                            // For this demo, we'll simulate with noise
-                            targetPos += vec3(
-                                sin(time * 0.5 + position.x) * shapeProgress,
-                                cos(time * 0.3 + position.y) * shapeProgress,
-                                sin(time * 0.4 + position.z) * shapeProgress
-                            );
-                            pos = mix(pos, targetPos, shapeProgress);
-                        }
-                        
-                        // Apply organic movement
-                        pos += vec3(
-                            sin(time * 0.5 + position.x) * turbulence,
-                            cos(time * 0.3 + position.y) * turbulence,
-                            sin(time * 0.4 + position.z) * turbulence
-                        );
-                        
-                        // Apply scaling
-                        pos *= expansion * density;
-                        
-                        vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-                        gl_PointSize = size * (300.0 / -mvPosition.z) * (1.0 + handSpeed * 0.5);
-                        gl_Position = projectionMatrix * mvPosition;
-                    }
-                `,
-                fragmentShader: `
-                    uniform sampler2D pointTexture;
-                    varying vec3 vColor;
-                    
-                    void main() {
-                        vec4 texColor = texture2D(pointTexture, gl_PointCoord);
-                        if (texColor.a < 0.1) discard;
-                        gl_FragColor = vec4(vColor * texColor.rgb, texColor.a);
-                    }
-                `,
-                blending: THREE.AdditiveBlending,
-                depthTest: true,
-                transparent: true
-            });
-            
-            // Create particle system
-            particleSystem = new THREE.Points(particleGeometry, particleMaterial);
-            scene.add(particleSystem);
-            
-            // Update particle count display
-            particleCountEl.textContent = state.particles.toLocaleString();
-        }
-
-        // Generate positions for different shapes
-        function generateShapePositions(positions, shape) {
-            const radius = 40;
-            const centerX = 0, centerY = 0, centerZ = 0;
-            
-            for (let i = 0; i < state.particles; i++) {
-                let x, y, z;
-                
-                switch(shape) {
-                    case 'heart':
-                        // Heart shape parameters
-                        const t = (i / state.particles) * Math.PI * 2;
-                        const r = 16 * Math.pow(Math.sin(t), 3);
-                        x = centerX + r * Math.cos(t) * (0.8 + Math.random() * 0.4);
-                        y = centerY - (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * (0.8 + Math.random() * 0.4);
-                        z = centerZ + (Math.random() - 0.5) * 20;
-                        break;
-                        
-                    case 'flower':
-                        // Flower shape
-                        const angle = (i / state.particles) * Math.PI * 8;
-                        const petalRadius = radius * (0.5 + 0.5 * Math.sin(angle * 4));
-                        x = centerX + petalRadius * Math.cos(angle);
-                        y = centerY + petalRadius * Math.sin(angle);
-                        z = centerZ + (Math.random() - 0.5) * 10;
-                        break;
-                        
-                    case 'saturn':
-                        // Saturn with rings
-                        if (i < state.particles * 0.7) {
-                            // Planet
-                            const phi = Math.acos(2 * Math.random() - 1);
-                            const theta = Math.random() * Math.PI * 2;
-                            const r = radius * (0.7 + Math.random() * 0.3);
-                            x = centerX + r * Math.sin(phi) * Math.cos(theta);
-                            y = centerY + r * Math.sin(phi) * Math.sin(theta);
-                            z = centerZ + r * Math.cos(phi);
-                        } else {
-                            // Rings
-                            const ringAngle = Math.random() * Math.PI * 2;
-                            const ringRadius = radius * (1.2 + Math.random() * 0.8);
-                            x = centerX + ringRadius * Math.cos(ringAngle);
-                            y = centerY + (Math.random() - 0.5) * 5;
-                            z = centerZ + ringRadius * Math.sin(ringAngle);
-                        }
-                        break;
-                        
-                    case 'fireworks':
-                        // Fireworks burst
-                        const burstAngle = Math.random() * Math.PI * 2;
-                        const burstHeight = Math.random() * radius * 2;
-                        const burstRadius = (Math.random() * radius) * (1 - burstHeight/(radius*2));
-                        x = centerX + burstRadius * Math.cos(burstAngle);
-                        y = centerY + burstHeight - radius;
-                        z = centerZ + (Math.random() - 0.5) * radius;
-                        break;
-                        
-                    case 'galaxy':
-                    default:
-                        // Galaxy spiral
-                        const spiralAngle = (i / state.particles) * Math.PI * 12;
-                        const spiralRadius = radius * Math.sqrt(i / state.particles);
-                        x = centerX + spiralRadius * Math.cos(spiralAngle);
-                        y = centerY + (Math.random() - 0.5) * 10;
-                        z = centerZ + spiralRadius * Math.sin(spiralAngle);
-                        break;
-                }
-                
-                positions[i * 3] = x;
-                positions[i * 3 + 1] = y;
-                positions[i * 3 + 2] = z;
-            }
-        }
-
-        // Create particle texture
+        // ======================
+        // PARTICLE SYSTEM
+        // ======================
         function createParticleTexture() {
             const canvas = document.createElement('canvas');
             canvas.width = 64;
             canvas.height = 64;
             const ctx = canvas.getContext('2d');
-            
-            // Create radial gradient
             const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
             gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
             gradient.addColorStop(0.2, 'rgba(180, 180, 255, 0.8)');
             gradient.addColorStop(0.5, 'rgba(100, 100, 255, 0.4)');
             gradient.addColorStop(1, 'rgba(50, 50, 150, 0)');
-            
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, 64, 64);
-            
-            const texture = new THREE.CanvasTexture(canvas);
-            texture.needsUpdate = true;
-            return texture;
+            return new THREE.CanvasTexture(canvas);
         }
 
-        // HSL to RGB conversion
         function hslToRgb(h, s, l) {
             let r, g, b;
-            
             if (s === 0) {
                 r = g = b = l;
             } else {
@@ -524,161 +171,194 @@
                     if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
                     return p;
                 };
-                
                 const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
                 const p = 2 * l - q;
                 r = hue2rgb(p, q, h + 1/3);
                 g = hue2rgb(p, q, h);
                 b = hue2rgb(p, q, h - 1/3);
             }
-            
             return [r, g, b];
         }
 
-        // Setup post-processing
-        function setupPostProcessing() {
-            composer = new THREE.EffectComposer(renderer);
-            composer.addPass(new THREE.RenderPass(scene, camera));
-            
-            const bloomPass = new THREE.UnrealBloomPass(
-                new THREE.Vector2(window.innerWidth, window.innerHeight),
-                1.5,    // strength
-                0.4,    // radius
-                0.85    // threshold
-            );
-            composer.addPass(bloomPass);
+        function generatePositions(shape) {
+            const positions = new Float32Array(PARTICLE_COUNT * 3);
+            const radius = 40;
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                let x, y, z;
+                switch(shape) {
+                    case 'heart':
+                        const t = (i / PARTICLE_COUNT) * Math.PI * 2;
+                        const r = 16 * Math.pow(Math.sin(t), 3);
+                        x = r * Math.cos(t) * (0.8 + Math.random() * 0.4);
+                        y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * (0.8 + Math.random() * 0.4);
+                        z = (Math.random() - 0.5) * 20;
+                        break;
+                    case 'flower':
+                        const angle = (i / PARTICLE_COUNT) * Math.PI * 8;
+                        const petalRadius = radius * (0.5 + 0.5 * Math.sin(angle * 4));
+                        x = petalRadius * Math.cos(angle);
+                        y = petalRadius * Math.sin(angle);
+                        z = (Math.random() - 0.5) * 10;
+                        break;
+                    case 'saturn':
+                        if (i < PARTICLE_COUNT * 0.7) {
+                            const phi = Math.acos(2 * Math.random() - 1);
+                            const theta = Math.random() * Math.PI * 2;
+                            const r = radius * (0.7 + Math.random() * 0.3);
+                            x = r * Math.sin(phi) * Math.cos(theta);
+                            y = r * Math.sin(phi) * Math.sin(theta);
+                            z = r * Math.cos(phi);
+                        } else {
+                            const ringAngle = Math.random() * Math.PI * 2;
+                            const ringRadius = radius * (1.2 + Math.random() * 0.8);
+                            x = ringRadius * Math.cos(ringAngle);
+                            y = (Math.random() - 0.5) * 5;
+                            z = ringRadius * Math.sin(ringAngle);
+                        }
+                        break;
+                    case 'fireworks':
+                        const burstAngle = Math.random() * Math.PI * 2;
+                        const burstHeight = Math.random() * radius * 2;
+                        const burstRadius = (Math.random() * radius) * (1 - burstHeight/(radius*2));
+                        x = burstRadius * Math.cos(burstAngle);
+                        y = burstHeight - radius;
+                        z = (Math.random() - 0.5) * radius;
+                        break;
+                    case 'galaxy':
+                    default:
+                        const spiralAngle = (i / PARTICLE_COUNT) * Math.PI * 12;
+                        const spiralRadius = radius * Math.sqrt(i / PARTICLE_COUNT);
+                        x = spiralRadius * Math.cos(spiralAngle);
+                        y = (Math.random() - 0.5) * 10;
+                        z = spiralRadius * Math.sin(spiralAngle);
+                        break;
+                }
+                positions[i * 3] = x;
+                positions[i * 3 + 1] = y;
+                positions[i * 3 + 2] = z;
+            }
+            return positions;
         }
 
-        // Handle window resize
-        function onWindowResize() {
+        const colors = new Float32Array(PARTICLE_COUNT * 3);
+        const sizes = new Float32Array(PARTICLE_COUNT);
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+            const rgb = hslToRgb(0.7 + (i / PARTICLE_COUNT) * 0.2, 0.8, 0.6);
+            colors[i * 3] = rgb[0];
+            colors[i * 3 + 1] = rgb[1];
+            colors[i * 3 + 2] = rgb[2];
+            sizes[i] = Math.random() * 2 + 1;
+        }
+
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.BufferAttribute(generatePositions(currentShape), 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+        const material = new THREE.ShaderMaterial({
+            uniforms: {
+                pointTexture: { value: createParticleTexture() },
+                time: { value: 0 },
+                expansion: { value: 1.0 },
+                turbulence: { value: 0.0 }
+            },
+            vertexShader: `
+                attribute float size;
+                attribute vec3 color;
+                varying vec3 vColor;
+                uniform float time;
+                uniform float expansion;
+                uniform float turbulence;
+                void main() {
+                    vColor = color;
+                    vec3 pos = position;
+                    pos += vec3(
+                        sin(time * 0.5 + position.x) * turbulence,
+                        cos(time * 0.3 + position.y) * turbulence,
+                        sin(time * 0.4 + position.z) * turbulence
+                    );
+                    pos *= expansion;
+                    vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+                    gl_PointSize = size * (300.0 / -mvPosition.z) * (1.0 + turbulence * 0.5);
+                    gl_Position = projectionMatrix * mvPosition;
+                }
+            `,
+            fragmentShader: `
+                uniform sampler2D pointTexture;
+                varying vec3 vColor;
+                void main() {
+                    vec4 texColor = texture2D(pointTexture, gl_PointCoord);
+                    if (texColor.a < 0.1) discard;
+                    gl_FragColor = vec4(vColor * texColor.rgb, texColor.a);
+                }
+            `,
+            blending: THREE.AdditiveBlending,
+            depthTest: true,
+            transparent: true
+        });
+
+        const particles = new THREE.Points(geometry, material);
+        scene.add(particles);
+
+        // ======================
+        // POST-PROCESSING
+        // ======================
+        const composer = new THREE.EffectComposer(renderer);
+        composer.addPass(new THREE.RenderPass(scene, camera));
+        const bloomPass = new THREE.UnrealBloomPass(
+            new THREE.Vector2(window.innerWidth, window.innerHeight),
+            1.5, 0.4, 0.85
+        );
+        composer.addPass(bloomPass);
+
+        // ======================
+        // INTERACTION & ANIMATION
+        // ======================
+        const clock = new THREE.Clock();
+        let fps = 0;
+        let frameCount = 0;
+        let lastFpsUpdate = 0;
+
+        // Simulated hand parameters (for demo without camera)
+        let expansion = 1.0;
+        let turbulence = 0.0;
+        let targetExpansion = 1.0;
+        let targetTurbulence = 0.0;
+
+        function changeShape(newShapeKey) {
+            if (currentShape !== newShapeKey) {
+                currentShape = newShapeKey;
+                document.getElementById('active-shape').textContent = SHAPES[newShapeKey];
+                geometry.attributes.position.array.set(generatePositions(newShapeKey));
+                geometry.attributes.position.needsUpdate = true;
+            }
+        }
+
+        // Keyboard controls
+        window.addEventListener('keydown', (e) => {
+            if (e.key === '1') changeShape('heart');
+            else if (e.key === '2') changeShape('flower');
+            else if (e.key === '3') changeShape('saturn');
+            else if (e.key === '4') changeShape('fireworks');
+            else if (e.key === '5') changeShape('galaxy');
+            
+            // Extra: Spacebar for explosion effect
+            if (e.key === ' ') {
+                targetExpansion = 2.5;
+                targetTurbulence = 1.0;
+                setTimeout(() => {
+                    targetExpansion = 1.0;
+                    targetTurbulence = 0.0;
+                }, 800);
+            }
+        });
+
+        window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
             composer.setSize(window.innerWidth, window.innerHeight);
-        }
-
-        // Setup keyboard controls
-        function setupKeyboardControls() {
-            window.addEventListener('keydown', (event) => {
-                if (event.key >= '1' && event.key <= '5') {
-                    const index = parseInt(event.key) - 1;
-                    if (index < state.shapes.length) {
-                        changeShape(state.shapes[index]);
-                    }
-                }
-            });
-        }
-
-        // Change particle shape
-        function changeShape(newShape) {
-            if (newShape !== state.currentShape) {
-                state.currentShape = newShape;
-                activeShapeEl.textContent = state.shapeNames[newShape];
-                
-                // Update positions
-                const positions = particleGeometry.attributes.position.array;
-                generateShapePositions(positions, newShape);
-                particleGeometry.attributes.position.needsUpdate = true;
-            }
-        }
-
-        // Initialize MediaPipe Hands
-        async function initHandTracking() {
-            try {
-                hands = new Hands({
-                    locateFile: (file) => {
-                        return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
-                    }
-                });
-                
-                hands.setOptions({
-                    maxNumHands: 2,
-                    modelComplexity: 1,
-                    minDetectionConfidence: 0.5,
-                    minTrackingConfidence: 0.5
-                });
-                
-                hands.onResults(onHandResults);
-                
-                // Setup camera
-                cameraUtils = new CameraUtils({
-                    onFrame: async () => {
-                        await hands.send({image: cameraFeed});
-                    },
-                    facingMode: "user"
-                });
-                
-                cameraUtils.start(cameraFeed);
-                state.cameraEnabled = true;
-                cameraFeed.style.display = 'block';
-            } catch (error) {
-                console.error("Camera initialization failed:", error);
-                showErrorMessage();
-            }
-        }
-
-        // Handle hand tracking results
-        function onHandResults(results) {
-            if (!results.multiHandLandmarks || !results.multiHandedness) {
-                state.gesture = 'none';
-                state.handOpen = false;
-                state.twoHands = false;
-                gestureStatusEl.textContent = 'No hands detected';
-                return;
-            }
-            
-            // Process each hand
-            const hands = results.multiHandLandmarks;
-            state.twoHands = hands.length >= 2;
-            
-            // For simplicity, we'll use the first hand for gestures
-            const landmarks = hands[0];
-            
-            // Calculate hand openness (distance between thumb and pinky)
-            const thumbTip = landmarks[4];
-            const pinkyTip = landmarks[20];
-            const handOpenValue = Math.min(1, Math.max(0, 
-                (Math.abs(thumbTip.x - pinkyTip.x) + Math.abs(thumbTip.y - pinkyTip.y)) * 3
-            ));
-            
-            state.handOpen = handOpenValue;
-            
-            // Calculate hand distance (using wrist position)
-            const wrist = landmarks[0];
-            state.handDistance = Math.min(1, Math.max(0, 1 - wrist.z * 2));
-            
-            // Calculate hand speed (simplified)
-            // In a real implementation, we'd track position over time
-            state.handSpeed = Math.random() * 0.5; // Simulated for demo
-            
-            // Update gesture status
-            if (state.twoHands) {
-                state.gesture = 'morph';
-                gestureStatusEl.textContent = 'Morphing shapes';
-            } else if (state.handOpen > 0.7) {
-                state.gesture = 'open';
-                gestureStatusEl.textContent = 'Hand open';
-            } else {
-                state.gesture = 'closed';
-                gestureStatusEl.textContent = 'Hand closed';
-            }
-            
-            // Update uniforms
-            if (particleMaterial) {
-                particleMaterial.uniforms.handOpen.value = state.handOpen;
-                particleMaterial.uniforms.handDistance.value = state.handDistance;
-                particleMaterial.uniforms.handSpeed.value = state.handSpeed;
-                particleMaterial.uniforms.twoHands.value = state.twoHands ? 1.0 : 0.0;
-                particleMaterial.uniforms.shapeProgress.value = state.twoHands ? 
-                    (Math.sin(Date.now() * 0.002) * 0.5 + 0.5) : 0.0;
-            }
-        }
-
-        // Show error message
-        function showErrorMessage() {
-            loadingScreen.style.display = 'none';
-            errorMessage.style.display = 'block';
-        }
+        });
 
         // Animation loop
         function animate() {
@@ -687,57 +367,36 @@
             const delta = clock.getDelta();
             const elapsedTime = clock.getElapsedTime();
             
-            // Update FPS counter
-            state.frameCount++;
+            // Update FPS
+            frameCount++;
             const now = performance.now();
-            if (now - state.lastFpsUpdate >= 1000) {
-                state.fps = state.frameCount;
-                state.frameCount = 0;
-                state.lastFpsUpdate = now;
-                fpsCounterEl.textContent = state.fps;
+            if (now - lastFpsUpdate >= 1000) {
+                fps = frameCount;
+                frameCount = 0;
+                lastFpsUpdate = now;
+                document.getElementById('fps-counter').textContent = fps;
             }
+            
+            // Smoothly interpolate simulated hand parameters
+            expansion += (targetExpansion - expansion) * 0.05;
+            turbulence += (targetTurbulence - turbulence) * 0.05;
             
             // Update uniforms
-            if (particleMaterial) {
-                particleMaterial.uniforms.time.value = elapsedTime;
-            }
+            material.uniforms.time.value = elapsedTime;
+            material.uniforms.expansion.value = expansion;
+            material.uniforms.turbulence.value = turbulence;
             
-            // Update controls
-            if (controls) {
-                controls.update();
-            }
+            // Auto-rotate slowly
+            controls.update();
             
-            // Render scene
-            if (composer) {
-                composer.render();
-            } else {
-                renderer.render(scene, camera);
-            }
+            composer.render();
         }
 
-        // Initialize everything
-        async function init() {
-            try {
-                // Request camera access
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                stream.getTracks().forEach(track => track.stop());
-                
-                // Initialize scene
-                initScene();
-                
-                // Initialize hand tracking
-                await initHandTracking();
-                
-                // Start animation
-                animate();
-            } catch (error) {
-                console.error("Initialization failed:", error);
-                showErrorMessage();
-            }
-        }
+        // Start animation
+        animate();
 
-        
-        init();
+        // Initial shape label
+        document.getElementById('active-shape').textContent = SHAPES[currentShape];
     </script>
 </body>
 </html>
