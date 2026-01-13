@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EdgeLock Chat</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23000'/%3E%3Ctext x='0' y='14' font-family='sans-serif' font-size='16' fill='%230f0'%3E🔐%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-yycv9Mf3qN7V4JrRcZxY+uBnGkXpUeLQyHdA9sKlFzIhDwTqjP3mWbC1d5t4JvFqVqYjE1g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+ <style>
+    :root {
+      --bg: #000;
+      --card-bg: #0a0a0a;
+      --text: #0f0;
+      --accent: #0f0;
+      --border: #0a0;
+      --success: #0f0;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+      line-height: 1.5;
+      padding: 1.5rem;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 255, 0, 0.03) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(0, 255, 0, 0.02) 0%, transparent 20%);
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+      text-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
+    }
+    h1 {
+      font-size: 2.4rem;
+      margin-bottom: 0.5rem;
+      letter-spacing: 2px;
+      animation: flicker 3s infinite alternate;
+    }
+    @keyframes flicker {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+      20%, 24%, 55% { opacity: 0.8; }
+    }
+    .subtitle {
+      color: #0a0;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 8px;
+      padding: 1.6rem;
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, #0f0, transparent);
+      animation: scan 4s linear infinite;
+    }
+    @keyframes scan {
+      0% { top: 0; }
+      100% { top: 100%; }
+    }
+
+    input, button {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: #000;
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+      font-size: 1rem;
+      outline: none;
+    }
+    input:focus, button:focus {
+      box-shadow: 0 0 8px rgba(0, 255, 0, 0.6);
+    }
+    button {
+      background: transparent;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.2s;
+      border: 1px solid var(--accent);
+    }
+    button:hover {
+      background: rgba(0, 255, 0, 0.1);
+    }
+    .hidden { display: none !important; }
+
+    #chat-area {
+      display: flex;
+      flex-direction: column;
+      height: 65vh;
+    }
+    #messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      background: #000;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      border: 1px solid var(--border);
+      font-family: 'Courier New', monospace;
+    }
+    .msg {
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+      border-left: 2px solid var(--accent);
+    }
+    .msg.me {
+      text-align: right;
+      border-left: none;
+      border-right: 2px solid var(--success);
+    }
+    .msg-name {
+      font-weight: bold;
+      color: #0a0;
+      font-size: 0.85rem;
+      margin-bottom: 0.2rem;
+    }
+    #input-area {
+      display: flex;
+      gap: 0.5rem;
+    }
+    #message-input {
+      flex: 1;
+    }
+
+    .social-share {
+      text-align: center;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 1.2rem;
+      margin-top: 0.8rem;
+    }
+    .social-icons a {
+      color: #0a0;
+      font-size: 1.4rem;
+      transition: color 0.3s, transform 0.2s;
+    }
+    .social-icons a:hover {
+      color: var(--accent);
+      transform: scale(1.2);
+    }
+
+    .error {
+      color: #f00;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 1rem; }
+      .card { padding: 1.2rem; }
+      h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><i class="fa-solid fa-lock"></i> EDGELOCK CHAT</h1>
+      <p class="subtitle">// SECURE // ZERO-KNOWLEDGE // EDGE-ONLY //</p>
+    </header>
+
+    <!-- Setup Screen -->
+    <div id="setup" class="card">
+      <p>> ENTER SHARED PASSWORD TO INITIATE SECURE CHANNEL:</p>
+      <input type="password" id="password-input" placeholder="e.g., alpha-42" autocomplete="off" />
+      <button id="join-btn"><i class="fa-solid fa-door-open"></i> JOIN ROOM</button>
+      <p class="error" id="error-msg"></p>
+
+      <div class="social-share">
+        <p>// SHARE THIS TERMINAL //</p>
+        <div class="social-icons">
+          <a href="#" onclick="share('whatsapp')"><i class="fab fa-whatsapp"></i></a>
+          <a href="#" onclick="share('telegram')"><i class="fab fa-telegram"></i></a>
+          <a href="#" onclick="share('email')"><i class="fa-solid fa-envelope"></i></a>
+          <a href="#" onclick="share('copy')"><i class="fa-solid fa-link"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Screen -->
+    <div id="chat" class="card hidden">
+      <div id="chat-area">
+        <div id="messages"></div>
+        <div id="input-area">
+          <input type="text" id="message-input" placeholder="> TYPE MESSAGE..." maxlength="500" />
+          <button id="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Crypto Helpers ---
+    async function deriveKeys(password) {
+      const enc = new TextEncoder();
+      const salt = enc.encode("EdgeLock-StaticSalt-v1");
+      const pwBuf = enc.encode(password);
+      const keyMaterial = await crypto.subtle.importKey("raw", pwBuf, { name: "PBKDF2" }, false, ["deriveBits"]);
+      const bits = await crypto.subtle.deriveBits(
+        { name: "PBKDF2", salt, iterations: 100_000, hash: "SHA-256" },
+        keyMaterial,
+        512
+      );
+      const buf = new Uint8Array(bits);
+      const roomFingerprint = Array.from(buf.slice(0, 32))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('')
+        .substring(0, 32);
+      const aesKey = await crypto.subtle.importKey("raw", buf.slice(32, 64), { name: "AES-GCM" }, false, ["encrypt", "decrypt"]);
+      return { roomFingerprint, aesKey };
+    }
+
+    async function encryptMessage(aesKey, plaintext) {
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const encrypted = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, aesKey, new TextEncoder().encode(plaintext));
+      return { iv: Array.from(iv), ciphertext: Array.from(new Uint8Array(encrypted)) };
+    }
+
+    async function decryptMessage(aesKey, packet) {
+      try {
+        const decrypted = await crypto.subtle.decrypt(
+          { name: "AES-GCM", iv: new Uint8Array(packet.iv) },
+          aesKey,
+          new Uint8Array(packet.ciphertext)
+        );
+        return new TextDecoder().decode(decrypted);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // --- UI Logic ---
+    let roomFingerprint, aesKey, displayName, ws;
+
+    document.getElementById('join-btn').addEventListener('click', joinRoom);
+    document.getElementById('password-input').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') joinRoom();
+    });
+
+    async function joinRoom() {
+      const password = document.getElementById('password-input').value.trim();
+      if (!password) return showError("ERROR: PASSWORD REQUIRED");
+
+      try {
+        const keys = await deriveKeys(password);
+        roomFingerprint = keys.roomFingerprint;
+        aesKey = keys.aesKey;
+
+        displayName = prompt("ENTER DISPLAY NAME (LOCAL ONLY):", "ANONYMOUS");
+        if (!displayName || displayName.trim() === "") displayName = "ANONYMOUS";
+
+       
+        const wsUrl = `wss://edgelock-chat.dhimanparas605.workers.dev/room/${roomFingerprint}`;
+        ws = new WebSocket(wsUrl);
+
+        ws.onopen = () => {
+          document.getElementById('setup').classList.add('hidden');
+          document.getElementById('chat').classList.remove('hidden');
+          addMessage("system", "✅ SECURE CHANNEL ESTABLISHED. SHARE PASSWORD VIA SECURE OOB CHANNEL.");
+        };
+
+        ws.onmessage = async (event) => {
+          try {
+            const packet = JSON.parse(event.data);
+            const plaintext = await decryptMessage(aesKey, packet);
+            if (plaintext && packet.sender !== getMyId()) {
+              addMessage(packet.sender, plaintext);
+            }
+          } catch (e) {
+            console.warn("DECRYPTION FAILED", e);
+          }
+        };
+
+        ws.onerror = (e) => {
+          showError("CONNECTION FAILED. CHECK WORKER STATUS.");
+        };
+
+        ws.onclose = () => {
+          showError("CHANNEL TERMINATED.");
+          setTimeout(() => {
+            document.getElementById('chat').classList.add('hidden');
+            document.getElementById('setup').classList.remove('hidden');
+          }, 2000);
+        };
+
+      } catch (e) {
+        showError("CRYPTO ERROR: " + e.message);
+      }
+    }
+
+    function getMyId() {
+      return localStorage.getItem('edgeLockId') || (() => {
+        const id = Math.random().toString(36).substring(2, 10).toUpperCase();
+        localStorage.setItem('edgeLockId', id);
+        return id;
+      })();
+    }
+
+    document.getElementById('send-btn').addEventListener('click', sendMessage);
+    document.getElementById('message-input').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    async function sendMessage() {
+      const input = document.getElementById('message-input');
+      const text = input.value.trim();
+      if (!text || !ws || ws.readyState !== WebSocket.OPEN) return;
+      
+      const encrypted = await encryptMessage(aesKey, text);
+      const packet = {
+        sender: getMyId(),
+        ...encrypted
+      };
+      ws.send(JSON.stringify(packet));
+      addMessage("me", text);
+      input.value = '';
+    }
+
+    function addMessage(sender, text) {
+      const messages = document.getElementById('messages');
+      const div = document.createElement('div');
+      div.className = `msg ${sender === 'me' ? 'me' : ''}`;
+      if (sender === 'system') {
+        div.innerHTML = `<em>${text}</em>`;
+      } else {
+        const name = sender === 'me' ? 'YOU' : displayName.toUpperCase();
+        div.innerHTML = `<div class="msg-name">[${name}]</div>${escapeHtml(text)}`;
+      }
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('error-msg');
+      el.textContent = msg;
+      setTimeout(() => el.textContent = '', 6000);
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[m]));
+    }
+
+    // --- Sharing ---
+    function share(method) {
+      const url = "https://edgelock-chat.dhimanparas605.workers.dev";
+      const msg = "JOIN SECURE EDGELOCK CHAT. PASSWORD REQUIRED.";
+      switch(method) {
+        case 'whatsapp':
+          window.open(`https://wa.me/?text=${encodeURIComponent(msg + ' ' + url)}`);
+          break;
+        case 'telegram':
+          window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(msg)}`);
+          break;
+        case 'email':
+          window.location.href = `mailto:?subject=SECURE CHAT INVITE&body=${encodeURIComponent(msg + '\n\n' + url)}`;
+          break;
+        case 'copy':
+          navigator.clipboard.writeText(url).then(() => {
+            alert("URL COPIED. SEND PASSWORD SEPARATELY.");
+          });
+          break;
+      }
+    }
+  </script>
+</body>
+</html>
