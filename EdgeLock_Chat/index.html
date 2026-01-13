@@ -3,27 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🔐 EdgeLock Chat</title>
-  
-  <!-- Font Awesome 6 -->
+  <title>EdgeLock Chat</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23000'/%3E%3Ctext x='0' y='14' font-family='sans-serif' font-size='16' fill='%230f0'%3E🔐%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-yycv9Mf3qN7V4JrRcZxY+uBnGkXpUeLQyHdA9sKlFzIhDwTqjP3mWbC1d5t4JvFqVqYjE1g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-  <style>
+ <style>
     :root {
-      --bg: #0f172a;
-      --card-bg: #1e293b;
-      --text: #f1f5f9;
-      --accent: #6366f1;
-      --border: #334155;
-      --success: #10b981;
+      --bg: #000;
+      --card-bg: #0a0a0a;
+      --text: #0f0;
+      --accent: #0f0;
+      --border: #0a0;
+      --success: #0f0;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      line-height: 1.6;
-      padding: 2rem 1rem;
+      font-family: 'Courier New', monospace;
+      line-height: 1.5;
+      padding: 1.5rem;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 255, 0, 0.03) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(0, 255, 0, 0.02) 0%, transparent 20%);
     }
     .container {
       max-width: 800px;
@@ -31,83 +32,102 @@
     }
     header {
       text-align: center;
-      margin-bottom: 2.5rem;
+      margin-bottom: 2rem;
+      text-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
     }
     h1 {
-      font-size: 2.2rem;
+      font-size: 2.4rem;
       margin-bottom: 0.5rem;
-      background: linear-gradient(90deg, #818cf8, #c084fc);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
+      letter-spacing: 2px;
+      animation: flicker 3s infinite alternate;
+    }
+    @keyframes flicker {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+      20%, 24%, 55% { opacity: 0.8; }
     }
     .subtitle {
-      color: #94a3b8;
-      font-size: 1rem;
+      color: #0a0;
+      font-size: 0.95rem;
       margin-bottom: 1.5rem;
     }
 
     .card {
       background: var(--card-bg);
-      border-radius: 16px;
-      padding: 1.8rem;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      border-radius: 8px;
+      padding: 1.6rem;
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
       border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, #0f0, transparent);
+      animation: scan 4s linear infinite;
+    }
+    @keyframes scan {
+      0% { top: 0; }
+      100% { top: 100%; }
     }
 
     input, button {
       width: 100%;
-      padding: 0.85rem 1rem;
-      border-radius: 10px;
+      padding: 0.8rem 1rem;
+      border-radius: 4px;
       border: 1px solid var(--border);
-      background: #334155;
-      color: white;
+      background: #000;
+      color: var(--text);
+      font-family: 'Courier New', monospace;
       font-size: 1rem;
+      outline: none;
     }
     input:focus, button:focus {
-      outline: 2px solid var(--accent);
+      box-shadow: 0 0 8px rgba(0, 255, 0, 0.6);
     }
     button {
-      background: var(--accent);
+      background: transparent;
       cursor: pointer;
-      font-weight: 600;
-      transition: opacity 0.2s;
+      font-weight: bold;
+      transition: all 0.2s;
+      border: 1px solid var(--accent);
     }
     button:hover {
-      opacity: 0.9;
+      background: rgba(0, 255, 0, 0.1);
     }
     .hidden { display: none !important; }
 
     #chat-area {
       display: flex;
       flex-direction: column;
-      height: 70vh;
+      height: 65vh;
     }
     #messages {
       flex: 1;
       overflow-y: auto;
       padding: 1rem;
-      background: #0f172a;
-      border-radius: 12px;
+      background: #000;
+      border-radius: 6px;
       margin-bottom: 1rem;
       border: 1px solid var(--border);
+      font-family: 'Courier New', monospace;
     }
     .msg {
       margin-bottom: 1rem;
-      padding: 0.6rem;
-      border-left: 3px solid var(--accent);
-      background: rgba(99, 102, 241, 0.1);
-      border-radius: 0 8px 8px 0;
+      padding: 0.5rem;
+      border-left: 2px solid var(--accent);
     }
     .msg.me {
-      border-left-color: var(--success);
-      background: rgba(16, 185, 129, 0.1);
       text-align: right;
+      border-left: none;
+      border-right: 2px solid var(--success);
     }
     .msg-name {
       font-weight: bold;
-      color: #cbd5e1;
+      color: #0a0;
       font-size: 0.85rem;
+      margin-bottom: 0.2rem;
     }
     #input-area {
       display: flex;
@@ -126,20 +146,21 @@
     .social-icons {
       display: flex;
       justify-content: center;
-      gap: 1rem;
+      gap: 1.2rem;
       margin-top: 0.8rem;
     }
     .social-icons a {
-      color: #94a3b8;
+      color: #0a0;
       font-size: 1.4rem;
-      transition: color 0.2s;
+      transition: color 0.3s, transform 0.2s;
     }
     .social-icons a:hover {
       color: var(--accent);
+      transform: scale(1.2);
     }
 
     .error {
-      color: #ef4444;
+      color: #f00;
       margin-top: 0.5rem;
       font-size: 0.9rem;
     }
@@ -147,26 +168,26 @@
     @media (max-width: 600px) {
       body { padding: 1rem; }
       .card { padding: 1.2rem; }
-      h1 { font-size: 1.7rem; }
+      h1 { font-size: 1.8rem; }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <h1><i class="fa-solid fa-lock"></i> EdgeLock Chat</h1>
-      <p class="subtitle">Secure, password-synced chat at the edge. No accounts. No logs.</p>
+      <h1><i class="fa-solid fa-lock"></i> EDGELOCK CHAT</h1>
+      <p class="subtitle">// SECURE // ZERO-KNOWLEDGE // EDGE-ONLY //</p>
     </header>
 
     <!-- Setup Screen -->
     <div id="setup" class="card">
-      <p>Enter a shared password to create or join a secure room:</p>
+      <p>> ENTER SHARED PASSWORD TO INITIATE SECURE CHANNEL:</p>
       <input type="password" id="password-input" placeholder="e.g., alpha-42" autocomplete="off" />
-      <button id="join-btn"><i class="fa-solid fa-door-open"></i> Join Room</button>
+      <button id="join-btn"><i class="fa-solid fa-door-open"></i> JOIN ROOM</button>
       <p class="error" id="error-msg"></p>
 
       <div class="social-share">
-        <p>Share this app securely!</p>
+        <p>// SHARE THIS TERMINAL //</p>
         <div class="social-icons">
           <a href="#" onclick="share('whatsapp')"><i class="fab fa-whatsapp"></i></a>
           <a href="#" onclick="share('telegram')"><i class="fab fa-telegram"></i></a>
@@ -181,7 +202,7 @@
       <div id="chat-area">
         <div id="messages"></div>
         <div id="input-area">
-          <input type="text" id="message-input" placeholder="Type a message..." maxlength="500" />
+          <input type="text" id="message-input" placeholder="> TYPE MESSAGE..." maxlength="500" />
           <button id="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
       </div>
@@ -238,25 +259,24 @@
 
     async function joinRoom() {
       const password = document.getElementById('password-input').value.trim();
-      if (!password) return showError("Password required");
+      if (!password) return showError("ERROR: PASSWORD REQUIRED");
 
       try {
         const keys = await deriveKeys(password);
         roomFingerprint = keys.roomFingerprint;
         aesKey = keys.aesKey;
 
-        // Ask for display name
-        displayName = prompt("Choose a display name (local only):", "Anonymous");
-        if (!displayName) displayName = "Anonymous";
+        displayName = prompt("ENTER DISPLAY NAME (LOCAL ONLY):", "ANONYMOUS");
+        if (!displayName || displayName.trim() === "") displayName = "ANONYMOUS";
 
-        // Connect to Durable Object via WebSocket
-        const wsUrl = `wss://${window.location.host}/room/${roomFingerprint}`;
+       
+        const wsUrl = `wss://edgelock-chat.dhimanparas605.workers.dev/room/${roomFingerprint}`;
         ws = new WebSocket(wsUrl);
 
         ws.onopen = () => {
           document.getElementById('setup').classList.add('hidden');
           document.getElementById('chat').classList.remove('hidden');
-          addMessage("system", "✅ Connected! Share this password securely with others to chat.");
+          addMessage("system", "✅ SECURE CHANNEL ESTABLISHED. SHARE PASSWORD VIA SECURE OOB CHANNEL.");
         };
 
         ws.onmessage = async (event) => {
@@ -267,16 +287,16 @@
               addMessage(packet.sender, plaintext);
             }
           } catch (e) {
-            console.warn("Failed to decrypt message", e);
+            console.warn("DECRYPTION FAILED", e);
           }
         };
 
         ws.onerror = (e) => {
-          showError("Connection failed. Check your Worker deployment.");
+          showError("CONNECTION FAILED. CHECK WORKER STATUS.");
         };
 
         ws.onclose = () => {
-          showError("Disconnected from room.");
+          showError("CHANNEL TERMINATED.");
           setTimeout(() => {
             document.getElementById('chat').classList.add('hidden');
             document.getElementById('setup').classList.remove('hidden');
@@ -284,14 +304,13 @@
         };
 
       } catch (e) {
-        showError("Crypto error: " + e.message);
+        showError("CRYPTO ERROR: " + e.message);
       }
     }
 
     function getMyId() {
-      // Simple ephemeral ID (rotates on refresh)
       return localStorage.getItem('edgeLockId') || (() => {
-        const id = Math.random().toString(36).substring(2, 10);
+        const id = Math.random().toString(36).substring(2, 10).toUpperCase();
         localStorage.setItem('edgeLockId', id);
         return id;
       })();
@@ -324,8 +343,8 @@
       if (sender === 'system') {
         div.innerHTML = `<em>${text}</em>`;
       } else {
-        const name = sender === 'me' ? 'You' : displayName;
-        div.innerHTML = `<div class="msg-name">${name}</div>${escapeHtml(text)}`;
+        const name = sender === 'me' ? 'YOU' : displayName.toUpperCase();
+        div.innerHTML = `<div class="msg-name">[${name}]</div>${escapeHtml(text)}`;
       }
       messages.appendChild(div);
       messages.scrollTop = messages.scrollHeight;
@@ -334,7 +353,7 @@
     function showError(msg) {
       const el = document.getElementById('error-msg');
       el.textContent = msg;
-      setTimeout(() => el.textContent = '', 5000);
+      setTimeout(() => el.textContent = '', 6000);
     }
 
     function escapeHtml(str) {
@@ -345,8 +364,8 @@
 
     // --- Sharing ---
     function share(method) {
-      const url = window.location.href;
-      const msg = "Join my secure EdgeLock Chat room! You'll need the password I share separately.";
+      const url = "https://edgelock-chat.dhimanparas605.workers.dev";
+      const msg = "JOIN SECURE EDGELOCK CHAT. PASSWORD REQUIRED.";
       switch(method) {
         case 'whatsapp':
           window.open(`https://wa.me/?text=${encodeURIComponent(msg + ' ' + url)}`);
@@ -355,11 +374,11 @@
           window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(msg)}`);
           break;
         case 'email':
-          window.location.href = `mailto:?subject=Secure Chat Invite&body=${encodeURIComponent(msg + '\n\n' + url)}`;
+          window.location.href = `mailto:?subject=SECURE CHAT INVITE&body=${encodeURIComponent(msg + '\n\n' + url)}`;
           break;
         case 'copy':
           navigator.clipboard.writeText(url).then(() => {
-            alert("Link copied! Send it + password via separate channel.");
+            alert("URL COPIED. SEND PASSWORD SEPARATELY.");
           });
           break;
       }
