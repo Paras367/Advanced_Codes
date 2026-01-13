@@ -1,36 +1,19 @@
-// api.js - API interactions
 const API = {
-    baseURL: 'https://api.example.com', // Replace with actual API URL
 
-    async getCourses() {
-        try {
-            // Mock API call
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    resolve([
-                        { id: 1, title: 'Web Development', description: 'Learn HTML, CSS, JS' },
-                        { id: 2, title: 'Data Science', description: 'Master Python and data analysis' },
-                        { id: 3, title: 'Machine Learning', description: 'Explore AI and ML concepts' }
-                    ]);
-                }, 1000);
-            });
-        } catch (error) {
-            console.error('Error fetching courses:', error);
-            return [];
-        }
-    },
+  baseURL: 'https://educational-api.dhimanparas605.workers.dev/',
 
-    async submitContactForm(data) {
-        try {
-            // Mock API call
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    resolve({ success: true, message: 'Message sent successfully' });
-                }, 1000);
-            });
-        } catch (error) {
-            console.error('Error submitting form:', error);
-            return { success: false, message: 'Failed to send message' };
-        }
-    }
+  async getCourses() {
+    const res = await fetch(`${this.baseURL}/api/courses`);
+    if (!res.ok) throw new Error('Failed to load courses');
+    return res.json();
+  },
+
+  async submitContactForm(data) {
+    const res = await fetch(`${this.baseURL}/api/contact`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    return res.json();
+  }
 };
