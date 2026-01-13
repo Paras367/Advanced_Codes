@@ -1,0 +1,170 @@
+/* responsive.css - Enhanced responsive & interactive styles */
+
+/* Tablet and below */
+@media (max-width: 768px) {
+    /* Header & Navigation */
+    nav {
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .logo img {
+        width: 32px;
+        height: 32px;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-top: 0;
+        width: 100%;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: 
+            max-height 0.3s ease-out,
+            opacity 0.25s ease-out,
+            padding 0.25s ease;
+        padding: 0 0.5rem;
+    }
+
+    /* Show nav when active (via JS toggle) */
+    .nav-links.active {
+        max-height: 300px;
+        opacity: 1;
+        padding: 0.75rem 0.5rem;
+    }
+
+    .nav-links a {
+        display: block;
+        padding: 0.75rem 1rem;
+        border-radius: 6px;
+        background: rgba(74, 144, 226, 0.05);
+        transition: var(--transition);
+        text-align: center;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus {
+        background: rgba(74, 144, 226, 0.15);
+        color: var(--primary-color);
+    }
+
+    .hamburger {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 32px;
+        padding: 4px;
+        z-index: 1001;
+    }
+
+    .hamburger span {
+        width: 24px;
+        height: 2px;
+        background: var(--text-color);
+        margin: 3px 0;
+        transition: 0.3s;
+    }
+
+    /* Hamburger → Close icon animation */
+    .hamburger.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+    }
+    .hamburger.active span:nth-child(2) {
+        opacity: 0;
+    }
+    .hamburger.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+    /* Courses */
+    .courses-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+
+    .course-card {
+        padding: 1.5rem;
+    }
+
+    /* Typography */
+    h1 {
+        font-size: clamp(1.75rem, 6vw, 2rem);
+        line-height: 1.2;
+    }
+
+    h2 {
+        font-size: clamp(1.25rem, 5vw, 1.5rem);
+    }
+
+    /* Hero */
+    .hero {
+        padding: 6rem 0 3rem;
+    }
+
+    .cta-button {
+        padding: 0.85rem 1.75rem;
+        font-size: 1rem;
+    }
+}
+
+/* Small mobile (e.g., iPhone SE) */
+@media (max-width: 480px) {
+    .container {
+        padding: 0 0.75rem;
+    }
+
+    section {
+        padding: 2rem 0;
+    }
+
+    .hero {
+        padding: 5rem 0 2.5rem;
+    }
+
+    .hero-content h2 {
+        font-size: clamp(1.5rem, 8vw, 1.875rem);
+    }
+
+    #typed-text {
+        font-size: 1.1rem;
+        line-height: 1.4;
+        margin: 0.75rem 0;
+    }
+
+    .cta-button {
+        padding: 0.75rem 1.5rem;
+    }
+
+    /* Form fields */
+    #contact-form input,
+    #contact-form textarea {
+        padding: 0.65rem;
+        font-size: 1rem;
+    }
+
+    /* Footer */
+    footer {
+        padding: 1.5rem 0;
+        font-size: 0.9rem;
+    }
+
+    /* Ensure buttons are tappable */
+    .enroll-btn,
+    .cta-button,
+    #contact-form button {
+        min-height: 44px; /* Apple/Android touch target guideline */
+        font-size: 1rem;
+    }
+}
+
+/* Optional: Reduce motion preference */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition-delay: 0s !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+}

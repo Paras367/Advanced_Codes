@@ -1,0 +1,68 @@
+/* layout.css - General layout styles */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+section {
+    padding: 4rem 0;
+}
+
+.grid {
+    display: grid;
+    gap: 2rem;
+}
+
+.flex {
+    display: flex;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.align-center {
+    align-items: center;
+}
+
+.hero {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: #fff;
+    text-align: center;
+    padding: 8rem 0 4rem;
+}
+
+.about-section, .contact-section {
+    text-align: center;
+}
+
+.contact-section {
+    background: var(--light-bg);
+}
+
+#contact-form {
+    max-width: 500px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+#contact-form input, #contact-form textarea {
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+#contact-form button {
+    background: var(--primary-color);
+    color: #fff;
+    padding: 0.75rem;
+    border-radius: 4px;
+    transition: var(--transition);
+}
+
+#contact-form button:hover {
+    background: var(--secondary-color);
+}

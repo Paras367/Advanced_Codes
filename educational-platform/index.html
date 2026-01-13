@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Educational Platform</title>
+    <link rel="icon" href="images/favicon.ico" type="image/jpeg" />
+
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://static.pw.live" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+
+    <!-- Font Awesome 6.5 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+    <!-- Prism.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+    <!-- Typed.js -->
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.16"></script>
+
+    <!-- Clipboard.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+
+    <!-- CSS Modules -->
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/variables.css" />
+    <link rel="stylesheet" href="css/typography.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/header.css" />
+    <link rel="stylesheet" href="css/footer.css" />
+    <link rel="stylesheet" href="css/navigation.css" />
+    <link rel="stylesheet" href="css/courses.css" />
+    <link rel="stylesheet" href="css/animations.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+
+    <style>
+        /* Theme toggle in header */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 20px;
+            padding: 0.35rem;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            transition: background 0.3s ease;
+        }
+
+        .theme-toggle.dark {
+            background: rgba(33, 37, 41, 0.7);
+        }
+
+        .theme-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #6c757d;
+            transition: all 0.25s ease;
+        }
+
+        .theme-btn.active {
+            background: var(--primary-color);
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 2px 8px rgba(74, 144, 226, 0.4);
+        }
+
+        /* Social links in footer */
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e0ff;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            text-decoration: none;
+            backdrop-filter: blur(2px);
+        }
+
+        .social-link:hover {
+            transform: translateY(-3px) scale(1.1);
+            background: rgba(74, 144, 226, 0.25);
+            color: white;
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+        }
+
+        /* Dark mode adjustments */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #121212;
+                --light-bg: #1e1e1e;
+                --text-color: #f0f0f0;
+                --border-color: #444;
+            }
+        }
+
+        body.dark-mode {
+            --bg-color: #121212;
+            --light-bg: #1e1e1e;
+            --text-color: #f0f0f0;
+            --border-color: #444;
+        }
+
+        body.dark-mode footer,
+        body.dark-mode .hero,
+        body.dark-mode .contact-section {
+            background: var(--dark-bg);
+            color: #f0f0f0;
+        }
+
+        body.dark-mode .course-card {
+            background: #1e1e1e;
+            border-color: #333;
+        }
+
+        body.dark-mode .nav-links a,
+        body.dark-mode .logo h1 {
+            color: #f0f0f0;
+        }
+
+        body.dark-mode input,
+        body.dark-mode textarea {
+            background: #2a2a2a;
+            color: #f0f0f0;
+            border-color: #444;
+        }
+    </style>
+</head>
+<body>
+    <header id="header">
+        <nav id="navigation">
+            <div class="logo">
+                <img src="images/favicon.ico" alt="Logo" />
+                <h1>Educational Platform</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#courses">Courses</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <!-- Light/Dark Toggle -->
+            <div class="theme-toggle" id="themeToggle">
+                <div class="theme-btn" data-theme="light">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="theme-btn" data-theme="dark">
+                    <i class="fas fa-moon"></i>
+                </div>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h2>Welcome to Our Educational Platform</h2>
+                <p id="typed-text"></p>
+                <button class="cta-button">Get Started</button>
+            </div>
+        </section>
+
+        <section id="courses" class="courses-section">
+            <h2>Our Courses</h2>
+            <div class="courses-grid">
+                <div class="course-card">
+                    <h3>Web Development</h3>
+                    <p>Learn HTML, CSS, and JavaScript</p>
+                    <button class="enroll-btn">Enroll Now</button>
+                </div>
+                <div class="course-card">
+                    <h3>Data Science</h3>
+                    <p>Master Python and data analysis</p>
+                    <button class="enroll-btn">Enroll Now</button>
+                </div>
+                <div class="course-card">
+                    <h3>Machine Learning</h3>
+                    <p>Explore AI and ML concepts</p>
+                    <button class="enroll-btn">Enroll Now</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="about-section">
+            <h2>About Us</h2>
+            <p>We provide high-quality educational content to help you learn and grow.</p>
+        </section>
+
+        <section id="contact" class="contact-section">
+            <h2>Contact Us</h2>
+            <form id="contact-form">
+                <input type="text" placeholder="Name" required />
+                <input type="email" placeholder="Email" required />
+                <textarea placeholder="Message" required></textarea>
+                <button type="submit">Send Message</button>
+            </form>
+        </section>
+    </main>
+
+    <footer id="footer">
+        <p>&copy; 2026 PARAS DHIMAN. Not Linked to PW officially.</p>
+    
+        <div class="social-links">
+            <a href="https://github.com/Paras367" target="_blank" rel="noopener" class="social-link" aria-label="GitHub"><i class="fab fa-github"></i></a>
+            <a href="#" target="_blank" rel="noopener" class="social-link" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" target="_blank" rel="noopener" class="social-link" aria-label="X"><i class="fab fa-x-twitter"></i></a>
+            <a href="#" target="_blank" rel="noopener" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" target="_blank" rel="noopener" class="social-link" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="#" target="_blank" rel="noopener" class="social-link" aria-label="Discord"><i class="fab fa-discord"></i></a>
+            <a href="https://softwarelabs.lovable.app" target="_blank" rel="noopener" class="social-link" aria-label="Website"><i class="fas fa-globe"></i></a>
+        </div>
+    </footer>
+
+    <!-- Custom JS -->
+    <script src="js/utils.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/events.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/header.js"></script>
+    <script src="js/footer.js"></script>
+    <script src="js/courses.js"></script>
+    <script src="js/form.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/main.js"></script>
+
+
+    <script>
+             const savedTheme = localStorage.getItem('theme') || 
+                          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        
+        document.body.classList.toggle('dark-mode', savedTheme === 'dark');
+        updateToggleUI(savedTheme);
+
+        function updateToggleUI(theme) {
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.theme === theme);
+            });
+            document.querySelector('.theme-toggle').classList.toggle('dark', theme === 'dark');
+        }
+
+   
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const newTheme = btn.dataset.theme;
+                document.body.classList.toggle('dark-mode', newTheme === 'dark');
+                localStorage.setItem('theme', newTheme);
+                updateToggleUI(newTheme);
+            });
+        });
+    </script>
+</body>
+</html>
