@@ -5,249 +5,1259 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ILIP — Interactive Learning Intelligence Platform</title>
 
-  
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" 
         integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1Eg==" 
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700&family=Montserrat:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;600;700&family=Lato:wght@300;400;700&family=Raleway:wght@300;400;500;600;700&family=Ubuntu:wght@300;400;500;700&family=Nunito:wght@300;400;600;700;800&family=Playfair+Display:wght@400;500;600;700&family=Merriweather:wght@300;400;700&family=Oswald:wght@300;400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Quicksand:wght@300;400;500;600;700&family=Josefin+Sans:wght@300;400;500;600;700&family=Oxygen:wght@300;400;700&family=Karla:wght@300;400;500;600;700&family=Work+Sans:wght@300;400;500;600;700&family=Exo+2:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+
   <style>
     :root {
-      --bg: #f9f9fb;
-      --text: #2d3748;
-      --accent: #4f46e5;
-      --card: #ffffff;
-      --border: #e2e8f0;
-    }
-    [data-theme='dark'] {
-      --bg: #1a202c;
-      --text: #e2e8f0;
-      --card: #2d3748;
-      --border: #4a5568;
+      --bg-primary: #0f0f23;
+      --bg-secondary: #1a1a2e;
+      --bg-tertiary: #16213e;
+      --text-primary: #e8e8e8;
+      --text-secondary: #b8b8d1;
+      --accent-1: #6366f1;
+      --accent-2: #8b5cf6;
+      --accent-3: #ec4899;
+      --accent-4: #14b8a6;
+      --card-bg: #1e1e38;
+      --border: #2d2d48;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --shadow: rgba(99, 102, 241, 0.1);
+      --glow: rgba(99, 102, 241, 0.3);
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      padding: 20px;
+    [data-theme='light'] {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #f1f5f9;
+      --text-primary: #1e293b;
+      --text-secondary: #475569;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --shadow: rgba(0, 0, 0, 0.05);
+      --glow: rgba(99, 102, 241, 0.2);
     }
-    .container { max-width: 900px; margin: 0 auto; }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background 0.3s ease;
+    }
+
+    /* Animated Background */
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.05;
+      pointer-events: none;
+    }
+
+    .bg-animation span {
+      position: absolute;
+      display: block;
+      width: 20px;
+      height: 20px;
+      background: var(--accent-1);
+      border-radius: 50%;
+      animation: float 25s infinite;
+    }
+
+    .bg-animation span:nth-child(1) { left: 10%; animation-delay: 0s; }
+    .bg-animation span:nth-child(2) { left: 20%; animation-delay: 2s; width: 15px; height: 15px; }
+    .bg-animation span:nth-child(3) { left: 30%; animation-delay: 4s; }
+    .bg-animation span:nth-child(4) { left: 40%; animation-delay: 6s; width: 25px; height: 25px; }
+    .bg-animation span:nth-child(5) { left: 50%; animation-delay: 8s; }
+    .bg-animation span:nth-child(6) { left: 60%; animation-delay: 10s; width: 18px; height: 18px; }
+    .bg-animation span:nth-child(7) { left: 70%; animation-delay: 12s; }
+    .bg-animation span:nth-child(8) { left: 80%; animation-delay: 14s; width: 22px; height: 22px; }
+    .bg-animation span:nth-child(9) { left: 90%; animation-delay: 16s; }
+    .bg-animation span:nth-child(10) { left: 15%; animation-delay: 18s; }
+
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* Navigation */
+    nav {
+      position: sticky;
+      top: 0;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 15px 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px var(--shadow);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-items {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+
+    .nav-btn {
+      background: transparent;
+      color: var(--text-primary);
+      border: none;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s;
+      border-radius: 8px;
+    }
+
+    .nav-btn:hover {
+      background: var(--accent-1);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    /* Header Section */
     header {
       text-align: center;
-      margin-bottom: 30px;
-      padding: 20px 0;
+      margin-bottom: 60px;
+      padding: 60px 20px;
+      background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+      border-radius: 24px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 40px var(--shadow);
     }
-    h1 { font-size: 2.2rem; margin-bottom: 8px; }
-    .subtitle { color: var(--accent); font-weight: 500; }
 
+    header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.3; }
+      50% { transform: scale(1.1); opacity: 0.5; }
+    }
+
+    h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 3.5rem;
+      margin-bottom: 15px;
+      position: relative;
+      z-index: 1;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: fadeInDown 1s ease;
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .subtitle {
+      font-family: 'Raleway', sans-serif;
+      font-size: 1.3rem;
+      color: var(--text-secondary);
+      position: relative;
+      z-index: 1;
+      animation: fadeInUp 1s ease 0.3s both;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Stats Bar */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin: 40px 0;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      padding: 25px;
+      border-radius: 16px;
+      text-align: center;
+      border: 1px solid var(--border);
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, var(--glow), transparent);
+      transition: left 0.5s;
+    }
+
+    .stat-card:hover::before {
+      left: 100%;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px var(--shadow);
+      border-color: var(--accent-1);
+    }
+
+    .stat-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.5rem;
+      color: var(--accent-1);
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      font-family: 'Ubuntu', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Progress Tracker */
+    .progress-tracker {
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: 16px;
+      margin: 30px 0;
+      border: 1px solid var(--border);
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .progress-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .progress-percentage {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      color: var(--accent-1);
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 12px;
+      background: var(--bg-tertiary);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-1), var(--accent-2), var(--accent-3));
+      border-radius: 10px;
+      transition: width 1s ease;
+      position: relative;
+      overflow: hidden;
+      width: 45%;
+    }
+
+    .progress-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    /* Steps Grid */
     .steps {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 16px;
-      margin: 30px 0;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 25px;
+      margin: 50px 0;
     }
-    .step {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px;
-      text-align: center;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .step:hover { transform: translateY(-4px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-    .step i { font-size: 1.8rem; color: var(--accent); margin-bottom: 10px; display: block; }
-    .step h3 { font-size: 0.95rem; margin-bottom: 6px; }
-    .step p { font-size: 0.8rem; opacity: 0.8; }
 
-    .concept-trigger, .interactive-exploration, .concept-formation,
-    .explain-thinking, .adaptive-questions, .reinforcement {
-      background: var(--card);
+    .step {
+      background: var(--card-bg);
+      border: 2px solid var(--border);
+      border-radius: 20px;
+      padding: 30px 20px;
+      text-align: center;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .step::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .step:hover::before {
+      opacity: 0.1;
+    }
+
+    .step:hover {
+      transform: translateY(-10px) scale(1.05);
+      box-shadow: 0 15px 40px var(--shadow);
+      border-color: var(--accent-1);
+    }
+
+    .step.completed {
+      border-color: var(--success);
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), transparent);
+    }
+
+    .step.active {
+      border-color: var(--accent-1);
+      box-shadow: 0 0 30px var(--glow);
+      animation: glow-pulse 2s infinite;
+    }
+
+    @keyframes glow-pulse {
+      0%, 100% { box-shadow: 0 0 20px var(--glow); }
+      50% { box-shadow: 0 0 40px var(--glow); }
+    }
+
+    .step i {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      display: block;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.3s;
+    }
+
+    .step:hover i {
+      transform: scale(1.2) rotate(5deg);
+    }
+
+    .step h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step p {
+      font-family: 'Open Sans', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-number {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 30px;
+      height: 30px;
+      background: var(--accent-1);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      z-index: 2;
+    }
+
+    /* Content Sections */
+    .section {
+      background: var(--card-bg);
+      padding: 40px;
+      border-radius: 20px;
+      margin: 30px 0;
+      border: 1px solid var(--border);
+      box-shadow: 0 5px 20px var(--shadow);
+      animation: fadeIn 0.5s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, var(--glow), transparent);
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    .section h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2rem;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section h2 i {
+      color: var(--accent-1);
+    }
+
+    /* Interactive Simulation */
+    .simulation-container {
+      background: var(--bg-tertiary);
+      padding: 30px;
+      border-radius: 16px;
+      margin: 25px 0;
+      position: relative;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .control-group {
+      background: var(--card-bg);
       padding: 20px;
       border-radius: 12px;
-      margin: 20px 0;
       border: 1px solid var(--border);
     }
 
-    button {
-      background: var(--accent);
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
+    .control-label {
+      font-family: 'Ubuntu', sans-serif;
       font-weight: 600;
-      margin-top: 10px;
-    }
-    button:hover { opacity: 0.9; }
-    textarea {
-      width: 100%;
-      height: 100px;
-      padding: 10px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: var(--bg);
-      color: var(--text);
-      margin: 10px 0;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .theme-toggle {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: var(--card);
-      border: 1px solid var(--border);
+    .control-value {
+      color: var(--accent-1);
+      font-weight: 700;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 8px;
+      border-radius: 5px;
+      background: var(--bg-tertiary);
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--glow);
+      transition: all 0.3s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+      box-shadow: 0 0 20px var(--glow);
+    }
+
+    .sim-visual {
+      height: 300px;
+      background: var(--bg-primary);
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid var(--border);
+    }
+
+    .falling-object {
+      position: absolute;
       width: 40px;
       height: 40px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 1.5rem;
+      transition: top 0.5s ease-out;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      top: -50px;
+    }
+
+    .object-feather {
+      left: 30%;
+      background: linear-gradient(135deg, #f59e0b, #f97316);
+    }
+
+    .object-hammer {
+      left: 60%;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    }
+
+    .sim-result {
+      margin-top: 20px;
+      padding: 20px;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+      border-radius: 12px;
+      border-left: 4px solid var(--accent-1);
+      font-family: 'Raleway', sans-serif;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Quiz Section */
+    .quiz-container {
+      margin-top: 20px;
+    }
+
+    .quiz-question {
+      font-family: 'Merriweather', serif;
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .quiz-options {
+      display: grid;
+      gap: 15px;
+    }
+
+    .quiz-option {
+      background: var(--bg-tertiary);
+      padding: 20px;
+      border-radius: 12px;
+      border: 2px solid var(--border);
       cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      font-family: 'Lato', sans-serif;
+    }
+
+    .quiz-option:hover {
+      border-color: var(--accent-1);
+      background: rgba(99, 102, 241, 0.1);
+      transform: translateX(10px);
+    }
+
+    .quiz-option.correct {
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.1);
+      animation: correctAnswer 0.5s ease;
+    }
+
+    .quiz-option.incorrect {
+      border-color: var(--error);
+      background: rgba(239, 68, 68, 0.1);
+      animation: shake 0.5s ease;
+    }
+
+    @keyframes correctAnswer {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    .option-letter {
+      width: 35px;
+      height: 35px;
+      background: var(--accent-1);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* Textarea */
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      padding: 20px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-family: 'Source Sans Pro', sans-serif;
+      font-size: 1rem;
+      margin: 20px 0;
+      resize: vertical;
+      transition: all 0.3s;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent-1);
+      box-shadow: 0 0 20px var(--glow);
+    }
+
+    /* Buttons */
+    button {
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      color: white;
+      border: none;
+      padding: 15px 35px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
+      transition: all 0.3s;
+      box-shadow: 0 5px 15px var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    button:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px var(--shadow);
+    }
+
+    button:active {
+      transform: translateY(-1px);
+    }
+
+    button span {
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn-secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border: 2px solid var(--border);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, var(--success), var(--accent-4));
+    }
+
+    /* Theme Toggle */
+    .theme-toggle {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      background: var(--card-bg);
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 5px 20px var(--shadow);
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.1) rotate(15deg);
+      box-shadow: 0 10px 30px var(--shadow);
+    }
+
+    .theme-toggle i {
+      font-size: 1.5rem;
+      color: var(--accent-1);
+    }
+
+    /* Achievements */
+    .achievements {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
+      margin: 30px 0;
+    }
+
+    .achievement {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 16px;
+      text-align: center;
+      border: 2px solid var(--border);
+      transition: all 0.3s;
+      opacity: 0.5;
+    }
+
+    .achievement.unlocked {
+      opacity: 1;
+      border-color: var(--accent-1);
+      animation: unlock 0.6s ease;
+    }
+
+    @keyframes unlock {
+      0% { transform: scale(0.8); opacity: 0; }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .achievement i {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      display: block;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .achievement-name {
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    /* Concept Map */
+    .concept-map {
+      background: var(--bg-tertiary);
+      padding: 30px;
+      border-radius: 16px;
+      margin: 30px 0;
+      position: relative;
+      min-height: 300px;
+    }
+
+    .concept-node {
+      position: absolute;
+      background: var(--card-bg);
+      padding: 15px 25px;
+      border-radius: 12px;
+      border: 2px solid var(--accent-1);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 5px 15px var(--shadow);
+    }
+
+    .concept-node:hover {
+      transform: scale(1.1);
+      z-index: 10;
+      box-shadow: 0 10px 30px var(--shadow);
+    }
+
+    /* Notebook */
+    .notebook {
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      margin: 30px 0;
+    }
+
+    .note-entry {
+      background: var(--bg-tertiary);
+      padding: 20px;
+      border-radius: 12px;
+      margin: 15px 0;
+      border-left: 4px solid var(--accent-1);
+      position: relative;
+    }
+
+    .note-timestamp {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+      font-family: 'Karla', sans-serif;
+    }
+
+    .note-content {
+      font-family: 'Merriweather', serif;
+      line-height: 1.8;
+    }
+
+    /* Timer */
+    .timer {
+      position: fixed;
+      top: 100px;
+      right: 30px;
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 16px;
+      border: 2px solid var(--border);
+      text-align: center;
+      box-shadow: 0 5px 20px var(--shadow);
+      z-index: 99;
+      display: none;
+    }
+
+    .timer-display {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      color: var(--accent-1);
+    }
+
+    .timer-label {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-top: 5px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      h1 { font-size: 2.5rem; }
+      .subtitle { font-size: 1.1rem; }
+      .steps { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+      .nav-container { flex-direction: column; gap: 15px; }
+      .controls { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
+  <!-- Animated Background -->
+  <div class="bg-animation">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-container">
+      <div class="logo">
+        <i class="fas fa-brain"></i> ILIP
+      </div>
+      <div class="nav-items">
+        <button class="nav-btn" onclick="showSection('dashboard')"><i class="fas fa-home"></i> Dashboard</button>
+        <button class="nav-btn" onclick="showSection('subjects')"><i class="fas fa-book"></i> Subjects</button>
+        <button class="nav-btn" onclick="showSection('profile')"><i class="fas fa-user"></i> Profile</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Dashboard Section (Default) -->
+    <div id="dashboard-section">
+      <header>
+        <h1>Interactive Learning Intelligence Platform</h1>
+        <p class="subtitle">Quality education through intelligence, not overload.</p>
+      </header>
+
+      <!-- Stats -->
+      <div class="stats-bar">
+        <div class="stat-card">
+          <div class="stat-number">42%</div>
+          <div class="stat-label">Mastery</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">18</div>
+          <div class="stat-label">Concepts Learned</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">7</div>
+          <div class="stat-label">Subjects</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">3</div>
+          <div class="stat-label">Active Streak</div>
+        </div>
+      </div>
+
+      <!-- Progress -->
+      <div class="progress-tracker">
+        <div class="progress-header">
+          <div class="progress-title">Physics: Laws of Motion</div>
+          <div class="progress-percentage">45%</div>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar"></div>
+        </div>
+      </div>
+
+      <!-- Learning Steps -->
+      <h2><i class="fas fa-project-diagram"></i> Your Learning Journey</h2>
+      <div class="steps">
+        <div class="step completed" onclick="loadStep(1)">
+          <div class="step-number">1</div>
+          <i class="fas fa-lightbulb"></i>
+          <h3>Trigger</h3>
+          <p>Real-life prompt</p>
+        </div>
+        <div class="step active" onclick="loadStep(2)">
+          <div class="step-number">2</div>
+          <i class="fas fa-sliders"></i>
+          <h3>Explore</h3>
+          <p>Interactive sim</p>
+        </div>
+        <div class="step" onclick="loadStep(3)">
+          <div class="step-number">3</div>
+          <i class="fas fa-diagram-project"></i>
+          <h3>Form</h3>
+          <p>Visual concept</p>
+        </div>
+        <div class="step" onclick="loadStep(4)">
+          <div class="step-number">4</div>
+          <i class="fas fa-pen-nib"></i>
+          <h3>Explain</h3>
+          <p>Your reasoning</p>
+        </div>
+        <div class="step" onclick="loadStep(5)">
+          <div class="step-number">5</div>
+          <i class="fas fa-brain"></i>
+          <h3>Adapt</h3>
+          <p>Smart Qs</p>
+        </div>
+        <div class="step" onclick="loadStep(6)">
+          <div class="step-number">6</div>
+          <i class="fas fa-repeat"></i>
+          <h3>Reinforce</h3>
+          <p>Mistake loop</p>
+        </div>
+      </div>
+
+      <!-- Current Step Content -->
+      <div id="step-content">
+        <!-- STEP 2: Interactive Exploration -->
+        <div class="section" id="step2-content">
+          <h2><i class="fas fa-sliders"></i> Explore Gravity & Air Resistance</h2>
+          <div class="simulation-container">
+            <div class="controls">
+              <div class="control-group">
+                <div class="control-label">
+                  Air Resistance
+                  <span class="control-value" id="air-value">100%</span>
+                </div>
+                <input type="range" id="air-resistance" min="0" max="100" value="100">
+              </div>
+              <div class="control-group">
+                <div class="control-label">
+                  Gravity
+                  <span class="control-value" id="grav-value">100%</span>
+                </div>
+                <input type="range" id="gravity" min="0" max="100" value="100">
+              </div>
+            </div>
+            <div class="sim-visual" id="simulation">
+              <div class="falling-object object-feather" id="feather">🪶</div>
+              <div class="falling-object object-hammer" id="hammer">🔨</div>
+            </div>
+            <div class="sim-result" id="sim-result">
+              With air resistance at 100% and gravity at 100%, the hammer falls faster than the feather.
+            </div>
+          </div>
+          <button onclick="advanceToStep(3)"><span>Next: Concept Formation</span></button>
+        </div>
+      </div>
+
+      <!-- Achievements -->
+      <h2><i class="fas fa-trophy"></i> Your Achievements</h2>
+      <div class="achievements">
+        <div class="achievement unlocked">
+          <i class="fas fa-rocket"></i>
+          <div class="achievement-name">First Concept</div>
+        </div>
+        <div class="achievement unlocked">
+          <i class="fas fa-sync-alt"></i>
+          <div class="achievement-name">Reinforcer</div>
+        </div>
+        <div class="achievement">
+          <i class="fas fa-crown"></i>
+          <div class="achievement-name">Master</div>
+        </div>
+        <div class="achievement">
+          <i class="fas fa-network-wired"></i>
+          <div class="achievement-name">Connector</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Subjects Section (Hidden by default) -->
+    <div id="subjects-section" style="display:none;">
+      <h2><i class="fas fa-book-open"></i> Subject Intelligence Hubs</h2>
+      <div class="steps">
+        <div class="step" onclick="loadSubject('physics')">
+          <i class="fas fa-atom"></i>
+          <h3>Physics</h3>
+        </div>
+        <div class="step" onclick="loadSubject('chemistry')">
+          <i class="fas fa-flask"></i>
+          <h3>Chemistry</h3>
+        </div>
+        <div class="step" onclick="loadSubject('math')">
+          <i class="fas fa-calculator"></i>
+          <h3>Mathematics</h3>
+        </div>
+        <div class="step" onclick="loadSubject('biology')">
+          <i class="fas fa-dna"></i>
+          <h3>Biology</h3>
+        </div>
+        <div class="step" onclick="loadSubject('accountancy')">
+          <i class="fas fa-file-invoice-dollar"></i>
+          <h3>Accountancy</h3>
+        </div>
+        <div class="step" onclick="loadSubject('economics')">
+          <i class="fas fa-chart-line"></i>
+          <h3>Economics</h3>
+        </div>
+        <div class="step" onclick="loadSubject('business')">
+          <i class="fas fa-store"></i>
+          <h3>Business Studies</h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Section (Hidden by default) -->
+    <div id="profile-section" style="display:none;">
+      <h2><i class="fas fa-user-circle"></i> Your Learning Profile</h2>
+      <div class="section">
+        <h3>Personal Learning Model</h3>
+        <p>You learn best with visual simulations and real-world analogies. Your misconception cluster in "Force vs. Motion" is being addressed.</p>
+        
+        <h3 style="margin-top:20px;">Cross-Subject Connections</h3>
+        <div class="concept-map">
+          <div class="concept-node" style="top:50px; left:100px;">Differentiation</div>
+          <div class="concept-node" style="top:150px; left:300px;">Velocity</div>
+          <div class="concept-node" style="top:250px; left:150px;">Probability</div>
+          <div class="concept-node" style="top:200px; left:400px;">Genetics</div>
+        </div>
+
+        <h3 style="margin-top:20px;">Learning Notebook</h3>
+        <div class="notebook">
+          <div class="note-entry">
+            <div class="note-timestamp">Jan 14, 2026 · 10:30 AM</div>
+            <div class="note-content">I finally get why mass doesn't affect falling speed in vacuum! It's because F=ma and F=mg, so a=g always.</div>
+          </div>
+          <div class="note-entry">
+            <div class="note-timestamp">Jan 13, 2026 · 4:15 PM</div>
+            <div class="note-content">Confused about net force direction. Need to practice free-body diagrams.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Timer Widget -->
+  <div class="timer" id="learningTimer">
+    <div class="timer-display" id="timerValue">00:00</div>
+    <div class="timer-label">Session Time</div>
+  </div>
+
+  <!-- Theme Toggle -->
   <div class="theme-toggle" id="themeToggle">
     <i class="fas fa-moon"></i>
   </div>
 
-  <div class="container">
-    <header>
-      <h1><i class="fas fa-brain"></i> ILIP</h1>
-      <p class="subtitle">Quality education through intelligence, not overload.</p>
-    </header>
-
-    <div class="steps">
-      <div class="step"><i class="fas fa-lightbulb"></i><h3>Trigger</h3><p>Real-life prompt</p></div>
-      <div class="step"><i class="fas fa-sliders"></i><h3>Explore</h3><p>Interactive sim</p></div>
-      <div class="step"><i class="fas fa-diagram-project"></i><h3>Form</h3><p>Visual concept</p></div>
-      <div class="step"><i class="fas fa-pen-nib"></i><h3>Explain</h3><p>Your reasoning</p></div>
-      <div class="step"><i class="fas fa-brain"></i><h3>Adapt</h3><p>Smart Qs</p></div>
-      <div class="step"><i class="fas fa-repeat"></i><h3>Reinforce</h3><p>Mistake loop</p></div>
-    </div>
-
-    <!-- STEP 1: Concept Trigger -->
-    <div class="concept-trigger">
-      <h2><i class="fas fa-lightbulb"></i> What happens if you drop a feather and a hammer on the Moon?</h2>
-      <p>Think before you learn. No formulas yet!</p>
-      <button onclick="advanceStep(2)">I've thought about it</button>
-    </div>
-
-    <!-- STEP 2: Interactive Exploration (Hidden by default) -->
-    <div class="interactive-exploration" id="step2" style="display:none;">
-      <h2><i class="fas fa-sliders"></i> Explore Gravity & Air Resistance</h2>
-      <p>Drag the sliders to change environment:</p>
-      <label>Air Resistance: <input type="range" id="air" min="0" max="100" value="100"></label>
-      <label>Gravity: <input type="range" id="grav" min="0" max="100" value="100"></label>
-      <div id="simResult" style="margin-top:15px; padding:10px; background:#f0f4ff; border-radius:8px;">Objects fall at different speeds due to air.</div>
-      <button onclick="advanceStep(3)">I see the pattern</button>
-    </div>
-
-    <!-- STEP 3: Concept Formation -->
-    <div class="concept-formation" id="step3" style="display:none;">
-      <h2><i class="fas fa-diagram-project"></i> Net Force = Mass × Acceleration</h2>
-      <p>In vacuum (like Moon), all objects fall equally — because <strong>only gravity acts</strong>.</p>
-      <button onclick="advanceStep(4)">Got it</button>
-    </div>
-
-    <!-- STEP 4: Explain Your Thinking -->
-    <div class="explain-thinking" id="step4" style="display:none;">
-      <h2><i class="fas fa-pen-nib"></i> Explain in your words</h2>
-      <p>Why did the hammer and feather hit the Moon surface together?</p>
-      <textarea id="reasoning" placeholder="Type your reasoning..."></textarea>
-      <button onclick="submitReasoning()">Submit Reasoning</button>
-    </div>
-
-    <!-- STEP 5: Adaptive Questions -->
-    <div class="adaptive-questions" id="step5" style="display:none;">
-      <h2><i class="fas fa-brain"></i> Quick Check</h2>
-      <p>If mass doubles but force stays same, acceleration...</p>
-      <button onclick="answerQ('halves')">Halves</button>
-      <button onclick="answerQ('doubles')">Doubles</button>
-      <button onclick="answerQ('same')">Stays same</button>
-    </div>
-
-    <!-- STEP 6: Reinforcement -->
-    <div class="reinforcement" id="step6" style="display:none;">
-      <h2><i class="fas fa-repeat"></i> Reinforcement</h2>
-      <p>✅ You’ve mastered <strong>Net Force & Inertia</strong>!</p>
-      <p>Next: Free Body Diagrams →</p>
-      <button onclick="nextConcept()">Continue Learning</button>
-    </div>
-  </div>
-
   <script>
-    // Theme toggle
+    // Theme Toggle
     const themeToggle = document.getElementById('themeToggle');
-    const savedTheme = localStorage.getItem('ilip-theme') || 'light';
-    if (savedTheme === 'dark') {
-      document.documentElement.setAttribute('data-theme', 'dark');
+    const savedTheme = localStorage.getItem('ilip-theme') || 'dark';
+    if (savedTheme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
       themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
     }
     themeToggle.addEventListener('click', () => {
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
       if (isDark) {
-        document.documentElement.removeAttribute('data-theme');
+        document.documentElement.setAttribute('data-theme', 'light');
         localStorage.setItem('ilip-theme', 'light');
-        themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
-      } else {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        localStorage.setItem('ilip-theme', 'dark');
         themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('ilip-theme', 'dark');
+        themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
       }
     });
 
-    // Sim interaction
-    document.getElementById('air').addEventListener('input', updateSim);
-    document.getElementById('grav').addEventListener('input', updateSim);
-    function updateSim() {
-      const air = document.getElementById('air').value;
-      const grav = document.getElementById('grav').value;
-      let msg = '';
-      if (air < 20 && grav > 80) msg = "In vacuum with high gravity: all objects fall together!";
-      else if (air > 80) msg = "With air: lighter objects fall slower.";
-      else msg = "Interesting mix! Observe carefully.";
-      document.getElementById('simResult').textContent = msg;
-    }
-
-    // Step navigation
-    function advanceStep(step) {
-      for (let i = 2; i <= 6; i++) {
-        document.getElementById(`step${i}`).style.display = 'none';
-      }
-      if (step <= 6) {
-        document.getElementById(`step${step}`).style.display = 'block';
-      }
-    }
-
-    function submitReasoning() {
-      const text = document.getElementById('reasoning').value.trim();
-      if (!text) { alert("Please explain your thinking!"); return; }
-      fetch('/api/logic-check', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reasoning: text, concept: 'net-force' })
-      }).then(r => r.json()).then(data => {
-        if (data.valid) advanceStep(5);
-        else alert("Good try! Review the concept again.");
+    // Navigation
+    function showSection(sectionId) {
+      document.querySelectorAll('#dashboard-section, #subjects-section, #profile-section').forEach(el => {
+        el.style.display = 'none';
       });
+      document.getElementById(sectionId + '-section').style.display = 'block';
+      
+      // Show timer only on dashboard
+      document.getElementById('learningTimer').style.display = sectionId === 'dashboard' ? 'block' : 'none';
     }
 
-    function answerQ(ans) {
-      fetch('/api/adaptive-check', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ answer: ans, concept: 'net-force' })
-      }).then(r => r.json()).then(data => {
-        advanceStep(6);
+    // Step Navigation
+    let currentStep = 2;
+    function loadStep(step) {
+      currentStep = step;
+      // In real app: fetch step content via API
+      alert(`Loading Step ${step}...`);
+    }
+
+    function advanceToStep(step) {
+      currentStep = step;
+      // Hide current, show next
+      document.querySelectorAll('.step').forEach((el, idx) => {
+        el.classList.remove('active');
+        if (idx + 1 === step) el.classList.add('active');
       });
+      alert(`Advancing to Step ${step}`);
     }
 
-    function nextConcept() {
-      alert("Redirecting to next concept...");
-     
+    // Simulation Controls
+    const airSlider = document.getElementById('air-resistance');
+    const gravSlider = document.getElementById('gravity');
+    const airValue = document.getElementById('air-value');
+    const gravValue = document.getElementById('grav-value');
+    const simResult = document.getElementById('sim-result');
+
+    airSlider.addEventListener('input', updateSimulation);
+    gravSlider.addEventListener('input', updateSimulation);
+
+    function updateSimulation() {
+      const air = parseInt(airSlider.value);
+      const grav = parseInt(gravSlider.value);
+      airValue.textContent = air + '%';
+      gravValue.textContent = grav + '%';
+
+      // Update simulation result text
+      if (air < 20 && grav > 80) {
+        simResult.textContent = "In vacuum with high gravity: both objects fall together!";
+      } else if (air > 80) {
+        simResult.textContent = "With air resistance: the hammer falls faster than the feather.";
+      } else {
+        simResult.textContent = "Interesting mix! Observe how both factors interact.";
+      }
+
+      // Reset objects
+      document.getElementById('feather').style.top = '-50px';
+      document.getElementById('hammer').style.top = '-50px';
+
+      // Animate based on values
+      setTimeout(() => {
+        const featherSpeed = 1.0 + (100 - air) / 100 * 0.5 + (100 - grav) / 100 * 0.3;
+        const hammerSpeed = 1.0 + (100 - air) / 100 * 0.1 + (100 - grav) / 100 * 0.3;
+        document.getElementById('feather').style.transitionDuration = (2.0 / featherSpeed) + 's';
+        document.getElementById('hammer').style.transitionDuration = (2.0 / hammerSpeed) + 's';
+        document.getElementById('feather').style.top = '220px';
+        document.getElementById('hammer').style.top = '220px';
+      }, 100);
     }
+
+    // Timer
+    let seconds = 0;
+    const timerElement = document.getElementById('timerValue');
+    setInterval(() => {
+      if (document.getElementById('dashboard-section').style.display !== 'none') {
+        seconds++;
+        const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+        const secs = (seconds % 60).toString().padStart(2, '0');
+        timerElement.textContent = `${mins}:${secs}`;
+      }
+    }, 1000);
+
+    // Initialize simulation
+    updateSimulation();
   </script>
 </body>
 </html>
