@@ -779,16 +779,20 @@
         };
 
         ws.onmessage = async (event) => {
-          try {
-            const packet = JSON.parse(event.data);
-            const plaintext = await decryptMessage(aesKey, packet);
-            if (plaintext && packet.sender !== getMyId()) {
-              addMessage(packet.sender, plaintext);
-            }
-          } catch (e) {
-            console.warn("⚠️ DECRYPTION FAILED", e);
-          }
-        };
+  try {
+    const packet = JSON.parse(event.data);
+    const plaintext = await decryptMessage(aesKey, packet);
+    if (plaintext) {
+      if (packet.sender !== getMyId()) {
+        addMessage(packet.sender, plaintext);
+      }
+    } else {
+      console.error("❌ DECRYPTION FAILED: Wrong password or corrupted message");
+    }
+  } catch (e) {
+    console.error("💥 DECRYPTION ERROR:", e);
+  }
+};
 
         ws.onerror = () => {
           showError("❌ CONNECTION FAILED. CHECK WORKER STATUS.");
