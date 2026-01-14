@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ILIP — Interactive Learning Intelligence Platform</title>
+
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1Eg==" 
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style>
+    :root {
+      --bg: #f9f9fb;
+      --text: #2d3748;
+      --accent: #4f46e5;
+      --card: #ffffff;
+      --border: #e2e8f0;
+    }
+    [data-theme='dark'] {
+      --bg: #1a202c;
+      --text: #e2e8f0;
+      --card: #2d3748;
+      --border: #4a5568;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px 0;
+    }
+    h1 { font-size: 2.2rem; margin-bottom: 8px; }
+    .subtitle { color: var(--accent); font-weight: 500; }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 16px;
+      margin: 30px 0;
+    }
+    .step {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .step:hover { transform: translateY(-4px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .step i { font-size: 1.8rem; color: var(--accent); margin-bottom: 10px; display: block; }
+    .step h3 { font-size: 0.95rem; margin-bottom: 6px; }
+    .step p { font-size: 0.8rem; opacity: 0.8; }
+
+    .concept-trigger, .interactive-exploration, .concept-formation,
+    .explain-thinking, .adaptive-questions, .reinforcement {
+      background: var(--card);
+      padding: 20px;
+      border-radius: 12px;
+      margin: 20px 0;
+      border: 1px solid var(--border);
+    }
+
+    button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+    button:hover { opacity: 0.9; }
+    textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text);
+      margin: 10px 0;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="theme-toggle" id="themeToggle">
+    <i class="fas fa-moon"></i>
+  </div>
+
+  <div class="container">
+    <header>
+      <h1><i class="fas fa-brain"></i> ILIP</h1>
+      <p class="subtitle">Quality education through intelligence, not overload.</p>
+    </header>
+
+    <div class="steps">
+      <div class="step"><i class="fas fa-lightbulb"></i><h3>Trigger</h3><p>Real-life prompt</p></div>
+      <div class="step"><i class="fas fa-sliders"></i><h3>Explore</h3><p>Interactive sim</p></div>
+      <div class="step"><i class="fas fa-diagram-project"></i><h3>Form</h3><p>Visual concept</p></div>
+      <div class="step"><i class="fas fa-pen-nib"></i><h3>Explain</h3><p>Your reasoning</p></div>
+      <div class="step"><i class="fas fa-brain"></i><h3>Adapt</h3><p>Smart Qs</p></div>
+      <div class="step"><i class="fas fa-repeat"></i><h3>Reinforce</h3><p>Mistake loop</p></div>
+    </div>
+
+    <!-- STEP 1: Concept Trigger -->
+    <div class="concept-trigger">
+      <h2><i class="fas fa-lightbulb"></i> What happens if you drop a feather and a hammer on the Moon?</h2>
+      <p>Think before you learn. No formulas yet!</p>
+      <button onclick="advanceStep(2)">I've thought about it</button>
+    </div>
+
+    <!-- STEP 2: Interactive Exploration (Hidden by default) -->
+    <div class="interactive-exploration" id="step2" style="display:none;">
+      <h2><i class="fas fa-sliders"></i> Explore Gravity & Air Resistance</h2>
+      <p>Drag the sliders to change environment:</p>
+      <label>Air Resistance: <input type="range" id="air" min="0" max="100" value="100"></label>
+      <label>Gravity: <input type="range" id="grav" min="0" max="100" value="100"></label>
+      <div id="simResult" style="margin-top:15px; padding:10px; background:#f0f4ff; border-radius:8px;">Objects fall at different speeds due to air.</div>
+      <button onclick="advanceStep(3)">I see the pattern</button>
+    </div>
+
+    <!-- STEP 3: Concept Formation -->
+    <div class="concept-formation" id="step3" style="display:none;">
+      <h2><i class="fas fa-diagram-project"></i> Net Force = Mass × Acceleration</h2>
+      <p>In vacuum (like Moon), all objects fall equally — because <strong>only gravity acts</strong>.</p>
+      <button onclick="advanceStep(4)">Got it</button>
+    </div>
+
+    <!-- STEP 4: Explain Your Thinking -->
+    <div class="explain-thinking" id="step4" style="display:none;">
+      <h2><i class="fas fa-pen-nib"></i> Explain in your words</h2>
+      <p>Why did the hammer and feather hit the Moon surface together?</p>
+      <textarea id="reasoning" placeholder="Type your reasoning..."></textarea>
+      <button onclick="submitReasoning()">Submit Reasoning</button>
+    </div>
+
+    <!-- STEP 5: Adaptive Questions -->
+    <div class="adaptive-questions" id="step5" style="display:none;">
+      <h2><i class="fas fa-brain"></i> Quick Check</h2>
+      <p>If mass doubles but force stays same, acceleration...</p>
+      <button onclick="answerQ('halves')">Halves</button>
+      <button onclick="answerQ('doubles')">Doubles</button>
+      <button onclick="answerQ('same')">Stays same</button>
+    </div>
+
+    <!-- STEP 6: Reinforcement -->
+    <div class="reinforcement" id="step6" style="display:none;">
+      <h2><i class="fas fa-repeat"></i> Reinforcement</h2>
+      <p>✅ You’ve mastered <strong>Net Force & Inertia</strong>!</p>
+      <p>Next: Free Body Diagrams →</p>
+      <button onclick="nextConcept()">Continue Learning</button>
+    </div>
+  </div>
+
+  <script>
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const savedTheme = localStorage.getItem('ilip-theme') || 'light';
+    if (savedTheme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+    }
+    themeToggle.addEventListener('click', () => {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      if (isDark) {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('ilip-theme', 'light');
+        themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('ilip-theme', 'dark');
+        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+      }
+    });
+
+    // Sim interaction
+    document.getElementById('air').addEventListener('input', updateSim);
+    document.getElementById('grav').addEventListener('input', updateSim);
+    function updateSim() {
+      const air = document.getElementById('air').value;
+      const grav = document.getElementById('grav').value;
+      let msg = '';
+      if (air < 20 && grav > 80) msg = "In vacuum with high gravity: all objects fall together!";
+      else if (air > 80) msg = "With air: lighter objects fall slower.";
+      else msg = "Interesting mix! Observe carefully.";
+      document.getElementById('simResult').textContent = msg;
+    }
+
+    // Step navigation
+    function advanceStep(step) {
+      for (let i = 2; i <= 6; i++) {
+        document.getElementById(`step${i}`).style.display = 'none';
+      }
+      if (step <= 6) {
+        document.getElementById(`step${step}`).style.display = 'block';
+      }
+    }
+
+    function submitReasoning() {
+      const text = document.getElementById('reasoning').value.trim();
+      if (!text) { alert("Please explain your thinking!"); return; }
+      fetch('/api/logic-check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reasoning: text, concept: 'net-force' })
+      }).then(r => r.json()).then(data => {
+        if (data.valid) advanceStep(5);
+        else alert("Good try! Review the concept again.");
+      });
+    }
+
+    function answerQ(ans) {
+      fetch('/api/adaptive-check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ answer: ans, concept: 'net-force' })
+      }).then(r => r.json()).then(data => {
+        advanceStep(6);
+      });
+    }
+
+    function nextConcept() {
+      alert("Redirecting to next concept...");
+     
+    }
+  </script>
+</body>
+</html>
