@@ -3,10 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EdgeLock Chat</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23000'/%3E%3Ctext x='0' y='14' font-family='sans-serif' font-size='16' fill='%230f0'%3E🔐%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-yycv9Mf3qN7V4JrRcZxY+uBnGkXpUeLQyHdA9sKlFzIhDwTqjP3mWbC1d5t4JvFqVqYjE1g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
- <style>
+  <title>EdgeLock Chat - Secure Communications</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style>
     :root {
       --bg: #000;
       --card-bg: #0a0a0a;
@@ -14,218 +16,716 @@
       --accent: #0f0;
       --border: #0a0;
       --success: #0f0;
+      --glow: rgba(0, 255, 0, 0.4);
     }
+    
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    
     body {
       background: var(--bg);
       color: var(--text);
       font-family: 'Courier New', monospace;
-      line-height: 1.5;
+      line-height: 1.6;
       padding: 1.5rem;
+      min-height: 100vh;
+      overflow-x: hidden;
       background-image: 
-        radial-gradient(circle at 10% 20%, rgba(0, 255, 0, 0.03) 0%, transparent 20%),
-        radial-gradient(circle at 90% 80%, rgba(0, 255, 0, 0.02) 0%, transparent 20%);
+        radial-gradient(circle at 10% 20%, rgba(0, 255, 0, 0.05) 0%, transparent 30%),
+        radial-gradient(circle at 90% 80%, rgba(0, 255, 0, 0.03) 0%, transparent 30%),
+        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 255, 0, 0.03) 2px, rgba(0, 255, 0, 0.03) 4px);
     }
+    
+    /* Matrix rain effect */
+    #matrix-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.15;
+    }
+    
     .container {
-      max-width: 800px;
+      max-width: 900px;
       margin: 0 auto;
+      position: relative;
+      z-index: 1;
     }
+    
+    /* Header styles with glowing effect */
     header {
       text-align: center;
-      margin-bottom: 2rem;
-      text-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
+      margin-bottom: 2.5rem;
+      position: relative;
     }
+    
+    .logo-icon {
+      font-size: 4rem;
+      display: inline-block;
+      animation: pulse 2s ease-in-out infinite, rotate3d 10s linear infinite;
+      filter: drop-shadow(0 0 20px var(--glow)) drop-shadow(0 0 40px var(--glow));
+      margin-bottom: 1rem;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    
+    @keyframes rotate3d {
+      0% { transform: rotateY(0deg); }
+      100% { transform: rotateY(360deg); }
+    }
+    
     h1 {
-      font-size: 2.4rem;
+      font-size: 2.8rem;
       margin-bottom: 0.5rem;
-      letter-spacing: 2px;
+      letter-spacing: 4px;
       animation: flicker 3s infinite alternate;
+      text-shadow: 
+        0 0 10px var(--glow),
+        0 0 20px var(--glow),
+        0 0 30px var(--glow);
+      background: linear-gradient(45deg, #0f0, #0a0, #0f0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
+    
     @keyframes flicker {
       0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
-      20%, 24%, 55% { opacity: 0.8; }
+      20%, 24%, 55% { opacity: 0.85; }
     }
+    
     .subtitle {
       color: #0a0;
-      font-size: 0.95rem;
-      margin-bottom: 1.5rem;
+      font-size: 1rem;
+      letter-spacing: 2px;
+      text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
     }
-
+    
+    .status-indicators {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+    }
+    
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .status-item i {
+      animation: blink 2s infinite;
+    }
+    
+    @keyframes blink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0.3; }
+    }
+    
+    /* Card with enhanced effects */
     .card {
-      background: var(--card-bg);
-      border-radius: 8px;
-      padding: 1.6rem;
-      box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+      background: linear-gradient(135deg, #0a0a0a 0%, #050505 100%);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 
+        0 0 20px rgba(0, 255, 0, 0.3),
+        inset 0 0 20px rgba(0, 255, 0, 0.05);
       border: 1px solid var(--border);
       position: relative;
       overflow: hidden;
     }
+    
     .card::before {
       content: "";
       position: absolute;
-      top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, transparent, #0f0, transparent);
-      animation: scan 4s linear infinite;
-    }
-    @keyframes scan {
-      0% { top: 0; }
-      100% { top: 100%; }
-    }
-
-    input, button {
+      top: 0;
+      left: -100%;
       width: 100%;
-      padding: 0.8rem 1rem;
-      border-radius: 4px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #0f0, transparent);
+      animation: scan 3s linear infinite;
+    }
+    
+    @keyframes scan {
+      0% { left: -100%; top: 0; }
+      50% { left: 100%; top: 50%; }
+      100% { left: -100%; top: 100%; }
+    }
+    
+    .card::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(0, 255, 0, 0.1) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    
+    .card:hover::after {
+      opacity: 1;
+    }
+    
+    /* Input styles with icons */
+    .input-group {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+    
+    .input-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+      color: #0a0;
+    }
+    
+    .input-group i.input-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--accent);
+      font-size: 1.1rem;
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(-50%); }
+      50% { transform: translateY(-60%); }
+    }
+    
+    input {
+      width: 100%;
+      padding: 1rem 1rem 1rem 3rem;
+      border-radius: 6px;
       border: 1px solid var(--border);
-      background: #000;
+      background: rgba(0, 0, 0, 0.8);
       color: var(--text);
       font-family: 'Courier New', monospace;
       font-size: 1rem;
       outline: none;
+      transition: all 0.3s;
     }
-    input:focus, button:focus {
-      box-shadow: 0 0 8px rgba(0, 255, 0, 0.6);
+    
+    input:focus {
+      box-shadow: 0 0 15px var(--glow), inset 0 0 10px rgba(0, 255, 0, 0.1);
+      border-color: var(--accent);
+      background: rgba(0, 20, 0, 0.8);
     }
+    
+    /* Button styles */
     button {
-      background: transparent;
-      cursor: pointer;
+      width: 100%;
+      padding: 1rem;
+      border-radius: 6px;
+      border: 2px solid var(--accent);
+      background: linear-gradient(135deg, rgba(0, 255, 0, 0.1) 0%, rgba(0, 150, 0, 0.1) 100%);
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+      font-size: 1.05rem;
       font-weight: bold;
-      transition: all 0.2s;
-      border: 1px solid var(--accent);
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 1px;
     }
+    
+    button::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(0, 255, 0, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+    
+    button:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+    
     button:hover {
-      background: rgba(0, 255, 0, 0.1);
+      background: linear-gradient(135deg, rgba(0, 255, 0, 0.2) 0%, rgba(0, 150, 0, 0.2) 100%);
+      box-shadow: 0 0 20px var(--glow);
+      transform: translateY(-2px);
     }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    button i {
+      margin-right: 0.5rem;
+      position: relative;
+      z-index: 1;
+    }
+    
+    button span {
+      position: relative;
+      z-index: 1;
+    }
+    
     .hidden { display: none !important; }
-
+    
+    /* Chat area */
     #chat-area {
       display: flex;
       flex-direction: column;
-      height: 65vh;
+      height: 70vh;
     }
+    
+    .chat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background: rgba(0, 255, 0, 0.05);
+      border-radius: 6px 6px 0 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 0.5rem;
+    }
+    
+    .connection-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+    }
+    
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 10px var(--glow);
+      animation: blink 1.5s infinite;
+    }
+    
     #messages {
       flex: 1;
       overflow-y: auto;
-      padding: 1rem;
-      background: #000;
+      padding: 1.5rem;
+      background: rgba(0, 0, 0, 0.5);
       border-radius: 6px;
       margin-bottom: 1rem;
       border: 1px solid var(--border);
       font-family: 'Courier New', monospace;
+      scroll-behavior: smooth;
     }
+    
+    #messages::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    #messages::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 4px;
+    }
+    
+    #messages::-webkit-scrollbar-thumb {
+      background: var(--accent);
+      border-radius: 4px;
+      box-shadow: 0 0 5px var(--glow);
+    }
+    
     .msg {
-      margin-bottom: 1rem;
-      padding: 0.5rem;
-      border-left: 2px solid var(--accent);
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      border-left: 3px solid var(--accent);
+      background: rgba(0, 255, 0, 0.02);
+      border-radius: 0 6px 6px 0;
+      animation: slideIn 0.3s ease-out;
+      position: relative;
+      overflow: hidden;
     }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
     .msg.me {
       text-align: right;
       border-left: none;
-      border-right: 2px solid var(--success);
+      border-right: 3px solid var(--success);
+      border-radius: 6px 0 0 6px;
+      background: rgba(0, 255, 0, 0.05);
+      animation: slideInRight 0.3s ease-out;
     }
+    
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
     .msg-name {
       font-weight: bold;
-      color: #0a0;
-      font-size: 0.85rem;
-      margin-bottom: 0.2rem;
-    }
-    #input-area {
+      color: var(--accent);
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
       display: flex;
+      align-items: center;
       gap: 0.5rem;
     }
+    
+    .msg.me .msg-name {
+      justify-content: flex-end;
+    }
+    
+    .msg-name i {
+      font-size: 0.85rem;
+    }
+    
+    .msg-text {
+      color: #cfc;
+      line-height: 1.6;
+    }
+    
+    .msg.system {
+      border-left: 3px solid #ff0;
+      background: rgba(255, 255, 0, 0.05);
+      color: #ff0;
+      text-align: center;
+      font-style: italic;
+    }
+    
+    .msg-time {
+      font-size: 0.75rem;
+      color: #0a0;
+      margin-top: 0.3rem;
+      opacity: 0.7;
+    }
+    
+    #input-area {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    
     #message-input {
       flex: 1;
+      padding: 1rem 1rem 1rem 3rem;
     }
-
+    
+    #input-area .input-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--accent);
+    }
+    
+    #input-area .input-group {
+      flex: 1;
+      margin-bottom: 0;
+    }
+    
+    #send-btn {
+      width: auto;
+      padding: 1rem 2rem;
+      background: linear-gradient(135deg, rgba(0, 255, 0, 0.2) 0%, rgba(0, 200, 0, 0.2) 100%);
+    }
+    
+    #send-btn:hover {
+      background: linear-gradient(135deg, rgba(0, 255, 0, 0.3) 0%, rgba(0, 200, 0, 0.3) 100%);
+    }
+    
+    /* Social share section */
     .social-share {
       text-align: center;
-      margin-top: 1.5rem;
-      padding-top: 1.5rem;
+      margin-top: 2rem;
+      padding-top: 2rem;
       border-top: 1px solid var(--border);
     }
+    
+    .social-share p {
+      margin-bottom: 1rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+    
     .social-icons {
       display: flex;
       justify-content: center;
-      gap: 1.2rem;
-      margin-top: 0.8rem;
+      gap: 1.5rem;
+      flex-wrap: wrap;
     }
+    
     .social-icons a {
       color: #0a0;
-      font-size: 1.4rem;
-      transition: color 0.3s, transform 0.2s;
+      font-size: 2rem;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem;
+      border-radius: 8px;
+      background: rgba(0, 255, 0, 0.03);
+      border: 1px solid transparent;
     }
+    
     .social-icons a:hover {
       color: var(--accent);
-      transform: scale(1.2);
+      transform: translateY(-5px) scale(1.1);
+      background: rgba(0, 255, 0, 0.1);
+      border-color: var(--border);
+      box-shadow: 0 5px 20px var(--glow);
     }
-
+    
+    .social-icons a span {
+      font-size: 0.75rem;
+      letter-spacing: 1px;
+    }
+    
+    /* Error messages */
     .error {
       color: #f00;
-      margin-top: 0.5rem;
-      font-size: 0.9rem;
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      padding: 0.75rem;
+      background: rgba(255, 0, 0, 0.1);
+      border-radius: 4px;
+      border-left: 3px solid #f00;
+      animation: shake 0.5s;
     }
-
-    @media (max-width: 600px) {
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+    
+    /* Loading animation */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Typing indicator */
+    .typing-indicator {
+      display: flex;
+      gap: 0.3rem;
+      padding: 0.5rem;
+    }
+    
+    .typing-indicator span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: typing 1.4s infinite;
+    }
+    
+    .typing-indicator span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    
+    .typing-indicator span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+    
+    @keyframes typing {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-10px); }
+    }
+    
+    /* Mobile responsive */
+    @media (max-width: 768px) {
       body { padding: 1rem; }
-      .card { padding: 1.2rem; }
-      h1 { font-size: 1.8rem; }
+      .card { padding: 1.5rem; }
+      h1 { font-size: 2rem; }
+      .logo-icon { font-size: 3rem; }
+      #chat-area { height: 60vh; }
+      .social-icons a { font-size: 1.5rem; }
+      .status-indicators {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
     }
   </style>
 </head>
 <body>
+  <canvas id="matrix-bg"></canvas>
+  
   <div class="container">
     <header>
+      <div class="logo-icon">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
       <h1><i class="fa-solid fa-lock"></i> EDGELOCK CHAT</h1>
-      <p class="subtitle">// SECURE // ZERO-KNOWLEDGE // EDGE-ONLY //</p>
+      <p class="subtitle">// MILITARY-GRADE ENCRYPTION // ZERO-KNOWLEDGE // DISTRIBUTED //</p>
+      <div class="status-indicators">
+        <div class="status-item">
+          <i class="fa-solid fa-circle-check"></i>
+          <span>E2E ENCRYPTED</span>
+        </div>
+        <div class="status-item">
+          <i class="fa-solid fa-eye-slash"></i>
+          <span>ZERO LOGS</span>
+        </div>
+        <div class="status-item">
+          <i class="fa-solid fa-server"></i>
+          <span>EDGE COMPUTE</span>
+        </div>
+      </div>
     </header>
 
-    <!-- Setup Screen -->
     <div id="setup" class="card">
-      <p>> ENTER SHARED PASSWORD TO INITIATE SECURE CHANNEL:</p>
-      <input type="password" id="password-input" placeholder="e.g., alpha-42" autocomplete="off" />
-      <button id="join-btn"><i class="fa-solid fa-door-open"></i> JOIN ROOM</button>
-      <p class="error" id="error-msg"></p>
+      <div class="input-group">
+        <label><i class="fa-solid fa-key"></i> ENTER SHARED PASSWORD TO INITIATE SECURE CHANNEL</label>
+        <i class="fa-solid fa-lock input-icon"></i>
+        <input type="password" id="password-input" placeholder="e.g., alpha-delta-7734-secure" autocomplete="off" />
+      </div>
+      
+      <button id="join-btn">
+        <i class="fa-solid fa-door-open"></i>
+        <span>ESTABLISH SECURE CONNECTION</span>
+      </button>
+      
+      <p class="error hidden" id="error-msg"></p>
 
       <div class="social-share">
-        <p>// SHARE THIS TERMINAL //</p>
+        <p><i class="fa-solid fa-share-nodes"></i> SHARE SECURE TERMINAL</p>
         <div class="social-icons">
-          <a href="#" onclick="share('whatsapp')"><i class="fab fa-whatsapp"></i></a>
-          <a href="#" onclick="share('telegram')"><i class="fab fa-telegram"></i></a>
-          <a href="#" onclick="share('email')"><i class="fa-solid fa-envelope"></i></a>
-          <a href="#" onclick="share('copy')"><i class="fa-solid fa-link"></i></a>
+          <a href="#" onclick="share('whatsapp'); return false;">
+            <i class="fab fa-whatsapp"></i>
+            <span>WhatsApp</span>
+          </a>
+          <a href="#" onclick="share('telegram'); return false;">
+            <i class="fab fa-telegram"></i>
+            <span>Telegram</span>
+          </a>
+          <a href="#" onclick="share('email'); return false;">
+            <i class="fa-solid fa-envelope"></i>
+            <span>Email</span>
+          </a>
+          <a href="#" onclick="share('copy'); return false;">
+            <i class="fa-solid fa-link"></i>
+            <span>Copy Link</span>
+          </a>
         </div>
       </div>
     </div>
 
-    <!-- Chat Screen -->
     <div id="chat" class="card hidden">
+      <div class="chat-header">
+        <div class="connection-status">
+          <div class="status-dot"></div>
+          <span><i class="fa-solid fa-shield-halved"></i> SECURE CONNECTION ACTIVE</span>
+        </div>
+        <button onclick="leaveRoom()" style="width: auto; padding: 0.5rem 1rem; font-size: 0.9rem;">
+          <i class="fa-solid fa-right-from-bracket"></i> DISCONNECT
+        </button>
+      </div>
+      
       <div id="chat-area">
         <div id="messages"></div>
         <div id="input-area">
-          <input type="text" id="message-input" placeholder="> TYPE MESSAGE..." maxlength="500" />
-          <button id="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+          <div class="input-group">
+            <i class="fa-solid fa-comment input-icon"></i>
+            <input type="text" id="message-input" placeholder="> TYPE ENCRYPTED MESSAGE..." maxlength="500" />
+          </div>
+          <button id="send-btn">
+            <i class="fa-solid fa-paper-plane"></i>
+          </button>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // --- Crypto Helpers ---
+    // Matrix rain background
+    const canvas = document.getElementById('matrix-bg');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const chars = '01アイウエオカキクケコサシスセソタチツテト';
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(1);
+    
+    function drawMatrix() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#0f0';
+      ctx.font = fontSize + 'px monospace';
+      
+      for (let i = 0; i < drops.length; i++) {
+        const text = chars[Math.floor(Math.random() * chars.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    }
+    
+    setInterval(drawMatrix, 35);
+    
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+    
+    // Card mouse move effect
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        card.style.setProperty('--x', x + '%');
+        card.style.setProperty('--y', y + '%');
+      });
+    });
+
+    // --- CRYPTO ---
     async function deriveKeys(password) {
       const enc = new TextEncoder();
       const salt = enc.encode("EdgeLock-StaticSalt-v1");
       const pwBuf = enc.encode(password);
       const keyMaterial = await crypto.subtle.importKey("raw", pwBuf, { name: "PBKDF2" }, false, ["deriveBits"]);
-      const bits = await crypto.subtle.deriveBits(
-        { name: "PBKDF2", salt, iterations: 100_000, hash: "SHA-256" },
-        keyMaterial,
-        512
-      );
+      const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", salt, iterations: 100_000, hash: "SHA-256" }, keyMaterial, 512);
       const buf = new Uint8Array(bits);
-      const roomFingerprint = Array.from(buf.slice(0, 32))
-        .map(b => b.toString(16).padStart(2, '0'))
-        .join('')
-        .substring(0, 32);
+      const roomFingerprint = Array.from(buf.slice(0, 32)).map(b => b.toString(16).padStart(2, '0')).join('').substring(0, 32);
       const aesKey = await crypto.subtle.importKey("raw", buf.slice(32, 64), { name: "AES-GCM" }, false, ["encrypt", "decrypt"]);
       return { roomFingerprint, aesKey };
     }
@@ -238,18 +738,14 @@
 
     async function decryptMessage(aesKey, packet) {
       try {
-        const decrypted = await crypto.subtle.decrypt(
-          { name: "AES-GCM", iv: new Uint8Array(packet.iv) },
-          aesKey,
-          new Uint8Array(packet.ciphertext)
-        );
+        const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv: new Uint8Array(packet.iv) }, aesKey, new Uint8Array(packet.ciphertext));
         return new TextDecoder().decode(decrypted);
       } catch (e) {
         return null;
       }
     }
 
-    // --- UI Logic ---
+    // --- UI ---
     let roomFingerprint, aesKey, displayName, ws;
 
     document.getElementById('join-btn').addEventListener('click', joinRoom);
@@ -259,24 +755,26 @@
 
     async function joinRoom() {
       const password = document.getElementById('password-input').value.trim();
-      if (!password) return showError("ERROR: PASSWORD REQUIRED");
+      if (!password) return showError("⚠️ ERROR: PASSWORD REQUIRED");
+
+      const btn = document.getElementById('join-btn');
+      btn.innerHTML = '<i class="loading"></i> <span>ESTABLISHING SECURE CONNECTION...</span>';
+      btn.disabled = true;
 
       try {
         const keys = await deriveKeys(password);
         roomFingerprint = keys.roomFingerprint;
         aesKey = keys.aesKey;
 
-        displayName = prompt("ENTER DISPLAY NAME (LOCAL ONLY):", "ANONYMOUS");
-        if (!displayName || displayName.trim() === "") displayName = "ANONYMOUS";
+        displayName = prompt("🔐 ENTER DISPLAY NAME (LOCAL ONLY):", "ANONYMOUS") || "ANONYMOUS";
 
-       
         const wsUrl = `wss://edgelock-chat.dhimanparas605.workers.dev/room/${roomFingerprint}`;
         ws = new WebSocket(wsUrl);
 
         ws.onopen = () => {
           document.getElementById('setup').classList.add('hidden');
           document.getElementById('chat').classList.remove('hidden');
-          addMessage("system", "✅ SECURE CHANNEL ESTABLISHED. SHARE PASSWORD VIA SECURE OOB CHANNEL.");
+          addMessage("system", "✅ SECURE CHANNEL ESTABLISHED • AES-256-GCM ENCRYPTION ACTIVE • SHARE PASSWORD VIA SECURE OOB CHANNEL");
         };
 
         ws.onmessage = async (event) => {
@@ -287,16 +785,17 @@
               addMessage(packet.sender, plaintext);
             }
           } catch (e) {
-            console.warn("DECRYPTION FAILED", e);
+            console.warn("⚠️ DECRYPTION FAILED", e);
           }
         };
 
-        ws.onerror = (e) => {
-          showError("CONNECTION FAILED. CHECK WORKER STATUS.");
+        ws.onerror = () => {
+          showError("❌ CONNECTION FAILED. CHECK WORKER STATUS.");
+          resetButton();
         };
-
+        
         ws.onclose = () => {
-          showError("CHANNEL TERMINATED.");
+          showError("⚠️ CHANNEL TERMINATED.");
           setTimeout(() => {
             document.getElementById('chat').classList.add('hidden');
             document.getElementById('setup').classList.remove('hidden');
@@ -304,8 +803,22 @@
         };
 
       } catch (e) {
-        showError("CRYPTO ERROR: " + e.message);
+        showError("❌ CRYPTO ERROR: " + e.message);
+        resetButton();
       }
+    }
+
+    function resetButton() {
+      const btn = document.getElementById('join-btn');
+      btn.innerHTML = '<i class="fa-solid fa-door-open"></i><span>ESTABLISH SECURE CONNECTION</span>';
+      btn.disabled = false;
+    }
+
+    function leaveRoom() {
+      if (ws) ws.close();
+      document.getElementById('chat').classList.add('hidden');
+      document.getElementById('setup').classList.remove('hidden');
+      document.getElementById('messages').innerHTML = '';
     }
 
     function getMyId() {
@@ -327,11 +840,7 @@
       if (!text || !ws || ws.readyState !== WebSocket.OPEN) return;
       
       const encrypted = await encryptMessage(aesKey, text);
-      const packet = {
-        sender: getMyId(),
-        ...encrypted
-      };
-      ws.send(JSON.stringify(packet));
+      ws.send(JSON.stringify({ sender: getMyId(), ...encrypted }));
       addMessage("me", text);
       input.value = '';
     }
@@ -339,13 +848,33 @@
     function addMessage(sender, text) {
       const messages = document.getElementById('messages');
       const div = document.createElement('div');
-      div.className = `msg ${sender === 'me' ? 'me' : ''}`;
+      const timestamp = new Date().toLocaleTimeString();
+      
       if (sender === 'system') {
-        div.innerHTML = `<em>${text}</em>`;
+        div.className = 'msg system';
+        div.innerHTML = `<div class="msg-text"><i class="fa-solid fa-circle-info"></i> ${escapeHtml(text)}</div>`;
+      } else if (sender === 'me') {
+        div.className = 'msg me';
+        div.innerHTML = `
+          <div class="msg-name">
+            <i class="fa-solid fa-user"></i>
+            <span>YOU</span>
+          </div>
+          <div class="msg-text">${escapeHtml(text)}</div>
+          <div class="msg-time">${timestamp}</div>
+        `;
       } else {
-        const name = sender === 'me' ? 'YOU' : displayName.toUpperCase();
-        div.innerHTML = `<div class="msg-name">[${name}]</div>${escapeHtml(text)}`;
+        div.className = 'msg';
+        div.innerHTML = `
+          <div class="msg-name">
+            <i class="fa-solid fa-user-secret"></i>
+            <span>${escapeHtml(displayName.toUpperCase())}</span>
+          </div>
+          <div class="msg-text">${escapeHtml(text)}</div>
+          <div class="msg-time">${timestamp}</div>
+        `;
       }
+      
       messages.appendChild(div);
       messages.scrollTop = messages.scrollHeight;
     }
@@ -353,7 +882,11 @@
     function showError(msg) {
       const el = document.getElementById('error-msg');
       el.textContent = msg;
-      setTimeout(() => el.textContent = '', 6000);
+      el.classList.remove('hidden');
+      setTimeout(() => {
+        el.classList.add('hidden');
+        el.textContent = '';
+      }, 6000);
     }
 
     function escapeHtml(str) {
@@ -362,23 +895,26 @@
       }[m]));
     }
 
-    // --- Sharing ---
+    // --- SHARING ---
     function share(method) {
-      const url = "https://edgelock-chat.dhimanparas605.workers.dev";
-      const msg = "JOIN SECURE EDGELOCK CHAT. PASSWORD REQUIRED.";
+      const url = window.location.origin || "https://edgelock-chat.dhimanparas605.workers.dev";
+      const msg = "🔐 JOIN SECURE EDGELOCK CHAT • PASSWORD REQUIRED • MILITARY-GRADE ENCRYPTION";
+      
       switch(method) {
         case 'whatsapp':
-          window.open(`https://wa.me/?text=${encodeURIComponent(msg + ' ' + url)}`);
+          window.open(`https://wa.me/?text=${encodeURIComponent(msg + '\n\n' + url)}`, '_blank', 'noopener,noreferrer');
           break;
         case 'telegram':
-          window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(msg)}`);
+          window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
           break;
         case 'email':
-          window.location.href = `mailto:?subject=SECURE CHAT INVITE&body=${encodeURIComponent(msg + '\n\n' + url)}`;
+          window.location.href = `mailto:?subject=🔐 SECURE CHAT INVITE&body=${encodeURIComponent(msg + '\n\n' + url)}`;
           break;
         case 'copy':
           navigator.clipboard.writeText(url).then(() => {
-            alert("URL COPIED. SEND PASSWORD SEPARATELY.");
+            alert("✅ URL COPIED TO CLIPBOARD\n\n⚠️ REMEMBER: SEND PASSWORD SEPARATELY VIA SECURE CHANNEL");
+          }).catch(() => {
+            prompt("📋 COPY THIS URL:", url);
           });
           break;
       }
