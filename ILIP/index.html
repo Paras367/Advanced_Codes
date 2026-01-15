@@ -6,11 +6,10 @@
   <title>ILIP — Interactive Learning Intelligence Platform</title>
   <link rel="icon" href="assets/favicon.ico">
 
-
-  <!-- Font Awesome 6 -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
-  <!-- Google Fonts -->
+  <!-- Font Awesome 6 & 5 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
+  
+  <!-- Google Fonts - 20 Different Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700&family=Montserrat:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;600;700&family=Lato:wght@300;400;700&family=Raleway:wght@300;400;500;600;700&family=Ubuntu:wght@300;400;500;700&family=Nunito:wght@300;400;600;700;800&family=Playfair+Display:wght@400;500;600;700&family=Merriweather:wght@300;400;700&family=Oswald:wght@300;400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=Quicksand:wght@300;400;500;600;700&family=Josefin+Sans:wght@300;400;500;600;700&family=Oxygen:wght@300;400;700&family=Karla:wght@300;400;500;600;700&family=Work+Sans:wght@300;400;500;600;700&family=Exo+2:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
 
   <style>
@@ -320,7 +319,6 @@
       transition: width 1s ease;
       position: relative;
       overflow: hidden;
-      width: 45%;
     }
 
     .progress-bar::after {
@@ -574,7 +572,6 @@
       font-size: 1.5rem;
       transition: top 0.5s ease-out;
       box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      top: -50px;
     }
 
     .object-feather {
@@ -895,28 +892,48 @@
       text-align: center;
       box-shadow: 0 5px 20px var(--shadow);
       z-index: 99;
-      display: none;
     }
 
     .timer-display {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 2rem;
+      font-size: 2.5rem;
       color: var(--accent-1);
+      margin-bottom: 5px;
     }
 
     .timer-label {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: var(--text-secondary);
-      margin-top: 5px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Confetti */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background: var(--accent-1);
+      position: absolute;
+      animation: confetti-fall 3s linear;
+      z-index: 9999;
+    }
+
+    @keyframes confetti-fall {
+      to {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
     }
 
     /* Responsive */
     @media (max-width: 768px) {
       h1 { font-size: 2.5rem; }
       .subtitle { font-size: 1.1rem; }
-      .steps { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
-      .nav-container { flex-direction: column; gap: 15px; }
-      .controls { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; }
+      .timer { position: static; margin: 20px auto; }
+      .nav-items { gap: 15px; }
+      .section { padding: 25px; }
     }
   </style>
 </head>
@@ -931,222 +948,347 @@
   <nav>
     <div class="nav-container">
       <div class="logo">
-        <i class="fas fa-brain"></i> ILIP
+        <i class="fas fa-graduation-cap"></i>
+        ILIP
       </div>
       <div class="nav-items">
-        <button class="nav-btn" onclick="showSection('dashboard')"><i class="fas fa-home"></i> Dashboard</button>
-        <button class="nav-btn" onclick="showSection('subjects')"><i class="fas fa-book"></i> Subjects</button>
-        <button class="nav-btn" onclick="showSection('profile')"><i class="fas fa-user"></i> Profile</button>
+        <button class="nav-btn" onclick="scrollToSection('progress')">
+          <i class="fas fa-chart-line"></i> Progress
+        </button>
+        <button class="nav-btn" onclick="scrollToSection('achievements')">
+          <i class="fas fa-trophy"></i> Achievements
+        </button>
+        <button class="nav-btn" onclick="showNotebook()">
+          <i class="fas fa-book"></i> Notebook
+        </button>
+        <button class="nav-btn" onclick="resetProgress()">
+          <i class="fas fa-redo"></i> Reset
+        </button>
       </div>
     </div>
   </nav>
 
-  <!-- Main Container -->
+  <!-- Timer -->
+  <div class="timer" id="timer">
+    <div class="timer-display" id="timerDisplay">00:00</div>
+    <div class="timer-label">Study Time</div>
+  </div>
+
   <div class="container">
-    <!-- Dashboard Section (Default) -->
-    <div id="dashboard-section">
-      <header>
-        <h1>Interactive Learning Intelligence Platform</h1>
-        <p class="subtitle">Quality education through intelligence, not overload.</p>
-      </header>
+    <!-- Header -->
+    <header>
+      <h1><i class="fas fa-brain"></i> ILIP</h1>
+      <p class="subtitle">Interactive Learning Intelligence Platform</p>
+      <p style="margin-top: 10px; font-family: 'Josefin Sans', sans-serif; font-size: 1.1rem;">
+        Quality education through intelligence, not overload.
+      </p>
+    </header>
 
-      <!-- Stats -->
-      <div class="stats-bar">
-        <div class="stat-card">
-          <div class="stat-number">42%</div>
-          <div class="stat-label">Mastery</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">18</div>
-          <div class="stat-label">Concepts Learned</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">7</div>
-          <div class="stat-label">Subjects</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">3</div>
-          <div class="stat-label">Active Streak</div>
-        </div>
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-number" id="conceptsLearned">0</div>
+        <div class="stat-label">Concepts Mastered</div>
       </div>
-
-      <!-- Progress -->
-      <div class="progress-tracker">
-        <div class="progress-header">
-          <div class="progress-title">Physics: Laws of Motion</div>
-          <div class="progress-percentage">45%</div>
-        </div>
-        <div class="progress-bar-container">
-          <div class="progress-bar"></div>
-        </div>
+      <div class="stat-card">
+        <div class="stat-number" id="questionsAnswered">0</div>
+        <div class="stat-label">Questions Answered</div>
       </div>
-
-      <!-- Learning Steps -->
-      <h2><i class="fas fa-project-diagram"></i> Your Learning Journey</h2>
-      <div class="steps">
-        <div class="step completed" onclick="loadStep(1)">
-          <div class="step-number">1</div>
-          <i class="fas fa-lightbulb"></i>
-          <h3>Trigger</h3>
-          <p>Real-life prompt</p>
-        </div>
-        <div class="step active" onclick="loadStep(2)">
-          <div class="step-number">2</div>
-          <i class="fas fa-sliders"></i>
-          <h3>Explore</h3>
-          <p>Interactive sim</p>
-        </div>
-        <div class="step" onclick="loadStep(3)">
-          <div class="step-number">3</div>
-          <i class="fas fa-diagram-project"></i>
-          <h3>Form</h3>
-          <p>Visual concept</p>
-        </div>
-        <div class="step" onclick="loadStep(4)">
-          <div class="step-number">4</div>
-          <i class="fas fa-pen-nib"></i>
-          <h3>Explain</h3>
-          <p>Your reasoning</p>
-        </div>
-        <div class="step" onclick="loadStep(5)">
-          <div class="step-number">5</div>
-          <i class="fas fa-brain"></i>
-          <h3>Adapt</h3>
-          <p>Smart Qs</p>
-        </div>
-        <div class="step" onclick="loadStep(6)">
-          <div class="step-number">6</div>
-          <i class="fas fa-repeat"></i>
-          <h3>Reinforce</h3>
-          <p>Mistake loop</p>
-        </div>
+      <div class="stat-card">
+        <div class="stat-number" id="streakDays">0</div>
+        <div class="stat-label">Day Streak</div>
       </div>
+      <div class="stat-card">
+        <div class="stat-number" id="accuracyRate">0%</div>
+        <div class="stat-label">Accuracy</div>
+      </div>
+    </div>
 
-      <!-- Current Step Content -->
-      <div id="step-content">
-        <!-- STEP 2: Interactive Exploration -->
-        <div class="section" id="step2-content">
-          <h2><i class="fas fa-sliders"></i> Explore Gravity & Air Resistance</h2>
-          <div class="simulation-container">
-            <div class="controls">
-              <div class="control-group">
-                <div class="control-label">
-                  Air Resistance
-                  <span class="control-value" id="air-value">100%</span>
-                </div>
-                <input type="range" id="air-resistance" min="0" max="100" value="100">
-              </div>
-              <div class="control-group">
-                <div class="control-label">
-                  Gravity
-                  <span class="control-value" id="grav-value">100%</span>
-                </div>
-                <input type="range" id="gravity" min="0" max="100" value="100">
-              </div>
+    <!-- Progress Tracker -->
+    <div class="progress-tracker" id="progress">
+      <div class="progress-header">
+        <div class="progress-title">
+          <i class="fas fa-route"></i> Learning Journey
+        </div>
+        <div class="progress-percentage" id="progressPercentage">0%</div>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <!-- Learning Steps -->
+    <div class="steps">
+      <div class="step active" data-step="1">
+        <span class="step-number">1</span>
+        <i class="fas fa-lightbulb"></i>
+        <h3>Concept Trigger</h3>
+        <p>Real-world question to spark curiosity</p>
+      </div>
+      <div class="step" data-step="2">
+        <span class="step-number">2</span>
+        <i class="fas fa-sliders"></i>
+        <h3>Interactive Exploration</h3>
+        <p>Hands-on simulation & discovery</p>
+      </div>
+      <div class="step" data-step="3">
+        <span class="step-number">3</span>
+        <i class="fas fa-diagram-project"></i>
+        <h3>Concept Formation</h3>
+        <p>Visual understanding & connections</p>
+      </div>
+      <div class="step" data-step="4">
+        <span class="step-number">4</span>
+        <i class="fas fa-pen-nib"></i>
+        <h3>Explain Thinking</h3>
+        <p>Articulate your reasoning</p>
+      </div>
+      <div class="step" data-step="5">
+        <span class="step-number">5</span>
+        <i class="fas fa-brain"></i>
+        <h3>Adaptive Questions</h3>
+        <p>AI-powered practice</p>
+      </div>
+      <div class="step" data-step="6">
+        <span class="step-number">6</span>
+        <i class="fas fa-repeat"></i>
+        <h3>Reinforcement</h3>
+        <p>Master through iteration</p>
+      </div>
+    </div>
+
+    <!-- STEP 1: Concept Trigger -->
+    <div class="section" id="step1">
+      <h2><i class="fas fa-rocket"></i> What happens if you drop a feather and a hammer on the Moon?</h2>
+      <p style="font-family: 'Playfair Display', serif; font-size: 1.1rem; line-height: 1.8; margin: 20px 0;">
+        Before diving into equations and formulas, let's engage your natural curiosity. Think about this scenario: 
+        An astronaut stands on the Moon, holding a feather in one hand and a hammer in the other. 
+        They release both at exactly the same time. What do you think happens?
+      </p>
+      <div style="margin: 30px 0;">
+        <p style="font-family: 'Work Sans', sans-serif; font-weight: 600; margin-bottom: 15px;">
+          <i class="fas fa-question-circle"></i> Take a moment to consider:
+        </p>
+        <ul style="list-style: none; padding-left: 0; font-family: 'Oxygen', sans-serif; line-height: 2;">
+          <li><i class="fas fa-check" style="color: var(--accent-4);"></i> Which one hits the ground first?</li>
+          <li><i class="fas fa-check" style="color: var(--accent-4);"></i> Why might they behave differently than on Earth?</li>
+          <li><i class="fas fa-check" style="color: var(--accent-4);"></i> What forces are at play?</li>
+        </ul>
+      </div>
+      <button onclick="advanceStep(2)">
+        <span><i class="fas fa-arrow-right"></i> I've thought about it — Let's explore!</span>
+      </button>
+    </div>
+
+    <!-- STEP 2: Interactive Exploration -->
+    <div class="section" id="step2" style="display:none;">
+      <h2><i class="fas fa-flask"></i> Interactive Physics Simulation</h2>
+      <p style="font-family: 'Raleway', sans-serif; margin-bottom: 25px;">
+        Adjust the sliders below to simulate different environments and observe how objects fall.
+      </p>
+      
+      <div class="simulation-container">
+        <div class="controls">
+          <div class="control-group">
+            <div class="control-label">
+              <span><i class="fas fa-wind"></i> Air Resistance</span>
+              <span class="control-value" id="airValue">100%</span>
             </div>
-            <div class="sim-visual" id="simulation">
-              <div class="falling-object object-feather" id="feather">🪶</div>
-              <div class="falling-object object-hammer" id="hammer">🔨</div>
-            </div>
-            <div class="sim-result" id="sim-result">
-              With air resistance at 100% and gravity at 100%, the hammer falls faster than the feather.
-            </div>
+            <input type="range" id="air" min="0" max="100" value="100">
           </div>
-          <button onclick="advanceToStep(3)"><span>Next: Concept Formation</span></button>
+          <div class="control-group">
+            <div class="control-label">
+              <span><i class="fas fa-weight-hanging"></i> Gravity</span>
+              <span class="control-value" id="gravValue">100%</span>
+            </div>
+            <input type="range" id="grav" min="0" max="100" value="100">
+          </div>
+        </div>
+
+        <div class="sim-visual" id="simVisual">
+          <div class="falling-object object-feather" id="feather">
+            <i class="fas fa-feather"></i>
+          </div>
+          <div class="falling-object object-hammer" id="hammer">
+            <i class="fas fa-hammer"></i>
+          </div>
+        </div>
+
+        <div class="sim-result" id="simResult">
+          <i class="fas fa-info-circle"></i> Adjust the controls to see how air resistance and gravity affect falling objects.
         </div>
       </div>
 
-      <!-- Achievements -->
-      <h2><i class="fas fa-trophy"></i> Your Achievements</h2>
+      <button onclick="runSimulation()">
+        <span><i class="fas fa-play"></i> Run Simulation</span>
+      </button>
+      <button class="btn-secondary" onclick="resetSimulation()">
+        <span><i class="fas fa-undo"></i> Reset</span>
+      </button>
+      <button onclick="advanceStep(3)" style="margin-left: 10px;">
+        <span><i class="fas fa-arrow-right"></i> I see the pattern!</span>
+      </button>
+    </div>
+
+    <!-- STEP 3: Concept Formation -->
+    <div class="section" id="step3" style="display:none;">
+      <h2><i class="fas fa-atom"></i> Newton's Second Law: F = ma</h2>
+      <div style="background: var(--bg-tertiary); padding: 30px; border-radius: 16px; margin: 25px 0;">
+        <p style="font-family: 'Exo 2', sans-serif; font-size: 1.2rem; line-height: 1.8;">
+          You've discovered a fundamental principle of physics! When air resistance is removed (like on the Moon),
+          all objects fall at the same rate regardless of their mass. This is because:
+        </p>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: var(--card-bg); border-radius: 12px;">
+          <p style="font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--accent-1);">
+            F = m × a
+          </p>
+          <p style="font-family: 'Montserrat', sans-serif; margin-top: 15px;">
+            Net Force = Mass × Acceleration
+          </p>
+        </div>
+        <p style="font-family: 'Lato', sans-serif; line-height: 1.8;">
+          On the Moon, there's no air resistance. Only gravity acts on both objects equally (acceleration due to gravity is constant).
+          Since F = ma, and the gravitational force is proportional to mass, the mass cancels out, resulting in the same acceleration for all objects!
+        </p>
+      </div>
+
+      <!-- Concept Map -->
+      <div class="concept-map">
+        <div class="concept-node" style="top: 20%; left: 10%;">
+          <i class="fas fa-feather"></i> Mass
+        </div>
+        <div class="concept-node" style="top: 20%; right: 10%;">
+          <i class="fas fa-bolt"></i> Force
+        </div>
+        <div class="concept-node" style="bottom: 20%; left: 50%; transform: translateX(-50%);">
+          <i class="fas fa-rocket"></i> Acceleration
+        </div>
+        <svg style="position: absolute; width: 100%; height: 100%; pointer-events: none;">
+          <line x1="15%" y1="25%" x2="48%" y2="75%" stroke="var(--accent-1)" stroke-width="2" stroke-dasharray="5,5"/>
+          <line x1="85%" y1="25%" x2="52%" y2="75%" stroke="var(--accent-1)" stroke-width="2" stroke-dasharray="5,5"/>
+        </svg>
+      </div>
+
+      <button onclick="advanceStep(4)">
+        <span><i class="fas fa-check"></i> I understand the concept!</span>
+      </button>
+    </div>
+
+    <!-- STEP 4: Explain Your Thinking -->
+    <div class="section" id="step4" style="display:none;">
+      <h2><i class="fas fa-comments"></i> Explain in Your Own Words</h2>
+      <p style="font-family: 'Source Sans Pro', sans-serif; font-size: 1.1rem; margin-bottom: 20px;">
+        Teaching is the best way to learn. Explain why the hammer and feather hit the Moon's surface at the same time.
+        This helps solidify your understanding!
+      </p>
+      <textarea id="reasoning" placeholder="Type your explanation here... Try to mention gravity, air resistance, and Newton's laws."></textarea>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <button onclick="submitReasoning()">
+          <span><i class="fas fa-paper-plane"></i> Submit My Explanation</span>
+        </button>
+        <div id="charCount" style="color: var(--text-secondary); font-family: 'Karla', sans-serif;">
+          0 characters
+        </div>
+      </div>
+      <div id="feedbackBox" style="display: none; margin-top: 20px; padding: 20px; border-radius: 12px;"></div>
+    </div>
+
+    <!-- STEP 5: Adaptive Questions -->
+    <div class="section" id="step5" style="display:none;">
+      <h2><i class="fas fa-graduation-cap"></i> Test Your Understanding</h2>
+      <div class="quiz-container">
+        <div class="quiz-question" id="quizQuestion">
+          If an object's mass doubles but the net force acting on it remains the same, what happens to its acceleration?
+        </div>
+        <div class="quiz-options" id="quizOptions">
+          <div class="quiz-option" onclick="answerQuestion(this, 'halves', true)">
+            <div class="option-letter">A</div>
+            <div>The acceleration is cut in half</div>
+          </div>
+          <div class="quiz-option" onclick="answerQuestion(this, 'doubles', false)">
+            <div class="option-letter">B</div>
+            <div>The acceleration doubles</div>
+          </div>
+          <div class="quiz-option" onclick="answerQuestion(this, 'same', false)">
+            <div class="option-letter">C</div>
+            <div>The acceleration stays the same</div>
+          </div>
+          <div class="quiz-option" onclick="answerQuestion(this, 'zero', false)">
+            <div class="option-letter">D</div>
+            <div>The acceleration becomes zero</div>
+          </div>
+        </div>
+      </div>
+      <div id="quizFeedback" style="display: none; margin-top: 20px;"></div>
+    </div>
+
+    <!-- STEP 6: Reinforcement -->
+    <div class="section" id="step6" style="display:none;">
+      <h2><i class="fas fa-trophy"></i> Congratulations!</h2>
+      <div style="text-align: center; padding: 40px;">
+        <i class="fas fa-medal" style="font-size: 5rem; color: var(--accent-1); margin-bottom: 20px;"></i>
+        <p style="font-family: 'Poppins', sans-serif; font-size: 1.5rem; margin-bottom: 15px;">
+          You've Mastered: <strong>Newton's Second Law</strong>
+        </p>
+        <p style="font-family: 'Raleway', sans-serif; color: var(--text-secondary); margin-bottom: 30px;">
+          You now understand how force, mass, and acceleration relate!
+        </p>
+        <div style="background: var(--bg-tertiary); padding: 25px; border-radius: 16px; margin: 30px 0;">
+          <h3 style="margin-bottom: 20px;"><i class="fas fa-lightbulb"></i> Key Takeaways</h3>
+          <ul style="text-align: left; list-style: none; padding: 0; font-family: 'Open Sans', sans-serif;">
+            <li style="margin: 10px 0;"><i class="fas fa-check-circle" style="color: var(--success);"></i> F = ma is fundamental to understanding motion</li>
+            <li style="margin: 10px 0;"><i class="fas fa-check-circle" style="color: var(--success);"></i> Air resistance affects different masses differently</li>
+            <li style="margin: 10px 0;"><i class="fas fa-check-circle" style="color: var(--success);"></i> In vacuum, all objects accelerate equally under gravity</li>
+          </ul>
+        </div>
+        <button class="btn-success" onclick="nextConcept()">
+          <span><i class="fas fa-forward"></i> Continue to Next Concept</span>
+        </button>
+        <button class="btn-secondary" onclick="reviewConcept()">
+          <span><i class="fas fa-redo"></i> Review This Concept</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Achievements -->
+    <div id="achievements">
+      <h2 style="font-family: 'Poppins', sans-serif; margin: 40px 0 20px;">
+        <i class="fas fa-star"></i> Achievements
+      </h2>
       <div class="achievements">
-        <div class="achievement unlocked">
-          <i class="fas fa-rocket"></i>
-          <div class="achievement-name">First Concept</div>
+        <div class="achievement" id="achievement1">
+          <i class="fas fa-baby"></i>
+          <div class="achievement-name">First Steps</div>
         </div>
-        <div class="achievement unlocked">
-          <i class="fas fa-sync-alt"></i>
-          <div class="achievement-name">Reinforcer</div>
+        <div class="achievement" id="achievement2">
+          <i class="fas fa-flask"></i>
+          <div class="achievement-name">Experimenter</div>
         </div>
-        <div class="achievement">
+        <div class="achievement" id="achievement3">
+          <i class="fas fa-brain"></i>
+          <div class="achievement-name">Deep Thinker</div>
+        </div>
+        <div class="achievement" id="achievement4">
+          <i class="fas fa-fire"></i>
+          <div class="achievement-name">On Fire</div>
+        </div>
+        <div class="achievement" id="achievement5">
           <i class="fas fa-crown"></i>
           <div class="achievement-name">Master</div>
         </div>
-        <div class="achievement">
-          <i class="fas fa-network-wired"></i>
-          <div class="achievement-name">Connector</div>
-        </div>
       </div>
     </div>
 
-    <!-- Subjects Section (Hidden by default) -->
-    <div id="subjects-section" style="display:none;">
-      <h2><i class="fas fa-book-open"></i> Subject Intelligence Hubs</h2>
-      <div class="steps">
-        <div class="step" onclick="loadSubject('physics')">
-          <i class="fas fa-atom"></i>
-          <h3>Physics</h3>
-        </div>
-        <div class="step" onclick="loadSubject('chemistry')">
-          <i class="fas fa-flask"></i>
-          <h3>Chemistry</h3>
-        </div>
-        <div class="step" onclick="loadSubject('math')">
-          <i class="fas fa-calculator"></i>
-          <h3>Mathematics</h3>
-        </div>
-        <div class="step" onclick="loadSubject('biology')">
-          <i class="fas fa-dna"></i>
-          <h3>Biology</h3>
-        </div>
-        <div class="step" onclick="loadSubject('accountancy')">
-          <i class="fas fa-file-invoice-dollar"></i>
-          <h3>Accountancy</h3>
-        </div>
-        <div class="step" onclick="loadSubject('economics')">
-          <i class="fas fa-chart-line"></i>
-          <h3>Economics</h3>
-        </div>
-        <div class="step" onclick="loadSubject('business')">
-          <i class="fas fa-store"></i>
-          <h3>Business Studies</h3>
-        </div>
-      </div>
+    <!-- Notebook -->
+    <div class="notebook" id="notebook" style="display: none;">
+      <h2 style="margin-bottom: 25px;">
+        <i class="fas fa-book-open"></i> My Learning Notebook
+      </h2>
+      <div id="notebookEntries"></div>
+      <button onclick="closeNotebook()">
+        <span><i class="fas fa-times"></i> Close</span>
+      </button>
     </div>
-
-    <!-- Profile Section (Hidden by default) -->
-    <div id="profile-section" style="display:none;">
-      <h2><i class="fas fa-user-circle"></i> Your Learning Profile</h2>
-      <div class="section">
-        <h3>Personal Learning Model</h3>
-        <p>You learn best with visual simulations and real-world analogies. Your misconception cluster in "Force vs. Motion" is being addressed.</p>
-        
-        <h3 style="margin-top:20px;">Cross-Subject Connections</h3>
-        <div class="concept-map">
-          <div class="concept-node" style="top:50px; left:100px;">Differentiation</div>
-          <div class="concept-node" style="top:150px; left:300px;">Velocity</div>
-          <div class="concept-node" style="top:250px; left:150px;">Probability</div>
-          <div class="concept-node" style="top:200px; left:400px;">Genetics</div>
-        </div>
-
-        <h3 style="margin-top:20px;">Learning Notebook</h3>
-        <div class="notebook">
-          <div class="note-entry">
-            <div class="note-timestamp">Jan 14, 2026 · 10:30 AM</div>
-            <div class="note-content">I finally get why mass doesn't affect falling speed in vacuum! It's because F=ma and F=mg, so a=g always.</div>
-          </div>
-          <div class="note-entry">
-            <div class="note-timestamp">Jan 13, 2026 · 4:15 PM</div>
-            <div class="note-content">Confused about net force direction. Need to practice free-body diagrams.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Timer Widget -->
-  <div class="timer" id="learningTimer">
-    <div class="timer-display" id="timerValue">00:00</div>
-    <div class="timer-label">Session Time</div>
   </div>
 
   <!-- Theme Toggle -->
@@ -1155,109 +1297,406 @@
   </div>
 
   <script>
+    // State Management
+    const state = {
+      currentStep: 1,
+      progress: 0,
+      conceptsLearned: 0,
+      questionsAnswered: 0,
+      correctAnswers: 0,
+      streakDays: 1,
+      studyTime: 0,
+      notes: [],
+      achievements: {
+        firstSteps: false,
+        experimenter: false,
+        deepThinker: false,
+        onFire: false,
+        master: false
+      }
+    };
+
+    // Timer
+    let timerInterval;
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        state.studyTime++;
+        const minutes = Math.floor(state.studyTime / 60);
+        const seconds = state.studyTime % 60;
+        document.getElementById('timerDisplay').textContent = 
+          `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      }, 1000);
+    }
+    startTimer();
+
     // Theme Toggle
     const themeToggle = document.getElementById('themeToggle');
-    const savedTheme = localStorage.getItem('ilip-theme') || 'dark';
-    if (savedTheme === 'light') {
-      document.documentElement.setAttribute('data-theme', 'light');
-      themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-    }
+    let isDark = true;
     themeToggle.addEventListener('click', () => {
-      const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+      isDark = !isDark;
       if (isDark) {
-        document.documentElement.setAttribute('data-theme', 'light');
-        localStorage.setItem('ilip-theme', 'light');
-        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-      } else {
         document.documentElement.removeAttribute('data-theme');
-        localStorage.setItem('ilip-theme', 'dark');
         themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
       }
     });
 
-    // Navigation
-    function showSection(sectionId) {
-      document.querySelectorAll('#dashboard-section, #subjects-section, #profile-section').forEach(el => {
-        el.style.display = 'none';
-      });
-      document.getElementById(sectionId + '-section').style.display = 'block';
+    // Simulation Controls
+    document.getElementById('air').addEventListener('input', (e) => {
+      document.getElementById('airValue').textContent = e.target.value + '%';
+      updateSimulation();
+    });
+
+    document.getElementById('grav').addEventListener('input', (e) => {
+      document.getElementById('gravValue').textContent = e.target.value + '%';
+      updateSimulation();
+    });
+
+    function updateSimulation() {
+      const air = document.getElementById('air').value;
+      const grav = document.getElementById('grav').value;
+      let msg = '';
       
-      // Show timer only on dashboard
-      document.getElementById('learningTimer').style.display = sectionId === 'dashboard' ? 'block' : 'none';
+      if (air < 20 && grav > 80) {
+        msg = '<i class="fas fa-check-circle" style="color: var(--success);"></i> <strong>Perfect!</strong> In a vacuum with high gravity: all objects fall together regardless of mass!';
+      } else if (air > 80 && grav > 80) {
+        msg = '<i class="fas fa-wind" style="color: var(--warning);"></i> With significant air: lighter objects (feather) fall slower due to air resistance.';
+      } else if (grav < 30) {
+        msg = '<i class="fas fa-moon" style="color: var(--accent-4);"></i> Low gravity: objects fall very slowly.';
+      } else {
+        msg = '<i class="fas fa-flask" style="color: var(--accent-1);"></i> Interesting combination! Observe how both factors interact.';
+      }
+      
+      document.getElementById('simResult').innerHTML = msg;
+    }
+
+    function runSimulation() {
+      const feather = document.getElementById('feather');
+      const hammer = document.getElementById('hammer');
+      const air = parseInt(document.getElementById('air').value);
+      const grav = parseInt(document.getElementById('grav').value);
+
+      feather.style.top = '10px';
+      hammer.style.top = '10px';
+
+      setTimeout(() => {
+        const featherSpeed = (grav / 100) * (1 - air / 150);
+        const hammerSpeed = (grav / 100) * (1 - air / 300);
+        
+        feather.style.top = (250 * featherSpeed) + 'px';
+        hammer.style.top = (250 * hammerSpeed) + 'px';
+      }, 100);
+
+      unlockAchievement('experimenter');
+      updateStats();
+    }
+
+    function resetSimulation() {
+      document.getElementById('feather').style.top = '10px';
+      document.getElementById('hammer').style.top = '10px';
+      document.getElementById('air').value = 100;
+      document.getElementById('grav').value = 100;
+      document.getElementById('airValue').textContent = '100%';
+      document.getElementById('gravValue').textContent = '100%';
+      updateSimulation();
+    }
+
+    // Character Counter
+    const reasoningArea = document.getElementById('reasoning');
+    if (reasoningArea) {
+      reasoningArea.addEventListener('input', (e) => {
+        document.getElementById('charCount').textContent = e.target.value.length + ' characters';
+      });
     }
 
     // Step Navigation
-    let currentStep = 2;
-    function loadStep(step) {
-      currentStep = step;
-      // In real app: fetch step content via API
-      alert(`Loading Step ${step}...`);
+    function advanceStep(step) {
+      for (let i = 1; i <= 6; i++) {
+        const el = document.getElementById(`step${i}`);
+        if (el) el.style.display = 'none';
+        
+        const stepEl = document.querySelector(`.step[data-step="${i}"]`);
+        if (stepEl) {
+          stepEl.classList.remove('active');
+          if (i < step) stepEl.classList.add('completed');
+        }
+      }
+      
+      const currentEl = document.getElementById(`step${step}`);
+      if (currentEl) {
+        currentEl.style.display = 'block';
+        currentEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      
+      const currentStepEl = document.querySelector(`.step[data-step="${step}"]`);
+      if (currentStepEl) currentStepEl.classList.add('active');
+      
+      state.currentStep = step;
+      state.progress = (step / 6) * 100;
+      updateProgress();
+      
+      if (step === 1) unlockAchievement('firstSteps');
+      if (step === 6) unlockAchievement('master');
+      
+      saveNote(`Advanced to step ${step}`);
     }
 
-    function advanceToStep(step) {
-      currentStep = step;
-      // Hide current, show next
-      document.querySelectorAll('.step').forEach((el, idx) => {
-        el.classList.remove('active');
-        if (idx + 1 === step) el.classList.add('active');
-      });
-      alert(`Advancing to Step ${step}`);
+    function updateProgress() {
+      document.getElementById('progressPercentage').textContent = Math.round(state.progress) + '%';
+      document.getElementById('progressBar').style.width = state.progress + '%';
     }
 
-    // Simulation Controls
-    const airSlider = document.getElementById('air-resistance');
-    const gravSlider = document.getElementById('gravity');
-    const airValue = document.getElementById('air-value');
-    const gravValue = document.getElementById('grav-value');
-    const simResult = document.getElementById('sim-result');
-
-    airSlider.addEventListener('input', updateSimulation);
-    gravSlider.addEventListener('input', updateSimulation);
-
-    function updateSimulation() {
-      const air = parseInt(airSlider.value);
-      const grav = parseInt(gravSlider.value);
-      airValue.textContent = air + '%';
-      gravValue.textContent = grav + '%';
-
-      // Update simulation result text
-      if (air < 20 && grav > 80) {
-        simResult.textContent = "In vacuum with high gravity: both objects fall together!";
-      } else if (air > 80) {
-        simResult.textContent = "With air resistance: the hammer falls faster than the feather.";
+    function submitReasoning() {
+      const text = document.getElementById('reasoning').value.trim();
+      const feedback = document.getElementById('feedbackBox');
+      
+      if (text.length < 50) {
+        feedback.style.display = 'block';
+        feedback.style.background = 'rgba(239, 68, 68, 0.1)';
+        feedback.style.borderLeft = '4px solid var(--error)';
+        feedback.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please write at least 50 characters to fully explain your thinking.';
+        return;
+      }
+      
+      const hasKeywords = text.toLowerCase().includes('gravity') || 
+                         text.toLowerCase().includes('air') || 
+                         text.toLowerCase().includes('force');
+      
+      feedback.style.display = 'block';
+      
+      if (hasKeywords && text.length >= 100) {
+        feedback.style.background = 'rgba(16, 185, 129, 0.1)';
+        feedback.style.borderLeft = '4px solid var(--success)';
+        feedback.innerHTML = '<i class="fas fa-check-circle"></i> <strong>Excellent explanation!</strong> You clearly understand the concept. Let\'s test your knowledge with a question.';
+        unlockAchievement('deepThinker');
+        setTimeout(() => advanceStep(5), 2000);
       } else {
-        simResult.textContent = "Interesting mix! Observe how both factors interact.";
+        feedback.style.background = 'rgba(245, 158, 11, 0.1)';
+        feedback.style.borderLeft = '4px solid var(--warning)';
+        feedback.innerHTML = '<i class="fas fa-lightbulb"></i> Good start! Try to mention key concepts like gravity, air resistance, or forces in your explanation.';
       }
-
-      // Reset objects
-      document.getElementById('feather').style.top = '-50px';
-      document.getElementById('hammer').style.top = '-50px';
-
-      // Animate based on values
-      setTimeout(() => {
-        const featherSpeed = 1.0 + (100 - air) / 100 * 0.5 + (100 - grav) / 100 * 0.3;
-        const hammerSpeed = 1.0 + (100 - air) / 100 * 0.1 + (100 - grav) / 100 * 0.3;
-        document.getElementById('feather').style.transitionDuration = (2.0 / featherSpeed) + 's';
-        document.getElementById('hammer').style.transitionDuration = (2.0 / hammerSpeed) + 's';
-        document.getElementById('feather').style.top = '220px';
-        document.getElementById('hammer').style.top = '220px';
-      }, 100);
+      
+      saveNote(`Submitted reasoning: ${text.substring(0, 100)}...`);
+      updateStats();
     }
 
-    // Timer
-    let seconds = 0;
-    const timerElement = document.getElementById('timerValue');
-    setInterval(() => {
-      if (document.getElementById('dashboard-section').style.display !== 'none') {
-        seconds++;
-        const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
-        const secs = (seconds % 60).toString().padStart(2, '0');
-        timerElement.textContent = `${mins}:${secs}`;
+    function answerQuestion(element, answer, isCorrect) {
+      const options = document.querySelectorAll('.quiz-option');
+      options.forEach(opt => {
+        opt.style.pointerEvents = 'none';
+      });
+      
+      state.questionsAnswered++;
+      if (isCorrect) {
+        state.correctAnswers++;
+        element.classList.add('correct');
+        showQuizFeedback(true);
+        createConfetti();
+        setTimeout(() => advanceStep(6), 2500);
+      } else {
+        element.classList.add('incorrect');
+        showQuizFeedback(false);
+        setTimeout(() => {
+          element.classList.remove('incorrect');
+          options.forEach(opt => {
+            opt.style.pointerEvents = 'auto';
+          });
+        }, 1500);
       }
-    }, 1000);
+      
+      updateStats();
+      saveNote(`Answered quiz question: ${isCorrect ? 'Correct' : 'Incorrect'}`);
+    }
 
-    // Initialize simulation
+    function showQuizFeedback(isCorrect) {
+      const feedback = document.getElementById('quizFeedback');
+      feedback.style.display = 'block';
+      
+      if (isCorrect) {
+        feedback.style.background = 'rgba(16, 185, 129, 0.1)';
+        feedback.style.padding = '20px';
+        feedback.style.borderRadius = '12px';
+        feedback.style.borderLeft = '4px solid var(--success)';
+        feedback.innerHTML = '<i class="fas fa-trophy"></i> <strong>Perfect!</strong> According to F=ma, if mass doubles and force stays constant, acceleration must halve to maintain the equation.';
+        unlockAchievement('onFire');
+      } else {
+        feedback.style.background = 'rgba(239, 68, 68, 0.1)';
+        feedback.style.padding = '20px';
+        feedback.style.borderRadius = '12px';
+        feedback.style.borderLeft = '4px solid var(--error)';
+        feedback.innerHTML = '<i class="fas fa-times-circle"></i> Not quite. Think about the equation F=ma. If F stays the same but m doubles, what must happen to a?';
+      }
+    }
+
+    function updateStats() {
+      document.getElementById('conceptsLearned').textContent = Math.min(state.currentStep, 6);
+      document.getElementById('questionsAnswered').textContent = state.questionsAnswered;
+      document.getElementById('streakDays').textContent = state.streakDays;
+      
+      const accuracy = state.questionsAnswered > 0 
+        ? Math.round((state.correctAnswers / state.questionsAnswered) * 100)
+        : 0;
+      document.getElementById('accuracyRate').textContent = accuracy + '%';
+    }
+
+    function unlockAchievement(achievement) {
+      if (!state.achievements[achievement]) {
+        state.achievements[achievement] = true;
+        const achievementMap = {
+          firstSteps: 'achievement1',
+          experimenter: 'achievement2',
+          deepThinker: 'achievement3',
+          onFire: 'achievement4',
+          master: 'achievement5'
+        };
+        
+        const el = document.getElementById(achievementMap[achievement]);
+        if (el) {
+          el.classList.add('unlocked');
+          showNotification(`Achievement Unlocked: ${achievement}!`);
+        }
+      }
+    }
+
+    function createConfetti() {
+      const colors = ['var(--accent-1)', 'var(--accent-2)', 'var(--accent-3)', 'var(--accent-4)', 'var(--success)'];
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = Math.random() * 0.5 + 's';
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 3000);
+      }
+    }
+
+    function showNotification(message) {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--card-bg);
+        padding: 20px 30px;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px var(--shadow);
+        border: 2px solid var(--accent-1);
+        z-index: 10000;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        animation: slideDown 0.5s ease;
+      `;
+      notification.innerHTML = `<i class="fas fa-bell"></i> ${message}`;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideUp 0.5s ease';
+        setTimeout(() => notification.remove(), 500);
+      }, 3000);
+    }
+
+    function saveNote(content) {
+      const timestamp = new Date().toLocaleString();
+      state.notes.push({ timestamp, content });
+    }
+
+    function showNotebook() {
+      const notebook = document.getElementById('notebook');
+      const entries = document.getElementById('notebookEntries');
+      
+      entries.innerHTML = '';
+      
+      if (state.notes.length === 0) {
+        entries.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 40px;">No notes yet. Keep learning!</p>';
+      } else {
+        state.notes.reverse().forEach(note => {
+          const entry = document.createElement('div');
+          entry.className = 'note-entry';
+          entry.innerHTML = `
+            <div class="note-timestamp"><i class="fas fa-clock"></i> ${note.timestamp}</div>
+            <div class="note-content">${note.content}</div>
+          `;
+          entries.appendChild(entry);
+        });
+      }
+      
+      notebook.style.display = 'block';
+      notebook.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function closeNotebook() {
+      document.getElementById('notebook').style.display = 'none';
+    }
+
+    function scrollToSection(id) {
+      document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function nextConcept() {
+      state.conceptsLearned++;
+      createConfetti();
+      showNotification('Great job! Loading next concept...');
+      setTimeout(() => {
+        alert('Next concept: Free Body Diagrams\n\nThis is a demo - full curriculum coming soon!');
+      }, 2000);
+    }
+
+    function reviewConcept() {
+      advanceStep(1);
+      showNotification('Reviewing: Newton\'s Second Law');
+    }
+
+    function resetProgress() {
+      if (confirm('Are you sure you want to reset your progress?')) {
+        state.currentStep = 1;
+        state.progress = 0;
+        state.questionsAnswered = 0;
+        state.correctAnswers = 0;
+        state.notes = [];
+        
+        advanceStep(1);
+        updateStats();
+        updateProgress();
+        
+        document.querySelectorAll('.achievement').forEach(a => a.classList.remove('unlocked'));
+        document.querySelectorAll('.step').forEach(s => s.classList.remove('completed'));
+        
+        showNotification('Progress reset! Let\'s start fresh.');
+      }
+    }
+
+    // Initialize
+    updateStats();
+    updateProgress();
     updateSimulation();
+
+    // Add CSS animations dynamically
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideDown {
+        from { transform: translate(-50%, -100px); opacity: 0; }
+        to { transform: translate(-50%, 0); opacity: 1; }
+      }
+      @keyframes slideUp {
+        from { transform: translate(-50%, 0); opacity: 1; }
+        to { transform: translate(-50%, -100px); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Save state to localStorage (non-critical feature)
+    window.addEventListener('beforeunload', () => {
+      try {
+        const stateToSave = JSON.stringify(state);
+        // Note: localStorage is not available in artifacts, but keeping code structure
+      } catch (e) {
+        console.log('State save not available');
+      }
+    });
   </script>
 </body>
 </html>
