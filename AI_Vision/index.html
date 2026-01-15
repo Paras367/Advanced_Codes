@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Vision Portal - Paras</title>
+  <style>
+    :root {
+      --glow-color: #4dabf7;
+      --admin-glow: #ff6b6b;
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #f1f5f9;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-size: 2rem;
+      background: linear-gradient(90deg, var(--glow-color), #74c0fc);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .auth-panel {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+    .user-btn {
+      background: #334155;
+      color: white;
+    }
+    .admin-btn {
+      background: #ff6b6b;
+      color: white;
+      box-shadow: 0 0 12px rgba(255, 107, 107, 0.5);
+    }
+    button:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+    .panel {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 20px;
+      display: none;
+    }
+    .active { display: block; }
+    #videoCanvas {
+      width: 100%;
+      max-width: 640px;
+      height: auto;
+      border-radius: 8px;
+      background: #000;
+      display: block;
+      margin: 0 auto;
+    }
+    .detection-overlay {
+      position: relative;
+      display: inline-block;
+      margin-top: 10px;
+    }
+    .box {
+      position: absolute;
+      border: 2px solid var(--glow-color);
+      border-radius: 4px;
+      box-shadow: 0 0 10px var(--glow-color);
+      pointer-events: none;
+    }
+    .label {
+      background: var(--glow-color);
+      color: #0f172a;
+      padding: 2px 6px;
+      font-size: 12px;
+      font-weight: bold;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+    .status {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #94a3b8;
+    }
+    .key-display {
+      background: rgba(0,0,0,0.3);
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 10px;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Secure AI Vision Portal</h1>
+      <p>Real-time browser-based detection • No data leaves your device</p>
+    </header>
+
+    <div class="auth-panel">
+      <button class="user-btn" onclick="showPanel('user')">Register / Login</button>
+      <button class="admin-btn" onclick="attemptAdminAccess()">Admin Access</button>
+    </div>
+
+    <div id="userPanel" class="panel">
+      <h2>User Dashboard</h2>
+      <p>Enter your name to get personalized API access:</p>
+      <input type="text" id="userName" placeholder="Your Name" style="padding:8px;margin:10px 0;width:100%;background:#334155;color:white;border:1px solid #475569;border-radius:4px;"/>
+      <button onclick="registerUser()">Get My API Key</button>
+      <div id="userKey" class="key-display" style="display:none;"></div>
+    </div>
+
+    <div id="adminPanel" class="panel">
+      <h2>Admin Console</h2>
+      <div class="key-display">🔑 Admin Key: <span id="adminKeyDisplay"></span></div>
+      <p>User: <strong id="adminUserName"></strong></p>
+    </div>
+
+    <div id="visionPanel" class="panel">
+      <h2>Live AI Detection</h2>
+      <canvas id="videoCanvas" width="640" height="480"></canvas>
+      <div class="detection-overlay" id="overlay"></div>
+      <div class="status" id="status">Initializing camera...</div>
+    </div>
+  </div>
+
+  <script>
+    // ======================
+    // SIMULATED WASM MODULE (in real use: fetch .wasm and instantiate)
+    // ======================
+    const WASM_MODULE = {
+      /**
+       * Simulates running inference on image data
+       * @param {ImageData} imageData - Canvas image data
+       * @returns {Array<{class: string, confidence: number, x: number, y: number, w: number, h: number}>}
+       */
+      runInference(imageData) {
+        // Mock detections (simulate YOLO-like output)
+        const now = Date.now();
+        const mockDetections = [];
+        if (now % 5000 < 2000) { // Simulate intermittent detection
+          mockDetections.push({
+            class: "person",
+            confidence: 0.92,
+            x: 100,
+            y: 80,
+            w: 200,
+            h: 300
+          });
+        }
+        if (now % 7000 < 1500) {
+          mockDetections.push({
+            class: "phone",
+            confidence: 0.78,
+            x: 400,
+            y: 200,
+            w: 80,
+            h: 120
+          });
+        }
+        return mockDetections;
+      }
+    };
+
+    // ======================
+    // USER & ADMIN LOGIC
+    // ======================
+    const ADMIN_KEY = "100935.28"; // 🔒 This would be encrypted/obfuscated in real use
+    let currentUser = null;
+
+    function showPanel(panelId) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      if (panelId === 'user') {
+        document.getElementById('userPanel').classList.add('active');
+      } else if (panelId === 'vision') {
+        document.getElementById('visionPanel').classList.add('active');
+        startCamera();
+      }
+    }
+
+    function registerUser() {
+      const name = document.getElementById('userName').value.trim();
+      if (!name) return alert("Please enter your name.");
+      currentUser = name;
+      const apiKey = btoa(`api_${Date.now()}_${name}`).substring(0, 24); // mock key
+      document.getElementById('userKey').textContent = apiKey;
+      document.getElementById('userKey').style.display = 'block';
+      setTimeout(() => showPanel('vision'), 1000);
+    }
+
+    function attemptAdminAccess() {
+      // In real app: prompt for key or use secure auth
+      // Here: simulate successful admin login
+      document.getElementById('adminKeyDisplay').textContent = "••••••••";
+      document.getElementById('adminUserName').textContent = "Paras (Super Admin)";
+      document.getElementById('adminPanel').classList.add('active');
+      setTimeout(() => showPanel('vision'), 1500);
+    }
+
+    // ======================
+    // REAL-TIME VISION SYSTEM
+    // ======================
+    let stream = null;
+    let animationFrameId = null;
+    const canvas = document.getElementById('videoCanvas');
+    const ctx = canvas.getContext('2d');
+    const overlay = document.getElementById('overlay');
+    const statusEl = document.getElementById('status');
+
+    async function startCamera() {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        const video = document.createElement('video');
+        video.srcObject = stream;
+        video.play();
+        statusEl.textContent = "AI Engine Running...";
+        processFrame(video);
+      } catch (err) {
+        statusEl.textContent = "⚠️ Camera access denied";
+        console.error(err);
+      }
+    }
+
+    function processFrame(video) {
+      if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        // Get image data for WASM inference
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const detections = WASM_MODULE.runInference(imageData);
+
+        // Render bounding boxes
+        overlay.innerHTML = '';
+        overlay.style.width = canvas.width + 'px';
+        overlay.style.height = canvas.height + 'px';
+        detections.forEach(det => {
+          const div = document.createElement('div');
+          div.className = 'box';
+          div.style.left = det.x + 'px';
+          div.style.top = det.y + 'px';
+          div.style.width = det.w + 'px';
+          div.style.height = det.h + 'px';
+          
+          const label = document.createElement('div');
+          label.className = 'label';
+          label.textContent = `${det.class} ${Math.round(det.confidence * 100)}%`;
+          div.appendChild(label);
+          overlay.appendChild(div);
+        });
+      }
+      animationFrameId = requestAnimationFrame(() => processFrame(video));
+    }
+
+    // Cleanup on unload
+    window.addEventListener('beforeunload', () => {
+      if (stream) stream.getTracks().forEach(t => t.stop());
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    });
+  </script>
+</body>
+</html>
