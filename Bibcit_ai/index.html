@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🔬 Bibcit Advanced Lab</title>
+
+  <!-- 🔐 Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- 🎨 Google Fonts (20+) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Roboto:wght@300;400;700&family=Open+Sans:wght@400;600&family=Lato:wght@300;400;700&family=Montserrat:wght@400;600;800&family=Poppins:wght@300;400;600&family=Raleway:wght@300;400;700&family=Oswald:wght@400;600&family=Source+Sans+Pro:wght@300;400;600&family=Nunito:wght@300;400;700&family=Ubuntu:wght@300;400;500&family=Merriweather:wght@300;400;700&family=Playfair+Display:wght@400;700&family=Cabin:wght@400;500&family=Fira+Sans:wght@300;400;600&family=PT+Sans:wght@400;700&family=Arimo:wght@400;700&family=Quicksand:wght@300;500;700&family=Mulish:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-primary: #0f0f1b;
+      --bg-secondary: #1a1a2e;
+      --panel-bg: #16213e;
+      --text-primary: #e6e6ff;
+      --text-secondary: #a0a0c0;
+      --accent: #00eeff;
+      --success: #00c896;
+      --warning: #ffaa33;
+      --danger: #ff4d70;
+      --border-radius: 12px;
+      --shadow: 0 8px 30px rgba(0, 200, 255, 0.15);
+      --font-main: 'Inter', sans-serif;
+    }
+
+    .light-mode {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8f9fa;
+      --panel-bg: #ffffff;
+      --text-primary: #1a1a2e;
+      --text-secondary: #555570;
+      --shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      background: linear-gradient(90deg, var(--accent), #7e57c2);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 800;
+    }
+
+    .theme-toggle {
+      background: var(--panel-bg);
+      border: none;
+      width: 50px;
+      height: 26px;
+      border-radius: 13px;
+      position: relative;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .theme-toggle::after {
+      content: '';
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: white;
+      top: 2px;
+      left: 2px;
+      transition: 0.3s;
+    }
+
+    .light-mode .theme-toggle::after {
+      transform: translateX(24px);
+      background: #ffd700;
+    }
+
+    .panel {
+      background: var(--panel-bg);
+      border-radius: var(--border-radius);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+      transition: transform 0.3s ease;
+    }
+
+    .panel:hover {
+      transform: translateY(-4px);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .panel-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel-title i {
+      color: var(--accent);
+    }
+
+    textarea, select, button, input {
+      width: 100%;
+      padding: 14px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(0,0,0,0.2);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 1rem;
+    }
+
+    .light-mode textarea,
+    .light-mode select,
+    .light-mode input {
+      background: #f0f4f8;
+      border-color: #ddd;
+      color: #333;
+    }
+
+    button {
+      background: linear-gradient(90deg, var(--accent), #00bfff);
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      border: none;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .result-output {
+      background: rgba(0,0,0,0.3);
+      padding: 20px;
+      border-radius: 8px;
+      white-space: pre-wrap;
+      font-family: 'Fira Mono', monospace;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .light-mode .result-output {
+      background: #f9f9ff;
+      border: 1px solid #eee;
+    }
+
+    .font-selector {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .font-option {
+      padding: 10px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.95rem;
+    }
+
+    .font-option:hover, .font-option.active {
+      background: var(--accent);
+      color: #000;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--success);
+      color: #000;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.4s ease;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-size: 1.2rem;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .panel {
+        padding: 16px;
+      }
+      h1 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body class="dark-mode">
+  <div class="container">
+    <header>
+      <h1><i class="fas fa-flask"></i> Bibcit Advanced Lab</h1>
+      <button class="theme-toggle" id="themeToggle" title="Toggle Light/Dark Mode"></button>
+    </header>
+
+    <!-- Input Panel -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title"><i class="fas fa-code"></i> Input LaTeX / Query</div>
+        <button class="icon-btn" onclick="copyInput()"><i class="fas fa-copy" title="Copy Input"></i></button>
+      </div>
+      <textarea id="latexInput" rows="5">$$ \text{HA} \rightleftharpoons \text{H}^+ + \text{A}^- $$</textarea>
+    </div>
+
+    <!-- Font & Style Panel -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title"><i class="fas fa-font"></i> Typography Studio</div>
+      </div>
+      <div class="font-selector" id="fontSelector"></div>
+    </div>
+
+    <!-- Action Panel -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title"><i class="fas fa-bolt"></i> Process & Tools</div>
+      </div>
+      <button id="processBtn"><i class="fas fa-play-circle"></i> Send to Bibcit API</button>
+    </div>
+
+    <!-- Output Panel -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title"><i class="fas fa-terminal"></i> API Response</div>
+        <button class="icon-btn" onclick="copyOutput()"><i class="fas fa-copy" title="Copy Output"></i></button>
+      </div>
+      <pre class="result-output" id="output">Click "Send to Bibcit API" to process your input.</pre>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">Copied to clipboard!</div>
+
+  <script>
+
+    const WORKER_URL = 'https://bibcit-ai.dhimanparas605.workers.dev';
+
+    // 🎨 Load 20+ Google Fonts into selector
+    const fonts = [
+      'Inter', 'Roboto', 'Open Sans', 'Lato', 'Montserrat', 'Poppins', 'Raleway',
+      'Oswald', 'Source Sans Pro', 'Nunito', 'Ubuntu', 'Merriweather', 'Playfair Display',
+      'Cabin', 'Fira Sans', 'PT Sans', 'Arimo', 'Quicksand', 'Mulish', 'DM Sans'
+    ];
+
+    const fontSelector = document.getElementById('fontSelector');
+    fonts.forEach(font => {
+      const div = document.createElement('div');
+      div.className = 'font-option';
+      div.style.fontFamily = `'${font}'`;
+      div.textContent = font;
+      div.onclick = () => {
+        document.querySelectorAll('.font-option').forEach(el => el.classList.remove('active'));
+        div.classList.add('active');
+        document.documentElement.style.setProperty('--font-main', `'${font}', sans-serif`);
+        localStorage.setItem('selectedFont', font);
+      };
+      if (font === 'Inter') div.classList.add('active');
+      fontSelector.appendChild(div);
+    });
+
+    // 💡 Restore saved font
+    const savedFont = localStorage.getItem('selectedFont');
+    if (savedFont) {
+      document.documentElement.style.setProperty('--font-main', `'${savedFont}', sans-serif`);
+      document.querySelectorAll('.font-option').forEach(el => {
+        if (el.textContent === savedFont) el.classList.add('active');
+      });
+    }
+
+    // 🌓 Theme Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    const isLight = localStorage.getItem('theme') === 'light';
+    if (isLight) body.classList.add('light-mode');
+
+    themeToggle.addEventListener('click', () => {
+      body.classList.toggle('light-mode');
+      const isNowLight = body.classList.contains('light-mode');
+      localStorage.setItem('theme', isNowLight ? 'light' : 'dark');
+    });
+
+    // 🚀 Process Button
+    document.getElementById('processBtn').addEventListener('click', async () => {
+      const input = document.getElementById('latexInput').value.trim();
+      const outputEl = document.getElementById('output');
+      if (!input) return showOutput('⚠️ Please enter valid input.');
+
+      outputEl.textContent = '⏳ Processing...';
+
+      try {
+        const res = await fetch(WORKER_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: input
+        });
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const result = await res.text();
+        showOutput(result);
+      } catch (err) {
+        showOutput(`❌ Error: ${err.message}\n\nMake sure your Cloudflare Worker is deployed and the URL is correct.`);
+      }
+    });
+
+    // 📋 Copy Utilities
+    function copyInput() {
+      navigator.clipboard.writeText(document.getElementById('latexInput').value);
+      showToast();
+    }
+
+    function copyOutput() {
+      navigator.clipboard.writeText(document.getElementById('output').textContent);
+      showToast();
+    }
+
+    function showOutput(text) {
+      document.getElementById('output').textContent = text;
+    }
+
+    function showToast() {
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    
+  </script>
+</body>
+</html>
