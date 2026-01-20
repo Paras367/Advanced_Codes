@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EduVex – Learn Concepts, Not Just Answers</title>
+  
+  <!-- Google Fonts (20+ styles) -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=Roboto+Mono:wght@300;400;500&family=Montserrat:wght@400;500;600&family=Open+Sans:wght@300;400;600&family=Lato:wght@300;400;700&family=Raleway:wght@300;400;600&family=Oswald:wght@300;400;600&family=Source+Sans+Pro:wght@300;400;600&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    :root {
+      --glow: 0 0 15px rgba(99, 102, 241, 0.7);
+      --primary: #6366f1;
+      --dark: #1e1b4b;
+      --light: #f9fafb;
+      --success: #10b981;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f0f9ff, #e0e7ff);
+      min-height: 100vh;
+      padding: 1.5rem;
+      color: var(--dark);
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 24px;
+      padding: 2.5rem;
+      box-shadow: var(--glow), 0 10px 40px rgba(0,0,0,0.12);
+      position: relative;
+      overflow: hidden;
+      animation: fadeIn 0.6s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .container::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%);
+      z-index: -1;
+    }
+    h1 {
+      font-size: 2.4rem;
+      margin-bottom: 1.2rem;
+      background: linear-gradient(to right, var(--primary), #8b5cf6);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 700;
+      text-align: center;
+    }
+    .subtitle {
+      text-align: center;
+      color: #4b5563;
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+    }
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.85rem 1.6rem;
+      border-radius: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(99,102,241,0.35);
+      font-size: 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--glow), 0 6px 16px rgba(99,102,241,0.45);
+    }
+    .btn-admin {
+      background: #ef4444;
+      box-shadow: 0 4px 12px rgba(239,68,68,0.3);
+    }
+    .btn-admin:hover {
+      box-shadow: 0 0 15px rgba(239,68,68,0.6), 0 6px 16px rgba(239,68,68,0.4);
+    }
+    .form-group {
+      margin: 1.4rem 0;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 0.9rem;
+      border: 2px solid #e0e7ff;
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: all 0.3s;
+      font-family: 'Inter', sans-serif;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: var(--glow);
+    }
+    .hidden { display: none; }
+    .note-card {
+      background: #f8fafc;
+      padding: 1.2rem;
+      border-radius: 16px;
+      margin-top: 1.5rem;
+      border-left: 4px solid var(--primary);
+      animation: slideIn 0.4s ease;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    .user-info {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+      color: var(--primary);
+      font-size: 1.2rem;
+    }
+    .mode-tag {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      color: white;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1000;
+      transform: translateX(200%);
+      transition: transform 0.3s ease;
+    }
+    .notification.show {
+      transform: translateX(0);
+    }
+    .success { background: var(--success); }
+    .error { background: #ef4444; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1><i class="fas fa-brain"></i> EduVex</h1>
+    <p class="subtitle">Learn concepts, not just answers</p>
+
+    <!-- Login / Register -->
+    <div id="authSection">
+      <div class="form-group">
+        <input type="email" id="email" placeholder="Enter your email for Magic Link" />
+      </div>
+      <button class="btn" onclick="sendMagicLink()">
+        <i class="fas fa-paper-plane"></i> Get Magic Link
+      </button>
+      <button class="btn btn-admin" onclick="showAdminPanel()" style="margin-top: 12px;">
+        <i class="fas fa-lock"></i> Admin Access
+      </button>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="hidden">
+      <h3 style="text-align: center; margin-bottom: 1.2rem;">🔒 Admin Verification</h3>
+      <div class="form-group">
+        <input type="password" id="adminKey" placeholder="Enter admin key" />
+      </div>
+      <div style="text-align: center;">
+        <button class="btn btn-admin" onclick="verifyAdmin()">Verify & Enter</button>
+        <button class="btn" onclick="hideAdminPanel()" style="margin-left: 10px; background: #94a3b8;">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Main App (after login) -->
+    <div id="appSection" class="hidden">
+      <div class="user-info">Welcome, <span id="userName">User</span>!</div>
+      
+      <div class="form-group">
+        <input type="text" id="topic" placeholder="Enter topic (e.g., Newton's Laws, Hyperconjugation)" />
+      </div>
+      
+      <div class="form-group">
+        <select id="level">
+          <option value="simple">Explain like I'm 12</option>
+          <option value="advanced">Explain for JEE Advanced</option>
+          <option value="hinglish">Hinglish Mode 😏</option>
+        </select>
+      </div>
+      
+      <button class="btn" onclick="generateNotes()">
+        <i class="fas fa-sparkles"></i> Generate Smart Notes
+      </button>
+
+      <div id="notesOutput"></div>
+    </div>
+  </div>
+
+  <div id="notification" class="notification"></div>
+
+  <script>
+    // 🔐 CONFIG — UPDATE THESE!
+    const SUPABASE_URL = "https://rtzemvymmojhzsuujwsh.supabase.co"; // ← Replace with your Supabase URL
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0emVtdnltbW9oenN1dWppd3NoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MDY4MDEsImV4cCI6MjA4NDQ4MjgwMX0.CXB5d1NbEg77QsM4ztbRJ8ZKJ-V3Vpw7cSIPjYVniTE";
+    const WORKER_URL = "https://eduvex-worker.dhimanparas605.workers.dev"; // ← Your Worker URL
+
+    // DOM Elements
+    const authSection = document.getElementById("authSection");
+    const adminPanel = document.getElementById("adminPanel");
+    const appSection = document.getElementById("appSection");
+    const notesOutput = document.getElementById("notesOutput");
+    const userNameEl = document.getElementById("userName");
+    const notificationEl = document.getElementById("notification");
+
+    // Show notification
+    function notify(message, isError = false) {
+      notificationEl.textContent = message;
+      notificationEl.className = `notification ${isError ? 'error' : 'success'} show`;
+      setTimeout(() => notificationEl.classList.remove('show'), 3000);
+    }
+
+    // Generate smart notes (client-side only!)
+    function generateNotes() {
+      const topic = document.getElementById("topic").value.trim();
+      const level = document.getElementById("level").value;
+      if (!topic) return notify("Please enter a topic", true);
+
+      let explanation = "";
+      let modeTag = "";
+
+      switch(level) {
+        case "simple":
+          explanation = `Imagine ${topic} like playing with building blocks! It’s all about how things move, interact, or change. For example...`;
+          modeTag = "Simple";
+          break;
+        case "advanced":
+          explanation = `For JEE Advanced, ${topic} requires deep conceptual clarity. Key principles include rigorous application of fundamental laws, mathematical modeling, and multi-step reasoning. Mastery involves...`;
+          modeTag = "JEE Advanced";
+          break;
+        case "hinglish":
+          explanation = `Yaar, ${topic} ka scene yeh hai — basically, jab tum... samjha? 😎 Aur agar tu isko acche se padhega, toh tu top kar lega!`;
+          modeTag = "Hinglish";
+          break;
+      }
+
+      const noteHtml = `
+        <div class="note-card">
+          <strong>${topic}</strong>
+          <span class="mode-tag">${modeTag}</span>
+          <p style="margin-top: 0.8rem;">${explanation}</p>
+          <button class="btn" style="margin-top: 1rem; background: #10b981;" onclick="saveNote('${topic.replace(/'/g, "\\'")}', '${explanation.replace(/'/g, "\\'")}')">
+            <i class="fas fa-save"></i> Save to My Profile
+          </button>
+        </div>
+      `;
+      notesOutput.innerHTML = noteHtml;
+    }
+
+    // Save note via Cloudflare Worker
+    async function saveNote(topic, content) {
+      const token = localStorage.getItem("eduvex_jwt");
+      if (!token) return notify("Not logged in!", true);
+
+      try {
+        const res = await fetch(`${WORKER_URL}/rest/v1/notes`, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify([{ 
+            user_id: "00000000-0000-0000-0000-000000000000", // Placeholder — in real app, get from JWT
+            topic, 
+            content 
+          }])
+        });
+
+        if (res.ok) {
+          notify("Note saved successfully!");
+        } else {
+          const err = await res.json();
+          notify(`Save failed: ${err.error || "Unknown error"}`, true);
+        }
+      } catch (e) {
+        console.error(e);
+        notify("Network error — check connection", true);
+      }
+    }
+
+    // Send Magic Link (Supabase Auth)
+    async function sendMagicLink() {
+      const email = document.getElementById("email").value.trim();
+      if (!email) return notify("Enter a valid email", true);
+      
+      try {
+        const res = await fetch(`${SUPABASE_URL}/auth/v1/magiclink`, {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json", 
+            "apikey": SUPABASE_ANON_KEY 
+          },
+          body: JSON.stringify({ email })
+        });
+        
+        if (res.ok) {
+          notify(`Magic link sent to ${email}! Check your inbox.`);
+        } else {
+          notify("Failed to send link", true);
+        }
+      } catch (e) {
+        console.error(e);
+        notify("Network error", true);
+      }
+    }
+
+    // Admin functions
+    function showAdminPanel() {
+      adminPanel.classList.remove("hidden");
+      authSection.classList.add("hidden");
+    }
+    function hideAdminPanel() {
+      adminPanel.classList.add("hidden");
+      authSection.classList.remove("hidden");
+    }
+
+    async function verifyAdmin() {
+      const key = document.getElementById("adminKey").value;
+      if (!key) return notify("Enter admin key", true);
+      
+      // Hash key in-browser
+      const hashBuffer = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(key));
+      const hash = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, "0")).join("");
+      
+      try {
+        const res = await fetch(`${WORKER_URL}/admin/verify`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ hash })
+        });
+        const data = await res.json();
+        
+        if (data.token) {
+          localStorage.setItem("eduvex_jwt", data.token);
+          loadApp("Super Admin 💎");
+          notify("Admin access granted!");
+        } else {
+          notify("Invalid admin key!", true);
+        }
+      } catch (e) {
+        console.error(e);
+        notify("Verification failed", true);
+      }
+    }
+
+    // Load main app
+    function loadApp(name) {
+      userNameEl.textContent = name;
+      authSection.classList.add("hidden");
+      adminPanel.classList.add("hidden");
+      appSection.classList.remove("hidden");
+    }
+
+    // On load: check if logged in
+    window.onload = () => {
+      const token = localStorage.getItem("eduvex_jwt");
+      if (token) {
+        // In real app: decode JWT to get user name
+        loadApp("Student");
+      }
+    };
+  </script>
+</body>
+</html>
