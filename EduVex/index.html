@@ -217,10 +217,10 @@
   <div id="notification" class="notification"></div>
 
   <script>
-    // 🔐 CONFIG — UPDATE THESE!
-    const SUPABASE_URL = "https://rtzemvymmojhzsuujwsh.supabase.co"; // ← Replace with your Supabase URL
+   
+    const SUPABASE_URL = "https://rtzemvymmojhzsuujwsh.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0emVtdnltbW9oenN1dWppd3NoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MDY4MDEsImV4cCI6MjA4NDQ4MjgwMX0.CXB5d1NbEg77QsM4ztbRJ8ZKJ-V3Vpw7cSIPjYVniTE";
-    const WORKER_URL = "https://eduvex-worker.dhimanparas605.workers.dev"; // ← Your Worker URL
+    const WORKER_URL = "https://eduvex-worker.dhimanparas605.workers.dev";
 
     // DOM Elements
     const authSection = document.getElementById("authSection");
@@ -266,7 +266,7 @@
           <strong>${topic}</strong>
           <span class="mode-tag">${modeTag}</span>
           <p style="margin-top: 0.8rem;">${explanation}</p>
-          <button class="btn" style="margin-top: 1rem; background: #10b981;" onclick="saveNote('${topic.replace(/'/g, "\\'")}', '${explanation.replace(/'/g, "\\'")}')">
+          <button class="btn" style="margin-top: 1rem; background: #10b981;" onclick="saveNote('${topic.replace(/'/g, "\\'")}', '${explanation.replace(/'/g, "\\'")}');">
             <i class="fas fa-save"></i> Save to My Profile
           </button>
         </div>
@@ -274,7 +274,7 @@
       notesOutput.innerHTML = noteHtml;
     }
 
-    // Save note via Cloudflare Worker
+    // ✅ FIXED: Save note WITHOUT user_id (Worker injects it)
     async function saveNote(topic, content) {
       const token = localStorage.getItem("eduvex_jwt");
       if (!token) return notify("Not logged in!", true);
@@ -286,11 +286,7 @@
             "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json"
           },
-          body: JSON.stringify([{ 
-            user_id: "00000000-0000-0000-0000-000000000000", // Placeholder — in real app, get from JWT
-            topic, 
-            content 
-          }])
+          body: JSON.stringify([{ topic, content }]) // ❌ NO user_id!
         });
 
         if (res.ok) {
@@ -341,19 +337,16 @@
       authSection.classList.remove("hidden");
     }
 
+    // ✅ FIXED: Send RAW KEY (not hash)
     async function verifyAdmin() {
       const key = document.getElementById("adminKey").value;
       if (!key) return notify("Enter admin key", true);
-      
-      // Hash key in-browser
-      const hashBuffer = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(key));
-      const hash = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, "0")).join("");
       
       try {
         const res = await fetch(`${WORKER_URL}/admin/verify`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ hash })
+          body: JSON.stringify({ key }) // ✅ RAW KEY!
         });
         const data = await res.json();
         
@@ -382,7 +375,6 @@
     window.onload = () => {
       const token = localStorage.getItem("eduvex_jwt");
       if (token) {
-        // In real app: decode JWT to get user name
         loadApp("Student");
       }
     };
