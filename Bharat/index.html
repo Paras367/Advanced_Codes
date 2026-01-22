@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Paras Dhiman">
   <title>BHARAT - A Nation Rising | Vision 2047</title>
-  <meta property="og:title" content="Bharat - A Nation Rising | Vision 2047">
+  <meta property="og:title" content="BHARAT - A Nation Rising | Vision 2047">
   <meta property="og:description" content="Fueling the Future with Code & Creativity">
   <meta property="og:url" content="https://softwarelabs.lovable.app">
   <meta property="og:type" content="website">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Cinzel:wght@700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <meta name="robots" content="index, follow">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Cinzel:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     * {
       margin: 0;
@@ -675,73 +677,125 @@
       }
     }
 
-    /* FOOTER */
+    /* ANIMATED WAVE FOOTER */
     footer {
-      background: #000;
-      padding: 60px 5% 30px;
-      border-top: 3px solid var(--gold);
+      position: relative;
+      display: flex;
+      width: 100%;
+      min-height: 420px;
+      background: linear-gradient(#0a0a0a, #000);
+      margin-top: 100px;
     }
 
-    .footer-content {
-      max-width: 1200px;
-      margin: 0 auto;
+    .footer-background {
+      position: absolute;
+      z-index: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: hidden;
+    }
+
+    .footer-background svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transform: scaleY(3) scaleX(2.25);
+      transform-origin: bottom;
+      box-sizing: border-box;
+      display: block;
+      pointer-events: none;
+    }
+
+    .footer-section {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 25px;
+      padding-bottom: 50px;
+      width: 100%;
+      z-index: 1;
+      position: relative;
+    }
+
+    .footer-emblem {
       text-align: center;
     }
 
-    .emblem {
-      width: 80px;
-      margin-bottom: 20px;
+    .footer-socials {
+      display: flex;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      gap: 20px;
+    }
+
+    .footer-socials a {
+      font-size: 24px;
+      color: #fff;
+      width: 50px;
+      height: 50px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .footer-socials a:hover {
+      background: var(--gold);
+      color: #000;
+      transform: translateY(-5px) scale(1.1);
     }
 
     .footer-links {
       display: flex;
-      justify-content: center;
-      gap: 30px;
-      margin: 30px 0;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      gap: 25px;
       flex-wrap: wrap;
+      justify-content: center;
     }
 
     .footer-links a {
-      color: #aaa;
+      color: #d6dfed;
       text-decoration: none;
+      font-weight: 500;
       transition: color 0.3s;
+      cursor: pointer;
     }
 
     .footer-links a:hover {
       color: var(--gold);
     }
 
-    .social-icons {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin: 30px 0;
-    }
-
-    .social-icons a {
-      width: 45px;
-      height: 45px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      transition: all 0.3s;
-    }
-
-    .social-icons a:hover {
-      background: var(--gold);
-      color: #000;
-      transform: translateY(-5px);
-    }
-
     .footer-quote {
       font-style: italic;
       color: #aaa;
-      margin: 30px auto;
+      margin: 20px auto;
       max-width: 700px;
       line-height: 1.8;
+      text-align: center;
+      font-size: 15px;
+    }
+
+    .footer-legal {
+      font-size: 13px;
+      margin: 0;
+      color: #888;
+    }
+
+    .footer-credit {
+      font-size: 14px;
+      margin: 5px 0 0 0;
+      color: #aaa;
     }
 
     @media (max-width: 768px) {
@@ -826,8 +880,8 @@
       </div>
       <div class="stat-card">
         <div class="stat-icon">👥</div>
-        <div class="stat-number" data-target="140">0</div>
-        <div class="stat-label">Crore People</div>
+        <div class="stat-number" data-target="1.4">0</div>
+        <div class="stat-label">Billion People</div>
       </div>
       <div class="stat-card">
         <div class="stat-icon">🌍</div>
@@ -836,8 +890,8 @@
       </div>
       <div class="stat-card">
         <div class="stat-icon">🛡️</div>
-        <div class="stat-number" data-target="150">0</div>
-        <div class="stat-label">Lakh Armed Forces</div>
+        <div class="stat-number" data-target="1.5">0</div>
+        <div class="stat-label">Million Armed Forces</div>
       </div>
       <div class="stat-card">
         <div class="stat-icon">🚀</div>
@@ -886,143 +940,162 @@
     <div class="gov-grid">
       <div class="gov-card">
         <i class="fas fa-globe"></i>
-        <h3>DigiLocker</h3>
-        <p>840.54 Crore documents issued digitally for paperless governance.</p>
-        <a href="https://digilocker.gov.in" target="_blank">Visit Portal <i class="fas fa-arrow-right"></i></a>
-      </div>
-      <div class="gov-card">
-        <i class="fas fa-id-card"></i>
-        <h3>Aadhaar</h3>
-        <p>138 Crore Aadhaar identities generated for seamless service delivery.</p>
-        <a href="https://uidai.gov.in" target="_blank">Learn More <i class="fas fa-arrow-right"></i></a>
-      </div>
-      <div class="gov-card">
-        <i class="fas fa-laptop"></i>
-        <h3>Digital India</h3>
-        <p>National mission to transform India into a digitally empowered society.</p>
-        <a href="https://www.digitalindia.gov.in" target="_blank">Explore <i class="fas fa-arrow-right"></i></a>
+        <h3>India.gov.in</h3>
+        <p>National portal of India - Gateway to all government services</p>
+        <a href="https://www.india.gov.in" target="_blank">Visit Portal <i class="fas fa-arrow-right"></i></a>
       </div>
       <div class="gov-card">
         <i class="fas fa-users"></i>
         <h3>MyGov</h3>
-        <p>3.9 Crore users registered for participatory governance and civic engagement.</p>
+        <p>Citizen engagement platform for participatory governance</p>
         <a href="https://www.mygov.in" target="_blank">Join Community <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="gov-card">
+        <i class="fas fa-laptop"></i>
+        <h3>Digital India</h3>
+        <p>Transforming India into digitally empowered society</p>
+        <a href="https://www.digitalindia.gov.in" target="_blank">Explore <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="gov-card">
+        <i class="fas fa-graduation-cap"></i>
+        <h3>Skill India</h3>
+        <p>Empowering youth with skills for the future</p>
+        <a href="https://www.skillindia.gov.in" target="_blank">Learn More <i class="fas fa-arrow-right"></i></a>
       </div>
       <div class="gov-card">
         <i class="fas fa-mobile-alt"></i>
         <h3>UPI Payments</h3>
-        <p>Revolutionary digital payment system transforming transactions nationwide.</p>
+        <p>Revolutionary digital payment system transforming transactions</p>
         <a href="https://www.npci.org.in/what-we-do/upi" target="_blank">Discover <i class="fas fa-arrow-right"></i></a>
       </div>
       <div class="gov-card">
         <i class="fas fa-train"></i>
-        <h3>PM GatiShakti</h3>
-        <p>Integrated infrastructure planning with 1,530+ data layers for national development.</p>
-        <a href="https://gatishakti.gov.in" target="_blank">Explore Projects <i class="fas fa-arrow-right"></i></a>
+        <h3>Infrastructure & Railways</h3>
+        <p>Building world-class infrastructure connecting every corner</p>
+        <a href="https://www.indianrailways.gov.in" target="_blank">View Projects <i class="fas fa-arrow-right"></i></a>
       </div>
     </div>
   </section>
 
   <!-- DIGITAL BHARAT TIMELINE -->
-  <section id="digital-bharat" style="background: #0f0f15;">
+  <section id="digital" style="background: #0a0a0a;">
     <div class="section-title">
-      <h2>DIGITAL BHARAT MILESTONES</h2>
-      <p>Key achievements from Digital India initiatives</p>
+      <h2>DIGITAL BHARAT EXPERIENCE</h2>
+      <p>Timeline of India's digital revolution</p>
     </div>
     <div class="timeline-scroll">
       <div class="timeline-item">
-        <div class="timeline-year">2015</div>
-        <h4>Launch of Digital India</h4>
-        <p>National program to transform India into a digitally empowered society.</p>
+        <div class="timeline-year">2009</div>
+        <h4>Aadhaar</h4>
+        <p>World's largest biometric ID system - empowering 1.4 billion Indians with digital identity</p>
       </div>
       <div class="timeline-item">
         <div class="timeline-year">2016</div>
-        <h4>Aadhaar Integration</h4>
-        <p>Over 1 billion Aadhaar identities issued, enabling seamless digital services.</p>
+        <h4>UPI Revolution</h4>
+        <p>Unified Payments Interface transformed India into a cashless economy with instant transfers</p>
       </div>
       <div class="timeline-item">
         <div class="timeline-year">2017</div>
-        <h4>UPI Revolution</h4>
-        <p>Unified Payments Interface transforms digital payments landscape.</p>
+        <h4>DigiLocker</h4>
+        <p>Secure cloud storage for important documents - paperless governance at its best</p>
       </div>
       <div class="timeline-item">
         <div class="timeline-year">2020</div>
-        <h4>DigiLocker Scale-up</h4>
-        <p>Over 50 crore documents issued digitally for paperless governance.</p>
+        <h4>CoWIN Platform</h4>
+        <p>Vaccinated 2+ billion doses during pandemic - world's largest vaccination drive</p>
       </div>
       <div class="timeline-item">
-        <div class="timeline-year">2023</div>
-        <h4>Bhashini & AI Mission</h4>
-        <p>AI-driven language translation and inclusive digital access launched.</p>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-year">2025+</div>
-        <h4>Vision 2047</h4>
-        <p>Full digital sovereignty, AI-led governance, and tech-enabled citizen services.</p>
+        <div class="timeline-year">2022</div>
+        <h4>ONDC</h4>
+        <p>Open Network for Digital Commerce democratizing e-commerce for all businesses</p>
       </div>
     </div>
   </section>
 
   <!-- CULTURE PARALLAX -->
-  <section class="culture-section" id="culture">
+  <section class="culture-section">
     <div class="culture-content">
-      <h2>CULTURAL HERITAGE</h2>
-      <p>From ancient wisdom to modern innovation — India’s civilizational continuity inspires the world.</p>
+      <h2>Diversity is India's Strength</h2>
+      <p style="font-size: 20px; line-height: 1.8;">A land where 22 official languages echo through ancient temples, where festivals light up every season, and where 5000 years of civilization meets cutting-edge innovation.</p>
       <div class="culture-items">
         <div class="culture-item">
-          <i class="fas fa-landmark"></i>
-          <p>7 World Heritage Cities</p>
+          <i class="fas fa-om"></i>
+          <p>Spirituality</p>
         </div>
         <div class="culture-item">
           <i class="fas fa-music"></i>
-          <p>Classical Arts & Traditions</p>
+          <p>Art & Music</p>
         </div>
         <div class="culture-item">
-          <i class="fas fa-book"></i>
-          <p>122 Major Languages</p>
+          <i class="fas fa-fire"></i>
+          <p>Festivals</p>
         </div>
         <div class="culture-item">
-          <i class="fas fa-utensils"></i>
-          <p>UNESCO Intangible Heritage</p>
+          <i class="fas fa-language"></i>
+          <p>Languages</p>
+        </div>
+        <div class="culture-item">
+          <i class="fas fa-hands"></i>
+          <p>Unity</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- VISION 2047 -->
-  <section id="vision" style="background: #0a0a0a;">
+  <section id="vision">
     <div class="section-title">
       <h2>VISION 2047</h2>
-      <p>India@100 – A developed, inclusive, and self-reliant nation</p>
+      <p>India's roadmap to becoming a developed nation</p>
     </div>
     <div class="vision-timeline">
-      <div class="vision-item" data-progress="30">
-        <div class="vision-year">2025–2030</div>
+      <div class="vision-item">
+        <div class="vision-year">2025</div>
         <div class="vision-content">
-          <h4>Foundations of Amrit Kaal</h4>
-          <p>Green energy transition, digital public infrastructure, and skilling at scale.</p>
+          <h3>🚀 Startup Nation</h3>
+          <p>100+ unicorns, fostering innovation and entrepreneurship across tier-2 and tier-3 cities</p>
           <div class="progress-bar">
-            <div class="progress-fill" style="--progress: 30%;"></div>
+            <div class="progress-fill" style="--progress: 85%"></div>
           </div>
         </div>
       </div>
-      <div class="vision-item" data-progress="60">
-        <div class="vision-year">2030–2040</div>
+      <div class="vision-item">
+        <div class="vision-year">2030</div>
         <div class="vision-content">
-          <h4>Global Innovation Hub</h4>
-          <p>Leadership in AI, quantum computing, space tech, and sustainable manufacturing.</p>
+          <h3>🌱 Green Energy Leader</h3>
+          <p>500 GW renewable energy capacity, leading global climate action and sustainability</p>
           <div class="progress-bar">
-            <div class="progress-fill" style="--progress: 60%;"></div>
+            <div class="progress-fill" style="--progress: 65%"></div>
           </div>
         </div>
       </div>
-      <div class="vision-item" data-progress="100">
+      <div class="vision-item">
+        <div class="vision-year">2035</div>
+        <div class="vision-content">
+          <h3>🤖 AI & Space Superpower</h3>
+          <p>Leading in artificial intelligence, quantum computing, and deep space exploration</p>
+          <div class="progress-bar">
+            <div class="progress-fill" style="--progress: 50%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="vision-item">
+        <div class="vision-year">2040</div>
+        <div class="vision-content">
+          <h3>📚 Education Revolution</h3>
+          <p>100% literacy, world-class universities, and skill development for every citizen</p>
+          <div class="progress-bar">
+            <div class="progress-fill" style="--progress: 70%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="vision-item">
         <div class="vision-year">2047</div>
         <div class="vision-content">
-          <h4>Developed Bharat</h4>
-          <p>High-income economy, zero poverty, universal well-being, and cultural renaissance.</p>
+          <h3>🏭 Manufacturing Hub</h3>
+          <p>Atmanirbhar Bharat - self-reliant in defence, electronics, and advanced manufacturing</p>
           <div class="progress-bar">
-            <div class="progress-fill" style="--progress: 100%;"></div>
+            <div class="progress-fill" style="--progress: 45%"></div>
           </div>
         </div>
       </div>
@@ -1030,46 +1103,88 @@
   </section>
 
   <!-- PLEDGE SECTION -->
-  <section class="pledge-section" id="pledge">
-    <h2>TAKE THE PLEDGE</h2>
-    <p>Join millions in building a self-reliant, innovative, and compassionate India by 2047.</p>
-    <button class="pledge-btn" id="pledgeBtn">I Pledge for Bharat</button>
+  <section class="pledge-section">
+    <div class="section-title">
+      <h2>TAKE THE PLEDGE</h2>
+      <p>Every citizen's promise to the nation</p>
+    </div>
+    <button class="pledge-btn" onclick="openPledge()">
+      <i class="fas fa-hand-sparkles"></i> I Pledge for India
+    </button>
   </section>
 
-  <!-- MODAL -->
+  <!-- PLEDGE MODAL -->
   <div class="modal" id="pledgeModal">
     <div class="modal-content">
-      <span class="close-modal" id="closeModal">&times;</span>
-      <h2>Thank You, Patriot!</h2>
-      <p>You’ve taken the pledge to contribute to India’s journey toward 2047.<br/>Share this moment with your network.</p>
-      <div id="fireworks-container"></div>
+      <span class="close-modal" onclick="closePledge()">&times;</span>
+      <div style="text-align: center; margin-bottom: 30px;">
+        <div style="width: 100px; height: 100px; margin: 0 auto 20px; border: 5px solid var(--navy-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(255,153,51,0.1);">
+          <i class="fas fa-flag" style="font-size: 40px; color: var(--saffron);"></i>
+        </div>
+        <h2 style="margin-bottom: 20px; color: var(--gold);">National Pledge</h2>
+      </div>
+      <p style="line-height: 2; font-size: 16px; text-align: left;">
+        "India is my country. All Indians are my brothers and sisters.<br><br>
+        I love my country, and I am proud of its rich and varied heritage.<br><br>
+        I shall always strive to be worthy of it.<br><br>
+        I shall give respect to my parents, teachers and all elders and treat everyone with courtesy.<br><br>
+        To my country and my people, I pledge my devotion.<br><br>
+        In their well-being and prosperity alone lies my happiness."
+      </p>
+      <p style="text-align: right; margin-top: 30px; color: var(--gold); font-weight: 600;">— Jai Hind 🇮🇳</p>
     </div>
   </div>
 
-  <!-- FOOTER -->
   <footer>
-    <div class="footer-content">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg" alt="Ashoka Chakra" class="emblem">
-      <h3>BHARAT - A Nation Rising</h3>
-      <p>Committed to showcasing India’s progress, heritage, and vision for 2047.</p>
-      <div class="footer-links">
-        <a href="#hero">Home</a>
-        <a href="#stats">Overview</a>
-        <a href="#defence">Defence</a>
-        <a href="#govt">Initiatives</a>
-        <a href="#vision">Vision 2047</a>
-        <a href="https://www.digitalindia.gov.in" target="_blank">Digital India</a>
-        <a href="https://www.mygov.in" target="_blank">MyGov</a>
+    <div class="footer-background">
+      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100%" height="100%" viewBox="0 0 1600 900">
+        <defs>
+          <linearGradient id="bg" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color: rgba(255, 153, 51, 0.6)"></stop>
+            <stop offset="100%" style="stop-color: rgba(19, 136, 8, 0.06)"></stop>
+          </linearGradient>
+          <path id="wave" fill="url(#bg)" d="M-363.852,502.589c0,0,236.988-41.997,505.475,0 s371.981,38.998,575.971,0s293.985-39.278,505.474,5.859s493.475,48.368,716.963-4.995v560.106H-363.852V502.589z"/>
+        </defs>
+        <g>
+          <use xlink:href="#wave" opacity=".3">
+            <animateTransform attributeName="transform" attributeType="XML" type="translate" dur="8s" calcMode="spline" values="270 230; -334 180; 270 230" keyTimes="0; .5; 1" keySplines="0.42, 0, 0.58, 1.0;0.42, 0, 0.58, 1.0" repeatCount="indefinite"/>
+          </use>
+          <use xlink:href="#wave" opacity=".6">
+            <animateTransform attributeName="transform" attributeType="XML" type="translate" dur="6s" calcMode="spline" values="-270 230;243 220;-270 230" keyTimes="0; .6; 1" keySplines="0.42, 0, 0.58, 1.0;0.42, 0, 0.58, 1.0" repeatCount="indefinite"/>
+          </use>
+          <use xlink:href="#wave" opacity=".9">
+            <animateTransform attributeName="transform" attributeType="XML" type="translate" dur="4s" calcMode="spline" values="0 230;-140 200;0 230" keyTimes="0; .4; 1" keySplines="0.42, 0, 0.58, 1.0;0.42, 0, 0.58, 1.0" repeatCount="indefinite"/>
+          </use>
+        </g>
+      </svg>
+    </div>
+    <div class="footer-section">
+      <div class="footer-emblem">
+        <i class="fas fa-landmark" style="font-size: 50px; color: var(--gold); margin-bottom: 20px;"></i>
+        <h3 style="margin-bottom: 10px;">भारत सरकार</h3>
+        <p style="font-size: 14px; color: #aaa;">Government of India</p>
       </div>
-      <div class="social-icons">
-        <a href="#"><i class="fab fa-twitter"></i></a>
-        <a href="#"><i class="fab fa-facebook-f"></i></a>
-        <a href="#"><i class="fab fa-instagram"></i></a>
-        <a href="#"><i class="fab fa-youtube"></i></a>
-        <a href="#"><i class="fab fa-linkedin-in"></i></a>
-      </div>
-      <p class="footer-quote">“The best way to find yourself is to lose yourself in the service of the nation.” – Mahatma Gandhi</p>
-      <p>&copy; 2026 BHARAT Vision 2047 Initiative. All rights reserved.</p>
+      
+      <ul class="footer-socials">
+        <li><a href="#" class="fa-brands fa-facebook"></a></li>
+        <li><a href="#" class="fa-brands fa-twitter"></a></li>
+        <li><a href="#" class="fa-brands fa-linkedin"></a></li>
+        <li><a href="#" class="fa-brands fa-instagram"></a></li>
+        <li><a href="#" class="fa-brands fa-youtube"></a></li>
+      </ul>
+      
+      <ul class="footer-links">
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#stats">Overview</a></li>
+        <li><a href="#defence">Defence</a></li>
+        <li><a href="#govt">Initiatives</a></li>
+        <li><a href="#vision">Vision 2047</a></li>
+      </ul>
+      
+      <p class="footer-quote">"Dream, dream, dream. Dreams transform into thoughts and thoughts result in action."<br><span style="color: var(--gold);">— Dr. APJ Abdul Kalam</span></p>
+      
+      <p class="footer-legal">© 2026 Bharat Vision | Made with Pride 🇮🇳</p>
+      <p class="footer-credit">Designed & Developed by <span style="color: var(--gold); font-weight: 600;">Paras Dhiman</span></p>
     </div>
   </footer>
 
@@ -1084,91 +1199,107 @@
     // Navbar scroll effect
     window.addEventListener('scroll', () => {
       const navbar = document.getElementById('navbar');
-      if (window.scrollY > 50) {
+      if (window.scrollY > 100) {
         navbar.classList.add('scrolled');
       } else {
         navbar.classList.remove('scrolled');
       }
     });
 
-    // Stats counter animation
-    const statCards = document.querySelectorAll('.stat-card');
+    // Counter animation
+    const counters = document.querySelectorAll('.stat-number');
+    const animateCounter = (counter) => {
+      const target = parseFloat(counter.getAttribute('data-target'));
+      const increment = target / 100;
+      let current = 0;
+      
+      const updateCounter = () => {
+        if (current < target) {
+          current += increment;
+          counter.textContent = current.toFixed(1);
+          requestAnimationFrame(updateCounter);
+        } else {
+          counter.textContent = target;
+        }
+      };
+      updateCounter();
+    };
+
+    // Intersection Observer for animations
+    const observerOptions = {
+      threshold: 0.2,
+      rootMargin: '0px 0px -100px 0px'
+    };
+
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
-          const target = parseFloat(entry.target.querySelector('.stat-number').dataset.target);
-          let count = 0;
-          const speed = target / 100;
-          const counter = setInterval(() => {
-            count += speed;
-            if (count >= target) {
-              entry.target.querySelector('.stat-number').textContent = 
-                target >= 100 ? target + ' Crore' : 
-                (target % 1 === 0 ? target.toString() : target.toFixed(1)) + (target < 100 ? '' : '');
-              clearInterval(counter);
-            } else {
-              entry.target.querySelector('.stat-number').textContent = Math.floor(count);
+          
+          // Animate counters
+          if (entry.target.classList.contains('stat-card')) {
+            const counter = entry.target.querySelector('.stat-number');
+            if (counter && !counter.classList.contains('animated')) {
+              counter.classList.add('animated');
+              animateCounter(counter);
             }
-          }, 30);
+          }
         }
       });
-    }, { threshold: 0.1 });
+    }, observerOptions);
 
-    statCards.forEach(card => observer.observe(card));
-
-    // Pledge modal
-    const pledgeBtn = document.getElementById('pledgeBtn');
-    const modal = document.getElementById('pledgeModal');
-    const closeBtn = document.getElementById('closeModal');
-
-    pledgeBtn.addEventListener('click', () => {
-      modal.classList.add('active');
-      createFireworks();
+    // Observe elements
+    document.querySelectorAll('.stat-card, .vision-item').forEach(el => {
+      observer.observe(el);
     });
 
-    closeBtn.addEventListener('click', () => {
-      modal.classList.remove('active');
-    });
-
-    window.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        modal.classList.remove('active');
-      }
-    });
-
-    function createFireworks() {
-      const container = document.getElementById('fireworks-container');
-      for (let i = 0; i < 100; i++) {
-        setTimeout(() => {
-          const firework = document.createElement('div');
-          firework.classList.add('firework');
-          const x = (Math.random() - 0.5) * 400;
-          const y = (Math.random() - 0.5) * 400;
-          firework.style.setProperty('--x', `${x}px`);
-          firework.style.setProperty('--y', `${y}px`);
-          firework.style.left = '50%';
-          firework.style.top = '50%';
-          container.appendChild(firework);
-          setTimeout(() => {
-            firework.remove();
-          }, 1000);
-        }, i * 30);
-      }
-    }
-
-    // Smooth scrolling for anchor links
+    // Smooth scroll
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function(e) {
         e.preventDefault();
         const target = document.querySelector(this.getAttribute('href'));
         if (target) {
-          window.scrollTo({
-            top: target.offsetTop - 80,
-            behavior: 'smooth'
-          });
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       });
+    });
+
+    // Pledge modal
+    function openPledge() {
+      document.getElementById('pledgeModal').classList.add('active');
+      createFireworks();
+    }
+
+    function closePledge() {
+      document.getElementById('pledgeModal').classList.remove('active');
+    }
+
+    // Fireworks effect
+    function createFireworks() {
+      for (let i = 0; i < 50; i++) {
+        setTimeout(() => {
+          const firework = document.createElement('div');
+          firework.className = 'firework';
+          firework.style.left = Math.random() * window.innerWidth + 'px';
+          firework.style.top = Math.random() * window.innerHeight + 'px';
+          firework.style.setProperty('--x', (Math.random() - 0.5) * 400 + 'px');
+          firework.style.setProperty('--y', (Math.random() - 0.5) * 400 + 'px');
+          
+          const colors = ['var(--saffron)', 'var(--white)', 'var(--green)', 'var(--gold)'];
+          firework.style.background = colors[Math.floor(Math.random() * colors.length)];
+          
+          document.body.appendChild(firework);
+          
+          setTimeout(() => firework.remove(), 1000);
+        }, i * 50);
+      }
+    }
+
+    // Close modal on outside click
+    document.getElementById('pledgeModal').addEventListener('click', (e) => {
+      if (e.target.id === 'pledgeModal') {
+        closePledge();
+      }
     });
   </script>
 </body>
