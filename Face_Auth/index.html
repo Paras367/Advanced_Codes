@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Secure Face ID Login & Attendance System – Privacy First, No Image Uploads">
+  
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="https://face-auth-worker.dhimanparas605.workers.dev">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  
+
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights/face_landmark_68_model-*.bin" as="fetch" crossorigin>
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights/face_recognition_model-*.bin" as="fetch" crossorigin>
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights/ssd_mobilenetv1_model-*.bin" as="fetch" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@500;600&family=Orbitron:wght@500&display=swap" rel="stylesheet">
+
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <title>🔐Secure FaceID | Paras</title>
+
+  <meta name="robots" content="index, follow">
+  <meta name="googlebot" content="index, follow">
+  <meta name="revisit-after" content="7 days">
+  <meta name="rating" content="general">
+  <meta name="distribution" content="global">
+
+  <meta property="og:title" content="Secure Face ID Recog">
+  <meta property="og:description" content="Digital innovation by young minds">
+  <meta property="og:type" content="website">
+  
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a56d4;
+      --success: #06d6a0;
+      --danger: #ef476f;
+      --dark: #1d3557;
+      --light: #f8f9fa;
+      --gray: #6c757d;
+      --wave-bg: #0d1b2a;
+      --card-bg: rgba(255, 255, 255, 0.92);
+      --shadow: 0 10px 30px rgba(0,0,0,0.12);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4edf9 100%);
+      color: var(--dark);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      background: white;
+      box-shadow: var(--shadow);
+      padding: 1.2rem 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .logo i {
+      font-size: 1.8rem;
+      color: var(--primary);
+    }
+
+    .logo h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 600;
+      font-size: 1.5rem;
+      background: linear-gradient(90deg, var(--primary), #7209b7);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--gray);
+      font-weight: 600;
+      font-size: 1rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    main {
+      max-width: 900px;
+      margin: 2.5rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2.4rem;
+      margin-bottom: 1rem;
+      color: var(--dark);
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--gray);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+    }
+
+    .input-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+    }
+
+    .btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(67, 97, 238, 0.4);
+    }
+
+    .btn-secondary {
+      background: #6c757d;
+    }
+
+    .btn-secondary:hover {
+      background: #5a6268;
+      box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+    }
+
+    .btn-success {
+      background: var(--success);
+      box-shadow: 0 4px 12px rgba(6, 214, 160, 0.3);
+    }
+
+    .btn-success:hover {
+      background: #05c18f;
+      box-shadow: 0 6px 16px rgba(6, 214, 160, 0.4);
+    }
+
+    /* ===== CAMERA VIEW ===== */
+    #camera-screen {
+      display: none;
+      text-align: center;
+    }
+
+    #video, #canvas {
+      width: 100%;
+      max-width: 640px;
+      height: auto;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      display: block;
+      margin: 0 auto 1.5rem;
+    }
+
+    canvas {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+    }
+
+    #video-container {
+      position: relative;
+      display: inline-block;
+      margin: 0 auto 1.5rem;
+    }
+
+    /* ===== STATUS & RESULT ===== */
+    #status {
+      font-weight: 600;
+      margin: 1rem 0;
+      min-height: 1.5rem;
+    }
+
+    .status-live { color: var(--success); }
+    .status-warn { color: var(--danger); }
+    .status-info { color: var(--gray); }
+
+    #result {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 1rem 0;
+      min-height: 1.8rem;
+    }
+
+    .result-success { color: var(--success); }
+    .result-error { color: var(--danger); }
+
+    /* ===== WAVE FOOTER ===== */
+    footer {
+      background: var(--wave-bg);
+      color: white;
+      text-align: center;
+      padding: 4rem 2rem 2rem;
+      position: relative;
+      margin-top: 4rem;
+    }
+
+    footer::before {
+      content: "";
+      position: absolute;
+      top: -40px;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%230d1b2a' fill-opacity='1' d='M0,128L48,138.7C96,149,192,171,288,186.7C384,203,480,213,576,208C672,203,768,181,864,186.7C960,192,1056,224,1152,229.3C1248,235,1344,213,1392,202.7L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+
+    .footer-content {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .footer-content h3 {
+      font-family: 'Orbitron', sans-serif;
+      margin-bottom: 1rem;
+      font-size: 1.6rem;
+    }
+
+    .footer-content p {
+      opacity: 0.8;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 1.2rem;
+      margin-top: 1rem;
+    }
+
+    .social-icons a {
+      color: white;
+      font-size: 1.4rem;
+      transition: transform 0.3s;
+    }
+
+    .social-icons a:hover {
+      transform: translateY(-4px);
+    }
+
+    .copyright {
+      margin-top: 2rem;
+      opacity: 0.7;
+      font-size: 0.95rem;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      .hero h2 {
+        font-size: 2rem;
+      }
+      .card {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 🌐 Header -->
+  <header>
+    <a href="#" class="logo">
+      <i class="fas fa-shield-alt"></i>
+      <h1>BHARAT FaceID</h1>
+    </a>
+    <div class="nav-links">
+      <a href="#"><i class="fas fa-home"></i> Home</a>
+      <a href="#"><i class="fas fa-user-check"></i> Attendance</a>
+      <a href="#"><i class="fas fa-cog"></i> Admin</a>
+    </div>
+  </header>
+
+  <!-- 📄 Main Content -->
+  <main>
+    <section class="hero">
+      <h2><i class="fas fa-face-recognition"></i> Secure Face Recognition System</h2>
+      <p>Privacy-first biometric authentication. No images stored — only mathematical descriptors.</p>
+    </section>
+
+    <div class="card" id="init-screen">
+      <div class="input-group">
+        <label for="nameInput"><i class="fas fa-user-tag"></i> Your Full Name</label>
+        <input type="text" id="nameInput" placeholder="e.g., Paras Dhiman" autocomplete="name" />
+      </div>
+      <button class="btn" onclick="startEnroll()">
+        <i class="fas fa-user-plus"></i> Register Face
+      </button>
+      <button class="btn btn-success" onclick="startRecognition()">
+        <i class="fas fa-door-open"></i> Face Login & Attendance
+      </button>
+    </div>
+
+    <div class="card" id="camera-screen" style="display:none;">
+      <div id="video-container">
+        <video id="video" autoplay muted playsinline></video>
+        <canvas id="canvas" width="640" height="480"></canvas>
+      </div>
+      <div id="status" class="status-info">Initializing camera...</div>
+      <div id="result"></div>
+      <button class="btn btn-secondary" onclick="stopCamera()">
+        <i class="fas fa-arrow-left"></i> Back to Menu
+      </button>
+    </div>
+  </main>
+
+  <!-- 🌊 Wave Footer -->
+  <footer>
+    <div class="footer-content">
+      <h3><i class="fas fa-flag"></i> BHARAT - A Nation Rising</h3>
+      <p>Empowering India with secure, sovereign, and privacy-respecting AI technologies. Built with ❤️ for Bharat.</p>
+      
+      <div class="social-icons">
+        <a href="#"><i class="fab fa-github"></i></a>
+        <a href="#"><i class="fab fa-linkedin"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+      </div>
+      
+      <div class="copyright">
+        &copy; 2026 BHARAT AI Labs. All rights reserved. | Cloudflare-Powered
+      </div>
+    </div>
+  </footer>
+
+  <!-- 🧠 Face-API Script -->
+  <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+
+  <script>
+    // 🔗 Backend URL
+    const WORKER_URL = 'https://face-auth-worker.dhimanparas605.workers.dev';
+
+    // 🎯 State
+    let stream = null;
+    let isRunning = false;
+    let lastDescriptor = null;
+    let frameCount = 0;
+    let blinkBuffer = [];
+    let detectionBox = null;
+
+    // 📦 Load Models
+    async function loadModels() {
+      const MODEL_URL = 'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights';
+      await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
+      await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
+      await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
+    }
+
+    // 👁️ Liveness: Eye Aspect Ratio
+    function getEyeAspectRatio(eye) {
+      const A = Math.sqrt(Math.pow(eye[1].x - eye[5].x, 2) + Math.pow(eye[1].y - eye[5].y, 2));
+      const B = Math.sqrt(Math.pow(eye[2].x - eye[4].x, 2) + Math.pow(eye[2].y - eye[4].y, 2));
+      const C = Math.sqrt(Math.pow(eye[0].x - eye[3].x, 2) + Math.pow(eye[0].y - eye[3].y, 2));
+      return (A + B) / (2.0 * C);
+    }
+
+    function isBlinking(landmarks) {
+      const leftEAR = getEyeAspectRatio(landmarks.getLeftEye());
+      const rightEAR = getEyeAspectRatio(landmarks.getRightEye());
+      return (leftEAR + rightEAR) / 2 < 0.22;
+    }
+
+    async function isLive(detection) {
+      blinkBuffer.push(isBlinking(detection.landmarks));
+      if (blinkBuffer.length > 10) blinkBuffer.shift();
+      return blinkBuffer.filter(b => b).length >= 1;
+    }
+
+    // 📸 Camera Control
+    async function startCamera() {
+      const video = document.getElementById('video');
+      const constraints = { video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } } };
+      
+      try {
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = stream;
+        document.getElementById('init-screen').style.display = 'none';
+        document.getElementById('camera-screen').style.display = 'block';
+        isRunning = true;
+        frameCount = 0;
+        blinkBuffer = [];
+        lastDescriptor = null;
+        setStatus('Looking for face...', 'info');
+        document.getElementById('result').textContent = '';
+        processVideo();
+      } catch (err) {
+        alert('⚠️ Camera access denied. Please allow camera permissions.');
+        console.error(err);
+      }
+    }
+
+    function stopCamera() {
+      isRunning = false;
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+      document.getElementById('camera-screen').style.display = 'none';
+      document.getElementById('init-screen').style.display = 'block';
+    }
+
+    function setStatus(text, type = 'info') {
+      const statusEl = document.getElementById('status');
+      statusEl.textContent = text;
+      statusEl.className = `status-${type}`;
+    }
+
+    function setResult(text, type = 'info') {
+      const resultEl = document.getElementById('result');
+      resultEl.textContent = text;
+      resultEl.className = `result-${type}`;
+    }
+
+    // 🔄 Video Processing
+    async function processVideo() {
+      if (!isRunning) return;
+      
+      const video = document.getElementById('video');
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+
+      if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        const detections = await faceapi.detectAllFaces(
+          video,
+          new faceapi.SsdMobilenetv1Options({ minConfidence: 0.7 })
+        ).withFaceLandmarks().withFaceDescriptors();
+
+        if (detections.length > 0) {
+          const detection = detections[0];
+          lastDescriptor = detection.descriptor;
+          frameCount++;
+
+          // Draw detection
+          const resized = faceapi.resizeResults(detection, { width: canvas.width, height: canvas.height });
+          faceapi.draw.drawDetections(canvas, resized, { boxColor: '#4361ee', lineWidth: 3 });
+          faceapi.draw.drawFaceLandmarks(canvas, resized, { drawLines: false });
+
+          if (frameCount > 15) {
+            const live = await isLive(detection);
+            if (!live) {
+              setStatus('⚠️ Possible spoof! Blink or move your head.', 'warn');
+            } else {
+              setStatus('✅ Live face detected', 'live');
+            }
+          }
+        } else {
+          setStatus('No face detected', 'info');
+          lastDescriptor = null;
+        }
+      }
+
+      requestAnimationFrame(processVideo);
+    }
+
+    // ➕ Enroll
+    async function startEnroll() {
+      const name = document.getElementById('nameInput').value.trim();
+      if (!name) {
+        alert('Please enter your name');
+        return;
+      }
+      await loadModels();
+      await startCamera();
+      
+      setTimeout(async () => {
+        if (lastDescriptor && isRunning) {
+          const live = blinkBuffer.filter(b => b).length >= 1;
+          if (!live) {
+            setResult('❌ Enrollment failed: No liveness detected', 'error');
+            setTimeout(stopCamera, 3000);
+            return;
+          }
+
+          try {
+            const res = await fetch(`${WORKER_URL}/enroll`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name, descriptor: Array.from(lastDescriptor) })
+            });
+            const data = await res.json();
+            if (data.success) {
+              setResult(`✅ ${name}, you're enrolled!`, 'success');
+            } else {
+              setResult(`❌ Error: ${data.error || 'Unknown'}`, 'error');
+            }
+          } catch (e) {
+            setResult(`❌ Network error: ${e.message}`, 'error');
+          }
+          setTimeout(stopCamera, 3500);
+        }
+      }, 2800);
+    }
+
+    // 🔓 Recognition
+    async function startRecognition() {
+      await loadModels();
+      await startCamera();
+
+      setTimeout(async () => {
+        if (lastDescriptor && isRunning) {
+          const live = blinkBuffer.filter(b => b).length >= 1;
+          if (!live) {
+            setResult('❌ Liveness check failed', 'error');
+            setTimeout(stopCamera, 3000);
+            return;
+          }
+
+          try {
+            const res = await fetch(`${WORKER_URL}/descriptors`);
+            const enrolled = await res.json();
+            let bestMatch = null;
+            let minDist = 0.6;
+
+            for (const person of enrolled) {
+              const dist = faceapi.euclideanDistance(lastDescriptor, Float32Array.from(person.descriptor));
+              if (dist < minDist) {
+                minDist = dist;
+                bestMatch = person.name;
+              }
+            }
+
+            if (bestMatch) {
+              setResult(`✅ Welcome, ${bestMatch}!`, 'success');
+              // Log attendance
+              await fetch(`${WORKER_URL}/attendance`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: bestMatch })
+              });
+            } else {
+              setResult('❌ Face not recognized', 'error');
+            }
+          } catch (e) {
+            setResult(`❌ Recognition error: ${e.message}`, 'error');
+          }
+          setTimeout(stopCamera, 3500);
+        }
+      }, 2800);
+    }
+
+    // 🚀 Initialize
+    (async () => {
+      console.log('🚀 Loading face models...');
+      await loadModels();
+      console.log('✅ Ready for face recognition!');
+    })();
+  </script>
+</body>
+</html>
