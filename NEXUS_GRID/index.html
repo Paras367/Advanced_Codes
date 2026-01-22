@@ -1,549 +1,522 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NEXUS GRID</title>
-  <meta property="og:description" content="New Tech Game with Personalized UI having Backend">
-  <meta name="author" content="Paras Dhiman">
-  <meta property="og:type" content="website">
-  <meta name="keywords" content="software development, coding, JavaScript">
-  <meta name="contact" content="softwarelabschd@gmail.com">
+  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="robots" content="index, follow">
-
-<link rel="dns-prefetch" href="https://unpkg.com">
-<link rel="preconnect" href="https://unpkg.com" crossorigin>
-
+  
  
-<link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
-<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+  <title>Paras Dhiman | Python Developer & Creative Coder | Portfolio</title>
+  <meta name="title" content="Paras Dhiman | Python Developer & Creative Coder | Portfolio">
+  <meta name="description" content="Paras Dhiman - Student programmer specializing in Python development, educational apps, and interactive web experiences. Explore my projects including neural network visualizers and educational tools.">
+  <meta name="keywords" content="Paras Dhiman, Python developer, Tkinter apps, educational software, web development, JavaScript, student programmer, portfolio, interactive apps, neural network, Chandigarh developer">
+  <meta name="author" content="Paras Dhiman">
+  <meta name="robots" content="index, follow">
+  <meta name="language" content="English">
+  <meta name="revisit-after" content="7 days">
+  
 
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://softwarelabs.lovable.app">
+  <meta property="og:title" content="Paras Dhiman | Python Developer & Creative Coder">
+  <meta property="og:description" content="Student programmer building educational Python apps, simulations, and interactive web experiences.">
+  <meta property="og:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/spXYxfHil7XwwnqrLm7ykYdhEGm2/uploads/1759840010946-softwarelabs2.png">
+  
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://softwarelabs.lovable.app">
+  <meta property="twitter:title" content="Paras Dhiman | Python Developer & Creative Coder">
+  <meta property="twitter:description" content="Student programmer building educational Python apps, simulations, and interactive web experiences.">
+  <meta property="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/spXYxfHil7XwwnqrLm7ykYdhEGm2/uploads/1759840010946-softwarelabs2.png">
+  
+  <meta name="contact" content="softwarelabschd@gmail.com">
+  <meta name="geo.region" content="IN-CH">
+  <meta name="geo.placename" content="Chandigarh">
+ 
+  <link rel="dns-prefetch" href="//cdn.tailwindcss.com">
+  <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+  <link rel="dns-prefetch" href="//unpkg.com">
+  <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="//fonts.googleapis.com">
+  <link rel="dns-prefetch" href="//fonts.gstatic.com">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.tailwindcss.com">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
 
-<link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
-<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <style>
-    @keyframes neon-pulse {
-      0%, 100% { text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 30px #0ff, 0 0 40px #0ff; }
-      50% { text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 15px #0ff, 0 0 20px #0ff; }
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Paras Dhiman",
+    "jobTitle": "Python Developer & Student Programmer",
+    "url": "https://softwarelabs.lovable.app",
+    "sameAs": [
+      "https://github.com/Paras367"
+    ],
+    "email": "softwarelabschd@gmail.com",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Chandigarh",
+      "addressCountry": "IN"
     }
-    .neon-glow {
-      animation: neon-pulse 2s infinite;
-      color: #0ff;
+  }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+    .font-code {
+      font-family: 'Fira Code', monospace;
+    }
+    .glass {
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .glass-strong {
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .neon {
+      text-shadow: 0 0 12px #00f7ff, 0 0 24px #00f7ff;
+    }
+    .neon-green {
+      text-shadow: 0 0 12px #00ff88, 0 0 24px #00ff88;
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #00f7ff 0%, #00ff88 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .skill-tag {
+      transition: all 0.3s ease;
+    }
+    .skill-tag:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,247,255,0.3);
+    }
+    nav a {
+      position: relative;
+      transition: color 0.3s;
+    }
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #00f7ff;
+      transition: width 0.3s;
+    }
+    nav a:hover::after {
+      width: 100%;
+    }
+    .project-card {
+      transition: all 0.4s ease;
+    }
+    .project-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0,247,255,0.2);
     }
     @keyframes float {
       0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
+      50% { transform: translateY(-20px); }
     }
-    .float-animation { animation: float 3s ease-in-out infinite; }
-    
-    @keyframes tile-pop {
-      0% { transform: scale(0.8); opacity: 0; }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); opacity: 1; }
+    .float-animation {
+      animation: float 3s ease-in-out infinite;
     }
-    .tile-appear { animation: tile-pop 0.3s ease-out; }
-    
-    @keyframes glow-pulse {
-      0% { box-shadow: 0 0 5px rgba(0, 255, 255, 0.5); }
-      50% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.8), 0 0 30px rgba(0, 255, 255, 0.6); }
-      100% { box-shadow: 0 0 5px rgba(0, 255, 255, 0.5); }
-    }
-    
-    .tile-2 { background: linear-gradient(135deg, #1a1a2e, #16213e); }
-    .tile-4 { background: linear-gradient(135deg, #16213e, #0f3460); }
-    .tile-8 { background: linear-gradient(135deg, #0f3460, #533483); color: #fff; }
-    .tile-16 { background: linear-gradient(135deg, #e94560, #ff6b9d); color: white; box-shadow: 0 0 15px #e94560, 0 0 25px rgba(233, 69, 96, 0.5); }
-    .tile-32 { background: linear-gradient(135deg, #ff6b9d, #ffa07a); color: white; box-shadow: 0 0 18px #ff6b9d, 0 0 30px rgba(255, 107, 157, 0.5); }
-    .tile-64 { background: linear-gradient(135deg, #ffa07a, #ffcc70); color: white; box-shadow: 0 0 20px #ffa07a, 0 0 35px rgba(255, 160, 122, 0.5); }
-    .tile-128 { background: linear-gradient(135deg, #ffcc70, #f7d794); color: black; box-shadow: 0 0 25px #ffcc70, 0 0 40px rgba(255, 204, 112, 0.6); font-size: 0.9rem; }
-    .tile-256 { background: linear-gradient(135deg, #f7d794, #c4e538); color: black; box-shadow: 0 0 28px #f7d794, 0 0 45px rgba(247, 215, 148, 0.6); font-size: 0.9rem; }
-    .tile-512 { background: linear-gradient(135deg, #38ef7d, #11998e); color: white; box-shadow: 0 0 30px #38ef7d, 0 0 50px rgba(56, 239, 125, 0.7); font-size: 0.85rem; }
-    .tile-1024 { background: linear-gradient(135deg, #4facfe, #00f2fe); color: white; box-shadow: 0 0 35px #4facfe, 0 0 55px rgba(79, 172, 254, 0.7); font-size: 0.8rem; }
-    .tile-2048 { background: linear-gradient(135deg, #a8edea, #fed6e3); color: black; box-shadow: 0 0 40px #a8edea, 0 0 60px rgba(168, 237, 234, 0.8); font-size: 0.75rem; font-weight: 900; }
-    
-    @keyframes obstacle-spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    .obstacle-icon { animation: obstacle-spin 4s linear infinite; }
-    
-    @keyframes power-pulse {
-      0%, 100% { transform: scale(1); filter: brightness(1); }
-      50% { transform: scale(1.2); filter: brightness(1.5); }
-    }
-    .power-icon { animation: power-pulse 1s infinite; }
-    
-    @keyframes bg-shift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    .animated-bg {
-      background: linear-gradient(45deg, #0a0e27, #16213e, #1a1a2e, #0a0e27);
-      background-size: 400% 400%;
-      animation: bg-shift 15s ease infinite;
-    }
-    
-    @keyframes slide-in {
-      from { transform: translateY(-100%); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-    .slide-in { animation: slide-in 0.5s ease-out; }
-    
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
-    }
-    .shake-animation { animation: shake 0.3s ease-in-out; }
-    
-    .particle {
-      position: absolute;
-      width: 4px;
-      height: 4px;
-      background: #0ff;
-      border-radius: 50%;
-      pointer-events: none;
-      animation: particle-float 2s ease-out forwards;
-    }
-    
-    @keyframes particle-float {
-      0% { transform: translateY(0) scale(1); opacity: 1; }
-      100% { transform: translateY(-100px) scale(0); opacity: 0; }
-    }
-    
-    .grid-glow {
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3), 0 0 40px rgba(0, 255, 255, 0.2), inset 0 0 20px rgba(0, 255, 255, 0.1);
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 800;
     }
   </style>
 </head>
-<body class="min-h-screen animated-bg text-white flex items-center justify-center p-4 overflow-hidden">
-  
-  <!-- Particle Background -->
-  <div id="particles" class="fixed inset-0 pointer-events-none opacity-30"></div>
-  
-  <div id="root">
-    <div class="text-center">
-      <i class="fas fa-spinner fa-spin text-cyan-400 text-3xl"></i>
-      <p class="mt-2 text-gray-400">Loading NEXUS GRID...</p>
+
+<body class="bg-black text-white overflow-x-hidden">
+
+<!-- PARTICLES BACKGROUND -->
+<div id="particles-js" class="fixed inset-0 -z-10"></div>
+
+<!-- 🔷 NAVIGATION -->
+<nav class="fixed top-0 left-0 right-0 z-50 glass-strong">
+  <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+    <div class="text-xl font-bold gradient-text">PD</div>
+    <div class="hidden md:flex gap-8 text-sm">
+      <a href="#home" class="hover:text-cyan-400">Home</a>
+      <a href="#about" class="hover:text-cyan-400">About</a>
+      <a href="#skills" class="hover:text-cyan-400">Skills</a>
+      <a href="#projects" class="hover:text-cyan-400">Projects</a>
+      <a href="#contact" class="hover:text-cyan-400">Contact</a>
+    </div>
+    <a href="https://github.com/Paras367" target="_blank" class="text-cyan-400 hover:text-cyan-300">
+      <i class="fab fa-github text-xl"></i>
+    </a>
+  </div>
+</nav>
+
+<!-- 🔷 HERO SECTION -->
+<section id="home" class="min-h-screen flex items-center justify-center pt-20">
+  <div class="glass rounded-3xl p-12 text-center max-w-3xl mx-6
+              animate__animated animate__fadeInUp">
+    
+    <div class="mb-6 float-animation">
+      <img src="logo.svg" alt="Paras Dhiman Logo" class="mx-auto w-48 opacity-90">
+    </div>
+
+    <h1 class="text-5xl md:text-6xl font-bold neon mb-4">Paras Dhiman</h1>
+
+    <h2 class="text-2xl text-cyan-300 mb-6 font-code">
+      <i class="fas fa-terminal text-green-400"></i> <span id="typed"></span>
+    </h2>
+
+    <p class="text-base opacity-90 mb-8 leading-relaxed">
+      <i class="fas fa-graduation-cap text-cyan-400"></i> Student • 
+      <i class="fas fa-code text-green-400"></i> Programmer • 
+      <i class="fas fa-rocket text-purple-400"></i> Creator<br><br>
+      I build educational Python applications, interactive simulations,<br>
+      and modern web experiences that make learning enjoyable.
+    </p>
+
+    <div class="flex flex-wrap justify-center gap-4">
+      <a href="https://github.com/Paras367" target="_blank"
+         class="px-6 py-3 rounded-full bg-cyan-400 text-black font-semibold
+                hover:scale-110 transition shadow-lg">
+        <i class="fab fa-github"></i> View GitHub
+      </a>
+
+      <a href="#projects"
+         class="px-6 py-3 rounded-full border-2 border-cyan-400
+                hover:bg-cyan-400 hover:text-black transition font-semibold">
+        <i class="fas fa-folder-open"></i> Explore Projects
+      </a>
+      
+      <a href="mailto:softwarelabschd@gmail.com"
+         class="px-6 py-3 rounded-full border-2 border-green-400
+                hover:bg-green-400 hover:text-black transition font-semibold">
+        <i class="fas fa-envelope"></i> Contact Me
+      </a>
     </div>
   </div>
+</section>
 
-  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<!-- 🔷 ABOUT SECTION -->
+<section id="about" class="py-24 px-6" data-aos="fade-up">
+  <div class="container mx-auto max-w-5xl">
+    <h2 class="text-4xl font-bold mb-12 text-center neon">
+      <i class="fas fa-user-circle"></i> About Me
+    </h2>
+    
+    <div class="grid md:grid-cols-2 gap-10">
+      <div class="glass p-8 rounded-2xl">
+        <h3 class="text-2xl font-semibold mb-4 text-cyan-400">
+          <i class="fas fa-lightbulb"></i> Who I Am
+        </h3>
+        <p class="opacity-90 leading-relaxed">
+          I'm a passionate student developer from Chandigarh, India, with a deep interest in creating 
+          educational technology and interactive experiences. My journey in programming started with 
+          curiosity and has evolved into a mission to make learning more accessible and engaging through code.
+        </p>
+      </div>
+      
+      <div class="glass p-8 rounded-2xl">
+        <h3 class="text-2xl font-semibold mb-4 text-green-400">
+          <i class="fas fa-bullseye"></i> What I Do
+        </h3>
+        <p class="opacity-90 leading-relaxed">
+          I specialize in building Python applications with Tkinter, creating web-based interactive tools, 
+          and developing educational software. I love combining clean code with beautiful design to create 
+          experiences that both teach and inspire.
+        </p>
+      </div>
+    </div>
+    
+    <!-- Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
+      <div class="glass p-6 rounded-xl text-center" data-aos="zoom-in" data-aos-delay="100">
+        <div class="stat-number gradient-text">15+</div>
+        <p class="text-sm opacity-80 mt-2"><i class="fas fa-project-diagram"></i> Projects</p>
+      </div>
+      <div class="glass p-6 rounded-xl text-center" data-aos="zoom-in" data-aos-delay="200">
+        <div class="stat-number gradient-text">6+</div>
+        <p class="text-sm opacity-80 mt-2"><i class="fas fa-code-branch"></i> Technologies</p>
+      </div>
+      <div class="glass p-6 rounded-xl text-center" data-aos="zoom-in" data-aos-delay="300">
+        <div class="stat-number gradient-text">100%</div>
+        <p class="text-sm opacity-80 mt-2"><i class="fas fa-heart"></i> Passion</p>
+      </div>
+      <div class="glass p-6 rounded-xl text-center" data-aos="zoom-in" data-aos-delay="400">
+        <div class="stat-number gradient-text">∞</div>
+        <p class="text-sm opacity-80 mt-2"><i class="fas fa-rocket"></i> Learning</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <script type="text/babel">
-    // Particle Background Effect
-    const createParticles = () => {
-      const container = document.getElementById('particles');
-      setInterval(() => {
-        if (Math.random() > 0.7) {
-          const particle = document.createElement('div');
-          particle.className = 'particle';
-          particle.style.left = Math.random() * window.innerWidth + 'px';
-          particle.style.top = window.innerHeight + 'px';
-          container.appendChild(particle);
-          setTimeout(() => particle.remove(), 2000);
-        }
-      }, 200);
-    };
-    createParticles();
+<!-- 🔷 SKILLS -->
+<section id="skills" class="py-24 bg-white/5" data-aos="fade-up">
+  <div class="container mx-auto px-6">
+    <h2 class="text-4xl font-bold mb-12 text-center neon">
+      <i class="fas fa-tools"></i> Skills & Technologies
+    </h2>
 
-    // ==================== API Service ====================
-    const API_URL = 'https://nexus-grid-api.dhimanparas605.workers.dev';
-
-    class NexusAPI {
-      constructor() {
-        this.token = this.getStoredToken();
-      }
-
-      getStoredToken() {
-        try {
-          return sessionStorage.getItem('nexus_token');
-        } catch {
-          return null;
-        }
-      }
-
-      setToken(token) {
-        this.token = token;
-        try {
-          sessionStorage.setItem('nexus_token', token);
-        } catch {}
-      }
-
-      async login(username) {
-        const res = await fetch(`${API_URL}/api/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username })
-        });
-        const data = await res.json();
-        if (data.token) {
-          this.setToken(data.token);
-          return data.profile;
-        }
-        throw new Error(data.error || 'Login failed');
-      }
-
-      async saveProfile(updates) {
-        if (!this.token) return;
-        await fetch(`${API_URL}/api/profile`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Nexus-Token': this.token
-          },
-          body: JSON.stringify(updates)
-        });
-      }
-    }
-
-    // ==================== Game Engine ====================
-    const GameEngine = {
-      generateMazeGrid() {
-        const grid = Array(4).fill().map(() => Array(4).fill(null));
-        this.addRandomTile(grid);
-        this.addRandomTile(grid);
-        
-        for (let i = 0; i < 2; i++) {
-          let r, c;
-          do {
-            r = Math.floor(Math.random() * 4);
-            c = Math.floor(Math.random() * 4);
-          } while (grid[r][c] !== null);
-          grid[r][c] = 'OBSTACLE';
-        }
-        
-        let pr, pc;
-        do {
-          pr = Math.floor(Math.random() * 4);
-          pc = Math.floor(Math.random() * 4);
-        } while (grid[pr][pc] !== null);
-        grid[pr][pc] = 'POWER';
-        return grid;
-      },
-
-      addRandomTile(grid) {
-        const empty = [];
-        for (let r = 0; r < 4; r++) {
-          for (let c = 0; c < 4; c++) {
-            if (grid[r][c] === null) empty.push([r, c]);
-          }
-        }
-        if (empty.length > 0) {
-          const [r, c] = empty[Math.floor(Math.random() * empty.length)];
-          grid[r][c] = Math.random() < 0.9 ? 2 : 4;
-        }
-      },
-
-      moveLeft(grid) {
-        let moved = false;
-        for (let r = 0; r < 4; r++) {
-          const row = grid[r].filter(cell => typeof cell === 'number');
-          for (let i = 0; i < row.length - 1; i++) {
-            if (row[i] === row[i + 1]) {
-              row[i] *= 2;
-              row[i + 1] = null;
-              i++;
-            }
-          }
-          const newRow = row.filter(x => x !== null);
-          while (newRow.length < 4) newRow.push(null);
-          for (let c = 0; c < 4; c++) {
-            if (grid[r][c] !== newRow[c]) moved = true;
-            grid[r][c] = newRow[c];
-          }
-        }
-        return moved;
-      },
-
-      rotateGrid(grid) {
-        return grid[0].map((_, i) => grid.map(row => row[i]).reverse());
-      },
-
-      checkGameOver(grid) {
-        for (let dir of ['ArrowLeft', 'ArrowUp', 'ArrowRight', 'ArrowDown']) {
-          let testGrid = JSON.parse(JSON.stringify(grid));
-          let r = dir === 'ArrowUp' ? 1 : dir === 'ArrowRight' ? 2 : dir === 'ArrowDown' ? 3 : 0;
-          for (let i = 0; i < r; i++) testGrid = this.rotateGrid(testGrid);
-          if (this.moveLeft(testGrid)) return false;
-        }
-        return true;
-      },
-
-      getHighestTile(grid) {
-        return Math.max(...grid.flat().filter(x => typeof x === 'number'));
-      }
-    };
-
-    // ==================== Components ====================
-    const GridCell = ({ cell, isNew }) => {
-      const getCellContent = () => {
-        if (cell === 'OBSTACLE') return <i className="fas fa-radiation obstacle-icon text-red-500 text-2xl"></i>;
-        if (cell === 'POWER') return <i className="fas fa-bolt power-icon text-yellow-300 text-2xl"></i>;
-        if (typeof cell === 'number') {
-          const icons = {
-            2: 'cube', 4: 'dice-four', 8: 'fire', 16: 'gem', 32: 'crown',
-            64: 'star', 128: 'medal', 256: 'trophy', 512: 'rocket', 1024: 'dragon', 2048: 'infinity'
-          };
-          return (
-            <div className="flex flex-col items-center justify-center gap-1">
-              <i className={`fas fa-${icons[cell] || 'circle'} text-sm`}></i>
-              <span>{cell}</span>
-            </div>
-          );
-        }
-        return null;
-      };
-
-      const getCellClass = () => {
-        let cls = 'w-16 h-16 md:w-20 md:h-20 rounded-lg flex items-center justify-center text-xl font-bold transition-all duration-200 border-2 ';
-        if (isNew) cls += 'tile-appear ';
-        if (cell === 'OBSTACLE') {
-          cls += 'bg-gray-900 border-red-900 shadow-lg shadow-red-900/50';
-        } else if (cell === 'POWER') {
-          cls += 'bg-gradient-to-br from-yellow-900 to-yellow-700 border-yellow-500 shadow-lg shadow-yellow-500/50';
-        } else if (typeof cell === 'number') {
-          cls += `tile-${cell} border-white/20`;
-        } else {
-          cls += 'bg-gray-900/50 border-cyan-900/30 backdrop-blur-sm';
-        }
-        return cls;
-      };
-
-      return <div className={getCellClass()}>{getCellContent()}</div>;
-    };
-
-    const ScoreBoard = ({ username, score, highScore, moves }) => (
-      <div className="w-full max-w-md mb-6 px-4 slide-in">
-        <div className="bg-gray-900/70 backdrop-blur-md rounded-xl p-4 border-2 border-cyan-500/30 shadow-xl">
-          <div className="flex justify-between items-center mb-3">
-            <div className="flex items-center gap-2 text-cyan-400 font-mono text-lg">
-              <i className="fas fa-user-astronaut"></i>
-              <span className="font-bold">{username}</span>
-            </div>
-            <div className="flex items-center gap-2 text-purple-400">
-              <i className="fas fa-walking"></i>
-              <span className="font-bold">{moves}</span>
-            </div>
-          </div>
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <i className="fas fa-star text-yellow-400"></i>
-              <div>
-                <div className="text-xs text-gray-400">Current</div>
-                <div className="text-xl font-bold text-yellow-400">{score}</div>
-              </div>
-            </div>
-            {highScore > 0 && (
-              <div className="flex items-center gap-2">
-                <i className="fas fa-crown text-purple-400"></i>
-                <div>
-                  <div className="text-xs text-gray-400">Best</div>
-                  <div className="text-xl font-bold text-purple-400">{highScore}</div>
-                </div>
-              </div>
-            )}
-          </div>
+    <div class="max-w-4xl mx-auto">
+      <div class="flex flex-wrap justify-center gap-6 mb-12">
+        <span class="skill-tag glass px-8 py-4 rounded-full text-lg font-semibold">
+          <i class="fab fa-python text-blue-400"></i> Python
+        </span>
+        <span class="skill-tag glass px-8 py-4 rounded-full text-lg font-semibold">
+          <i class="fas fa-window-maximize text-cyan-400"></i> Tkinter
+        </span>
+        <span class="skill-tag glass px-8 py-4 rounded-full text-lg font-semibold">
+          <i class="fab fa-html5 text-orange-400"></i> HTML5
+        </span>
+        <span class="skill-tag glass px-8 py-4 rounded-full text-lg font-semibold">
+          <i class="fab fa-css3-alt text-blue-500"></i> CSS3
+        </span>
+        <span class="skill-tag glass px-8 py-4 rounded-full text-lg font-semibold">
+          <i class="fab fa-js text-yellow-400"></i> JavaScript
+        </span>
+        <span class="skill-tag glass px-8 py-4 rounded-full text-lg font-semibold">
+          <i class="fab fa-github text-purple-400"></i> GitHub
+        </span>
+      </div>
+      
+      <!-- Additional Skills -->
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="glass p-6 rounded-xl text-center">
+          <i class="fas fa-brain text-4xl text-purple-400 mb-3"></i>
+          <h3 class="font-semibold text-lg mb-2">Problem Solving</h3>
+          <p class="text-sm opacity-80">Algorithmic thinking & optimization</p>
+        </div>
+        <div class="glass p-6 rounded-xl text-center">
+          <i class="fas fa-paint-brush text-4xl text-pink-400 mb-3"></i>
+          <h3 class="font-semibold text-lg mb-2">UI/UX Design</h3>
+          <p class="text-sm opacity-80">User-centered interface design</p>
+        </div>
+        <div class="glass p-6 rounded-xl text-center">
+          <i class="fas fa-chart-line text-4xl text-green-400 mb-3"></i>
+          <h3 class="font-semibold text-lg mb-2">Data Visualization</h3>
+          <p class="text-sm opacity-80">Creating meaningful visual insights</p>
         </div>
       </div>
-    );
-
-    const LoginScreen = ({ onLogin }) => {
-      const [username, setUsername] = React.useState('');
-      const [loading, setLoading] = React.useState(false);
-
-      const handleSubmit = async () => {
-        if (username.trim().length < 3) return;
-        setLoading(true);
-        try {
-          const profile = await new NexusAPI().login(username.trim());
-          onLogin(profile);
-        } catch (err) {
-          alert(err.message);
-        }
-        setLoading(false);
-      };
-
-      const handleKeyPress = (e) => e.key === 'Enter' && handleSubmit();
-
-      return (
-        <div className="text-center p-6 max-w-md mx-auto slide-in">
-          <div className="float-animation mb-8">
-            <i className="fas fa-brain text-6xl text-cyan-400 mb-4 inline-block"></i>
-            <h1 className="text-6xl font-bold mb-2 neon-glow">NEXUS GRID</h1>
-            <p className="text-cyan-400 mb-2 font-mono text-lg"><i className="fas fa-code"></i> Enter the Matrix <i className="fas fa-code"></i></p>
-            <div className="flex justify-center gap-3 text-2xl text-gray-500">
-              <i className="fas fa-microchip"></i>
-              <i className="fas fa-network-wired"></i>
-              <i className="fas fa-server"></i>
-            </div>
-          </div>
-          <div className="space-y-4 bg-gray-900/70 backdrop-blur-md p-6 rounded-xl border-2 border-cyan-500/30">
-            <div className="relative">
-              <i className="fas fa-terminal absolute left-3 top-1/2 transform -translate-y-1/2 text-cyan-400"></i>
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Enter username (min 3 chars)"
-                className="w-full p-3 pl-10 rounded-lg bg-gray-800 border-2 border-cyan-500 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition"
-                disabled={loading}
-                autoFocus
-              />
-            </div>
-            <button
-              onClick={handleSubmit}
-              disabled={loading || username.length < 3}
-              className="w-full py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 disabled:from-gray-700 disabled:to-gray-700 rounded-lg font-bold transition transform hover:scale-105 shadow-lg"
-            >
-              {loading ? (
-                <><i className="fas fa-spinner fa-spin mr-2"></i>Connecting...</>
-              ) : (
-                <><i className="fas fa-play mr-2"></i>Enter Grid</>
-              )}
-            </button>
-          </div>
-        </div>
-      );
-    };
-
-    const GameBoard = ({ profile, onGameOver }) => {
-      const [grid, setGrid] = React.useState(GameEngine.generateMazeGrid());
-      const [score, setScore] = React.useState(0);
-      const [highScore, setHighScore] = React.useState(profile.highestTile || 0);
-      const [gameOver, setGameOver] = React.useState(false);
-      const [moves, setMoves] = React.useState(0);
-      const [newTiles, setNewTiles] = React.useState(new Set());
-
-      const handleMove = (direction) => {
-        if (gameOver) return;
-        let newGrid = JSON.parse(JSON.stringify(grid));
-        let rotations = direction === 'ArrowUp' ? 1 : direction === 'ArrowRight' ? 2 : direction === 'ArrowDown' ? 3 : 0;
-        for (let i = 0; i < rotations; i++) newGrid = GameEngine.rotateGrid(newGrid);
-        const moved = GameEngine.moveLeft(newGrid);
-        for (let i = 0; i < (4 - rotations) % 4; i++) newGrid = GameEngine.rotateGrid(newGrid);
-        if (moved) {
-          GameEngine.addRandomTile(newGrid);
-          setGrid(newGrid);
-          setMoves(m => m + 1);
-          const currentHighest = GameEngine.getHighestTile(newGrid);
-          setScore(currentHighest);
-          if (currentHighest > highScore) setHighScore(currentHighest);
-          if (GameEngine.checkGameOver(newGrid)) {
-            setGameOver(true);
-            onGameOver({ score: currentHighest, highestTile: currentHighest, moves });
-          }
-        }
-      };
-
-      React.useEffect(() => {
-        const keyHandler = (e) => {
-          if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)) {
-            e.preventDefault();
-            handleMove(e.key);
-          }
-        };
-        window.addEventListener('keydown', keyHandler);
-        return () => window.removeEventListener('keydown', keyHandler);
-      }, [grid, gameOver]);
-
-      const handleRestart = () => {
-        setGrid(GameEngine.generateMazeGrid());
-        setScore(0);
-        setGameOver(false);
-        setMoves(0);
-      };
-
-      return (
-        <div className="flex flex-col items-center">
-          <ScoreBoard username={profile.username} score={score} highScore={highScore} moves={moves} />
-          
-          <div className="grid grid-cols-4 gap-3 p-5 bg-gray-900/70 backdrop-blur-md rounded-2xl border-2 border-cyan-500/30 mb-6 grid-glow shadow-2xl">
-            {grid.flat().map((cell, idx) => <GridCell key={idx} cell={cell} />)}
-          </div>
-          
-          <div className="flex gap-4 mb-4">
-            <div className="flex items-center gap-2 px-4 py-2 bg-gray-800/70 rounded-lg border border-cyan-500/30">
-              <i className="fas fa-keyboard text-cyan-400"></i>
-              <span className="text-sm text-gray-300">Use Arrow Keys</span>
-            </div>
-            <button 
-              onClick={handleRestart}
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-lg transition transform hover:scale-105"
-            >
-              <i className="fas fa-redo"></i>
-              <span>Restart</span>
-            </button>
-          </div>
-          
-          {gameOver && (
-            <div className="p-8 bg-gradient-to-br from-red-900/90 to-purple-900/90 backdrop-blur-md border-4 border-red-500 rounded-2xl text-center space-y-4 shadow-2xl shake-animation max-w-md">
-              <i className="fas fa-skull-crossbones text-6xl text-red-400 mb-2"></i>
-              <div className="text-3xl font-bold text-red-400">GAME OVER</div>
-              <div className="text-gray-300">Your journey ends here...</div>
-              <div className="flex justify-around text-lg">
-                <div>
-                  <i className="fas fa-star text-yellow-400 mr-1"></i>
-                  <span className="text-yellow-400 font-bold">{score}</span>
-                </div>
-                <div>
-                  <i className="fas fa-walking text-purple-400 mr-1"></i>
-                  <span className="text-purple-400 font-bold">{moves}</span>
-                </div>
-              </div>
-              <button 
-                onClick={handleRestart} 
-                className="px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 rounded-lg font-bold transition transform hover:scale-105 shadow-lg w-full"
-              >
-                <i className="fas fa-sync-alt mr-2"></i>Try Again
-              </button>
-            </div>
-          )}
-        </div>
-      );
-    };
-
-    // ==================== Main App ====================
-    const App = () => {
-      const [profile, setProfile] = React.useState(null);
-      const [gameState, setGameState] = React.useState('login');
-
-      const handleLogin = (prof) => {
-        setProfile(prof);
-        setGameState('playing');
-      };
-
-      const handleGameOver = async (stats) => {
-        await new NexusAPI().saveProfile({
-          totalGames: 1,
-          highestTile: stats.highestTile,
-          moves: stats.moves
-        });
-      };
-
-      return gameState === 'login' ? (
-        <LoginScreen onLogin={handleLogin} />
-      ) : (
-        <GameBoard profile={profile} onGameOver={handleGameOver} />
-      );
-    };
-
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
-  </script>
-
-  <div class="fixed bottom-4 right-4 text-xs text-gray-400 bg-gray-900/50 backdrop-blur-sm px-3 py-2 rounded-lg border border-cyan-900/30">
-    <p><i class="fas fa-copyright mr-1"></i>SoftwareLabs</p>
-    <p><i class="fas fa-code mr-1"></i>By: Paras Dhiman</p>
+    </div>
   </div>
+</section>
+
+<!-- 🔷 PROJECTS -->
+<section id="projects" class="py-24 px-6" data-aos="fade-up">
+  <div class="container mx-auto max-w-6xl">
+    <h2 class="text-4xl font-bold mb-12 text-center neon">
+      <i class="fas fa-laptop-code"></i> Featured Projects
+    </h2>
+
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="project-card glass p-8 rounded-2xl">
+        <div class="text-5xl mb-4 text-cyan-400">
+          <i class="fas fa-atom"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-3">Interactive Periodic Table</h3>
+        <p class="text-sm opacity-80 mb-4">
+          A comprehensive educational tool built with Python Tkinter featuring detailed element information, 
+          visual categorization, and interactive learning modules.
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <span class="text-xs bg-blue-500/20 px-3 py-1 rounded-full">Python</span>
+          <span class="text-xs bg-cyan-500/20 px-3 py-1 rounded-full">Tkinter</span>
+          <span class="text-xs bg-green-500/20 px-3 py-1 rounded-full">Education</span>
+        </div>
+      </div>
+
+      <div class="project-card glass p-8 rounded-2xl">
+        <div class="text-5xl mb-4 text-purple-400">
+          <i class="fas fa-network-wired"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-3">Neural Network Visualizer</h3>
+        <p class="text-sm opacity-80 mb-4">
+          3D visualization tool for understanding neural networks and deep learning concepts through 
+          interactive animations and real-time learning demonstrations.
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <span class="text-xs bg-purple-500/20 px-3 py-1 rounded-full">Python</span>
+          <span class="text-xs bg-pink-500/20 px-3 py-1 rounded-full">3D Graphics</span>
+          <span class="text-xs bg-indigo-500/20 px-3 py-1 rounded-full">AI/ML</span>
+        </div>
+      </div>
+
+      <div class="project-card glass p-8 rounded-2xl">
+        <div class="text-5xl mb-4 text-green-400">
+          <i class="fas fa-gamepad"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-3">Adventure Quiz Engine</h3>
+        <p class="text-sm opacity-80 mb-4">
+          Story-driven Python quiz game with branching narratives, score tracking, 
+          and engaging educational content wrapped in an adventure framework.
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <span class="text-xs bg-green-500/20 px-3 py-1 rounded-full">Python</span>
+          <span class="text-xs bg-yellow-500/20 px-3 py-1 rounded-full">Game Dev</span>
+          <span class="text-xs bg-red-500/20 px-3 py-1 rounded-full">Interactive</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="text-center mt-12">
+      <a href="https://github.com/Paras367" target="_blank"
+         class="inline-block px-8 py-4 rounded-full border-2 border-cyan-400
+                hover:bg-cyan-400 hover:text-black transition font-semibold">
+        <i class="fab fa-github"></i> View All Projects on GitHub
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- 🔷 CONTACT -->
+<section id="contact" class="py-24 bg-white/5 px-6" data-aos="fade-up">
+  <div class="container mx-auto max-w-4xl text-center">
+    <h2 class="text-4xl font-bold mb-8 neon">
+      <i class="fas fa-paper-plane"></i> Let's Connect
+    </h2>
+    
+    <p class="text-lg opacity-90 mb-12">
+      I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.
+    </p>
+    
+    <div class="grid md:grid-cols-3 gap-6 mb-12">
+      <a href="mailto:softwarelabschd@gmail.com" class="glass p-6 rounded-xl hover:scale-105 transition">
+        <i class="fas fa-envelope text-4xl text-cyan-400 mb-3"></i>
+        <h3 class="font-semibold mb-2">Email</h3>
+        <p class="text-sm opacity-80">softwarelabschd@gmail.com</p>
+      </a>
+      
+      <a href="https://github.com/Paras367" target="_blank" class="glass p-6 rounded-xl hover:scale-105 transition">
+        <i class="fab fa-github text-4xl text-purple-400 mb-3"></i>
+        <h3 class="font-semibold mb-2">GitHub</h3>
+        <p class="text-sm opacity-80">@Paras367</p>
+      </a>
+      
+      <div class="glass p-6 rounded-xl">
+        <i class="fas fa-map-marker-alt text-4xl text-green-400 mb-3"></i>
+        <h3 class="font-semibold mb-2">Location</h3>
+        <p class="text-sm opacity-80">Chandigarh, India</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="py-12 text-center border-t border-white/10">
+  <img src="logo.svg" class="mx-auto w-32 mb-6 opacity-80">
+  
+  <div class="flex justify-center gap-6 mb-6">
+    <a href="https://github.com/Paras367" target="_blank" class="text-2xl hover:text-cyan-400 transition">
+      <i class="fab fa-github"></i>
+    </a>
+    <a href="mailto:softwarelabschd@gmail.com" class="text-2xl hover:text-cyan-400 transition">
+      <i class="fas fa-envelope"></i>
+    </a>
+  </div>
+  
+  <p class="text-sm opacity-70">
+    © 2025 Paras Dhiman • Crafted with <i class="fas fa-heart text-red-400"></i> and Code ⚡
+  </p>
+  <p class="text-xs opacity-50 mt-2">
+    <i class="fas fa-code"></i> Built with HTML, CSS, JavaScript & TailwindCSS
+  </p>
+</footer>
+
+<!-- Typed.js -->
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+<script>
+new Typed("#typed", {
+  strings: [
+    "Python Developer",
+    "Educational App Builder",
+    "Creative Coder",
+    "Problem Solver",
+    "Future Engineer",
+    "Tech Enthusiast"
+  ],
+  typeSpeed: 60,
+  backSpeed: 40,
+  loop: true
+});
+</script>
+
+<!-- AOS -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+AOS.init({
+  duration: 1000,
+  once: true
+});
+</script>
+
+<!-- Particles.js -->
+<script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+<script>
+particlesJS("particles-js", {
+  particles: {
+    number: { value: 80 },
+    color: { value: "#00f7ff" },
+    shape: { type: "circle" },
+    opacity: {
+      value: 0.5,
+      random: true
+    },
+    size: {
+      value: 3,
+      random: true
+    },
+    line_linked: {
+      enable: true,
+      distance: 150,
+      color: "#00f7ff",
+      opacity: 0.4,
+      width: 1
+    },
+    move: {
+      enable: true,
+      speed: 2,
+      direction: "none",
+      random: false,
+      straight: false,
+      out_mode: "out",
+      bounce: false
+    }
+  },
+  interactivity: {
+    detect_on: "canvas",
+    events: {
+      onhover: {
+        enable: true,
+        mode: "repulse"
+      },
+      onclick: {
+        enable: true,
+        mode: "push"
+      },
+      resize: true
+    }
+  },
+  retina_detect: true
+});
+</script>
+
 </body>
 </html>
