@@ -1,72 +1,136 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Working Face Detection</title>
+    <title>BHARAT FaceID - Working</title>
     <style>
         body { 
-            font-family: Arial, sans-serif; 
+            font-family: 'Segoe UI', sans-serif; 
             text-align: center; 
             padding: 20px; 
-            background: #f0f2f5;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
         #video-container {
-            width: 640px;
+            width: 100%;
+            max-width: 640px;
             height: 480px;
-            margin: 0 auto;
+            margin: 20px auto;
             position: relative;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
         }
         #video {
             width: 100%;
             height: 100%;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: block;
         }
         #status {
             margin: 20px;
             font-size: 18px;
             font-weight: bold;
-            color: #333;
+            min-height: 24px;
         }
         .btn {
             padding: 12px 24px;
-            background: #4361ee;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
             margin: 10px;
+            transition: transform 0.2s;
         }
         .btn:hover {
-            background: #3a56d4;
+            transform: translateY(-2px);
+        }
+        .btn:active {
+            transform: translateY(0);
         }
         .hidden { display: none; }
+        .success { color: #06d6a0; }
+        .error { color: #ef476f; }
+        .info { color: #118ab2; }
     </style>
 </head>
 <body>
-    <h1>✅ Working Face Detection</h1>
-    
-    <div id="start-screen">
-        <button class="btn" onclick="startCamera()">Start Camera</button>
+    <div class="container">
+        <h1>🔐 BHARAT FaceID</h1>
+        <p>Privacy-first biometric authentication</p>
+        
+        <div id="start-screen">
+            <input type="text" id="nameInput" placeholder="Your Full Name" style="padding: 12px; width: 80%; margin: 10px; border-radius: 8px; border: 2px solid #e0e0e0;">
+            <br>
+            <button class="btn" onclick="startEnrollment()">:Register Face</button>
+            <button class="btn" onclick="startRecognition()">🔓 Login</button>
+        </div>
+
+        <div id="camera-screen" class="hidden">
+            <div id="video-container">
+                <video id="video" autoplay muted playsinline></video>
+            </div>
+            <div id="status" class="info">Initializing...</div>
+            <button class="btn" onclick="stopCamera()">← Back</button>
+        </div>
     </div>
 
-    <div id="camera-screen" class="hidden">
-        <div id="video-container">
-            <video id="video" autoplay muted playsinline></video>
-        </div>
-        <div id="status">Detecting faces...</div>
-        <button class="btn" onclick="stopCamera()">Stop Camera</button>
-    </div>
+    <!-- TensorFlow.js + BlazeFace -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.12.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface@0.0.5/dist/blazeface.min.js"></script>
 
     <script>
+        const WORKER_URL = 'https://face-auth-worker.dhimanparas605.workers.dev';
         let stream = null;
+        let blazeFace = null;
         let isRunning = false;
-        let faceMesh = null;
+        let mode = 'idle'; // 'enroll' or 'recognize'
 
-        // Simple face detection using built-in browser capabilities
-        async function startCamera() {
+        // Initialize BlazeFace
+        async function initBlazeFace() {
+            if (blazeFace) return;
             try {
-                // Get camera stream
+                document.getElementById('status').textContent = 'Loading face detection model...';
+                document.getElementById('status').className = 'info';
+                blazeFace = await blazeface.load();
+                document.getElementById('status').textContent = 'Model loaded! Ready for faces.';
+            } catch (error) {
+                document.getElementById('status').textContent = '❌ Failed to load model';
+                document.getElementById('status').className = 'error';
+                console.error('Model load error:', error);
+            }
+        }
+
+        async function startEnrollment() {
+            const name = document.getElementById('nameInput').value.trim();
+            if (!name) {
+                alert('Please enter your name');
+                return;
+            }
+            
+            mode = 'enroll';
+            await startCamera();
+        }
+
+        async function startRecognition() {
+            mode = 'recognize';
+            await startCamera();
+        }
+
+        async function startCamera() {
+            await initBlazeFace();
+            if (!blazeFace) return;
+            
+            try {
                 stream = await navigator.mediaDevices.getUserMedia({ 
                     video: { width: 640, height: 480, facingMode: 'user' } 
                 });
@@ -80,13 +144,14 @@
                     video.play();
                 });
                 
-                // Show camera screen
                 document.getElementById('start-screen').classList.add('hidden');
                 document.getElementById('camera-screen').classList.remove('hidden');
                 isRunning = true;
                 
-                // Start simple face detection
-                detectFaces();
+                document.getElementById('status').textContent = '👀 Looking for faces...';
+                document.getElementById('status').className = 'info';
+                
+                processVideo();
                 
             } catch (err) {
                 alert('❌ Camera access denied. Please allow camera permissions.');
@@ -103,29 +168,120 @@
             document.getElementById('start-screen').classList.remove('hidden');
         }
 
-        // Simple face detection using basic heuristics
-        async function detectFaces() {
-            if (!isRunning) return;
+        async function processVideo() {
+            if (!isRunning || !blazeFace) return;
             
             const video = document.getElementById('video');
             const status = document.getElementById('status');
             
-            // Check if video is ready
-            if (video.readyState < 2) {
-                setTimeout(detectFaces, 100);
-                return;
+            if (video.readyState >= 2) {
+                try {
+                    // Detect faces using BlazeFace
+                    const predictions = await blazeFace.estimateFaces(video);
+                    
+                    if (predictions.length > 0) {
+                        // Get face bounding box
+                        const bbox = predictions[0].topLeft.concat(predictions[0].bottomRight);
+                        
+                        // Create a simple face descriptor (normalized bounding box)
+                        const width = video.videoWidth;
+                        const height = video.videoHeight;
+                        const normalizedBox = [
+                            bbox[0] / width,
+                            bbox[1] / height,
+                            bbox[2] / width,
+                            bbox[3] / height
+                        ];
+                        
+                        // For demo purposes, we'll use this as our "descriptor"
+                        // In production, you'd want more sophisticated features
+                        const descriptor = normalizedBox;
+                        
+                        if (mode === 'enroll') {
+                            // Enroll face
+                            const name = document.getElementById('nameInput').value.trim();
+                            try {
+                                const response = await fetch(`${WORKER_URL}/enroll`, {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ name, descriptor })
+                                });
+                                
+                                if (response.ok) {
+                                    status.textContent = `✅ ${name}, enrolled successfully!`;
+                                    status.className = 'success';
+                                    setTimeout(stopCamera, 2000);
+                                } else {
+                                    status.textContent = '❌ Enrollment failed';
+                                    status.className = 'error';
+                                }
+                            } catch (error) {
+                                status.textContent = '❌ Network error';
+                                status.className = 'error';
+                                console.error('Enrollment error:', error);
+                            }
+                            mode = 'idle';
+                        } 
+                        else if (mode === 'recognize') {
+                            // Recognize face
+                            try {
+                                const response = await fetch(`${WORKER_URL}/descriptors`);
+                                const users = await response.json();
+                                
+                                let match = null;
+                                for (const user of users) {
+                                    // Simple distance calculation
+                                    let distance = 0;
+                                    for (let i = 0; i < descriptor.length; i++) {
+                                        distance += Math.pow(descriptor[i] - user.descriptor[i], 2);
+                                    }
+                                    distance = Math.sqrt(distance);
+                                    
+                                    if (distance < 0.3) { // threshold
+                                        match = user.name;
+                                        break;
+                                    }
+                                }
+                                
+                                if (match) {
+                                    // Log attendance
+                                    await fetch(`${WORKER_URL}/attendance`, {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ name: match })
+                                    });
+                                    
+                                    status.textContent = `✅ Welcome, ${match}!`;
+                                    status.className = 'success';
+                                    setTimeout(stopCamera, 2000);
+                                } else {
+                                    status.textContent = '❌ Face not recognized';
+                                    status.className = 'error';
+                                    setTimeout(stopCamera, 2000);
+                                }
+                            } catch (error) {
+                                status.textContent = '❌ Recognition error';
+                                status.className = 'error';
+                                console.error('Recognition error:', error);
+                            }
+                            mode = 'idle';
+                        }
+                    } else {
+                        status.textContent = '👀 Looking for faces...';
+                        status.className = 'info';
+                    }
+                } catch (error) {
+                    console.error('Processing error:', error);
+                    // Continue processing
+                }
             }
             
-            // Since we can't use complex models reliably,
-            // we'll just confirm the camera is working
-            status.textContent = '✅ Camera working! Point your face at the camera.';
-            status.style.color = '#06d6a0';
-            
-            
-            setTimeout(detectFaces, 1000);
+            if (isRunning) {
+                requestAnimationFrame(processVideo);
+            }
         }
 
-        console.log('System ready! Click "Start Camera" to begin.');
+        console.log('BHARAT FaceID ready!');
     </script>
 </body>
 </html>
