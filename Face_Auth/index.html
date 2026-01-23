@@ -4,274 +4,43 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="description" content="Secure Face ID Login & Attendance System – Privacy First, No Image Uploads. Built for Bharat with sovereign AI.">
-  <meta name="keywords" content="face recognition, biometric login, attendance system, privacy-first AI, Cloudflare Workers, MediaPipe">
-  <meta name="author" content="Paras Dhiman">
-  <meta name="robots" content="index, follow">
-  <meta property="og:title" content="BHARAT FaceID | Secure Biometric Authentication">
-  <meta property="og:description" content="Privacy-first face recognition system. No images stored — only mathematical descriptors.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://paras367.github.io/Advanced_Codes/Face_Auth/">
-  <meta property="og:image" content="https://paras367.github.io/Advanced_Codes/Face_Auth/preview.jpg">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="BHARAT FaceID">
-  <meta name="twitter:description" content="Secure, sovereign, and privacy-respecting AI for Bharat.">
-
-  <!-- 🔗 Performance -->
-  <link rel="preconnect" href="https://cdn.jsdelivr.net">
-  <link rel="dns-prefetch" href="https://face-auth-worker.dhimanparas605.workers.dev">
-
-  <!-- 🎨 Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@500;600&family=Orbitron:wght@500&display=swap" rel="stylesheet">
-
-  <!-- ⚡ Font Awesome 6 -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-  <title>🔐 BHARAT FaceID | A Nation Rising</title>
-
+  <title>BHARAT FaceID | A Nation Rising</title>
   <style>
-    :root {
-      --primary: #4361ee;
-      --primary-dark: #3a56d4;
-      --success: #06d6a0;
-      --danger: #ef476f;
-      --dark: #1d3557;
-      --light: #f8f9fa;
-      --gray: #6c757d;
-      --wave-bg: #0d1b2a;
-      --card-bg: rgba(255, 255, 255, 0.95);
-      --shadow: 0 10px 30px rgba(0,0,0,0.12);
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #e4edf9 100%);
-      color: var(--dark);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    header {
-      background: white;
-      box-shadow: var(--shadow);
-      padding: 1rem 5%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-    }
-
-    .logo i { font-size: 1.8rem; color: var(--primary); }
-    .logo h1 {
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 600;
-      font-size: 1.5rem;
-      background: linear-gradient(90deg, var(--primary), #7209b7);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    main {
-      max-width: 800px;
-      margin: 2.5rem auto;
-      padding: 0 1.5rem;
-    }
-
-    .hero { text-align: center; margin-bottom: 2rem; }
-    .hero h2 {
-      font-family: 'Poppins', sans-serif;
-      font-size: 2.2rem;
-      margin-bottom: 0.8rem;
-    }
-    .hero p { color: var(--gray); max-width: 600px; margin: 0 auto; line-height: 1.6; }
-
-    .card {
-      background: var(--card-bg);
-      border-radius: 20px;
-      padding: 2rem;
-      box-shadow: var(--shadow);
-      margin-bottom: 2rem;
-    }
-
-    .input-group { margin-bottom: 1.5rem; }
-    .input-group label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 600;
-    }
-    .input-group input {
-      width: 100%;
-      padding: 12px 16px;
-      border: 2px solid #e0e0e0;
-      border-radius: 12px;
-      font-size: 1rem;
-    }
-    .input-group input:focus {
-      outline: none;
-      border-color: var(--primary);
-    }
-
-    .btn {
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 14px 28px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      border-radius: 12px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      transition: all 0.3s;
-      box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
-    }
-    .btn:hover {
-      background: var(--primary-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(67, 97, 238, 0.4);
-    }
-    .btn-success { background: var(--success); }
-    .btn-secondary { background: #6c757d; }
-
-    #camera-screen { display: none; text-align: center; }
-    #video-container {
-      position: relative;
-      display: inline-block;
-      margin: 0 auto 1.5rem;
-    }
-    #video, #canvas {
-      width: 100%;
-      max-width: 640px;
-      height: auto;
-      border-radius: 16px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-    }
-    canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 10;
-    }
-
-    #status { font-weight: 600; margin: 1rem 0; min-height: 1.5rem; }
-    .status-live { color: var(--success); }
-    .status-warn { color: var(--danger); }
-    .status-info { color: var(--gray); }
-
-    #result {
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin: 1rem 0;
-      min-height: 1.8rem;
-    }
-    .result-success { color: var(--success); }
-    .result-error { color: var(--danger); }
-
-    footer {
-      background: var(--wave-bg);
-      color: white;
-      text-align: center;
-      padding: 4rem 2rem 2rem;
-      position: relative;
-      margin-top: 4rem;
-    }
-    footer::before {
-      content: "";
-      position: absolute;
-      top: -40px;
-      left: 0;
-      width: 100%;
-      height: 60px;
-      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%230d1b2a' fill-opacity='1' d='M0,128L48,138.7C96,149,192,171,288,186.7C384,203,480,213,576,208C672,203,768,181,864,186.7C960,192,1056,224,1152,229.3C1248,235,1344,213,1392,202.7L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
-      background-size: cover;
-    }
-    .footer-content h3 {
-      font-family: 'Orbitron', sans-serif;
-      margin-bottom: 1rem;
-    }
-    .copyright { margin-top: 2rem; opacity: 0.8; font-size: 0.95rem; }
-
-    @media (max-width: 768px) {
-      .hero h2 { font-size: 1.8rem; }
-      .card { padding: 1.5rem; }
-    }
+    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background: #f0f2f5; }
+    #video, #canvas { width: 640px; height: 480px; border: 1px solid #ccc; margin: 10px auto; display: block; }
+    .hidden { display: none; }
+    button { padding: 10px 20px; margin: 5px; font-size: 16px; }
+    #status { margin: 10px; font-weight: bold; }
   </style>
 </head>
 <body>
-  <header>
-    <a href="#" class="logo">
-      <i class="fas fa-shield-alt"></i>
-      <h1>BHARAT FaceID</h1>
-    </a>
-  </header>
+  <h1>BHARAT FaceID</h1>
+  
+  <div id="init-screen">
+    <input type="text" id="nameInput" placeholder="Your Name" />
+    <br><br>
+    <button onclick="startEnroll()">:Register Face</button>
+    <button onclick="startRecognition()">🔓 Login</button>
+  </div>
 
-  <main>
-    <section class="hero">
-      <h2><i class="fas fa-face-recognition"></i> Secure Face Recognition</h2>
-      <p>Privacy-first biometric authentication. No images stored — only mathematical descriptors.</p>
-    </section>
+  <div id="camera-screen" class="hidden">
+    <video id="video" autoplay muted playsinline></video>
+    <canvas id="canvas" width="640" height="480"></canvas>
+    <div id="status">Initializing...</div>
+    <button onclick="stopCamera()">← Back</button>
+  </div>
 
-    <div class="card" id="init-screen">
-      <div class="input-group">
-        <label for="nameInput"><i class="fas fa-user-tag"></i> Your Full Name</label>
-        <input type="text" id="nameInput" placeholder="e.g., Paras Dhiman" autocomplete="name" />
-      </div>
-      <button class="btn" onclick="startEnroll()">
-        <i class="fas fa-user-plus"></i> Register Face
-      </button>
-      <button class="btn btn-success" onclick="startRecognition()">
-        <i class="fas fa-door-open"></i> Face Login & Attendance
-      </button>
-    </div>
-
-    <div class="card" id="camera-screen">
-      <div id="video-container">
-        <video id="video" autoplay muted playsinline></video>
-        <canvas id="canvas" width="640" height="480"></canvas>
-      </div>
-      <div id="status" class="status-info">Initializing camera...</div>
-      <div id="result"></div>
-      <button class="btn btn-secondary" onclick="stopCamera()">
-        <i class="fas fa-arrow-left"></i> Back
-      </button>
-    </div>
-  </main>
-
-  <footer>
-    <div class="footer-content">
-      <h3><i class="fas fa-flag"></i> BHARAT - A Nation Rising</h3>
-      <p>Empowering India with secure, sovereign, and privacy-respecting AI technologies.</p>
-      <div class="copyright">
-        &copy; 2026 BHARAT AI Labs. All rights reserved.
-      </div>
-    </div>
-  </footer>
-
-  <!-- 🧠 MediaPipe + TF.js -->
+  <!-- MediaPipe -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.12.0/dist/tf.min.js"></script>
 
   <script>
     const WORKER_URL = 'https://face-auth-worker.dhimanparas605.workers.dev';
     let stream = null;
     let faceMesh = null;
     let isRunning = false;
-    let lastDescriptor = null;
 
-    // Initialize MediaPipe FaceMesh
+    // Initialize MediaPipe
     async function initFaceMesh() {
       if (faceMesh) return;
       faceMesh = new FaceMesh({
@@ -280,67 +49,73 @@
       faceMesh.setOptions({ maxNumFaces: 1, refineLandmarks: true });
     }
 
-    // Blink detection using MediaPipe landmarks
-    function isBlinking(points) {
-      if (points.length < 474) return false;
+    // Blink detection
+    function isBlinking(landmarks) {
+      if (!landmarks || landmarks.length < 474) return false;
       
-      const leftEye = [
-        points[33], points[160], points[159], points[158],
-        points[133], points[153], points[145], points[144]
-      ];
-      const rightEye = [
-        points[263], points[387], points[386], points[385],
-        points[362], points[380], points[374], points[373]
-      ];
-
+      // Convert flat array to points
+      const points = [];
+      for (let i = 0; i < landmarks.length; i += 3) {
+        points.push({ x: landmarks[i], y: landmarks[i + 1] });
+      }
+      
+      // Left eye indices
+      const leftEye = [33, 160, 159, 158, 133, 153, 145, 144].map(i => points[i]);
+      const rightEye = [263, 387, 386, 385, 362, 380, 374, 373].map(i => points[i]);
+      
+      if (leftEye.some(p => !p) || rightEye.some(p => !p)) return false;
+      
+      const computeEAR = (eye) => {
+        const A = Math.sqrt(Math.pow(eye[1].x - eye[7].x, 2) + Math.pow(eye[1].y - eye[7].y, 2));
+        const B = Math.sqrt(Math.pow(eye[2].x - eye[6].x, 2) + Math.pow(eye[2].y - eye[6].y, 2));
+        const C = Math.sqrt(Math.pow(eye[3].x - eye[5].x, 2) + Math.pow(eye[3].y - eye[5].y, 2));
+        const D = Math.sqrt(Math.pow(eye[0].x - eye[4].x, 2) + Math.pow(eye[0].y - eye[4].y, 2));
+        return (A + B + C) / (3.0 * D);
+      };
+      
       const leftEAR = computeEAR(leftEye);
       const rightEAR = computeEAR(rightEye);
       const avgEAR = (leftEAR + rightEAR) / 2;
+      console.log('EAR:', avgEAR.toFixed(3));
       return avgEAR < 0.25;
     }
 
-    function computeEAR(eye) {
-      if (eye.some(p => !p)) return 1.0;
-      const A = Math.sqrt(Math.pow(eye[1].x - eye[7].x, 2) + Math.pow(eye[1].y - eye[7].y, 2));
-      const B = Math.sqrt(Math.pow(eye[2].x - eye[6].x, 2) + Math.pow(eye[2].y - eye[6].y, 2));
-      const C = Math.sqrt(Math.pow(eye[3].x - eye[5].x, 2) + Math.pow(eye[3].y - eye[5].y, 2));
-      const D = Math.sqrt(Math.pow(eye[0].x - eye[4].x, 2) + Math.pow(eye[0].y - eye[4].y, 2));
-      return (A + B + C) / (3.0 * D);
-    }
-
     async function startCamera() {
+      await initFaceMesh();
+      
       try {
-        await initFaceMesh();
         stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
-        document.getElementById('video').srcObject = stream;
-        document.getElementById('init-screen').style.display = 'none';
-        document.getElementById('camera-screen').style.display = 'block';
+        const video = document.getElementById('video');
+        video.srcObject = stream;
+        
+        // Wait for video to load
+        await new Promise((resolve) => {
+          video.onloadedmetadata = () => resolve();
+          video.play();
+        });
+        
+        document.getElementById('init-screen').classList.add('hidden');
+        document.getElementById('camera-screen').classList.remove('hidden');
         isRunning = true;
-        setStatus('👀 Look at camera and blink slowly...', 'info');
+        setStatus('👀 Look at camera and blink...');
         processVideo();
       } catch (err) {
-        alert('⚠️ Camera access denied. Please allow permissions.');
+        alert('⚠️ Camera access denied.');
         console.error(err);
       }
     }
 
     function stopCamera() {
       isRunning = false;
-      if (stream) stream.getTracks().forEach(t => t.stop());
-      document.getElementById('camera-screen').style.display = 'none';
-      document.getElementById('init-screen').style.display = 'block';
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+      document.getElementById('camera-screen').classList.add('hidden');
+      document.getElementById('init-screen').classList.remove('hidden');
     }
 
-    function setStatus(text, type) {
-      const el = document.getElementById('status');
-      el.textContent = text;
-      el.className = `status-${type}`;
-    }
-
-    function setResult(text, type) {
-      const el = document.getElementById('result');
-      el.textContent = text;
-      el.className = `result-${type}`;
+    function setStatus(text) {
+      document.getElementById('status').textContent = text;
     }
 
     async function processVideo() {
@@ -350,166 +125,60 @@
       const canvas = document.getElementById('canvas');
       const ctx = canvas.getContext('2d');
 
-      if (video.readyState === video.HAVE_ENOUGH_DATA) {
+      // Only process if video is ready
+      if (video.readyState >= 2) { // HAVE_CURRENT_DATA or better
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
         
-        const predictions = await faceMesh.send({ image: video });
-        if (predictions.length > 0) {
-          const landmarks = predictions[0].landmarks;
+        try {
+          const predictions = await faceMesh.send({ image: video });
           
-          // Convert flat array to {x, y} points
-          const points = [];
-          for (let i = 0; i < landmarks.length; i += 3) {
-            points.push({ x: landmarks[i], y: landmarks[i + 1] });
-          }
-          
-          // Store descriptor (simplified)
-          lastDescriptor = points.map(p => p.x + p.y);
+          if (predictions.length > 0 && predictions[0].landmarks) {
+            const landmarks = predictions[0].landmarks;
+            
+            // Draw face mesh
+            ctx.strokeStyle = '#4361ee';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            for (let i = 0; i < landmarks.length; i += 3) {
+              const x = landmarks[i] * canvas.width;
+              const y = landmarks[i + 1] * canvas.height;
+              if (i === 0) ctx.moveTo(x, y);
+              else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
 
-          // Draw face mesh
-          ctx.strokeStyle = '#4361ee';
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          for (let i = 0; i < points.length; i++) {
-            const x = points[i].x * canvas.width;
-            const y = points[i].y * canvas.height;
-            if (i === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-          }
-          ctx.stroke();
-
-          // Blink detection
-          if (isBlinking(points)) {
-            setStatus('✅ Blink detected!', 'live');
+            // Blink detection
+            if (isBlinking(landmarks)) {
+              setStatus('✅ Blink detected!');
+              // You can now trigger enrollment/recognition
+            } else {
+              setStatus('👀 Look at camera and blink...');
+            }
           } else {
-            setStatus('👀 Look at camera and blink slowly...', 'info');
+            setStatus('No face detected');
           }
-        } else {
-          lastDescriptor = null;
-          setStatus('No face detected', 'warn');
+        } catch (e) {
+          console.error('Processing error:', e);
+          setStatus('Processing error');
         }
       }
 
       requestAnimationFrame(processVideo);
     }
 
-    // Enrollment
     async function startEnroll() {
       const name = document.getElementById('nameInput').value.trim();
-      if (!name) return alert('Please enter your name');
+      if (!name) return alert('Enter name');
       await startCamera();
-
-      const capture = async () => {
-        if (!isRunning || !lastDescriptor) {
-          setTimeout(capture, 300);
-          return;
-        }
-
-        // Get current landmarks for blink check
-        const video = document.getElementById('video');
-        const predictions = await faceMesh.send({ image: video });
-        if (predictions.length === 0) {
-          setTimeout(capture, 300);
-          return;
-        }
-
-        const landmarks = predictions[0].landmarks;
-        const points = [];
-        for (let i = 0; i < landmarks.length; i += 3) {
-          points.push({ x: landmarks[i], y: landmarks[i + 1] });
-        }
-
-        if (isBlinking(points)) {
-          setStatus('✅ Enrolling...', 'live');
-          try {
-            const res = await fetch(`${WORKER_URL}/enroll`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ name, descriptor: lastDescriptor })
-            });
-            const data = await res.json();
-            setResult(data.success ? `✅ ${name}, enrolled!` : '❌ Failed', data.success ? 'success' : 'error');
-          } catch (e) {
-            setResult('❌ Network error', 'error');
-          }
-          setTimeout(stopCamera, 2000);
-          return;
-        }
-
-        setTimeout(capture, 300);
-      };
-
-      capture();
+      // Add enrollment logic here when blink is detected
     }
 
-    // Recognition
     async function startRecognition() {
       await startCamera();
-
-      const recognize = async () => {
-        if (!isRunning || !lastDescriptor) {
-          setTimeout(recognize, 300);
-          return;
-        }
-
-        const video = document.getElementById('video');
-        const predictions = await faceMesh.send({ image: video });
-        if (predictions.length === 0) {
-          setTimeout(recognize, 300);
-          return;
-        }
-
-        const landmarks = predictions[0].landmarks;
-        const points = [];
-        for (let i = 0; i < landmarks.length; i += 3) {
-          points.push({ x: landmarks[i], y: landmarks[i + 1] });
-        }
-
-        if (isBlinking(points)) {
-          setStatus('✅ Recognizing...', 'live');
-          try {
-            const res = await fetch(`${WORKER_URL}/descriptors`);
-            const users = await res.json();
-            let match = null;
-            for (const u of users) {
-              const dist = euclideanDistance(lastDescriptor, u.descriptor);
-              if (dist < 0.6) {
-                match = u.name;
-                break;
-              }
-            }
-            if (match) {
-              await fetch(`${WORKER_URL}/attendance`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: match })
-              });
-              setResult(`✅ Welcome, ${match}!`, 'success');
-            } else {
-              setResult('❌ Not recognized', 'error');
-            }
-          } catch (e) {
-            setResult('❌ Error', 'error');
-          }
-          setTimeout(stopCamera, 2000);
-          return;
-        }
-
-        setTimeout(recognize, 300);
-      };
-
-      recognize();
+      // Add recognition logic here when blink is detected
     }
 
-    function euclideanDistance(a, b) {
-      let sum = 0;
-      for (let i = 0; i < Math.min(a.length, b.length); i++) {
-        sum += Math.pow(a[i] - b[i], 2);
-      }
-      return Math.sqrt(sum);
-    }
-
-    console.log('🚀 BHARAT FaceID ready!');
+    console.log('Ready!');
   </script>
 </body>
 </html>
