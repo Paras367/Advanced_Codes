@@ -1,184 +1,517 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Secure Face ID Login & Attendance System – Privacy First, No Image Uploads. Built for Bharat with sovereign AI.">
-  <title>BHARAT FaceID | A Nation Rising</title>
-  <style>
-    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background: #f0f2f5; }
-    #video, #canvas { width: 640px; height: 480px; border: 1px solid #ccc; margin: 10px auto; display: block; }
-    .hidden { display: none; }
-    button { padding: 10px 20px; margin: 5px; font-size: 16px; }
-    #status { margin: 10px; font-weight: bold; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Recognition Attendance</title>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/face-api.js/0.22.2/face-api.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 900px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.95em;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            color: #666;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .video-container {
+            position: relative;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        video {
+            width: 100%;
+            display: block;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+            margin-left: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .records {
+            margin-top: 30px;
+        }
+
+        .record-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .record-info {
+            flex: 1;
+        }
+
+        .record-time {
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
 </head>
 <body>
-  <h1>BHARAT FaceID</h1>
-  
-  <div id="init-screen">
-    <input type="text" id="nameInput" placeholder="Your Name" />
-    <br><br>
-    <button onclick="startEnroll()">:Register Face</button>
-    <button onclick="startRecognition()">🔓 Login</button>
-  </div>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Face Recognition Attendance</h1>
+            <p>Secure, Fast, and Privacy-Focused</p>
+        </div>
 
-  <div id="camera-screen" class="hidden">
-    <video id="video" autoplay muted playsinline></video>
-    <canvas id="canvas" width="640" height="480"></canvas>
-    <div id="status">Initializing...</div>
-    <button onclick="stopCamera()">← Back</button>
-  </div>
+        <div class="content">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('register')">📝 Register</button>
+                <button class="tab" onclick="switchTab('recognize')">✅ Mark Attendance</button>
+                <button class="tab" onclick="switchTab('records')">📊 Records</button>
+            </div>
 
-  <!-- MediaPipe -->
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p style="margin-top: 10px;">Loading face detection models...</p>
+            </div>
 
-  <script>
-    const WORKER_URL = 'https://face-auth-worker.dhimanparas605.workers.dev';
-    let stream = null;
-    let faceMesh = null;
-    let isRunning = false;
+            <!-- Register Tab -->
+            <div id="register" class="tab-content active">
+                <div class="form-group">
+                    <label for="userName">Name</label>
+                    <input type="text" id="userName" placeholder="Enter your name">
+                </div>
+                <div class="form-group">
+                    <label for="userId">Employee ID</label>
+                    <input type="text" id="userId" placeholder="Enter your ID">
+                </div>
+                <div class="video-container" style="display: none;" id="registerVideoContainer">
+                    <video id="registerVideo" autoplay muted></video>
+                    <canvas id="registerCanvas"></canvas>
+                </div>
+                <button class="btn btn-primary" onclick="startRegistration()">Start Camera</button>
+                <button class="btn btn-secondary" onclick="captureAndRegister()" style="display: none;" id="captureBtn">Capture & Register</button>
+                <div id="registerStatus" class="status"></div>
+            </div>
 
-    // Initialize MediaPipe
-    async function initFaceMesh() {
-      if (faceMesh) return;
-      faceMesh = new FaceMesh({
-        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`
-      });
-      faceMesh.setOptions({ maxNumFaces: 1, refineLandmarks: true });
-    }
+            <!-- Recognize Tab -->
+            <div id="recognize" class="tab-content">
+                <div class="video-container" style="display: none;" id="recognizeVideoContainer">
+                    <video id="recognizeVideo" autoplay muted></video>
+                    <canvas id="recognizeCanvas"></canvas>
+                </div>
+                <button class="btn btn-primary" onclick="startRecognition()">Start Recognition</button>
+                <button class="btn btn-secondary" onclick="stopRecognition()" style="display: none;" id="stopBtn">Stop</button>
+                <div id="recognizeStatus" class="status"></div>
+            </div>
 
-    // Blink detection
-    function isBlinking(landmarks) {
-      if (!landmarks || landmarks.length < 474) return false;
-      
-      // Convert flat array to points
-      const points = [];
-      for (let i = 0; i < landmarks.length; i += 3) {
-        points.push({ x: landmarks[i], y: landmarks[i + 1] });
-      }
-      
-      // Left eye indices
-      const leftEye = [33, 160, 159, 158, 133, 153, 145, 144].map(i => points[i]);
-      const rightEye = [263, 387, 386, 385, 362, 380, 374, 373].map(i => points[i]);
-      
-      if (leftEye.some(p => !p) || rightEye.some(p => !p)) return false;
-      
-      const computeEAR = (eye) => {
-        const A = Math.sqrt(Math.pow(eye[1].x - eye[7].x, 2) + Math.pow(eye[1].y - eye[7].y, 2));
-        const B = Math.sqrt(Math.pow(eye[2].x - eye[6].x, 2) + Math.pow(eye[2].y - eye[6].y, 2));
-        const C = Math.sqrt(Math.pow(eye[3].x - eye[5].x, 2) + Math.pow(eye[3].y - eye[5].y, 2));
-        const D = Math.sqrt(Math.pow(eye[0].x - eye[4].x, 2) + Math.pow(eye[0].y - eye[4].y, 2));
-        return (A + B + C) / (3.0 * D);
-      };
-      
-      const leftEAR = computeEAR(leftEye);
-      const rightEAR = computeEAR(rightEye);
-      const avgEAR = (leftEAR + rightEAR) / 2;
-      console.log('EAR:', avgEAR.toFixed(3));
-      return avgEAR < 0.25;
-    }
+            <!-- Records Tab -->
+            <div id="records" class="tab-content">
+                <button class="btn btn-primary" onclick="loadRecords()">Refresh Records</button>
+                <div class="records" id="recordsList"></div>
+                <div id="recordsStatus" class="status"></div>
+            </div>
+        </div>
+    </div>
 
-    async function startCamera() {
-      await initFaceMesh();
-      
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
-        const video = document.getElementById('video');
-        video.srcObject = stream;
-        
-        // Wait for video to load
-        await new Promise((resolve) => {
-          video.onloadedmetadata = () => resolve();
-          video.play();
-        });
-        
-        document.getElementById('init-screen').classList.add('hidden');
-        document.getElementById('camera-screen').classList.remove('hidden');
-        isRunning = true;
-        setStatus('👀 Look at camera and blink...');
-        processVideo();
-      } catch (err) {
-        alert('⚠️ Camera access denied.');
-        console.error(err);
-      }
-    }
+    <script>
+        const API_URL = 'https://face-auth-worker.dhimanparas605.workers.dev';
+        let modelsLoaded = false;
+        let registerStream = null;
+        let recognizeStream = null;
+        let recognitionInterval = null;
 
-    function stopCamera() {
-      isRunning = false;
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-      }
-      document.getElementById('camera-screen').classList.add('hidden');
-      document.getElementById('init-screen').classList.remove('hidden');
-    }
-
-    function setStatus(text) {
-      document.getElementById('status').textContent = text;
-    }
-
-    async function processVideo() {
-      if (!isRunning) return;
-      
-      const video = document.getElementById('video');
-      const canvas = document.getElementById('canvas');
-      const ctx = canvas.getContext('2d');
-
-      // Only process if video is ready
-      if (video.readyState >= 2) { // HAVE_CURRENT_DATA or better
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        
-        try {
-          const predictions = await faceMesh.send({ image: video });
-          
-          if (predictions.length > 0 && predictions[0].landmarks) {
-            const landmarks = predictions[0].landmarks;
+        // Load face-api models
+        async function loadModels() {
+            const loading = document.getElementById('loading');
+            loading.style.display = 'block';
             
-            // Draw face mesh
-            ctx.strokeStyle = '#4361ee';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            for (let i = 0; i < landmarks.length; i += 3) {
-              const x = landmarks[i] * canvas.width;
-              const y = landmarks[i + 1] * canvas.height;
-              if (i === 0) ctx.moveTo(x, y);
-              else ctx.lineTo(x, y);
+            try {
+                await Promise.all([
+                    faceapi.nets.tinyFaceDetector.loadFromUri('https://cdnjs.cloudflare.com/ajax/libs/face-api.js/0.22.2/weights'),
+                    faceapi.nets.faceLandmark68Net.loadFromUri('https://cdnjs.cloudflare.com/ajax/libs/face-api.js/0.22.2/weights'),
+                    faceapi.nets.faceRecognitionNet.loadFromUri('https://cdnjs.cloudflare.com/ajax/libs/face-api.js/0.22.2/weights')
+                ]);
+                modelsLoaded = true;
+                loading.style.display = 'none';
+            } catch (error) {
+                loading.innerHTML = '<p style="color: red;">Error loading models. Please refresh the page.</p>';
             }
-            ctx.stroke();
-
-            // Blink detection
-            if (isBlinking(landmarks)) {
-              setStatus('✅ Blink detected!');
-              // You can now trigger enrollment/recognition
-            } else {
-              setStatus('👀 Look at camera and blink...');
-            }
-          } else {
-            setStatus('No face detected');
-          }
-        } catch (e) {
-          console.error('Processing error:', e);
-          setStatus('Processing error');
         }
-      }
 
-      requestAnimationFrame(processVideo);
-    }
+        loadModels();
 
-    async function startEnroll() {
-      const name = document.getElementById('nameInput').value.trim();
-      if (!name) return alert('Enter name');
-      await startCamera();
-      // Add enrollment logic here when blink is detected
-    }
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
 
-    async function startRecognition() {
-      await startCamera();
-      // Add recognition logic here when blink is detected
-    }
+            stopAllStreams();
+        }
 
-    console.log('Ready!');
-  </script>
+        function stopAllStreams() {
+            if (registerStream) {
+                registerStream.getTracks().forEach(track => track.stop());
+                registerStream = null;
+            }
+            if (recognizeStream) {
+                recognizeStream.getTracks().forEach(track => track.stop());
+                recognizeStream = null;
+            }
+            if (recognitionInterval) {
+                clearInterval(recognitionInterval);
+                recognitionInterval = null;
+            }
+        }
+
+        async function startRegistration() {
+            if (!modelsLoaded) {
+                showStatus('registerStatus', 'Models not loaded yet. Please wait.', 'error');
+                return;
+            }
+
+            const name = document.getElementById('userName').value.trim();
+            const id = document.getElementById('userId').value.trim();
+
+            if (!name || !id) {
+                showStatus('registerStatus', 'Please enter both name and ID', 'error');
+                return;
+            }
+
+            try {
+                const video = document.getElementById('registerVideo');
+                registerStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = registerStream;
+
+                document.getElementById('registerVideoContainer').style.display = 'block';
+                document.getElementById('captureBtn').style.display = 'inline-block';
+                
+                showStatus('registerStatus', 'Camera started. Position your face and click Capture', 'info');
+            } catch (error) {
+                showStatus('registerStatus', 'Camera access denied', 'error');
+            }
+        }
+
+        async function captureAndRegister() {
+            const video = document.getElementById('registerVideo');
+            const canvas = document.getElementById('registerCanvas');
+            const name = document.getElementById('userName').value.trim();
+            const id = document.getElementById('userId').value.trim();
+
+            showStatus('registerStatus', 'Detecting face...', 'info');
+
+            const detection = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
+                .withFaceLandmarks()
+                .withFaceDescriptor();
+
+            if (!detection) {
+                showStatus('registerStatus', 'No face detected. Please try again.', 'error');
+                return;
+            }
+
+            const descriptor = Array.from(detection.descriptor);
+
+            try {
+                const response = await fetch(`${API_URL}/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, id, descriptor })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showStatus('registerStatus', 'Registration successful! ✅', 'success');
+                    setTimeout(() => {
+                        stopAllStreams();
+                        document.getElementById('registerVideoContainer').style.display = 'none';
+                        document.getElementById('captureBtn').style.display = 'none';
+                        document.getElementById('userName').value = '';
+                        document.getElementById('userId').value = '';
+                    }, 2000);
+                } else {
+                    showStatus('registerStatus', result.error || 'Registration failed', 'error');
+                }
+            } catch (error) {
+                showStatus('registerStatus', 'Network error. Please try again.', 'error');
+            }
+        }
+
+        async function startRecognition() {
+            if (!modelsLoaded) {
+                showStatus('recognizeStatus', 'Models not loaded yet. Please wait.', 'error');
+                return;
+            }
+
+            try {
+                const video = document.getElementById('recognizeVideo');
+                recognizeStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = recognizeStream;
+
+                document.getElementById('recognizeVideoContainer').style.display = 'block';
+                document.getElementById('stopBtn').style.display = 'inline-block';
+                
+                showStatus('recognizeStatus', 'Looking for faces...', 'info');
+
+                recognitionInterval = setInterval(async () => {
+                    const detection = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
+                        .withFaceLandmarks()
+                        .withFaceDescriptor();
+
+                    if (detection) {
+                        const descriptor = Array.from(detection.descriptor);
+
+                        try {
+                            const response = await fetch(`${API_URL}/recognize`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ descriptor })
+                            });
+
+                            const result = await response.json();
+
+                            if (response.ok && result.match) {
+                                showStatus('recognizeStatus', `✅ Attendance marked for ${result.name} (ID: ${result.id})`, 'success');
+                                clearInterval(recognitionInterval);
+                                setTimeout(() => stopRecognition(), 2000);
+                            }
+                        } catch (error) {
+                            console.error('Recognition error:', error);
+                        }
+                    }
+                }, 1000);
+            } catch (error) {
+                showStatus('recognizeStatus', 'Camera access denied', 'error');
+            }
+        }
+
+        function stopRecognition() {
+            stopAllStreams();
+            document.getElementById('recognizeVideoContainer').style.display = 'none';
+            document.getElementById('stopBtn').style.display = 'none';
+        }
+
+        async function loadRecords() {
+            showStatus('recordsStatus', 'Loading records...', 'info');
+
+            try {
+                const response = await fetch(`${API_URL}/records`);
+                const result = await response.json();
+
+                if (response.ok && result.records) {
+                    const recordsList = document.getElementById('recordsList');
+                    recordsList.innerHTML = '';
+
+                    if (result.records.length === 0) {
+                        recordsList.innerHTML = '<p style="text-align: center; color: #666;">No records found</p>';
+                    } else {
+                        result.records.forEach(record => {
+                            const div = document.createElement('div');
+                            div.className = 'record-item';
+                            div.innerHTML = `
+                                <div class="record-info">
+                                    <strong>${record.name}</strong> (${record.id})
+                                    <div class="record-time">${new Date(record.timestamp).toLocaleString()}</div>
+                                </div>
+                            `;
+                            recordsList.appendChild(div);
+                        });
+                    }
+                    showStatus('recordsStatus', 'Records loaded successfully', 'success');
+                } else {
+                    showStatus('recordsStatus', 'Failed to load records', 'error');
+                }
+            } catch (error) {
+                showStatus('recordsStatus', 'Network error', 'error');
+            }
+        }
+
+        function showStatus(elementId, message, type) {
+            const status = document.getElementById(elementId);
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+
+            if (type === 'success' || type === 'error') {
+                setTimeout(() => {
+                    status.style.display = 'none';
+                }, 5000);
+            }
+        }
+    </script>
 </body>
 </html>
