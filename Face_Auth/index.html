@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Face Recognition with OpenCV.js</title>
+    <title>Face Detection (MediaPipe)</title>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
         #video, #canvas { width: 640px; height: 480px; border: 1px solid #ccc; }
@@ -9,7 +11,7 @@
     </style>
 </head>
 <body>
-    <h1>Face Recognition (OpenCV.js + Haar Cascade)</h1>
+    <h1>✅ Working Face Detection</h1>
     
     <div id="init-screen">
         <button onclick="startCamera()">Start Camera</button>
@@ -18,100 +20,78 @@
     <div id="camera-screen" class="hidden">
         <video id="video" autoplay muted playsinline></video>
         <canvas id="canvas" width="640" height="480"></canvas>
-        <div id="result">Loading...</div>
         <button onclick="stopCamera()">Stop</button>
     </div>
 
-    <!-- Load OpenCV.js -->
-    <script src="https://docs.opencv.org/4.x/opencv.js"></script>
-    
     <script>
-        let video;
-        let canvas;
-        let ctx;
-        let isRunning = false;
         let stream = null;
-        let faceCascade;
+        let faceMesh = null;
+        let isRunning = false;
 
-        // Initialize OpenCV
-        function onOpenCvReady() {
-            console.log('OpenCV.js ready!');
-            
-            // Load Haar Cascade
-            fetch('haarcascade_frontalface_default.xml')
-                .then(response => response.text())
-                .then(xmlText => {
-                    faceCascade = new cv.CascadeClassifier();
-                    faceCascade.load(cv.matFromBytes(new TextEncoder().encode(xmlText)));
-                    console.log('Haar Cascade loaded!');
-                });
+        // Initialize MediaPipe FaceMesh
+        async function initFaceMesh() {
+            if (faceMesh) return;
+            faceMesh = new FaceMesh({
+                locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`
+            });
+            faceMesh.setOptions({ maxNumFaces: 1, refineLandmarks: true });
         }
 
         async function startCamera() {
+            await initFaceMesh();
             try {
                 stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                video = document.getElementById('video');
+                const video = document.getElementById('video');
                 video.srcObject = stream;
-                
-                canvas = document.getElementById('canvas');
-                ctx = canvas.getContext('2d');
                 
                 document.getElementById('init-screen').classList.add('hidden');
                 document.getElementById('camera-screen').classList.remove('hidden');
                 isRunning = true;
-                
-                await new Promise(resolve => {
-                    video.onloadedmetadata = () => resolve();
-                    video.play();
-                });
-                
                 processVideo();
             } catch (err) {
-                alert('Camera access denied');
+                alert('⚠️ Camera access denied');
             }
         }
 
         function stopCamera() {
             isRunning = false;
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-            }
+            if (stream) stream.getTracks().forEach(track => track.stop());
             document.getElementById('camera-screen').classList.add('hidden');
             document.getElementById('init-screen').classList.remove('hidden');
         }
 
-        function processVideo() {
+        async function processVideo() {
             if (!isRunning) return;
             
-            if (video.readyState === video.HAVE_ENOUGH_DATA) {
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+
+            if (video.readyState >= 2) {
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
                 
-                // Convert to OpenCV format
-                let src = cv.imread(canvas);
-                let gray = new cv.Mat();
-                cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
-                
-                // Detect faces
-                let faces = new cv.RectVector();
-                let faceCascade = new cv.CascadeClassifier();
-                // Note: Loading Haar Cascade in OpenCV.js is complex
-                
-                // For now, just draw rectangle
-                ctx.strokeStyle = 'red';
-                ctx.lineWidth = 2;
-                ctx.strokeRect(100, 100, 200, 200);
-                ctx.fillText('Face detected!', 110, 90);
-                
-                src.delete();
-                gray.delete();
-                faces.delete();
+                const predictions = await faceMesh.send({ image: video });
+                if (predictions.length > 0) {
+                    const landmarks = predictions[0].landmarks;
+                    
+                    // Draw face mesh
+                    ctx.strokeStyle = '#4361ee';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    for (let i = 0; i < landmarks.length; i += 3) {
+                        const x = landmarks[i] * canvas.width;
+                        const y = landmarks[i + 1] * canvas.height;
+                        if (i === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.stroke();
+                }
             }
             
             requestAnimationFrame(processVideo);
         }
 
-        // Wait for OpenCV to load
-        cv['onRuntimeInitialized'] = onOpenCvReady;
+        console.log('Ready to detect faces!');
     </script>
 </body>
 </html>
