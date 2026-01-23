@@ -252,179 +252,177 @@
   <!-- 🧠 Face-API -->
   <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
 
-  <script>
-    // 🔗 CONFIG
-    const MODEL_URL = 'weights'; // Self-hosted weights folder
-    const WORKER_URL = 'https://face-auth-worker.dhimanparas605.workers.dev';
+ <script>
+  const MODEL_URL = 'weights';
+  const WORKER_URL = 'https://face-auth-worker.dhimanparas605.workers.dev';
 
-    // 🎯 State
-    let stream = null;
-    let isRunning = false;
+  let stream = null;
+  let isRunning = false;
 
-    // 📦 Load Models
-    async function loadModels() {
-      await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
-      await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
-      await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
-    }
+  async function loadModels() {
+    await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
+    await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
+    await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
+  }
 
-    // 👁️ CORRECT EYE LANDMARKS FOR 68-POINT MODEL
-    function getLeftEye(landmarks) {
-      const pts = landmarks.positions;
-      return [pts[36], pts[37], pts[38], pts[39], pts[40], pts[41]];
-    }
-    function getRightEye(landmarks) {
-      const pts = landmarks.positions;
-      return [pts[42], pts[43], pts[44], pts[45], pts[46], pts[47]];
-    }
-
-    // ✅ ROBUST EYE ASPECT RATIO
-    function getEAR(eye) {
-      const A = Math.sqrt(Math.pow(eye[1].x - eye[5].x, 2) + Math.pow(eye[1].y - eye[5].y, 2));
-      const B = Math.sqrt(Math.pow(eye[2].x - eye[4].x, 2) + Math.pow(eye[2].y - eye[4].y, 2));
-      const C = Math.sqrt(Math.pow(eye[0].x - eye[3].x, 2) + Math.pow(eye[0].y - eye[3].y, 2));
-      return (A + B) / (2.0 * C);
-    }
-
-    // ✅ BLINK DETECTION (tolerant threshold)
-    function isBlinking(landmarks) {
-      const leftEAR = getEAR(getLeftEye(landmarks));
-      const rightEAR = getEAR(getRightEye(landmarks));
-      const avgEAR = (leftEAR + rightEAR) / 2;
-      return avgEAR < 0.25; // more tolerant than 0.22
-    }
-
-    // 📸 Camera Control
-    async function startCamera() {
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
-        document.getElementById('video').srcObject = stream;
-        document.getElementById('init-screen').style.display = 'none';
-        document.getElementById('camera-screen').style.display = 'block';
-        isRunning = true;
-        setStatus('👀 Look at camera and blink slowly...', 'info');
-      } catch (err) {
-        alert('⚠️ Camera access denied. Please allow permissions.');
-        console.error(err);
+  // ✅ SAFE BLINK DETECTION WITH VALIDATION
+  function isBlinkingSafe(landmarks) {
+    try {
+      if (!landmarks || !landmarks.positions || landmarks.positions.length < 48) {
+        return false;
       }
+      const pts = landmarks.positions;
+      const leftEye = [pts[36], pts[37], pts[38], pts[39], pts[40], pts[41]];
+      const rightEye = [pts[42], pts[43], pts[44], pts[45], pts[46], pts[47]];
+
+      // Validate points exist
+      if (leftEye.some(p => !p) || rightEye.some(p => !p)) return false;
+
+      const earLeft = computeEAR(leftEye);
+      const earRight = computeEAR(rightEye);
+      const avgEAR = (earLeft + earRight) / 2;
+
+      // 🔍 Debug: uncomment to see values
+       console.log('EAR:', avgEAR.toFixed(3));
+
+      return avgEAR < 0.26; // tolerant threshold
+    } catch (e) {
+      return false;
     }
+  }
 
-    function stopCamera() {
-      isRunning = false;
-      if (stream) stream.getTracks().forEach(t => t.stop());
-      document.getElementById('camera-screen').style.display = 'none';
-      document.getElementById('init-screen').style.display = 'block';
+  function computeEAR(eye) {
+    const A = Math.sqrt(Math.pow(eye[1].x - eye[5].x, 2) + Math.pow(eye[1].y - eye[5].y, 2));
+    const B = Math.sqrt(Math.pow(eye[2].x - eye[4].x, 2) + Math.pow(eye[2].y - eye[4].y, 2));
+    const C = Math.sqrt(Math.pow(eye[0].x - eye[3].x, 2) + Math.pow(eye[0].y - eye[3].y, 2));
+    return (A + B) / (2.0 * C);
+  }
+
+  async function startCamera() {
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+      document.getElementById('video').srcObject = stream;
+      document.getElementById('init-screen').style.display = 'none';
+      document.getElementById('camera-screen').style.display = 'block';
+      isRunning = true;
+      setStatus('👀 Look at camera and blink slowly...', 'info');
+    } catch (err) {
+      alert('⚠️ Camera access denied.');
     }
+  }
 
-    function setStatus(text, type) {
-      const el = document.getElementById('status');
-      el.textContent = text;
-      el.className = `status-${type}`;
-    }
+  function stopCamera() {
+    isRunning = false;
+    if (stream) stream.getTracks().forEach(t => t.stop());
+    document.getElementById('camera-screen').style.display = 'none';
+    document.getElementById('init-screen').style.display = 'block';
+  }
 
-    function setResult(text, type) {
-      const el = document.getElementById('result');
-      el.textContent = text;
-      el.className = `result-${type}`;
-    }
+  function setStatus(text, type) {
+    const el = document.getElementById('status');
+    el.textContent = text;
+    el.className = `status-${type}`;
+  }
 
-    // ✅ ENROLL ON BLINK
-    async function startEnroll() {
-      const name = document.getElementById('nameInput').value.trim();
-      if (!name) return alert('Please enter your name');
-      
-      await loadModels();
-      await startCamera();
+  function setResult(text, type) {
+    const el = document.getElementById('result');
+    el.textContent = text;
+    el.className = `result-${type}`;
+  }
 
-      const capture = async () => {
-        if (!isRunning) return;
+  // ✅ ENROLL WITH DEBUG
+  async function startEnroll() {
+    const name = document.getElementById('nameInput').value.trim();
+    if (!name) return alert('Enter name');
+    await loadModels();
+    await startCamera();
+
+    const capture = async () => {
+      if (!isRunning) return;
+      const video = document.getElementById('video');
+      const detections = await faceapi.detectAllFaces(video, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.7 }))
+        .withFaceLandmarks()
+        .withFaceDescriptors();
+
+      if (detections.length > 0) {
+        const detection = detections[0];
+        const blinking = isBlinkingSafe(detection.landmarks);
         
-        const video = document.getElementById('video');
-        const detections = await faceapi.detectAllFaces(video, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.7 }))
-          .withFaceLandmarks()
-          .withFaceDescriptors();
+        if (blinking) {
+          setStatus('✅ Blink confirmed! Enrolling...', 'live');
+          try {
+            const res = await fetch(`${WORKER_URL}/enroll`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name, descriptor: Array.from(detection.descriptor) })
+            });
+            const data = await res.json();
+            setResult(data.success ? `✅ ${name}, enrolled!` : '❌ Failed', data.success ? 'success' : 'error');
+          } catch (e) {
+            setResult('❌ Network error', 'error');
+          }
+          setTimeout(stopCamera, 2000);
+          return;
+        }
+      }
 
-        if (detections.length > 0) {
-          const detection = detections[0];
-          if (isBlinking(detection.landmarks)) {
-            setStatus('✅ Blink detected! Enrolling...', 'live');
-            try {
-              const res = await fetch(`${WORKER_URL}/enroll`, {
+      setTimeout(capture, 200);
+    };
+    capture();
+  }
+
+  // ✅ RECOGNITION
+  async function startRecognition() {
+    await loadModels();
+    await startCamera();
+
+    const recognize = async () => {
+      if (!isRunning) return;
+      const video = document.getElementById('video');
+      const detections = await faceapi.detectAllFaces(video, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.7 }))
+        .withFaceLandmarks()
+        .withFaceDescriptors();
+
+      if (detections.length > 0) {
+        const detection = detections[0];
+        const blinking = isBlinkingSafe(detection.landmarks);
+        
+        if (blinking) {
+          setStatus('✅ Blink confirmed! Recognizing...', 'live');
+          try {
+            const res = await fetch(`${WORKER_URL}/descriptors`);
+            const users = await res.json();
+            let match = null;
+            for (const u of users) {
+              const dist = faceapi.euclideanDistance(detection.descriptor, Float32Array.from(u.descriptor));
+              if (dist < 0.6) {
+                match = u.name;
+                break;
+              }
+            }
+            if (match) {
+              await fetch(`${WORKER_URL}/attendance`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, descriptor: Array.from(detection.descriptor) })
+                body: JSON.stringify({ name: match })
               });
-              const data = await res.json();
-              setResult(data.success ? `✅ ${name}, enrolled!` : '❌ Failed', data.success ? 'success' : 'error');
-            } catch (e) {
-              setResult(`❌ Network error`, 'error');
+              setResult(`✅ Welcome, ${match}!`, 'success');
+            } else {
+              setResult('❌ Not recognized', 'error');
             }
-            setTimeout(stopCamera, 2000);
-            return;
+          } catch (e) {
+            setResult('❌ Error', 'error');
           }
+          setTimeout(stopCamera, 2000);
+          return;
         }
+      }
 
-        setTimeout(capture, 200);
-      };
+      setTimeout(recognize, 200);
+    };
+    recognize();
+  }
 
-      capture();
-    }
-
-    // ✅ RECOGNITION ON BLINK
-    async function startRecognition() {
-      await loadModels();
-      await startCamera();
-
-      const recognize = async () => {
-        if (!isRunning) return;
-        
-        const video = document.getElementById('video');
-        const detections = await faceapi.detectAllFaces(video, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.7 }))
-          .withFaceLandmarks()
-          .withFaceDescriptors();
-
-        if (detections.length > 0) {
-          const detection = detections[0];
-          if (isBlinking(detection.landmarks)) {
-            setStatus('✅ Blink detected! Recognizing...', 'live');
-            try {
-              const res = await fetch(`${WORKER_URL}/descriptors`);
-              const users = await res.json();
-              let match = null;
-              for (const u of users) {
-                const dist = faceapi.euclideanDistance(detection.descriptor, Float32Array.from(u.descriptor));
-                if (dist < 0.6) {
-                  match = u.name;
-                  break;
-                }
-              }
-              if (match) {
-                await fetch(`${WORKER_URL}/attendance`, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ name: match })
-                });
-                setResult(`✅ Welcome, ${match}!`, 'success');
-              } else {
-                setResult('❌ Face not recognized', 'error');
-              }
-            } catch (e) {
-              setResult(`❌ Recognition error`, 'error');
-            }
-            setTimeout(stopCamera, 2000);
-            return;
-          }
-        }
-
-        setTimeout(recognize, 200);
-      };
-
-      recognize();
-    }
-
-    // 🚀 Initialize
-    console.log('🚀 Loading models...');
-    loadModels().then(() => console.log('✅ Ready'));
-  </script>
-</body>
-</html>
+  // 🚀 Init
+  loadModels().then(() => console.log('✅ Models ready'));
+</script>
