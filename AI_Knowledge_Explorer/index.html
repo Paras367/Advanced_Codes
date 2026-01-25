@@ -4,121 +4,407 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>AI Knowledge Explorer</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&family=Poppins:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    
     body {
       background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
       color: #fff;
       font-family: 'Inter', sans-serif;
       min-height: 100vh;
-      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 60px 20px 120px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      position: relative;
+      z-index: 2;
     }
+
     .container {
-      max-width: 800px;
+      max-width: 900px;
       width: 100%;
       text-align: center;
     }
+
     h1 {
       font-family: 'Poppins', sans-serif;
-      font-size: 2.8rem;
-      margin-bottom: 10px;
+      font-size: 3.2rem;
+      margin-bottom: 15px;
+      background: linear-gradient(90deg, #00dbde, #fc00ff, #00dbde);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: gradientShift 3s ease infinite;
+      text-shadow: 0 0 30px rgba(0, 219, 222, 0.3);
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% center; }
+      50% { background-position: 100% center; }
+    }
+
+    .subtitle { 
+      color: #bbb; 
+      margin-bottom: 40px; 
+      font-size: 1.15rem;
+      font-weight: 300;
+      letter-spacing: 0.5px;
+    }
+
+    .search-container {
+      position: relative;
+      margin: 40px 0;
+    }
+
+    .search-box { 
+      display: flex; 
+      gap: 12px;
+      position: relative;
+    }
+
+    #query {
+      flex: 1;
+      padding: 18px 25px;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      background: rgba(255,255,255,0.08);
+      color: white;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255,255,255,0.1);
+      outline: none;
+      transition: all 0.3s ease;
+      font-family: 'Inter', sans-serif;
+    }
+
+    #query:focus { 
+      box-shadow: 0 0 25px rgba(0, 219, 222, 0.5);
+      border-color: rgba(0, 219, 222, 0.5);
+      background: rgba(255,255,255,0.12);
+    }
+
+    #query::placeholder { color: #999; }
+
+    .search-btn {
+      background: linear-gradient(135deg, #00dbde, #fc00ff);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 0 35px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 20px rgba(252, 0, 255, 0.3);
+    }
+
+    .search-btn:hover { 
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(252, 0, 255, 0.5); 
+    }
+
+    .search-btn:active {
+      transform: translateY(0);
+    }
+
+    .search-history {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .history-tag {
+      background: rgba(100, 255, 218, 0.15);
+      color: #64ffda;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(100, 255, 218, 0.3);
+    }
+
+    .history-tag:hover {
+      background: rgba(100, 255, 218, 0.25);
+      transform: translateY(-2px);
+    }
+
+    .result-card {
+      background: rgba(30, 25, 70, 0.7);
+      border-radius: 24px;
+      padding: 30px;
+      margin-top: 30px;
+      text-align: left;
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.6s forwards;
+    }
+
+    @keyframes fadeInUp { 
+      to { 
+        opacity: 1; 
+        transform: translateY(0); 
+      } 
+    }
+
+    .answer { 
+      font-size: 1.15rem; 
+      line-height: 1.8; 
+      margin-bottom: 20px; 
+      color: #e8e8ff;
+      font-weight: 400;
+    }
+
+    .source-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+      color: #64ffda;
+      background: linear-gradient(135deg, rgba(100, 255, 218, 0.2), rgba(0, 219, 222, 0.2));
+      padding: 10px 18px;
+      border-radius: 25px;
+      border: 1px solid rgba(100, 255, 218, 0.3);
+      font-weight: 500;
+    }
+
+    .loading { 
+      margin-top: 30px; 
+      color: #64ffda; 
+      font-style: italic;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .spinner {
+      border: 3px solid rgba(100, 255, 218, 0.3);
+      border-top: 3px solid #64ffda;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .error { 
+      color: #ff6b6b; 
+      margin-top: 30px;
+      padding: 20px;
+      background: rgba(255, 107, 107, 0.1);
+      border-radius: 15px;
+      border: 1px solid rgba(255, 107, 107, 0.3);
+    }
+
+    .stats {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      background: rgba(255,255,255,0.05);
+      padding: 15px 25px;
+      border-radius: 15px;
+      border: 1px solid rgba(255,255,255,0.1);
+      min-width: 150px;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
       background: linear-gradient(90deg, #00dbde, #fc00ff);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
     }
-    .subtitle { color: #aaa; margin-bottom: 30px; font-size: 1.1rem; }
-    .search-box { display: flex; gap: 10px; margin: 30px 0; }
-    #query {
-      flex: 1;
-      padding: 14px 20px;
-      border: none;
-      border-radius: 50px;
-      font-size: 1.1rem;
-      background: rgba(255,255,255,0.1);
-      color: white;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.2);
-      outline: none;
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: #aaa;
+      margin-top: 5px;
     }
-    #query:focus { box-shadow: 0 0 15px rgba(0, 219, 222, 0.6); }
-    #query::placeholder { color: #bbb; }
-    button {
-      background: linear-gradient(90deg, #00dbde, #fc00ff);
-      color: white;
-      border: none;
-      border-radius: 50px;
-      padding: 0 28px;
-      font-weight: 600;
-      cursor: pointer;
+
+    /* Wave Footer Styles */
+    .wave-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 150px;
+      z-index: 1;
+      overflow: hidden;
     }
-    button:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(252, 0, 255, 0.7); }
-    .result-card {
-      background: rgba(30, 25, 70, 0.6);
-      border-radius: 20px;
-      padding: 25px;
-      margin-top: 20px;
-      text-align: left;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.1);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeInUp 0.6s forwards;
+
+    .wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 200%;
+      height: 100%;
+      background-repeat: repeat-x;
+      animation: wave-animation 15s linear infinite;
     }
-    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
-    .answer { font-size: 1.15rem; line-height: 1.6; margin-bottom: 15px; color: #e0e0ff; }
-    .source {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.95rem;
-      color: #64ffda;
-      background: rgba(100, 255, 218, 0.15);
-      padding: 6px 12px;
-      border-radius: 20px;
+
+    .wave1 {
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,50 Q300,0 600,50 T1200,50 L1200,120 L0,120 Z" fill="%23302b63" fill-opacity="0.7"/></svg>');
+      background-size: 50% 100%;
+      animation-duration: 20s;
+      opacity: 0.7;
     }
-    .loading { margin-top: 20px; color: #64ffda; font-style: italic; }
-    .error { color: #ff6b6b; margin-top: 20px; }
-    footer { margin-top: 40px; color: #666; font-size: 0.9rem; }
+
+    .wave2 {
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,70 Q300,20 600,70 T1200,70 L1200,120 L0,120 Z" fill="%2300dbde" fill-opacity="0.3"/></svg>');
+      background-size: 50% 100%;
+      animation-duration: 15s;
+      opacity: 0.5;
+    }
+
+    .wave3 {
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,90 Q300,40 600,90 T1200,90 L1200,120 L0,120 Z" fill="%23fc00ff" fill-opacity="0.2"/></svg>');
+      background-size: 50% 100%;
+      animation-duration: 25s;
+      opacity: 0.3;
+    }
+
+    @keyframes wave-animation {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .footer-content {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      color: rgba(255,255,255,0.7);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 2.2rem; }
+      .subtitle { font-size: 1rem; }
+      .search-box { flex-direction: column; }
+      .search-btn { padding: 15px 0; width: 100%; }
+      .stats { flex-direction: column; align-items: center; }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1><i class="fas fa-brain"></i> AI Knowledge Explorer</h1>
-    <p class="subtitle">Local → Wikipedia → DuckDuckGo • All in your browser</p>
+  <div class="main-content">
+    <div class="container">
+      <h1><i class="fas fa-brain"></i> AI Knowledge Explorer</h1>
+      <p class="subtitle">Intelligent Search • Local KB → Wikipedia → DuckDuckGo</p>
 
-    <div class="search-box">
-      <input type="text" id="query" placeholder="Ask anything... e.g., What is Neural Network Visualizer?" autocomplete="off" />
-      <button onclick="search()"><i class="fas fa-search"></i></button>
+      <div class="search-container">
+        <div class="search-box">
+          <input type="text" id="query" placeholder="Ask anything... e.g., Who is Paras Dhiman?" autocomplete="off" />
+          <button class="search-btn" onclick="search()">
+            <i class="fas fa-search"></i> Search
+          </button>
+        </div>
+        <div class="search-history" id="history"></div>
+      </div>
+
+      <div id="loading" class="loading" style="display:none;">
+        <div class="spinner"></div>
+        <span>Searching across sources...</span>
+      </div>
+      <div id="error" class="error" style="display:none;"></div>
+      <div id="result"></div>
+
+      <div class="stats">
+        <div class="stat-item">
+          <div class="stat-number" id="totalSearches">0</div>
+          <div class="stat-label">Total Searches</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" id="localHits">0</div>
+          <div class="stat-label">Local Hits</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" id="webHits">0</div>
+          <div class="stat-label">Web Hits</div>
+        </div>
+      </div>
     </div>
-
-    <div id="loading" class="loading" style="display:none;">Searching...</div>
-    <div id="error" class="error" style="display:none;"></div>
-    <div id="result"></div>
   </div>
 
-  <footer>
-    Powered by Local KB + Wikipedia + DuckDuckGo (via CORS proxy)
-  </footer>
+  <div class="wave-footer">
+    <div class="wave wave1"></div>
+    <div class="wave wave2"></div>
+    <div class="wave wave3"></div>
+    <div class="footer-content">
+      <i class="fas fa-database"></i> Powered by Local KB + Wikipedia + DuckDuckGo
+    </div>
+  </div>
 
   <script>
+    // Enhanced local knowledge base
     const localKB = {
       "Who is Paras Dhiman?": "Paras Dhiman is a developer and Chairperson of SoftwareLabs, specializing in AI, privacy-first systems, and interactive educational tools.",
       "What projects has Paras Dhiman built?": "Notable projects include: (1) Interactive Periodic Table – a Python Tkinter educational app, (2) Neural Network Visualizer – a 3D learning visualization tool, and (3) Adventure Quiz Engine – a story-based Python game.",
       "What is the Interactive Periodic Table?": "A Python Tkinter educational application that displays chemical elements with interactive details for learning chemistry.",
       "What is the Neural Network Visualizer?": "A 3D visualization tool that helps users understand how neural networks learn and process data through dynamic graphical representation.",
-      "What is the Adventure Quiz Engine?": "A story-driven Python quiz game where players progress through narrative-based challenges and questions."
+      "What is the Adventure Quiz Engine?": "A story-driven Python quiz game where players progress through narrative-based challenges and questions.",
+      "What is artificial intelligence?": "Artificial intelligence (AI) is the simulation of human intelligence processes by machines, especially computer systems. These processes include learning, reasoning, and self-correction.",
+      "What is machine learning?": "Machine learning is a subset of AI that enables systems to learn and improve from experience without being explicitly programmed."
     };
+
+    let searchHistory = [];
+    let stats = { total: 0, local: 0, web: 0 };
+
+    function updateStats() {
+      document.getElementById('totalSearches').textContent = stats.total;
+      document.getElementById('localHits').textContent = stats.local;
+      document.getElementById('webHits').textContent = stats.web;
+    }
+
+    function updateHistory(query) {
+      if (!searchHistory.includes(query)) {
+        searchHistory.unshift(query);
+        if (searchHistory.length > 5) searchHistory.pop();
+        renderHistory();
+      }
+    }
+
+    function renderHistory() {
+      const historyDiv = document.getElementById('history');
+      historyDiv.innerHTML = searchHistory.map(q => 
+        `<div class="history-tag" onclick="document.getElementById('query').value='${escapeHtml(q)}'; search();">
+          <i class="fas fa-history"></i> ${escapeHtml(q)}
+        </div>`
+      ).join('');
+    }
 
     function showError(msg) {
       const el = document.getElementById('error');
-      el.textContent = msg;
+      el.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${msg}`;
       el.style.display = 'block';
     }
 
@@ -138,69 +424,93 @@
 
       resultDiv.innerHTML = '';
       errorDiv.style.display = 'none';
-      loadingDiv.style.display = 'block';
+      loadingDiv.style.display = 'flex';
+
+      stats.total++;
+      updateStats();
+      updateHistory(rawQuery);
 
       let answer = null;
       let source = null;
+      let sourceIcon = 'fa-database';
 
-      // 🔹 STEP 1: Local
+      // STEP 1: Local Knowledge Base
       if (localKB[rawQuery]) {
         answer = localKB[rawQuery];
         source = 'Local Knowledge Base';
+        sourceIcon = 'fa-database';
+        stats.local++;
       }
 
-      // 🔹 STEP 2: Wikipedia
+      // STEP 2: Wikipedia
       if (!answer) {
         const clean = rawQuery.replace(/^(who is|what is|tell me about|what was|who was)\s+/i, '').trim();
         const words = clean.split(/\s+/);
         const wikiTitle = words.map((w, i) => i === 0 ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase() : w.toLowerCase()).join('_');
+        
         try {
           const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(wikiTitle)}`);
           if (res.ok) {
             const data = await res.json();
             if (data.extract && !(/may refer to|disambiguation/i.test(data.extract))) {
               answer = data.extract;
-              source = `Wikipedia (${data.title})`;
+              source = `Wikipedia: ${data.title}`;
+              sourceIcon = 'fa-wikipedia-w';
+              stats.web++;
             }
           }
-        } catch (e) { /* silent fail */ }
+        } catch (e) { console.log('Wikipedia fetch failed:', e); }
       }
 
-      // 🔹 STEP 3: DuckDuckGo via CORS proxy
+      // STEP 3: DuckDuckGo
       if (!answer) {
         const ddgUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(rawQuery)}&format=json&skip_disambig=1`;
         const proxied = `https://corsproxy.io/?${encodeURIComponent(ddgUrl)}`;
+        
         try {
           const res = await fetch(proxied);
           if (res.ok) {
             const data = await res.json();
             if (data.Abstract && data.Abstract.length > 20) {
               answer = data.Abstract;
-              source = `DuckDuckGo (${data.AbstractSource || 'Instant Answer'})`;
-            } else if (data.Heading && data.Definition) {
+              source = `DuckDuckGo: ${data.AbstractSource || 'Instant Answer'}`;
+              sourceIcon = 'fa-search';
+              stats.web++;
+            } else if (data.Definition) {
               answer = data.Definition;
-              source = `DuckDuckGo (${data.Heading})`;
+              source = `DuckDuckGo: ${data.Heading || 'Definition'}`;
+              sourceIcon = 'fa-search';
+              stats.web++;
             }
           }
-        } catch (e) { /* silent fail */ }
+        } catch (e) { console.log('DuckDuckGo fetch failed:', e); }
       }
 
       loadingDiv.style.display = 'none';
+      updateStats();
+
       if (answer) {
         resultDiv.innerHTML = `
           <div class="result-card">
             <div class="answer">${escapeHtml(answer)}</div>
-            <div class="source"><i class="fas fa-info-circle"></i> Source: ${escapeHtml(source)}</div>
+            <div class="source-badge">
+              <i class="fas ${sourceIcon}"></i> 
+              <span>${escapeHtml(source)}</span>
+            </div>
           </div>
         `;
       } else {
-        showError('No answer found in local data, Wikipedia, or DuckDuckGo.');
+        showError('No answer found in local database, Wikipedia, or DuckDuckGo. Try rephrasing your question.');
       }
     }
 
+    // Event listeners
     document.getElementById('query').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') search();
     });
+
+    // Initialize
+    updateStats();
   </script>
 </body>
 </html>
