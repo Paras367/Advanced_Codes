@@ -7,11 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&family=Poppins:wght@600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
       color: #fff;
@@ -35,18 +31,9 @@
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.2);
     }
-    .subtitle {
-      color: #aaa;
-      margin-bottom: 30px;
-      font-size: 1.1rem;
-    }
-    .search-box {
-      display: flex;
-      gap: 10px;
-      margin: 30px 0;
-    }
+    .subtitle { color: #aaa; margin-bottom: 30px; font-size: 1.1rem; }
+    .search-box { display: flex; gap: 10px; margin: 30px 0; }
     #query {
       flex: 1;
       padding: 14px 20px;
@@ -58,14 +45,9 @@
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255,255,255,0.2);
       outline: none;
-      transition: all 0.3s ease;
     }
-    #query:focus {
-      box-shadow: 0 0 15px rgba(0, 219, 222, 0.6);
-    }
-    #query::placeholder {
-      color: #bbb;
-    }
+    #query:focus { box-shadow: 0 0 15px rgba(0, 219, 222, 0.6); }
+    #query::placeholder { color: #bbb; }
     button {
       background: linear-gradient(90deg, #00dbde, #fc00ff);
       color: white;
@@ -74,12 +56,8 @@
       padding: 0 28px;
       font-weight: 600;
       cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
     }
-    button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 20px rgba(252, 0, 255, 0.7);
-    }
+    button:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(252, 0, 255, 0.7); }
     .result-card {
       background: rgba(30, 25, 70, 0.6);
       border-radius: 20px;
@@ -93,15 +71,8 @@
       transform: translateY(20px);
       animation: fadeInUp 0.6s forwards;
     }
-    @keyframes fadeInUp {
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .answer {
-      font-size: 1.15rem;
-      line-height: 1.6;
-      margin-bottom: 15px;
-      color: #e0e0ff;
-    }
+    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+    .answer { font-size: 1.15rem; line-height: 1.6; margin-bottom: 15px; color: #e0e0ff; }
     .source {
       display: inline-flex;
       align-items: center;
@@ -112,20 +83,9 @@
       padding: 6px 12px;
       border-radius: 20px;
     }
-    .loading {
-      margin-top: 20px;
-      color: #64ffda;
-      font-style: italic;
-    }
-    .error {
-      color: #ff6b6b;
-      margin-top: 20px;
-    }
-    footer {
-      margin-top: 40px;
-      color: #666;
-      font-size: 0.9rem;
-    }
+    .loading { margin-top: 20px; color: #64ffda; font-style: italic; }
+    .error { color: #ff6b6b; margin-top: 20px; }
+    footer { margin-top: 40px; color: #666; font-size: 0.9rem; }
   </style>
 </head>
 <body>
@@ -144,24 +104,22 @@
   </div>
 
   <footer>
-    Powered by Local KB + Wikipedia + DuckDuckGo | Frontend-only AI
+    Powered by Local KB + Wikipedia + DuckDuckGo (via CORS proxy)
   </footer>
 
   <script>
-    // ✅ Preloaded local knowledge (from your webpage)
     const localKB = {
       "Who is Paras Dhiman?": "Paras Dhiman is a developer and Chairperson of SoftwareLabs, specializing in AI, privacy-first systems, and interactive educational tools.",
       "What projects has Paras Dhiman built?": "Notable projects include: (1) Interactive Periodic Table – a Python Tkinter educational app, (2) Neural Network Visualizer – a 3D learning visualization tool, and (3) Adventure Quiz Engine – a story-based Python game.",
       "What is the Interactive Periodic Table?": "A Python Tkinter educational application that displays chemical elements with interactive details for learning chemistry.",
       "What is the Neural Network Visualizer?": "A 3D visualization tool that helps users understand how neural networks learn and process data through dynamic graphical representation.",
-      "What is the Adventure Quiz Engine?": "A story-driven Python quiz game where players progress through narrative-based challenges and questions.",
-      "Tell me about Paras Dhiman's skills": "Proficient in Python, JavaScript, Cloudflare Workers, TensorFlow.js, face-api.js, and full-stack web development with a focus on AI and privacy."
+      "What is the Adventure Quiz Engine?": "A story-driven Python quiz game where players progress through narrative-based challenges and questions."
     };
 
     function showError(msg) {
-      const errorDiv = document.getElementById('error');
-      errorDiv.textContent = msg;
-      errorDiv.style.display = 'block';
+      const el = document.getElementById('error');
+      el.textContent = msg;
+      el.style.display = 'block';
     }
 
     function escapeHtml(text) {
@@ -176,10 +134,7 @@
       const loadingDiv = document.getElementById('loading');
       const errorDiv = document.getElementById('error');
 
-      if (!rawQuery) {
-        showError('Please enter a question.');
-        return;
-      }
+      if (!rawQuery) return showError('Please enter a question.');
 
       resultDiv.innerHTML = '';
       errorDiv.style.display = 'none';
@@ -188,79 +143,61 @@
       let answer = null;
       let source = null;
 
-      try {
-        // 🔹 STEP 1: Local JSON (now embedded!)
-        if (localKB[rawQuery]) {
-          answer = localKB[rawQuery];
-          source = 'Local Knowledge Base';
-        }
+      // 🔹 STEP 1: Local
+      if (localKB[rawQuery]) {
+        answer = localKB[rawQuery];
+        source = 'Local Knowledge Base';
+      }
 
-        // 🔹 STEP 2: Wikipedia
-        if (!answer) {
-          // Normalize query to likely Wikipedia title
-          const words = rawQuery
-            .replace(/^(who is|what is|tell me about|what was|who was)\s+/i, '')
-            .trim()
-            .split(/\s+/);
-          const wikiTitle = words
-            .map((word, i) => i === 0 ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : word.toLowerCase())
-            .join('_');
-
-          try {
-            const wikiRes = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(wikiTitle)}`);
-            if (wikiRes.ok) {
-              const wikiData = await wikiRes.json();
-              if (wikiData.extract && !(/may refer to|disambiguation/i.test(wikiData.extract))) {
-                answer = wikiData.extract;
-                source = `Wikipedia (${wikiData.title})`;
-              }
+      // 🔹 STEP 2: Wikipedia
+      if (!answer) {
+        const clean = rawQuery.replace(/^(who is|what is|tell me about|what was|who was)\s+/i, '').trim();
+        const words = clean.split(/\s+/);
+        const wikiTitle = words.map((w, i) => i === 0 ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase() : w.toLowerCase()).join('_');
+        try {
+          const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(wikiTitle)}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.extract && !(/may refer to|disambiguation/i.test(data.extract))) {
+              answer = data.extract;
+              source = `Wikipedia (${data.title})`;
             }
-          } catch (e) {
-            console.warn('Wikipedia failed:', e.message);
           }
-        }
+        } catch (e) { /* silent fail */ }
+      }
 
-        // 🔹 STEP 3: DuckDuckGo (CORS-safe, no trailing spaces)
-        if (!answer) {
-          const cleanQuery = rawQuery.trim();
-          const ddgUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(cleanQuery)}&format=json&skip_disambig=1`;
-          try {
-            const ddgRes = await fetch(ddgUrl);
-            if (ddgRes.ok) {
-              const ddgData = await ddgRes.json();
-              if (ddgData.Abstract && ddgData.Abstract.length > 20) {
-                answer = ddgData.Abstract;
-                source = `DuckDuckGo (${ddgData.AbstractSource || 'Instant Answer'})`;
-              } else if (ddgData.Heading && ddgData.Definition) {
-                answer = ddgData.Definition;
-                source = `DuckDuckGo (${ddgData.Heading})`;
-              }
+      // 🔹 STEP 3: DuckDuckGo via CORS proxy
+      if (!answer) {
+        const ddgUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(rawQuery)}&format=json&skip_disambig=1`;
+        const proxied = `https://corsproxy.io/?${encodeURIComponent(ddgUrl)}`;
+        try {
+          const res = await fetch(proxied);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.Abstract && data.Abstract.length > 20) {
+              answer = data.Abstract;
+              source = `DuckDuckGo (${data.AbstractSource || 'Instant Answer'})`;
+            } else if (data.Heading && data.Definition) {
+              answer = data.Definition;
+              source = `DuckDuckGo (${data.Heading})`;
             }
-          } catch (e) {
-            console.warn('DuckDuckGo failed:', e.message);
           }
-        }
+        } catch (e) { /* silent fail */ }
+      }
 
-        loadingDiv.style.display = 'none';
-        if (answer) {
-          resultDiv.innerHTML = `
-            <div class="result-card">
-              <div class="answer">${escapeHtml(answer)}</div>
-              <div class="source"><i class="fas fa-info-circle"></i> Source: ${escapeHtml(source)}</div>
-            </div>
-          `;
-        } else {
-          showError('No answer found in local data, Wikipedia, or DuckDuckGo.');
-        }
-
-      } catch (err) {
-        loadingDiv.style.display = 'none';
-        console.error('Unexpected error:', err);
-        showError('An unexpected error occurred. Please try again.');
+      loadingDiv.style.display = 'none';
+      if (answer) {
+        resultDiv.innerHTML = `
+          <div class="result-card">
+            <div class="answer">${escapeHtml(answer)}</div>
+            <div class="source"><i class="fas fa-info-circle"></i> Source: ${escapeHtml(source)}</div>
+          </div>
+        `;
+      } else {
+        showError('No answer found in local data, Wikipedia, or DuckDuckGo.');
       }
     }
 
-    // Allow Enter key
     document.getElementById('query').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') search();
     });
