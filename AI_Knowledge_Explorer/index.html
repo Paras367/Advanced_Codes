@@ -365,16 +365,22 @@
   </div>
 
   <script>
-    // Enhanced local knowledge base
-    const localKB = {
-      "Who is Paras Dhiman?": "Paras Dhiman is a developer and Chairperson of SoftwareLabs, specializing in AI, privacy-first systems, and interactive educational tools.",
-      "What projects has Paras Dhiman built?": "Notable projects include: (1) Interactive Periodic Table – a Python Tkinter educational app, (2) Neural Network Visualizer – a 3D learning visualization tool, and (3) Adventure Quiz Engine – a story-based Python game.",
-      "What is the Interactive Periodic Table?": "A Python Tkinter educational application that displays chemical elements with interactive details for learning chemistry.",
-      "What is the Neural Network Visualizer?": "A 3D visualization tool that helps users understand how neural networks learn and process data through dynamic graphical representation.",
-      "What is the Adventure Quiz Engine?": "A story-driven Python quiz game where players progress through narrative-based challenges and questions.",
-      "What is artificial intelligence?": "Artificial intelligence (AI) is the simulation of human intelligence processes by machines, especially computer systems. These processes include learning, reasoning, and self-correction.",
-      "What is machine learning?": "Machine learning is a subset of AI that enables systems to learn and improve from experience without being explicitly programmed."
-    };
+    let localKB = null;
+
+
+fetch('./knowledge.json')
+  .then(response => {
+    if (!response.ok) throw new Error('Failed to load knowledge.json');
+    return response.json();
+  })
+  .then(data => {
+    localKB = data;
+    console.log('✅ Local knowledge base loaded');
+  })
+  .catch(err => {
+    console.warn('⚠️ Could not load knowledge.json:', err.message);
+    localKB = {}; // fallback to empty object so app doesn’t break
+  });
 
     let searchHistory = [];
     let stats = { total: 0, local: 0, web: 0 };
