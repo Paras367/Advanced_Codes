@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Feature Flag Console</title>
+  
+  <!-- Preload critical fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --sl-primary: #6366f1;
+      --sl-dark: #0f172a;
+      --sl-light: #f8fafc;
+      --sl-success: #10b981;
+      --sl-danger: #ef4444;
+      --sl-glow: 0 0 16px rgba(99, 102, 241, 0.6);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--sl-dark);
+      color: var(--sl-light);
+      min-height: 100vh;
+      padding: 2rem;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+    h1 {
+      font-weight: 700;
+      font-size: 2.4rem;
+      background: linear-gradient(90deg, #818cf8, #c7d2fe);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: #94a3b8;
+      font-size: 1rem;
+    }
+    .card {
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+    .input-group {
+      margin-bottom: 1.5rem;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 0.75rem;
+      background: #334155;
+      border: 1px solid #475569;
+      border-radius: 8px;
+      color: white;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+    }
+    .flag-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background: #334155;
+      border-radius: 10px;
+      margin-bottom: 0.75rem;
+      transition: all 0.3s ease;
+    }
+    .flag-item:hover {
+      box-shadow: var(--sl-glow);
+    }
+    .flag-label {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .flag-icon svg {
+      width: 24px;
+      height: 24px;
+      color: var(--sl-primary);
+    }
+    .toggle {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #64748b;
+      transition: .4s;
+      border-radius: 24px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: var(--sl-success);
+    }
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+    .btn {
+      background: var(--sl-primary);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+      width: 100%;
+    }
+    .btn:hover {
+      box-shadow: var(--sl-glow);
+    }
+    .admin-panel {
+      display: none;
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: #334155;
+      border-radius: 16px;
+      border-left: 4px solid var(--sl-primary);
+    }
+    .admin-panel h3 {
+      margin-bottom: 1rem;
+      color: #c7d2fe;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .user-record {
+      padding: 0.75rem;
+      background: #1e293b;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      overflow-x: auto;
+    }
+    .status {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    .status.online { background: var(--sl-success); }
+    .footer {
+      text-align: center;
+      margin-top: 3rem;
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+    @media (max-width: 600px) {
+      body { padding: 1rem; }
+      h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>SoftwareLabs Feature Console</h1>
+      <p class="subtitle">Securely manage experimental features for your web apps</p>
+    </header>
+
+    <div class="card">
+      <div class="input-group">
+        <label for="username">Your Identifier</label>
+        <input type="text" id="username" placeholder="e.g., Paras Dhiman" autocomplete="off" />
+      </div>
+
+      <div id="flags-container">
+        <!-- Flags will be injected here -->
+      </div>
+
+      <button id="save-btn" class="btn">Save & Sync Flags</button>
+    </div>
+
+    <div id="admin-panel" class="admin-panel">
+      <h3>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width:20px;height:20px;">
+          <path fill-rule="evenodd" d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm-3.75 7.5a3 3 0 116 0v3a.75.75 0 01-.75.75h-4.5A.75.75 0 019 12v-3z" clip-rule="evenodd" />
+        </svg>
+        Admin Dashboard (Super Administrator)
+      </h3>
+      <div id="admin-records"></div>
+    </div>
+
+    <div class="footer">
+      © 2026 SoftwareLabs • Proprietary & Confidential
+    </div>
+  </div>
+
+  <script>
+    // 🔗 CONFIGURE YOUR CLOUDFLARE WORKER URL HERE
+    const BACKEND_URL = 'https://feature-flag-console.your-subdomain.workers.dev';
+    // Replace with your actual deployed Worker URL
+
+    const FLAGS = [
+      { id: 'liveness_detection', name: 'Liveness Detection', icon: 'eye' },
+      { id: 'glow_ui', name: 'Glow UI Effects', icon: 'sparkles' },
+      { id: 'offline_mode', name: 'Offline Mode', icon: 'moon' },
+      { id: 'confidence_scoring', name: 'Confidence Scoring', icon: 'chart-bar' },
+      { id: 'biometric_auth', name: 'Biometric Auth', icon: 'fingerprint' },
+      { id: 'advanced_logging', name: 'Advanced Logging', icon: 'clipboard-list' }
+    ];
+
+    const ADMIN_KEY_PLAIN = '100935.28';
+    let isAdminMode = false;
+
+    const usernameEl = document.getElementById('username');
+    const flagsContainer = document.getElementById('flags-container');
+    const saveBtn = document.getElementById('save-btn');
+    const adminPanel = document.getElementById('admin-panel');
+    const adminRecords = document.getElementById('admin-records');
+
+    // Font Awesome 6 Icon Map (using Heroicons-style names mapped to SVG paths)
+    const ICON_SVG = {
+      eye: `<path d="M12 15a3 3 0 100-6 3 3 0 000 6z" /><path fill-rule="evenodd" d="M1.323 10.342C2.5 7.33 5.25 4.5 12 4.5s9.5 2.83 10.677 5.842a1.5 1.5 0 010 1.316C21.5 14.67 18.75 17.5 12 17.5S2.5 14.67 1.323 11.658a1.5 1.5 0 010-1.316zM12 9a3 3 0 100 6 3 3 0 000-6z" clip-rule="evenodd" />`,
+      sparkles: `<path fill-rule="evenodd" d="M10.5 3a1.5 1.5 0 011.5 1.5v1.5a1.5 1.5 0 01-3 0V4.5A1.5 1.5 0 0110.5 3zM4.5 9a1.5 1.5 0 011.5-1.5h1.5a1.5 1.5 0 010 3H6a1.5 1.5 0 01-1.5-1.5zM18 7.5a1.5 1.5 0 00-1.5 1.5h-1.5a1.5 1.5 0 000 3h1.5a1.5 1.5 0 001.5-1.5zM12 12a1.5 1.5 0 011.5 1.5v1.5a1.5 1.5 0 01-3 0v-1.5A1.5 1.5 0 0112 12zM6 15a1.5 1.5 0 00-1.5 1.5v1.5a1.5 1.5 0 003 0v-1.5A1.5 1.5 0 006 15zM18 15a1.5 1.5 0 00-1.5 1.5v1.5a1.5 1.5 0 003 0v-1.5A1.5 1.5 0 0018 15z" clip-rule="evenodd" />`,
+      moon: `<path fill-rule="evenodd" d="M12.79 2.21a8.25 8.25 0 00-1.58 15.58 8.25 8.25 0 001.58-15.58zM12 18a6 6 0 110-12 6 6 0 010 12z" clip-rule="evenodd" />`,
+      'chart-bar': `<path fill-rule="evenodd" d="M2.25 3a.75.75 0 000 1.5h19.5a.75.75 0 000-1.5H2.25zM2.25 8.25a.75.75 0 01.75-.75h3a.75.75 0 010 1.5H3a.75.75 0 01-.75-.75zm15 0a.75.75 0 01.75-.75h3a.75.75 0 010 1.5h-3a.75.75 0 01-.75-.75zM2.25 13.5a.75.75 0 000 1.5h19.5a.75.75 0 000-1.5H2.25zM6 15a.75.75 0 01.75-.75h3a.75.75 0 010 1.5H6.75A.75.75 0 016 15zm6 0a.75.75 0 01.75-.75h3a.75.75 0 010 1.5h-3A.75.75 0 0112 15z" clip-rule="evenodd" />`,
+      fingerprint: `<path fill-rule="evenodd" d="M15.75 10.5a3.75 3.75 0 01-3.75 3.75h-6a3.75 3.75 0 01-3.75-3.75V6.75a3.75 3.75 0 013.75-3.75h6A3.75 3.75 0 0115.75 6.75v3.75zm-6-6a.75.75 0 00-.75.75v.75h1.5V6a.75.75 0 00-.75-.75h-1.5zm3 0a.75.75 0 00-.75.75v.75h1.5V6a.75.75 0 00-.75-.75h-1.5zm-6 3a.75.75 0 00-.75.75v.75h1.5v-.75a.75.75 0 00-.75-.75h-1.5zm3 0a.75.75 0 00-.75.75v.75h1.5v-.75a.75.75 0 00-.75-.75h-1.5zm-3 3a.75.75 0 00-.75.75v.75h1.5v-.75a.75.75 0 00-.75-.75h-1.5zm3 0a.75.75 0 00-.75.75v.75h1.5v-.75a.75.75 0 00-.75-.75h-1.5zm3-3a.75.75 0 00-.75.75v.75h1.5v-.75a.75.75 0 00-.75-.75h-1.5zm3 0a.75.75 0 00-.75.75v.75h1.5v-.75a.75.75 0 00-.75-.75h-1.5z" clip-rule="evenodd" />`,
+      'clipboard-list': `<path fill-rule="evenodd" d="M12 2.25a.75.75 0 01.75.75v3a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM8.25 7.5a.75.75 0 000 1.5h7.5a.75.75 0 000-1.5h-7.5zM12 10.5a.75.75 0 01.75.75v3a.75.75 0 01-1.5 0v-3a.75.75 0 01.75-.75zM8.25 13.5a.75.75 0 000 1.5h7.5a.75.75 0 000-1.5h-7.5zM12 16.5a.75.75 0 01.75.75v3a.75.75 0 01-1.5 0v-3a.75.75 0 01.75-.75zM8.25 19.5a.75.75 0 000 1.5h7.5a.75.75 0 000-1.5h-7.5z" clip-rule="evenodd" />`
+    };
+
+    function renderFlags(flags = {}) {
+      flagsContainer.innerHTML = '';
+      FLAGS.forEach(flag => {
+        const isChecked = flags[flag.id] === true;
+        const iconPath = ICON_SVG[flag.icon] || ICON_SVG.eye;
+        const el = document.createElement('div');
+        el.className = 'flag-item';
+        el.innerHTML = `
+          <div class="flag-label">
+            <span class="flag-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:24px;height:24px;">
+                ${iconPath}
+              </svg>
+            </span>
+            <span>${flag.name}</span>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" data-id="${flag.id}" ${isChecked ? 'checked' : ''}>
+            <span class="slider"></span>
+          </label>
+        `;
+        flagsContainer.appendChild(el);
+      });
+    }
+
+    async function sha256(str) {
+      const buf = new TextEncoder().encode(str);
+      const hash = await crypto.subtle.digest('SHA-256', buf);
+      return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function deriveUserSecret(username) {
+      return await sha256(`sl_user_secret_${username.trim()}_v1`);
+    }
+
+    async function signData(data, secret) {
+      const toSign = JSON.stringify(data) + secret;
+      return await sha256(toSign);
+    }
+
+    async function loadFlags() {
+      const username = usernameEl.value.trim();
+      if (!username) return;
+      try {
+        const res = await fetch(`${BACKEND_URL}/flags?user=${encodeURIComponent(username)}`);
+        if (!res.ok) throw new Error('Network error');
+        const data = await res.json();
+        renderFlags(data.flags || {});
+      } catch (e) {
+        alert('Failed to load flags.');
+      }
+    }
+
+    async function saveFlags() {
+      const username = usernameEl.value.trim();
+      if (!username) {
+        alert('Please enter an identifier.');
+        return;
+      }
+
+      const checkboxes = document.querySelectorAll('#flags-container input[type="checkbox"]');
+      const flags = {};
+      checkboxes.forEach(cb => {
+        flags[cb.dataset.id] = cb.checked;
+      });
+
+      const userSecret = await deriveUserSecret(username);
+      const signature = await signData(flags, userSecret);
+
+      const payload = { user: username, flags, signature };
+
+      try {
+        const res = await fetch(`${BACKEND_URL}/flags`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          alert('✅ Flags saved securely!');
+          if (isAdminMode) fetchAdminView();
+        } else {
+          alert('❌ Save failed. Tampering detected?');
+        }
+      } catch (e) {
+        alert('Network error.');
+      }
+    }
+
+    document.querySelector('header').addEventListener('click', (function() {
+      let clickCount = 0;
+      return function() {
+        clickCount++;
+        if (clickCount >= 3) {
+          clickCount = 0;
+          attemptAdminUnlock();
+        }
+      };
+    })());
+
+    async function attemptAdminUnlock() {
+      const adminHash = await sha256(ADMIN_KEY_PLAIN);
+      try {
+        const res = await fetch(`${BACKEND_URL}/admin`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ challenge: adminHash })
+        });
+        if (res.ok) {
+          isAdminMode = true;
+          adminPanel.style.display = 'block';
+          fetchAdminView();
+        } else {
+          alert('Admin access denied.');
+        }
+      } catch (e) {
+        alert('Admin connection failed.');
+      }
+    }
+
+    async function fetchAdminView() {
+      try {
+        const res = await fetch(`${BACKEND_URL}/admin/list`);
+        const records = await res.json();
+        adminRecords.innerHTML = '';
+        records.forEach(rec => {
+          const div = document.createElement('div');
+          div.className = 'user-record';
+          const statusClass = Date.now() - rec.timestamp < 600000 ? 'online' : '';
+          div.innerHTML = `
+            <span class="status ${statusClass}"></span>
+            <strong>${rec.user}</strong> • ${new Date(rec.timestamp).toLocaleString()}<br>
+            ${JSON.stringify(rec.flags)}
+          `;
+          adminRecords.appendChild(div);
+        });
+      } catch (e) {
+        adminRecords.innerHTML = '<p>Failed to load admin data.</p>';
+      }
+    }
+
+    usernameEl.addEventListener('blur', loadFlags);
+    saveBtn.addEventListener('click', saveFlags);
+    renderFlags();
+  </script>
+</body>
+</html>
