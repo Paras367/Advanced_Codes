@@ -134,7 +134,7 @@
     <p class="subtitle">Local → Wikipedia → DuckDuckGo • All in your browser</p>
 
     <div class="search-box">
-      <input type="text" id="query" placeholder="Ask anything... e.g., What is photosynthesis?" autocomplete="off" />
+      <input type="text" id="query" placeholder="Ask anything... e.g., What is Neural Network Visualizer?" autocomplete="off" />
       <button onclick="search()"><i class="fas fa-search"></i></button>
     </div>
 
@@ -144,38 +144,43 @@
   </div>
 
   <footer>
-    Powered by Wikipedia + DuckDuckGo | Frontend-only AI
+    Powered by Local KB + Wikipedia + DuckDuckGo | Frontend-only AI
   </footer>
 
   <script>
-    // Load local knowledge base once
-    let localKB = null;
-    fetch('./knowledge.json')
-      .then(res => {
-        if (res.ok) return res.json();
-        else throw new Error('Local KB not found');
-      })
-      .then(data => {
-        localKB = data;
-        console.log('✅ Local knowledge loaded');
-      })
-      .catch(err => {
-        console.warn('⚠️ Local knowledge.json not available:', err.message);
-        // That's okay — we'll skip to Wikipedia
-      });
+    // ✅ Preloaded local knowledge (from your webpage)
+    const localKB = {
+      "Who is Paras Dhiman?": "Paras Dhiman is a developer and Chairperson of SoftwareLabs, specializing in AI, privacy-first systems, and interactive educational tools.",
+      "What projects has Paras Dhiman built?": "Notable projects include: (1) Interactive Periodic Table – a Python Tkinter educational app, (2) Neural Network Visualizer – a 3D learning visualization tool, and (3) Adventure Quiz Engine – a story-based Python game.",
+      "What is the Interactive Periodic Table?": "A Python Tkinter educational application that displays chemical elements with interactive details for learning chemistry.",
+      "What is the Neural Network Visualizer?": "A 3D visualization tool that helps users understand how neural networks learn and process data through dynamic graphical representation.",
+      "What is the Adventure Quiz Engine?": "A story-driven Python quiz game where players progress through narrative-based challenges and questions.",
+      "Tell me about Paras Dhiman's skills": "Proficient in Python, JavaScript, Cloudflare Workers, TensorFlow.js, face-api.js, and full-stack web development with a focus on AI and privacy."
+    };
+
+    function showError(msg) {
+      const errorDiv = document.getElementById('error');
+      errorDiv.textContent = msg;
+      errorDiv.style.display = 'block';
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
 
     async function search() {
-      const query = document.getElementById('query').value.trim();
+      const rawQuery = document.getElementById('query').value.trim();
       const resultDiv = document.getElementById('result');
       const loadingDiv = document.getElementById('loading');
       const errorDiv = document.getElementById('error');
 
-      if (!query) {
+      if (!rawQuery) {
         showError('Please enter a question.');
         return;
       }
 
-      // Reset UI
       resultDiv.innerHTML = '';
       errorDiv.style.display = 'none';
       loadingDiv.style.display = 'block';
@@ -184,39 +189,58 @@
       let source = null;
 
       try {
-        // 🔹 STEP 1: Check local JSON
-        if (localKB && localKB[query]) {
-          answer = localKB[query];
+        // 🔹 STEP 1: Local JSON (now embedded!)
+        if (localKB[rawQuery]) {
+          answer = localKB[rawQuery];
           source = 'Local Knowledge Base';
         }
 
-        // 🔹 STEP 2: Try Wikipedia
+        // 🔹 STEP 2: Wikipedia
         if (!answer) {
-          const wikiTitle = encodeURIComponent(query.replace(/ /g, '_'));
-          const wikiRes = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${wikiTitle}`);
-          if (wikiRes.ok) {
-            const wikiData = await wikiRes.json();
-            if (wikiData.extract && !wikiData.description?.includes('disambiguation')) {
-              answer = wikiData.extract;
-              source = `Wikipedia (${wikiData.title})`;
+          // Normalize query to likely Wikipedia title
+          const words = rawQuery
+            .replace(/^(who is|what is|tell me about|what was|who was)\s+/i, '')
+            .trim()
+            .split(/\s+/);
+          const wikiTitle = words
+            .map((word, i) => i === 0 ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : word.toLowerCase())
+            .join('_');
+
+          try {
+            const wikiRes = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(wikiTitle)}`);
+            if (wikiRes.ok) {
+              const wikiData = await wikiRes.json();
+              if (wikiData.extract && !(/may refer to|disambiguation/i.test(wikiData.extract))) {
+                answer = wikiData.extract;
+                source = `Wikipedia (${wikiData.title})`;
+              }
             }
+          } catch (e) {
+            console.warn('Wikipedia failed:', e.message);
           }
         }
 
-        // 🔹 STEP 3: Try DuckDuckGo
+        // 🔹 STEP 3: DuckDuckGo (CORS-safe, no trailing spaces)
         if (!answer) {
-          const ddgRes = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&skip_disambig=1`);
-          const ddgData = await ddgRes.json();
-          if (ddgData.Abstract && ddgData.Abstract.length > 20) {
-            answer = ddgData.Abstract;
-            source = `DuckDuckGo (${ddgData.AbstractSource || 'Instant Answer'})`;
-          } else if (ddgData.Heading && ddgData.Definition) {
-            answer = ddgData.Definition;
-            source = `DuckDuckGo (${ddgData.Heading})`;
+          const cleanQuery = rawQuery.trim();
+          const ddgUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(cleanQuery)}&format=json&skip_disambig=1`;
+          try {
+            const ddgRes = await fetch(ddgUrl);
+            if (ddgRes.ok) {
+              const ddgData = await ddgRes.json();
+              if (ddgData.Abstract && ddgData.Abstract.length > 20) {
+                answer = ddgData.Abstract;
+                source = `DuckDuckGo (${ddgData.AbstractSource || 'Instant Answer'})`;
+              } else if (ddgData.Heading && ddgData.Definition) {
+                answer = ddgData.Definition;
+                source = `DuckDuckGo (${ddgData.Heading})`;
+              }
+            }
+          } catch (e) {
+            console.warn('DuckDuckGo failed:', e.message);
           }
         }
 
-        // Show result or error
         loadingDiv.style.display = 'none';
         if (answer) {
           resultDiv.innerHTML = `
@@ -226,26 +250,14 @@
             </div>
           `;
         } else {
-          showError('No reliable answer found. Try rephrasing your question.');
+          showError('No answer found in local data, Wikipedia, or DuckDuckGo.');
         }
 
       } catch (err) {
         loadingDiv.style.display = 'none';
-        console.error('Search error:', err);
-        showError('Failed to fetch results. Check your internet connection.');
+        console.error('Unexpected error:', err);
+        showError('An unexpected error occurred. Please try again.');
       }
-    }
-
-    function showError(msg) {
-      document.getElementById('error').textContent = msg;
-      document.getElementById('error').style.display = 'block';
-    }
-
-    // Prevent XSS
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
     }
 
     // Allow Enter key
