@@ -15,7 +15,7 @@
   "override": "Override command detected. Elevated logic pathways enabled.",
   "unlock": "Unlock sequence initiated. Awaiting valid creator key.",
   "access": "Access level: Standard User (upgrade available).",
-  "key": "Keys are used to authenticate creator-level sessions."
+  "key": "Keys are used to authenticate creator-level sessions.",
   "hello": "Hello! AI Knowledge Explorer is ready.",
   "hi": "Hi there 👋 How can I assist you today?",
   "welcome": "Welcome to AI Knowledge Explorer.",
