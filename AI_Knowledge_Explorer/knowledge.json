@@ -289,6 +289,7 @@
   "testing": "Testing verifies that software works as intended.",
   "deployment": "Deployment releases software to users.",
   "scalability": "Scalability is the ability to handle increased load.",
+  "compiler": "A compiler is a software program that translates code written in a high-level programming language into machine code or an executable form that the computer can run.",
   "computer": "A computer is an electronic machine that accepts input, processes information using logical instructions, stores data, and produces output in a meaningful form, helping humans perform tasks faster and more accurately.",
   "software": "Software refers to a collection of programs, instructions, and data that tell a computer what to do, ranging from operating systems and mobile apps to websites and AI systems.",
   "hardware": "Hardware includes all the physical components of a computer system such as the processor, memory, keyboard, screen, and storage devices.",
