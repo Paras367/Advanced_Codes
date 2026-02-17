@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vault | Smart Finance Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #3b82f6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --glass: rgba(30, 41, 59, 0.7);
+            --border: rgba(255, 255, 255, 0.1);
+            --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        [data-theme="light"] {
+            --bg: #f1f5f9;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --glass: rgba(255, 255, 255, 0.8);
+            --border: rgba(0, 0, 0, 0.1);
+            --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: background 0.3s, color 0.3s; }
+        
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .dashboard {
+            width: 100%;
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard { grid-template-columns: 1fr; }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .logo { font-size: 1.5rem; font-weight: 800; background: linear-gradient(to right, var(--primary), var(--success)); -webkit-background-clip: text; color: transparent; }
+        
+        .theme-toggle {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        /* Summary Stats */
+        .stats-grid {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--primary);
+        }
+        .stat-card.income::before { background: var(--success); }
+        .stat-card.expense::before { background: var(--danger); }
+
+        .stat-label { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .stat-value { font-size: 1.8rem; font-weight: 700; }
+
+        /* Main Chart Area */
+        .chart-container {
+            grid-column: 1 / 2;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .canvas-wrapper {
+            flex: 1;
+            position: relative;
+            width: 100%;
+        }
+
+        /* Transactions */
+        .transactions {
+            grid-column: 1 / 2;
+            margin-top: 2rem;
+        }
+
+        .transaction-list {
+            list-style: none;
+            margin-top: 1rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            animation: slideIn 0.3s ease;
+        }
+
+        .t-info { display: flex; align-items: center; gap: 1rem; }
+        .t-icon {
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            background: var(--glass);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        .t-amount { font-weight: 700; }
+        .t-amount.plus { color: var(--success); }
+        .t-amount.minus { color: var(--danger); }
+
+        /* Sidebar Controls */
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem; }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            outline: none;
+            font-size: 1rem;
+        }
+
+        input:focus { border-color: var(--primary); }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: transform 0.2s;
+        }
+
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4); }
+        
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); margin-top: 10px; }
+        .btn-outline:hover { background: var(--glass); }
+
+        /* Health Score */
+        .health-score {
+            text-align: center;
+            padding: 1rem;
+            background: var(--glass);
+            border-radius: 15px;
+            margin-top: 1rem;
+        }
+        .score-circle {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            border: 5px solid var(--border);
+            border-top-color: var(--success);
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            transform: rotate(0deg);
+            transition: transform 1s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo"><i class="fas fa-vault"></i> VAULT</div>
+            <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Balance</div>
+                <div class="stat-value" id="totalBalance">$0.00</div>
+            </div>
+            <div class="stat-card income">
+                <div class="stat-label">Income</div>
+                <div class="stat-value" id="totalIncome" style="color: var(--success)">$0.00</div>
+            </div>
+            <div class="stat-card expense">
+                <div class="stat-label">Expense</div>
+                <div class="stat-value" id="totalExpense" style="color: var(--danger)">$0.00</div>
+            </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="card chart-container">
+            <h3>Analytics</h3>
+            <div class="canvas-wrapper">
+                <canvas id="financeChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Sidebar Controls -->
+        <div class="controls">
+            <div class="card">
+                <h3>Add Transaction</h3>
+                <br>
+                <form id="transactionForm">
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" id="desc" placeholder="e.g. Salary, Rent" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Amount</label>
+                        <input type="number" id="amount" placeholder="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="type">
+                            <option value="income">Income (+)</option>
+                            <option value="expense">Expense (-)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Transaction</button>
+                </form>
+
+                <div class="health-score">
+                    <div class="score-circle" id="scoreCircle">0</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">Financial Health</div>
+                </div>
+            </div>
+
+            <button class="btn btn-outline" onclick="exportData()"><i class="fas fa-download"></i> Export CSV</button>
+            <button class="btn btn-outline" onclick="clearData()" style="color: var(--danger); border-color: var(--danger);"><i class="fas fa-trash"></i> Reset Data</button>
+        </div>
+
+        <!-- Transactions List -->
+        <div class="card transactions">
+            <h3>Recent History</h3>
+            <ul class="transaction-list" id="transactionList">
+                <!-- Items injected by JS -->
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // --- ADVANCED JS LOGIC ---
+
+        // State Management
+        let transactions = JSON.parse(localStorage.getItem('vault_transactions')) || [];
+        let isLightMode = localStorage.getItem('vault_theme') === 'light';
+
+        // DOM Elements
+        const balanceEl = document.getElementById('totalBalance');
+        const incomeEl = document.getElementById('totalIncome');
+        const expenseEl = document.getElementById('totalExpense');
+        const listEl = document.getElementById('transactionList');
+        const form = document.getElementById('transactionForm');
+        const canvas = document.getElementById('financeChart');
+        const ctx = canvas.getContext('2d');
+        const scoreCircle = document.getElementById('scoreCircle');
+
+        // Initialize
+        if (isLightMode) document.body.setAttribute('data-theme', 'light');
+        updateUI();
+
+        // Theme Toggle
+        function toggleTheme() {
+            isLightMode = !isLightMode;
+            document.body.setAttribute('data-theme', isLightMode ? 'light' : 'dark');
+            localStorage.setItem('vault_theme', isLightMode ? 'light' : 'dark');
+            updateUI(); // Redraw chart for color contrast
+        }
+
+        // Add Transaction
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const desc = document.getElementById('desc').value;
+            const amount = +document.getElementById('amount').value;
+            const type = document.getElementById('type').value;
+
+            if (desc.trim() === '' || amount <= 0) return;
+
+            const transaction = {
+                id: generateID(),
+                desc,
+                amount: type === 'expense' ? -amount : amount,
+                type,
+                date: new Date().toLocaleDateString()
+            };
+
+            transactions.push(transaction);
+            updateLocalStorage();
+            updateUI();
+            form.reset();
+        });
+
+        // Generate ID
+        function generateID() {
+            return Math.floor(Math.random() * 100000000);
+        }
+
+        // Delete Transaction
+        function removeTransaction(id) {
+            transactions = transactions.filter(t => t.id !== id);
+            updateLocalStorage();
+            updateUI();
+        }
+
+        // Update UI & Logic
+        function updateUI() {
+            listEl.innerHTML = '';
+            
+            const amounts = transactions.map(t => t.amount);
+            const total = amounts.reduce((acc, item) => acc + item, 0);
+            const income = amounts.filter(item => item > 0).reduce((acc, item) => acc + item, 0);
+            const expense = (amounts.filter(item => item < 0).reduce((acc, item) => acc + item, 0)) * -1;
+
+            balanceEl.innerText = `$${total.toFixed(2)}`;
+            incomeEl.innerText = `$${income.toFixed(2)}`;
+            expenseEl.innerText = `$${expense.toFixed(2)}`;
+
+            // Render List
+            transactions.slice().reverse().forEach(t => {
+                const li = document.createElement('li');
+                li.classList.add('transaction-item');
+                const icon = t.type === 'income' ? 'fa-arrow-up' : 'fa-arrow-down';
+                const color = t.type === 'income' ? 'var(--success)' : 'var(--danger)';
+                
+                li.innerHTML = `
+                    <div class="t-info">
+                        <div class="t-icon" style="color: ${color}"><i class="fas ${icon}"></i></div>
+                        <div>
+                            <div style="font-weight: 600;">${t.desc}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">${t.date}</div>
+                        </div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap: 15px;">
+                        <span class="t-amount ${t.amount >= 0 ? 'plus' : 'minus'}">
+                            ${t.amount >= 0 ? '+' : ''}$${Math.abs(t.amount).toFixed(2)}
+                        </span>
+                        <i class="fas fa-trash" style="cursor:pointer; opacity:0.5; font-size:0.8rem;" onclick="removeTransaction(${t.id})"></i>
+                    </div>
+                `;
+                listEl.appendChild(li);
+            });
+
+            updateHealthScore(income, expense);
+            drawChart(income, expense);
+        }
+
+        // Health Score Logic (Gamification)
+        function updateHealthScore(income, expense) {
+            let score = 0;
+            if (income > 0) {
+                const ratio = expense / income;
+                if (ratio < 0.5) score = 100;
+                else if (ratio < 0.8) score = 75;
+                else if (ratio < 1) score = 50;
+                else score = 20;
+            }
+            scoreCircle.innerText = score;
+            scoreCircle.style.transform = `rotate(${score * 3.6}deg)`;
+            scoreCircle.style.borderTopColor = score > 50 ? 'var(--success)' : 'var(--danger)';
+        }
+
+        // Local Storage
+        function updateLocalStorage() {
+            localStorage.setItem('vault_transactions', JSON.stringify(transactions));
+        }
+
+        // Clear Data
+        function clearData() {
+            if(confirm('Are you sure? This cannot be undone.')) {
+                transactions = [];
+                updateLocalStorage();
+                updateUI();
+            }
+        }
+
+        // Export CSV (Advanced Utility)
+        function exportData() {
+            let csvContent = "data:text/csv;charset=utf-8,ID,Description,Amount,Type,Date\n";
+            transactions.forEach(t => {
+                csvContent += `${t.id},${t.desc},${t.amount},${t.type},${t.date}\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "vault finance data.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Custom Canvas Chart (No Libraries)
+        function drawChart(income, expense) {
+            const width = canvas.parentElement.offsetWidth;
+            const height = canvas.parentElement.offsetHeight;
+            canvas.width = width;
+            canvas.height = height;
+
+            const max = Math.max(income, expense, 100);
+            const barWidth = width / 4;
+            const incomeHeight = (income / max) * (height - 40);
+            const expenseHeight = (expense / max) * (height - 40);
+
+            ctx.clearRect(0, 0, width, height);
+            
+            // Draw Income Bar
+            ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--success');
+            roundRect(ctx, 50, height - incomeHeight - 20, barWidth, incomeHeight, 10);
+            
+            // Draw Expense Bar
+            ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--danger');
+            roundRect(ctx, 150, height - expenseHeight - 20, barWidth, expenseHeight, 10);
+
+            // Labels
+            ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text');
+            ctx.font = "14px Inter";
+            ctx.fillText("Income", 65, height - 5);
+            ctx.fillText("Expense", 165, height - 5);
+        }
+
+        // Helper for Rounded Rectangles in Canvas
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        // Resize Observer for Responsive Chart
+        new ResizeObserver(() => {
+            const amounts = transactions.map(t => t.amount);
+            const income = amounts.filter(item => item > 0).reduce((acc, item) => acc + item, 0);
+            const expense = (amounts.filter(item => item < 0).reduce((acc, item) => acc + item, 0)) * -1;
+            drawChart(income, expense);
+        }).observe(canvas.parentElement);
+
+    </script>
+</body>
+</html>
