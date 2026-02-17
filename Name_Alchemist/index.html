@@ -1,270 +1,925 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Name Alchemist | Find Your True Identity</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Name Alchemist — Reveal Your True Identity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --gold:#d4a843;--gold-light:#f0c96e;--gold-dark:#8a6820;
+  --ink:#0a0705;--parchment:#f5eed8;
+  --glass:rgba(10,7,5,0.72);--glass-border:rgba(212,168,67,0.25);
+  --teal:#1abc9c;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow-x:hidden;background:#0a0705;color:#f5eed8;font-family:'Cormorant Garamond',Georgia,serif;}
 
-    <meta name="description" content="Generate meaningful alternative names and authentic surnames based on your input. Discover your hidden identity.">
-    <meta name="keywords" content="name generator, surname finder, identity, caste name, meaningful names">
-    <meta name="author" content="Name Alchemist">
-    <meta property="og:title" content="Name Alchemist">
-    <meta property="og:image" content="https://source.unsplash.com/random/1200x630/?nature,scenery">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+#bg-stage{position:fixed;inset:0;z-index:0;overflow:hidden;}
+.bg-layer{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 2.5s ease-in-out;filter:brightness(0.35) saturate(1.3);transform:scale(1.08);animation:kenBurns 20s ease-in-out infinite alternate;}
+.bg-layer.active{opacity:1;}
+@keyframes kenBurns{from{transform:scale(1.08) translate(-1.5%,-1%)}to{transform:scale(1.14) translate(1.5%,1%)}}
+.bg-overlay{position:absolute;inset:0;background:radial-gradient(ellipse at 15% 50%,rgba(212,168,67,0.07) 0%,transparent 60%),radial-gradient(ellipse at 85% 30%,rgba(123,79,158,0.09) 0%,transparent 55%),linear-gradient(to bottom,rgba(10,7,5,0.35) 0%,rgba(10,7,5,0.05) 40%,rgba(10,7,5,0.75) 100%);}
+.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:256px;}
 
-    <style>
-        :root {
-            --primary: #6a11cb;
-            --secondary: #2575fc;
-            --glass: rgba(255, 255, 255, 0.15);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --text: #ffffff;
-        }
+/* STARS */
+#stars{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;}
+.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d) ease-in-out infinite var(--delay);}
+@keyframes twinkle{0%,100%{opacity:.08;transform:scale(1)}50%{opacity:.95;transform:scale(1.5)}}
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+/* PARTICLES */
+.particle{position:fixed;border-radius:50%;pointer-events:none;animation:drift var(--dur) ease-in-out infinite var(--del);z-index:2;}
+@keyframes drift{0%{transform:translateY(0) translateX(0) rotate(0deg);opacity:0}10%{opacity:.9}90%{opacity:.5}100%{transform:translateY(-115vh) translateX(var(--tx)) rotate(360deg);opacity:0}}
 
-        body {
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #000;
-            overflow: hidden;
-            color: var(--text);
-            position: relative;
-        }
+/* BG STRIP */
+#bg-strip{position:fixed;bottom:1rem;right:1rem;z-index:20;display:flex;flex-direction:column;gap:.35rem;}
+.bg-thumb{width:38px;height:26px;border-radius:5px;border:1.5px solid rgba(212,168,67,.18);cursor:pointer;background-size:cover;background-position:center;transition:all .2s;opacity:.5;}
+.bg-thumb.active,.bg-thumb:hover{border-color:var(--gold);opacity:1;transform:scale(1.12);}
 
-        #bg-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -2;
-            transition: opacity 1s ease-in-out;
-            filter: brightness(0.6);
-        }
+/* TOAST */
+#toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(212,168,67,.96);color:var(--ink);padding:.7rem 1.8rem;border-radius:50px;font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.1em;font-weight:700;z-index:9999;opacity:0;transition:all .4s ease;pointer-events:none;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-        .container {
-            background: var(--glass);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            padding: 3rem;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            text-align: center;
-            animation: float 6s ease-in-out infinite;
-        }
+/* APP */
+#app{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:2rem 1rem 4rem;}
 
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
+/* HEADER */
+header{text-align:center;margin-bottom:2.5rem;animation:fadeDown .9s ease both;}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-28px)}to{opacity:1;transform:translateY(0)}}
+.crown-icon{font-size:2.8rem;color:var(--gold);filter:drop-shadow(0 0 18px rgba(212,168,67,.7));animation:pulseCrown 3s ease-in-out infinite;display:block;margin-bottom:.5rem;}
+@keyframes pulseCrown{0%,100%{filter:drop-shadow(0 0 14px rgba(212,168,67,.6))}50%{filter:drop-shadow(0 0 30px rgba(212,168,67,1)) drop-shadow(0 0 60px rgba(212,168,67,.35))}}
+h1{font-family:'Cinzel Decorative',serif;font-size:clamp(1.8rem,5vw,3.2rem);font-weight:900;background:linear-gradient(135deg,#f0c96e 0%,#d4a843 35%,#fff8e7 60%,#c8922a 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;margin-bottom:.35rem;}
+.tagline{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(.95rem,2.5vw,1.2rem);color:rgba(245,238,216,.55);letter-spacing:.12em;}
+.divider{width:200px;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);margin:.9rem auto;position:relative;}
+.divider::before{content:'✦';position:absolute;top:-10px;left:50%;transform:translateX(-50%);color:var(--gold);font-size:.9rem;}
 
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
+/* CARD */
+.main-card{background:var(--glass);border:1px solid var(--glass-border);border-radius:24px;padding:2.5rem 2rem;width:100%;max-width:600px;box-shadow:0 25px 60px rgba(0,0,0,.6),0 0 0 1px rgba(212,168,67,.07),inset 0 1px 0 rgba(212,168,67,.14);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);animation:fadeUp .9s .15s ease both;position:relative;overflow:hidden;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(38px)}to{opacity:1;transform:translateY(0)}}
+.main-card::before{content:'';position:absolute;top:-2px;left:18%;right:18%;height:2px;background:linear-gradient(to right,transparent,var(--gold),transparent);border-radius:50%;}
 
-        p.subtitle {
-            margin-bottom: 2rem;
-            opacity: 0.9;
-            font-size: 1rem;
-        }
+/* TABS */
+.tab-bar{display:flex;gap:.35rem;margin-bottom:2rem;background:rgba(0,0,0,.4);padding:.3rem;border-radius:50px;border:1px solid rgba(212,168,67,.1);}
+.tab-btn{flex:1;padding:.55rem .6rem;border:none;border-radius:50px;background:transparent;color:rgba(245,238,216,.45);font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.07em;cursor:pointer;transition:all .3s;white-space:nowrap;}
+.tab-btn.active{background:linear-gradient(135deg,var(--gold-dark),var(--gold));color:var(--ink);font-weight:700;box-shadow:0 4px 15px rgba(212,168,67,.28);}
+.tab-btn:hover:not(.active){color:var(--gold-light);background:rgba(212,168,67,.07);}
+.tab-section{display:none;}.tab-section.active{display:block;}
 
-        .input-group {
-            position: relative;
-            margin-bottom: 1.5rem;
-        }
+/* FORM */
+.form-group{margin-bottom:1.25rem;}
+label{display:block;font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.15em;color:var(--gold);text-transform:uppercase;margin-bottom:.45rem;}
+.input-wrap{position:relative;}
+.input-wrap .ico{position:absolute;left:17px;top:50%;transform:translateY(-50%);color:var(--gold);font-size:.95rem;opacity:.65;pointer-events:none;}
+.input-wrap input,.input-wrap select{width:100%;padding:13px 17px 13px 44px;border-radius:11px;border:1px solid rgba(212,168,67,.2);background:rgba(0,0,0,.35);color:var(--parchment);font-family:'Cormorant Garamond',serif;font-size:1.05rem;outline:none;transition:all .3s;-webkit-appearance:none;}
+.input-wrap input::placeholder{color:rgba(245,238,216,.22);}
+.input-wrap input:focus,.input-wrap select:focus{border-color:var(--gold);background:rgba(0,0,0,.5);box-shadow:0 0 0 3px rgba(212,168,67,.1),0 0 18px rgba(212,168,67,.07);}
+.input-wrap select option{background:#1a1207;color:var(--parchment);}
+.sel-arrow::after{content:'\f107';font-family:'Font Awesome 6 Free';font-weight:900;position:absolute;right:15px;top:50%;transform:translateY(-50%);color:rgba(212,168,67,.55);pointer-events:none;}
+.row-2{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;}
 
-        .input-group i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: rgba(255,255,255,0.7);
-        }
+/* CHIPS */
+.chip-group{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.4rem;}
+.chip{padding:.38rem .9rem;border-radius:50px;border:1px solid rgba(212,168,67,.22);background:rgba(0,0,0,.32);color:rgba(245,238,216,.5);font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.07em;cursor:pointer;transition:all .22s;user-select:none;}
+.chip.selected{background:linear-gradient(135deg,rgba(212,168,67,.22),rgba(212,168,67,.08));border-color:var(--gold);color:var(--gold-light);}
+.chip:hover:not(.selected){border-color:rgba(212,168,67,.45);color:rgba(245,238,216,.75);}
 
-        input {
-            width: 100%;
-            padding: 15px 15px 15px 45px;
-            border-radius: 50px;
-            border: none;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            font-size: 1rem;
-            outline: none;
-            border: 1px solid transparent;
-            transition: 0.3s;
-        }
+/* CTA */
+.cta-btn{width:100%;padding:15px;border:none;border-radius:13px;background:linear-gradient(135deg,#8a6820,#d4a843,#f0c96e,#d4a843,#8a6820);background-size:200% 100%;color:var(--ink);font-family:'Cinzel Decorative',serif;font-size:.95rem;font-weight:700;letter-spacing:.12em;cursor:pointer;transition:all .4s;box-shadow:0 8px 28px rgba(212,168,67,.32),0 2px 0 rgba(255,255,255,.13) inset;position:relative;overflow:hidden;margin-top:1.4rem;text-transform:uppercase;}
+.cta-btn:hover{background-position:100% 0;transform:translateY(-2px);box-shadow:0 14px 38px rgba(212,168,67,.48);}
+.cta-btn:active{transform:translateY(1px);}
+.btn-shimmer{position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);transition:left .5s;}
+.cta-btn:hover .btn-shimmer{left:150%;}
 
-        input::placeholder {
-            color: rgba(255,255,255,0.6);
-        }
+/* LOADER */
+#loader-wrap{display:none;text-align:center;padding:1.8rem 0 .8rem;}
+.rune-loader{display:inline-flex;gap:.4rem;margin-bottom:.9rem;}
+.rune{width:10px;height:10px;border-radius:50%;background:var(--gold);animation:runeFlow 1.4s ease-in-out infinite;}
+.rune:nth-child(2){animation-delay:.2s}.rune:nth-child(3){animation-delay:.4s}.rune:nth-child(4){animation-delay:.6s}
+@keyframes runeFlow{0%,80%,100%{transform:scale(.55);opacity:.25}40%{transform:scale(1.25);opacity:1;box-shadow:0 0 12px var(--gold)}}
+.loader-text{font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.2em;color:rgba(212,168,67,.65);animation:flicker 2s ease-in-out infinite;}
+@keyframes flicker{0%,100%{opacity:.6}50%{opacity:1}}
 
-        input:focus {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: rgba(255,255,255,0.5);
-            box-shadow: 0 0 15px rgba(255,255,255,0.2);
-        }
+/* RESULT */
+#result-panel{display:none;margin-top:1.8rem;animation:revealResult .7s ease both;}
+@keyframes revealResult{from{opacity:0;transform:scale(.95) translateY(18px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.result-hero{background:linear-gradient(135deg,rgba(212,168,67,.07),rgba(123,79,158,.07));border:1px solid rgba(212,168,67,.28);border-radius:18px;padding:1.8rem 1.5rem;text-align:center;margin-bottom:1.1rem;position:relative;overflow:hidden;}
+.result-hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent 0%,rgba(212,168,67,.035) 25%,transparent 50%,rgba(212,168,67,.035) 75%,transparent 100%);animation:rotateBg 22s linear infinite;}
+@keyframes rotateBg{to{transform:rotate(360deg)}}
+.full-name-display{font-family:'Cinzel Decorative',serif;font-size:clamp(1.5rem,4vw,2.4rem);font-weight:700;background:linear-gradient(135deg,#f0c96e,#d4a843,#fff8e7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2;margin-bottom:.4rem;position:relative;z-index:1;word-break:break-word;}
+.origin-badge{display:inline-flex;align-items:center;gap:.4rem;padding:.28rem .9rem;background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.28);border-radius:50px;font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.1em;color:var(--gold);position:relative;z-index:1;}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-bottom:.85rem;}
+.result-block{background:rgba(0,0,0,.42);border:1px solid rgba(212,168,67,.11);border-radius:13px;padding:1.1rem 1rem;transition:border-color .3s,transform .3s;}
+.result-block:hover{border-color:rgba(212,168,67,.32);transform:translateY(-2px);}
+.block-icon{font-size:1.4rem;margin-bottom:.4rem;display:block;}
+.block-label{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.15em;color:rgba(212,168,67,.55);text-transform:uppercase;margin-bottom:.35rem;}
+.block-value{font-family:'Cinzel',serif;font-size:1rem;color:#fff;font-weight:600;}
+.block-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.86rem;color:rgba(245,238,216,.45);margin-top:.18rem;}
+.full-col{grid-column:1/-1;}
+.meaning-text-large{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(1rem,2.8vw,1.25rem);color:rgba(245,238,216,.88);line-height:1.65;}
+.el-wrap{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.4rem;}
+.el-badge{display:flex;align-items:center;gap:.35rem;padding:.35rem .8rem;border-radius:50px;font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.07em;border:1px solid;}
+.el-fire{border-color:rgba(231,76,60,.5);background:rgba(231,76,60,.09);color:#e74c3c;}
+.el-water{border-color:rgba(52,152,219,.5);background:rgba(52,152,219,.09);color:#3498db;}
+.el-earth{border-color:rgba(39,174,96,.5);background:rgba(39,174,96,.09);color:#27ae60;}
+.el-air{border-color:rgba(241,196,15,.5);background:rgba(241,196,15,.09);color:#f1c40f;}
+.el-spirit{border-color:rgba(155,89,182,.5);background:rgba(155,89,182,.09);color:#9b59b6;}
+.trait-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.65rem;}
+.trait-label{font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.09em;color:rgba(212,168,67,.75);width:78px;flex-shrink:0;}
+.trait-bar{flex:1;height:4px;background:rgba(255,255,255,.07);border-radius:10px;overflow:hidden;}
+.trait-fill{height:100%;border-radius:10px;background:linear-gradient(to right,var(--gold-dark),var(--gold));transform:scaleX(0);transform-origin:left;transition:transform 1.1s .25s ease;}
+.trait-fill.go{transform:scaleX(1);}
+.trait-num{font-family:'Cinzel',serif;font-size:.68rem;color:var(--gold);width:26px;text-align:right;}
+.action-bar{display:flex;gap:.5rem;margin-top:1.1rem;flex-wrap:wrap;}
+.action-btn{flex:1;min-width:110px;padding:.7rem .9rem;border:1px solid rgba(212,168,67,.22);border-radius:9px;background:rgba(0,0,0,.32);color:rgba(245,238,216,.7);font-family:'Cinzel',serif;font-size:.67rem;letter-spacing:.07em;cursor:pointer;transition:all .22s;text-align:center;display:flex;align-items:center;justify-content:center;gap:.38rem;}
+.action-btn:hover{border-color:var(--gold);color:var(--gold-light);background:rgba(212,168,67,.07);}
+.action-btn.copy-done{border-color:var(--teal);color:var(--teal);}
 
-        button {
-            width: 100%;
-            padding: 15px;
-            border-radius: 50px;
-            border: none;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            color: white;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
+/* NUMEROLOGY */
+.num-display{display:flex;align-items:center;justify-content:center;gap:2rem;flex-wrap:wrap;padding:1.1rem 0;}
+.num-orb{text-align:center;}
+.num-circle{width:62px;height:62px;border-radius:50%;border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Cinzel Decorative',serif;font-size:1.4rem;color:var(--gold-light);margin:0 auto .4rem;background:rgba(212,168,67,.07);box-shadow:0 0 20px rgba(212,168,67,.18),inset 0 0 14px rgba(212,168,67,.04);animation:numPulse 3s ease-in-out infinite;}
+@keyframes numPulse{0%,100%{box-shadow:0 0 20px rgba(212,168,67,.18)}50%{box-shadow:0 0 34px rgba(212,168,67,.48)}}
+.num-orb-label{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.12em;color:rgba(212,168,67,.5);text-transform:uppercase;}
 
-        button:hover {
-            transform: scale(1.02);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-        }
+/* HISTORY */
+#history-panel{display:none;width:100%;max-width:600px;margin-top:1.4rem;animation:fadeUp .5s ease both;}
+.history-title{font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.2em;color:rgba(212,168,67,.55);text-transform:uppercase;margin-bottom:.7rem;display:flex;align-items:center;gap:.5rem;}
+.history-item{display:flex;align-items:center;gap:.9rem;padding:.75rem 1.1rem;background:rgba(0,0,0,.45);border:1px solid rgba(212,168,67,.1);border-radius:9px;cursor:pointer;transition:all .2s;margin-bottom:.45rem;}
+.history-item:hover{border-color:rgba(212,168,67,.32);background:rgba(212,168,67,.04);}
+.history-name{font-family:'Cinzel',serif;font-size:.88rem;color:var(--gold-light);flex:1;}
+.history-orig{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.8rem;color:rgba(245,238,216,.38);}
+.history-del{color:rgba(231,76,60,.45);cursor:pointer;transition:color .2s;font-size:.82rem;}
+.history-del:hover{color:#e74c3c;}
 
-        button:active {
-            transform: scale(0.98);
-        }
+/* LORE TAB */
+.lore-body{font-family:'Cormorant Garamond',serif;font-size:1.07rem;line-height:1.85;color:rgba(245,238,216,.78);}
+.lore-body p{margin-bottom:.95rem;}
+.lore-accent{font-family:'Cinzel Decorative',serif;color:var(--gold);font-size:1.08rem;}
 
-        #result-area {
-            margin-top: 2rem;
-            display: none;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 1.5rem;
-            border-radius: 15px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .result-item {
-            margin-bottom: 1rem;
-            text-align: left;
-        }
-
-        .result-label {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #aaa;
-            margin-bottom: 5px;
-            display: block;
-        }
-
-        .result-value {
-            font-size: 1.4rem;
-            font-weight: 600;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .loader {
-            display: none;
-            margin-top: 20px;
-            color: white;
-        }
-
-    </style>
+/* RESPONSIVE */
+@media(max-width:480px){.row-2{grid-template-columns:1fr}.tab-btn{font-size:.6rem;padding:.5rem .35rem}.result-grid{grid-template-columns:1fr}.action-bar{flex-direction:column}.num-display{gap:1.2rem}}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(212,168,67,.28);border-radius:4px}
+</style>
 </head>
 <body>
 
-    <img id="bg-image" src="" alt="Scenery">
+<div id="bg-stage">
+  <div class="bg-layer" id="bg0"></div>
+  <div class="bg-layer" id="bg1"></div>
+  <div class="bg-overlay"></div>
+</div>
+<div class="grain"></div>
+<div id="stars"></div>
+<div id="bg-strip"></div>
+<div id="toast"></div>
 
-    <div class="container">
-        <h1><i class="fa-solid fa-wand-magic-sparkles"></i> Name Alchemist</h1>
-        <p class="subtitle">Discover a meaningful new identity rooted in reality.</p>
+<div id="app">
+  <header>
+    <i class="fa-solid fa-crown crown-icon"></i>
+    <h1>Name Alchemist</h1>
+    <div class="divider"></div>
+    <p class="tagline">Reveal the sacred identity woven into your very name</p>
+  </header>
 
-        <div class="input-group">
-            <i class="fa-solid fa-user"></i>
-            <input type="text" id="user-name" placeholder="Enter your current name...">
-        </div>
-
-        <button onclick="generateIdentity()">Reveal Identity</button>
-
-        <div class="loader" id="loader">
-            <i class="fa-solid fa-circle-notch fa-spin"></i> Consulting the archives...
-        </div>
-
-        <div id="result-area">
-            <div class="result-item">
-                <span class="result-label">Meaningful Name</span>
-                <div class="result-value" id="new-name"></div>
-            </div>
-            <div class="result-item">
-                <span class="result-label">Authentic Surname (Caste/Clan)</span>
-                <div class="result-value" id="new-surname"></div>
-            </div>
-            <div class="result-item">
-                <span class="result-label">Meaning</span>
-                <div class="result-value" style="font-size: 1rem; font-style: italic;" id="name-meaning"></div>
-            </div>
-        </div>
+  <div class="main-card">
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('generate',this)"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate</button>
+      <button class="tab-btn" onclick="switchTab('numerology',this)"><i class="fa-solid fa-infinity"></i> Mystic</button>
+      <button class="tab-btn" onclick="switchTab('lore',this)"><i class="fa-solid fa-scroll"></i> Lore</button>
     </div>
 
-    <script>
-        const bgImage = document.getElementById('bg-image');
-        const randomId = Math.floor(Math.random() * 1000);
-        bgImage.src = `https://picsum.photos/id/${randomId}/1920/1080`;
-        const prefixes = ["El", "Val", "Sol", "Aer", "Mar", "Lun", "Zen", "Kai", "Ori", "Nym"];
-        const suffixes = ["ian", "or", "is", "us", "a", "on", "en", "ix", "os", "ra"];
-        const meanings = ["Light", "Warrior", "Star", "Ocean", "Wind", "Peace", "Fire", "Shadow", "Hope", "Spirit"];
-        const surnames = [
-            "Patel", "Sharma", "Singh", "Gupta", "Kumar", "Reddy", "Nair", "Iyer", 
-            "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", 
-            "Müller", "Schmidt", "Schneider", "Fischer", "Weber", 
-            "Tanaka", "Suzuki", "Sato", "Watanabe", "Ito",
-            "Kim", "Lee", "Park", "Choi", "Jung",
-            "Rossi", "Russo", "Ferrari", "Esposito", "Bianchi",
-            "O'Connor", "Murphy", "Kelly", "O'Brien", "Ryan"
-        ];
+    <!-- GENERATE -->
+    <div class="tab-section active" id="tab-generate">
+      <div class="form-group">
+        <label><i class="fa-solid fa-feather"></i> Your Given Name</label>
+        <div class="input-wrap">
+          <i class="ico fa-solid fa-user-pen"></i>
+          <input type="text" id="user-name" placeholder="Enter your full name…" autocomplete="off" maxlength="60">
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="form-group">
+          <label><i class="fa-solid fa-earth-asia"></i> Cultural Realm</label>
+          <div class="input-wrap sel-arrow">
+            <i class="ico fa-solid fa-globe"></i>
+            <select id="culture">
+              <option value="auto">✨ Auto Detect</option>
+              <option value="indian">🪔 Indian / Sanskrit</option>
+              <option value="arabic">☪️ Arabic / Persian</option>
+              <option value="celtic">🍀 Celtic / Gaelic</option>
+              <option value="nordic">⚡ Nordic / Norse</option>
+              <option value="japanese">🌸 Japanese</option>
+              <option value="greek">🏛️ Hellenic / Greek</option>
+              <option value="roman">🦅 Roman / Latin</option>
+              <option value="african">🌍 African</option>
+              <option value="slavic">❄️ Slavic</option>
+              <option value="fantasy">🔮 High Fantasy</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label><i class="fa-solid fa-venus-mars"></i> Identity</label>
+          <div class="input-wrap sel-arrow">
+            <i class="ico fa-solid fa-user"></i>
+            <select id="gender">
+              <option value="neutral">🌀 Any</option>
+              <option value="masculine">⚔️ Masculine</option>
+              <option value="feminine">🌺 Feminine</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label><i class="fa-solid fa-fire"></i> Dominant Traits</label>
+        <div class="chip-group" id="trait-chips">
+          <span class="chip selected" data-trait="wisdom">📚 Wisdom</span>
+          <span class="chip" data-trait="courage">⚔️ Courage</span>
+          <span class="chip" data-trait="creativity">🎨 Creativity</span>
+          <span class="chip" data-trait="mystery">🌙 Mystery</span>
+          <span class="chip" data-trait="power">💥 Power</span>
+          <span class="chip" data-trait="grace">🕊️ Grace</span>
+          <span class="chip" data-trait="healing">🌿 Healing</span>
+          <span class="chip" data-trait="justice">⚖️ Justice</span>
+        </div>
+      </div>
+      <button class="cta-btn" onclick="generateIdentity()">
+        <div class="btn-shimmer"></div>
+        <i class="fa-solid fa-wand-magic-sparkles"></i>&nbsp; Reveal My True Name
+      </button>
 
-        function generateIdentity() {
-            const inputName = document.getElementById('user-name').value.trim();
-            const resultArea = document.getElementById('result-area');
-            const loader = document.getElementById('loader');
+      <div id="loader-wrap">
+        <div class="rune-loader">
+          <div class="rune"></div><div class="rune"></div>
+          <div class="rune"></div><div class="rune"></div>
+        </div>
+        <div class="loader-text" id="loader-text">Consulting the ancient archives…</div>
+      </div>
 
-            if (!inputName) {
-                alert("Please enter a name first!");
-                return;
-            }
+      <div id="result-panel">
+        <div class="result-hero">
+          <div class="full-name-display" id="full-name-display">—</div>
+          <div class="origin-badge">
+            <i class="fa-solid fa-map-pin"></i>
+            <span id="origin-text">—</span>
+          </div>
+        </div>
+        <div class="result-grid">
+          <div class="result-block">
+            <span class="block-icon">🪄</span>
+            <div class="block-label">New Forename</div>
+            <div class="block-value" id="res-forename">—</div>
+            <div class="block-sub" id="res-forename-meaning">—</div>
+          </div>
+          <div class="result-block">
+            <span class="block-icon">🛡️</span>
+            <div class="block-label">Heritage Surname</div>
+            <div class="block-value" id="res-surname">—</div>
+            <div class="block-sub" id="res-surname-origin">—</div>
+          </div>
+          <div class="result-block full-col">
+            <span class="block-icon">⚡</span>
+            <div class="block-label">Element · Archetype</div>
+            <div class="el-wrap" id="res-elements"></div>
+          </div>
+          <div class="result-block full-col">
+            <div class="block-label" style="margin-bottom:.6rem">📜 The Sacred Meaning</div>
+            <div class="meaning-text-large" id="res-meaning">—</div>
+          </div>
+        </div>
+        <div class="result-block" style="margin-bottom:.85rem">
+          <div class="block-label" style="margin-bottom:.7rem">🧬 Personality Essence</div>
+          <div id="trait-bars"></div>
+        </div>
+        <div class="action-bar">
+          <button class="action-btn" id="copy-btn" onclick="copyName()"><i class="fa-solid fa-copy"></i> Copy Name</button>
+          <button class="action-btn" onclick="saveToHistory()"><i class="fa-solid fa-bookmark"></i> Save</button>
+          <button class="action-btn" onclick="generateIdentity()"><i class="fa-solid fa-rotate"></i> Regenerate</button>
+          <button class="action-btn" onclick="shareResult()"><i class="fa-solid fa-share-nodes"></i> Share</button>
+        </div>
+      </div>
+    </div>
 
-            resultArea.style.display = 'none';
-            loader.style.display = 'block';
+    <!-- NUMEROLOGY -->
+    <div class="tab-section" id="tab-numerology">
+      <div style="text-align:center;margin-bottom:1.4rem">
+        <div style="font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.2em;color:rgba(212,168,67,.55);text-transform:uppercase;margin-bottom:.4rem">🔢 Pythagorean Numerology</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;color:rgba(245,238,216,.55)">Discover your name's vibrational frequency</div>
+      </div>
+      <div class="form-group">
+        <div class="input-wrap">
+          <i class="ico fa-solid fa-hashtag"></i>
+          <input type="text" id="num-input" placeholder="Enter any name…" autocomplete="off" oninput="computeNumerology()">
+        </div>
+      </div>
+      <div id="num-result" style="display:none">
+        <div class="num-display" id="num-orbs"></div>
+        <div class="result-block" style="margin-top:.8rem">
+          <div class="block-label">✨ Vibrational Message</div>
+          <div class="meaning-text-large" id="num-message">—</div>
+        </div>
+      </div>
+    </div>
 
-            setTimeout(() => {
-                loader.style.display = 'none';
-                resultArea.style.display = 'block';
+    <!-- LORE -->
+    <div class="tab-section" id="tab-lore">
+      <div class="lore-body">
+        <p><span class="lore-accent">Name Alchemist</span> draws upon deep currents of etymology, cultural heritage, and numerological vibration to reveal the hidden identity within any name.</p>
+        <p>Every name carries the echo of a culture — Sanskrit's sacred syllables, the warrior-poetry of Norse skaldic tradition, moon-touched Arabic cadences, earth-rooted Celtic whispers. We honour them all.</p>
+        <p>Surnames are not invented — they are <em>discovered</em>. Each is drawn from real-world caste, clan, and occupational traditions spanning over 40 lineages, ensuring authentic results every time.</p>
+        <p>The Personality Essence scores are derived from the phonetic and etymological resonance of your generated name, while Numerology follows the classical Pythagorean reduction method.</p>
+        <div class="divider" style="width:100px;margin:1.1rem 0"></div>
+        <div style="font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.2em;color:rgba(212,168,67,.35);text-transform:uppercase">Version 3.0 · Name Alchemist · Crafted with ancient wisdom</div>
+      </div>
+    </div>
+  </div>
 
-                const randomPrefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-                const randomSuffix = suffixes[Math.floor(Math.random() * suffixes.length)];
-                const randomMeaning = meanings[Math.floor(Math.random() * meanings.length)];
+  <!-- HISTORY -->
+  <div id="history-panel">
+    <div class="history-title">
+      <i class="fa-solid fa-clock-rotate-left"></i> Revealed Identities
+      <button onclick="clearHistory()" style="margin-left:auto;background:transparent;border:none;color:rgba(231,76,60,.45);cursor:pointer;font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.07em">Clear All</button>
+    </div>
+    <div id="history-list"></div>
+  </div>
+</div>
 
-                const generatedName = `${randomPrefix}${inputName.charAt(0).toLowerCase()}${randomSuffix}`;
+<script>
+// ── DATA ──────────────────────────────────────────────────────
+const D = {
+  cultures:{
+    indian:{
+      f:{
+        masculine:[
+          {n:"Arjun",m:"Bright, shining white"},{n:"Vivaan",m:"Full of life"},{n:"Aarav",m:"Peaceful, calm"},
+          {n:"Dhruv",m:"Pole star, immovable"},{n:"Kabir",m:"Great, powerful"},{n:"Rohan",m:"Ascending, evolving"},
+          {n:"Ishan",m:"Sun, lord of wealth"},{n:"Veer",m:"Brave hero"},{n:"Tejas",m:"Radiant, luminous"},
+          {n:"Parth",m:"Son of earth, archer"},{n:"Dev",m:"God, divine being"},{n:"Siddh",m:"Perfected, accomplished"}
+        ],
+        feminine:[
+          {n:"Ananya",m:"Unique, incomparable"},{n:"Diya",m:"Lamp, divine light"},{n:"Saanvi",m:"Goddess Lakshmi"},
+          {n:"Priya",m:"Beloved, dear one"},{n:"Kavya",m:"Poetry, literary beauty"},{n:"Nisha",m:"Night, dark beauty"},
+          {n:"Shreya",m:"Auspicious, excellent"},{n:"Tara",m:"Star, protector"},{n:"Lavanya",m:"Grace, beauty"},
+          {n:"Mira",m:"Ocean, devotion"},{n:"Riya",m:"Singer, graceful"},{n:"Aanya",m:"Graceful, inexhaustible"}
+        ],
+        neutral:[
+          {n:"Arya",m:"Noble one"},{n:"Jaya",m:"Victory"},{n:"Kiran",m:"Ray of light"},
+          {n:"Neel",m:"Blue, sapphire"},{n:"Sagar",m:"Ocean"},{n:"Suman",m:"Beautiful mind"}
+        ]
+      },
+      s:[
+        {n:"Sharma",o:"Scholar-priest caste, Sanskrit 'joy'"},{n:"Patel",o:"Village headman, Gujarat"},
+        {n:"Malhotra",o:"Kshatriya clan, Punjab"},{n:"Iyer",o:"Tamil Brahmin community"},
+        {n:"Nair",o:"Warrior nobility, Kerala"},{n:"Reddy",o:"Landlord gentry, Andhra Pradesh"},
+        {n:"Mukherjee",o:"Headman's kin, Bengal"},{n:"Bose",o:"Kayastha scribes, Bengal"},
+        {n:"Mehta",o:"Accountant class, Rajasthan"},{n:"Joshi",o:"Astrologer Brahmin"},
+        {n:"Chauhan",o:"Rajput warrior clan"},{n:"Verma",o:"Kshatriya shield-bearer"},
+        {n:"Pillai",o:"Administrator caste, Tamil Nadu"},{n:"Yadav",o:"Cowherd pastoral clan"},
+        {n:"Tiwari",o:"Three-sacred-thread Brahmin"},{n:"Chaudhary",o:"Four-village lord"}
+      ]
+    },
+    arabic:{
+      f:{
+        masculine:[
+          {n:"Zaid",m:"Growth, abundance"},{n:"Omar",m:"Long-lived, flourishing"},{n:"Khalid",m:"Eternal, immortal"},
+          {n:"Tariq",m:"Morning star, seeker"},{n:"Amir",m:"Prince, ruler"},{n:"Faris",m:"Knight, horseman"},
+          {n:"Nasser",m:"Victorious helper"},{n:"Rayan",m:"Lush, well-watered"},{n:"Jasim",m:"Great-bodied, strong"}
+        ],
+        feminine:[
+          {n:"Layla",m:"Night, dark beauty"},{n:"Nour",m:"Light, illumination"},{n:"Yasmin",m:"Jasmine flower"},
+          {n:"Sana",m:"Brilliance, radiance"},{n:"Rana",m:"Lovely, eye-catching"},{n:"Hana",m:"Bliss, happiness"},
+          {n:"Zara",m:"Flower, princess"},{n:"Fatima",m:"Captivating, abstinent"},{n:"Lina",m:"Tender, gentle"}
+        ],
+        neutral:[
+          {n:"Noor",m:"Divine light"},{n:"Salam",m:"Peace"},{n:"Majd",m:"Glory, honor"},{n:"Iman",m:"Faith"}
+        ]
+      },
+      s:[
+        {n:"Al-Rashid",o:"The rightly guided, Abbasid lineage"},{n:"Al-Farsi",o:"Persian heritage"},
+        {n:"Hassan",o:"Handsome, grandson of Prophet"},{n:"Youssef",o:"God increases, prophetic"},
+        {n:"Al-Masri",o:"Egyptian origin"},{n:"Khalil",o:"Bosom friend clan"},
+        {n:"Qureshi",o:"Quraysh tribe, Mecca"},{n:"Ansari",o:"Helper clan of Medina"},
+        {n:"Al-Tamimi",o:"Tamim tribe, noble lineage"}
+      ]
+    },
+    celtic:{
+      f:{
+        masculine:[
+          {n:"Caelan",m:"Slender warrior"},{n:"Bran",m:"Raven, dark power"},{n:"Lorcan",m:"Fierce little one"},
+          {n:"Cormac",m:"Chariot son"},{n:"Fergal",m:"Valorous man"},{n:"Oisin",m:"Little deer, poet"},
+          {n:"Fionn",m:"Fair, white, bright"},{n:"Tadhg",m:"Poet, philosopher"}
+        ],
+        feminine:[
+          {n:"Aoife",m:"Beautiful, radiant"},{n:"Brigid",m:"Exalted, fiery arrow"},{n:"Niamh",m:"Bright, golden"},
+          {n:"Saoirse",m:"Freedom, liberty"},{n:"Clodagh",m:"River of vision"},{n:"Siobhan",m:"God is gracious"},
+          {n:"Aine",m:"Radiance, joy"},{n:"Deirdre",m:"Sorrowful, wanderer"}
+        ],
+        neutral:[
+          {n:"Rowan",m:"Little red one"},{n:"Rían",m:"Little king"},{n:"Sorcha",m:"Bright, radiant"}
+        ]
+      },
+      s:[
+        {n:"O'Brien",o:"Descendant of Brian Boru"},{n:"MacTavish",o:"Son of Tamhas, Scotland"},
+        {n:"Gallagher",o:"Eager helper clan, Donegal"},{n:"Callahan",o:"Lover of churches"},
+        {n:"Fitzpatrick",o:"Son of Patrick, Norman-Irish"},{n:"MacAllister",o:"Son of Alasdair, Scotland"},
+        {n:"O'Sullivan",o:"Descendant of the dark-eyed one"},{n:"Brennan",o:"Descendant of sorrow's raven"}
+      ]
+    },
+    nordic:{
+      f:{
+        masculine:[
+          {n:"Björn",m:"Bear, warrior spirit"},{n:"Leif",m:"Heir, descendant"},{n:"Ragnar",m:"Warrior counsel"},
+          {n:"Sigurd",m:"Victory guardian"},{n:"Eirik",m:"Ever-powerful ruler"},{n:"Gunnar",m:"Battle warrior"},
+          {n:"Halvard",m:"Rock guardian"},{n:"Thorvald",m:"Thor's ruler"}
+        ],
+        feminine:[
+          {n:"Freya",m:"Goddess of love and war"},{n:"Astrid",m:"Divinely beautiful"},{n:"Ingrid",m:"Beautiful Ing"},
+          {n:"Sigrid",m:"Beautiful victory"},{n:"Ragnhild",m:"Battle counsel warrior"},{n:"Ylva",m:"She-wolf"},
+          {n:"Solveig",m:"Strength of the sun"},{n:"Hilde",m:"Battle-ready"}
+        ],
+        neutral:[
+          {n:"Rune",m:"Secret wisdom"},{n:"Storm",m:"Tempest force"},{n:"Sven",m:"Young warrior"}
+        ]
+      },
+      s:[
+        {n:"Eriksson",o:"Son of Erik"},{n:"Thorvaldsen",o:"Son of Thor's ruler"},
+        {n:"Halvorsen",o:"Son of rock guardian"},{n:"Magnusson",o:"Son of the great"},
+        {n:"Lindqvist",o:"Linden branch clan"},{n:"Björkman",o:"Birch tree man"},
+        {n:"Strand",o:"Shore-dweller lineage"},{n:"Holm",o:"Island clan"}
+      ]
+    },
+    japanese:{
+      f:{
+        masculine:[
+          {n:"Haruki",m:"Shining spring"},{n:"Kenji",m:"Wise second son"},{n:"Ryu",m:"Dragon spirit"},
+          {n:"Takeshi",m:"Fierce warrior"},{n:"Shin",m:"True, genuine"},{n:"Kaito",m:"Sea and sky"},
+          {n:"Hiroshi",m:"Generous, tolerant"},{n:"Ren",m:"Lotus, love"}
+        ],
+        feminine:[
+          {n:"Yuki",m:"Snow, happiness"},{n:"Hana",m:"Flower, blossom"},{n:"Sakura",m:"Cherry blossom"},
+          {n:"Akemi",m:"Dawn beauty"},{n:"Mizuki",m:"Water moon"},{n:"Sora",m:"Sky, heaven"},
+          {n:"Hikari",m:"Light, radiance"},{n:"Yua",m:"Binding love"}
+        ],
+        neutral:[
+          {n:"Nori",m:"Law, precedent"},{n:"Kei",m:"Blessing, respect"},{n:"Aki",m:"Autumn, bright"}
+        ]
+      },
+      s:[
+        {n:"Tanaka",o:"Dweller of rice fields"},{n:"Suzuki",o:"Bell tree lineage"},
+        {n:"Yamamoto",o:"Base of the mountain"},{n:"Watanabe",o:"River crossing clan"},
+        {n:"Kobayashi",o:"Small forest"},{n:"Sato",o:"Helpful wisteria clan"},
+        {n:"Nakamura",o:"Middle village"},{n:"Ito",o:"Thread, wisteria clan"}
+      ]
+    },
+    greek:{
+      f:{
+        masculine:[
+          {n:"Leonidas",m:"Son of the lion"},{n:"Theron",m:"Hunter, pursuer"},{n:"Demetrios",m:"Earth mother's son"},
+          {n:"Alexandros",m:"Defender of men"},{n:"Orion",m:"Son of fire, hunter"},{n:"Kyros",m:"Far-sighted"}
+        ],
+        feminine:[
+          {n:"Kalliope",m:"Beautiful voice"},{n:"Thalia",m:"To flourish, bloom"},{n:"Ariadne",m:"Most holy"},
+          {n:"Zephyrine",m:"West wind"},{n:"Melisande",m:"Honey bee strength"},{n:"Eirene",m:"Peace"}
+        ],
+        neutral:[
+          {n:"Phoenix",m:"Dark red, rebirth"},{n:"Nikos",m:"Victory of the people"}
+        ]
+      },
+      s:[
+        {n:"Papadopoulos",o:"Son of a priest"},{n:"Nikolaides",o:"Son of Nikolaos"},
+        {n:"Stavros",o:"Cross, crusader lineage"},{n:"Alexandrou",o:"Of Alexander's line"},
+        {n:"Kostopoulos",o:"Son of Kostos"},{n:"Anagnostopoulos",o:"Reader's lineage"}
+      ]
+    },
+    roman:{
+      f:{
+        masculine:[
+          {n:"Aurelius",m:"Golden, gilded"},{n:"Maximus",m:"The greatest"},{n:"Caelus",m:"Heaven, sky"},
+          {n:"Corvus",m:"Raven, dark wisdom"},{n:"Lucius",m:"Light bringer"},{n:"Cassius",m:"Empty, hollow"}
+        ],
+        feminine:[
+          {n:"Aurelia",m:"Golden one"},{n:"Valentina",m:"Strong, vigorous"},{n:"Caelia",m:"Heavenly"},
+          {n:"Flavia",m:"Golden-haired"},{n:"Serena",m:"Calm, tranquil"},{n:"Livia",m:"Blue, envious"}
+        ],
+        neutral:[
+          {n:"Valerius",m:"Strong, healthy"},{n:"Silvanus",m:"Forest spirit"},{n:"Caelius",m:"Heaven"}
+        ]
+      },
+      s:[
+        {n:"Rossi",o:"Red-haired family, Italy"},{n:"Ferrari",o:"Blacksmith guild"},
+        {n:"Conti",o:"Count's lineage"},{n:"De Luca",o:"Of the light"},{n:"Ricci",o:"Curly-haired clan"},
+        {n:"Marino",o:"Of the sea"},{n:"Greco",o:"Greek heritage"}
+      ]
+    },
+    african:{
+      f:{
+        masculine:[
+          {n:"Kwame",m:"Born on Saturday"},{n:"Kofi",m:"Born on Friday, explorer"},{n:"Amara",m:"Grace, eternal"},
+          {n:"Jabari",m:"Brave, fearless one"},{n:"Zuri",m:"Beautiful, good"},{n:"Chidi",m:"God exists"},
+          {n:"Emeka",m:"Great deeds"},{n:"Seun",m:"This has happened"}
+        ],
+        feminine:[
+          {n:"Asha",m:"Life, hopeful"},{n:"Adaeze",m:"King's daughter"},{n:"Fatou",m:"Weaned one, precious"},
+          {n:"Amina",m:"Trustworthy, faithful"},{n:"Imani",m:"Faith, belief"},{n:"Chioma",m:"Good God"},
+          {n:"Ngozi",m:"Blessing"},{n:"Zara",m:"Flower, shining"}
+        ],
+        neutral:[
+          {n:"Safi",m:"Pure one"},{n:"Jali",m:"Praise-singer"},{n:"Kaya",m:"Home, rest"}
+        ]
+      },
+      s:[
+        {n:"Okafor",o:"God does not fail, Igbo"},{n:"Diallo",o:"Bold, fierce, Fula"},
+        {n:"Mensah",o:"Third son, Akan Ghana"},{n:"Zulu",o:"Heaven, sky people"},
+        {n:"Mwangi",o:"Fast traveller, Kikuyu"},{n:"Abara",o:"Spirit lineage, Yoruba"},
+        {n:"Toure",o:"Lion clan, West Africa"},{n:"Dlamini",o:"Royal Swazi lineage"}
+      ]
+    },
+    slavic:{
+      f:{
+        masculine:[
+          {n:"Aleksei",m:"Defender of men"},{n:"Dmitri",m:"Earth lover"},{n:"Ruslan",m:"Lion-hearted"},
+          {n:"Bogdan",m:"God's gift"},{n:"Vladislav",m:"Glorious ruler"},{n:"Miroslav",m:"Peaceful glory"}
+        ],
+        feminine:[
+          {n:"Natasha",m:"Born at Christmas"},{n:"Irina",m:"Peace"},{n:"Zorya",m:"Dawn goddess"},
+          {n:"Mila",m:"Gracious, dear"},{n:"Varvara",m:"Stranger, wanderer"},{n:"Ludmila",m:"Beloved by people"}
+        ],
+        neutral:[
+          {n:"Sasha",m:"Defender"},{n:"Kira",m:"Sun, lord"},{n:"Slava",m:"Glory"}
+        ]
+      },
+      s:[
+        {n:"Volkov",o:"Wolf clan"},{n:"Sokolov",o:"Falcon lineage"},
+        {n:"Morozov",o:"Frost family"},{n:"Novak",o:"Newcomer, immigrant"},
+        {n:"Koval",o:"Blacksmith guild, Ukraine"},{n:"Petrov",o:"Son of Peter"},
+        {n:"Ivanov",o:"Son of Ivan, most common"},{n:"Shevchenko",o:"Son of the tailor, Ukraine"}
+      ]
+    },
+    fantasy:{
+      f:{
+        masculine:[
+          {n:"Aethon",m:"Blazing eagle"},{n:"Veldris",m:"Storm-walker"},{n:"Caeldris",m:"Sky sovereign"},
+          {n:"Nocthar",m:"Night's champion"},{n:"Sylvaren",m:"Forest warden"},{n:"Thorvex",m:"Thunder herald"},
+          {n:"Zandrel",m:"Ancient, timeless"},{n:"Mordecai",m:"Warrior of the dark light"}
+        ],
+        feminine:[
+          {n:"Elyara",m:"Star-weaver"},{n:"Luneth",m:"Moon's daughter"},{n:"Aervyn",m:"Ethereal wind"},
+          {n:"Thessaly",m:"Sorceress realm"},{n:"Silvara",m:"Silver flame"},{n:"Calindra",m:"Beautiful light"},
+          {n:"Nyxara",m:"Daughter of night"},{n:"Velorien",m:"Twilight singer"}
+        ],
+        neutral:[
+          {n:"Aelith",m:"Timeless wanderer"},{n:"Sorvane",m:"Soul flame"},
+          {n:"Vandrel",m:"Void walker"},{n:"Lysander",m:"Liberator of men"}
+        ]
+      },
+      s:[
+        {n:"Stormweaver",o:"Weather-shaper lineage"},{n:"Nightwhisper",o:"Shadow clan"},
+        {n:"Ashenveil",o:"Veil between worlds"},{n:"Goldenthorn",o:"Protected treasure"},
+        {n:"Ironveil",o:"Armoured lineage"},{n:"Moonborn",o:"Lunar covenant"},
+        {n:"Starfall",o:"Celestial descent"},{n:"Embersong",o:"Fire-singer heritage"},
+        {n:"Dawnblade",o:"First light warrior"},{n:"Voidwalker",o:"Traveller of emptiness"}
+      ]
+    }
+  },
 
-                const generatedSurname = surnames[Math.floor(Math.random() * surnames.length)];
+  meanings:[
+    "One who walks between the worlds of shadow and light, bearing the torch for those who cannot find their own way.",
+    "A soul forged in the crucible of great trials, whose very name reshapes the destiny of those who hear it.",
+    "The embodiment of the primal force that binds earth to sky — a bridge between what is and what must be.",
+    "Born under a convergence of celestial forces, destined to leave a mark that outlasts stone and time.",
+    "A keeper of forgotten wisdom, entrusted with the knowledge of ages before memory took form in words.",
+    "The rarest of spirits — one who carries both the warrior's fire and the healer's gentle hand in equal measure.",
+    "A name written in the oldest of tongues, spoken first by those who shaped the dawn of civilised thought.",
+    "One whose presence shifts the very atmosphere of a room, whose silence speaks louder than any proclamation.",
+    "A wanderer of sacred thresholds, moving freely between what is seen and the deeper currents underneath.",
+    "Forged not by ancestry alone, but by every choice made in moments of great difficulty and quiet courage.",
+    "A sovereign spirit — not of thrones or kingdoms, but of the invisible realms where true power is born.",
+    "The living intersection of heritage and horizon, carrying the past as a lantern, not as a chain."
+  ],
 
-                document.getElementById('new-name').innerHTML = `<i class="fa-solid fa-feather"></i> ${generatedName}`;
-                document.getElementById('new-surname').innerHTML = `<i class="fa-solid fa-users"></i> ${generatedSurname}`;
-                document.getElementById('name-meaning').innerText = `Symbolizes "${randomMeaning}" and heritage.`;
+  elements:["🔥 Fire","💧 Water","🌿 Earth","💨 Air","⚡ Lightning","🌙 Moon","☀️ Sun","❄️ Ice","🌌 Void","⭐ Aether"],
+  archetypes:["The Seeker","The Guardian","The Sage","The Warrior","The Healer","The Trickster","The Sovereign","The Mystic","The Creator","The Judge"],
+  traitLabels:["Wisdom","Courage","Charisma","Intuition","Resilience","Creativity","Justice","Grace"],
 
-            }, 1500);
-        }
-    </script>
+  loaderTexts:[
+    "Consulting the ancient archives…",
+    "Weaving syllables from starlight…",
+    "Searching the Book of Names…",
+    "Aligning celestial resonances…",
+    "Decoding your vibrational frequency…",
+    "Summoning your ancestral identity…"
+  ],
+
+  numMessages:[
+    {n:1,msg:"The Pioneer. You lead where others fear to tread. Your life is about independence and forging new paths."},
+    {n:2,msg:"The Diplomat. You are a bridge-builder, finding harmony in all things. Partnership is your sacred calling."},
+    {n:3,msg:"The Artist. Expression is your lifeblood. Words, art, and creativity flow through you like rivers."},
+    {n:4,msg:"The Builder. Your foundations endure. You create structures — in stone, in systems, in people's lives."},
+    {n:5,msg:"The Adventurer. Change is your native element. Freedom and experience are your greatest teachers."},
+    {n:6,msg:"The Nurturer. Love and responsibility are your twin stars. You create havens of warmth and care."},
+    {n:7,msg:"The Seeker. Truth compels you above all. Your life is a sacred investigation into hidden realities."},
+    {n:8,msg:"The Achiever. Power and material mastery are your domain. What you build endures for generations."},
+    {n:9,msg:"The Visionary. You contain multitudes. Compassion, wisdom, and humanity's fullest potential live in you."}
+  ],
+
+  bgs:[
+    {url:"https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1920&q=85&auto=format&fit=crop",label:"Mountains"},
+    {url:"https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=1920&q=85&auto=format&fit=crop",label:"Galaxy"},
+    {url:"https://images.unsplash.com/photo-1505533321630-975218a5f66f?w=1920&q=85&auto=format&fit=crop",label:"Ocean"},
+    {url:"https://images.unsplash.com/photo-1516912481808-3406841bd33c?w=1920&q=85&auto=format&fit=crop",label:"Aurora"},
+    {url:"https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?w=1920&q=85&auto=format&fit=crop",label:"Desert"},
+    {url:"https://images.unsplash.com/photo-1538370965046-79c0d6907d47?w=1920&q=85&auto=format&fit=crop",label:"Ruins"},
+    {url:"https://images.unsplash.com/photo-1436891620584-47fd0e565afb?w=1920&q=85&auto=format&fit=crop",label:"Stars"},
+    {url:"https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=1920&q=85&auto=format&fit=crop",label:"Forest"}
+  ]
+};
+
+// ── BG SYSTEM ──────────────────────────────────────────────────
+let curBgIdx = 0, bgActiveLayer = 0;
+
+function initBgs(){
+  const strip = document.getElementById('bg-strip');
+  D.bgs.forEach((bg,i)=>{
+    const t = document.createElement('div');
+    t.className='bg-thumb';
+    t.style.backgroundImage=`url(${bg.url})`;
+    t.title=bg.label;
+    t.onclick=()=>setBg(i);
+    strip.appendChild(t);
+  });
+  setBg(Math.floor(Math.random()*D.bgs.length));
+  setInterval(()=>setBg((curBgIdx+1)%D.bgs.length),14000);
+}
+
+function setBg(idx){
+  const layers=[document.getElementById('bg0'),document.getElementById('bg1')];
+  const next=1-bgActiveLayer;
+  layers[next].style.backgroundImage=`url(${D.bgs[idx].url})`;
+  layers[next].classList.add('active');
+  setTimeout(()=>{layers[bgActiveLayer].classList.remove('active');bgActiveLayer=next;},200);
+  document.querySelectorAll('.bg-thumb').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  curBgIdx=idx;
+}
+
+// ── STARS ──────────────────────────────────────────────────────
+function initStars(){
+  const c=document.getElementById('stars');
+  for(let i=0;i<90;i++){
+    const s=document.createElement('div');s.className='star';
+    const sz=Math.random()*2+0.4;
+    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--delay:-${Math.random()*6}s;`;
+    c.appendChild(s);
+  }
+}
+
+// ── PARTICLES ──────────────────────────────────────────────────
+function initParticles(){
+  const cols=['rgba(212,168,67,.65)','rgba(245,238,216,.45)','rgba(123,79,158,.55)','rgba(192,57,43,.45)'];
+  for(let i=0;i<20;i++){
+    const p=document.createElement('div');p.className='particle';
+    const sz=Math.random()*4+1;
+    p.style.cssText=`width:${sz}px;height:${sz}px;background:${cols[i%cols.length]};left:${Math.random()*100}%;top:${90+Math.random()*10}%;--dur:${8+Math.random()*10}s;--del:-${Math.random()*12}s;--tx:${(Math.random()-.5)*200}px;`;
+    document.body.appendChild(p);
+  }
+}
+
+// ── TABS ────────────────────────────────────────────────────────
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── CHIPS ───────────────────────────────────────────────────────
+document.querySelectorAll('.chip').forEach(ch=>{
+  ch.addEventListener('click',()=>{
+    ch.classList.toggle('selected');
+    if(!document.querySelector('.chip.selected')) ch.classList.add('selected');
+  });
+});
+
+// ── CULTURE DETECT ──────────────────────────────────────────────
+function detectCulture(name){
+  const n=name.toLowerCase();
+  if(/^(bjorn|sigurd|ragnar|freya|astrid|leif|eirik|gunnar|sven|rune)/i.test(name)) return 'nordic';
+  if(/^(caelan|aoife|brigid|niamh|saoirse|oisin|fionn|siobhan|aine)/i.test(name)) return 'celtic';
+  if(/^(layla|omar|khalid|nour|yasmin|zaid|tariq|faris|amir)/i.test(name)) return 'arabic';
+  if(/^(haruki|kenji|yuki|sakura|sora|mizuki|tanaka|suzuki|ren|hana)/i.test(name)) return 'japanese';
+  if(/^(leonidas|theron|demetri|alexandros|kalliope|ariadne)/i.test(name)) return 'greek';
+  if(/^(aurelius|maximus|valentina|flavius|serena|lucius|caelus)/i.test(name)) return 'roman';
+  if(/^(kwame|kofi|amara|jabari|asha|adaeze|fatou|imani)/i.test(name)) return 'african';
+  if(/^(aleksei|dmitri|ruslan|bogdan|natasha|irina|mila|sasha)/i.test(name)) return 'slavic';
+  if(/^(arjun|priya|ananya|rohan|diya|kabir|vivaan|kavya|tara|neel)/i.test(name)) return 'indian';
+  const ks=Object.keys(D.cultures);
+  return ks[name.toLowerCase().charCodeAt(0)%ks.length];
+}
+
+// ── GENERATOR ──────────────────────────────────────────────────
+let lastResult=null;
+
+function generateIdentity(){
+  const input=document.getElementById('user-name').value.trim();
+  if(!input){shakeCard();showToast('✦ Please enter your name first');return;}
+
+  const gender=document.getElementById('gender').value;
+  const cultSel=document.getElementById('culture').value;
+  const culture=cultSel==='auto'?detectCulture(input):cultSel;
+  const cd=D.cultures[culture]||D.cultures.indian;
+
+  // Build pool based on gender
+  let pool;
+  if(gender==='masculine') pool=cd.f.masculine||[];
+  else if(gender==='feminine') pool=cd.f.feminine||[];
+  else pool=[...(cd.f.neutral||[]),...(cd.f.masculine||[]).slice(0,4),...(cd.f.feminine||[]).slice(0,4)];
+  if(!pool.length) pool=cd.f.masculine||cd.f.feminine||[];
+
+  // Cycle loader text
+  let li=0;
+  document.getElementById('loader-text').textContent=D.loaderTexts[li];
+  const lint=setInterval(()=>{li=(li+1)%D.loaderTexts.length;document.getElementById('loader-text').textContent=D.loaderTexts[li];},600);
+
+  document.getElementById('loader-wrap').style.display='block';
+  document.getElementById('result-panel').style.display='none';
+
+  setTimeout(()=>{
+    clearInterval(lint);
+    document.getElementById('loader-wrap').style.display='none';
+
+    // Seeded random for reproducibility
+    const seed=input.split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+    const rand=(arr,salt=0)=>arr[Math.abs(seed+salt+Date.now())%arr.length];
+
+    const forename=rand(pool,1);
+    const surname=rand(cd.s,2);
+    const meaning=rand(D.meanings,3);
+    const el1=rand(D.elements,4);
+    const el2=rand(D.elements,5);
+    const arch=rand(D.archetypes,6);
+
+    // Trait scores influenced by selected chips
+    const selected=[...document.querySelectorAll('.chip.selected')].map(c=>c.dataset.trait);
+    const traits=D.traitLabels.map((label,i)=>{
+      const base=38+Math.floor(Math.random()*52);
+      const boost=selected.some(s=>label.toLowerCase().includes(s)||s.includes(label.toLowerCase()))?15:0;
+      return{label,val:Math.min(99,base+boost)};
+    });
+
+    lastResult={forename,surname,meaning,el1,el2,arch,traits,culture,input};
+    renderResult(lastResult);
+    setBg((curBgIdx+1)%D.bgs.length);
+  },1900);
+}
+
+function renderResult(r){
+  const cLabel=r.culture.charAt(0).toUpperCase()+r.culture.slice(1);
+  document.getElementById('full-name-display').textContent=`${r.forename.n} ${r.surname.n}`;
+  document.getElementById('origin-text').textContent=`${cLabel} Heritage · ${r.arch}`;
+  document.getElementById('res-forename').textContent=r.forename.n;
+  document.getElementById('res-forename-meaning').textContent=r.forename.m;
+  document.getElementById('res-surname').textContent=r.surname.n;
+  document.getElementById('res-surname-origin').textContent=r.surname.o;
+
+  // Elements
+  const elWrap=document.getElementById('res-elements');
+  elWrap.innerHTML='';
+  [r.el1,r.el2].forEach(el=>{
+    const parts=el.split(' ');const ico=parts[0];const lbl=parts.slice(1).join(' ');
+    const l=lbl.toLowerCase();
+    const cls=l.includes('fire')||l.includes('lightning')?'el-fire':l.includes('water')||l.includes('ice')?'el-water':l.includes('earth')?'el-earth':l.includes('air')?'el-air':'el-spirit';
+    const b=document.createElement('span');b.className=`el-badge ${cls}`;b.textContent=`${ico} ${lbl}`;elWrap.appendChild(b);
+  });
+  const ab=document.createElement('span');ab.className='el-badge el-spirit';ab.textContent=`🃏 ${r.arch}`;elWrap.appendChild(ab);
+
+  document.getElementById('res-meaning').textContent=`"${r.meaning}"`;
+
+  // Trait bars
+  const bw=document.getElementById('trait-bars');
+  bw.innerHTML=r.traits.map(t=>`
+    <div class="trait-row">
+      <span class="trait-label">${t.label}</span>
+      <div class="trait-bar"><div class="trait-fill" data-val="${t.val/100}" style="width:${t.val}%"></div></div>
+      <span class="trait-num">${t.val}</span>
+    </div>`).join('');
+
+  document.getElementById('result-panel').style.display='block';
+
+  // Animate bars
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      document.querySelectorAll('.trait-fill').forEach(f=>f.classList.add('go'));
+    });
+  });
+}
+
+// ── NUMEROLOGY ─────────────────────────────────────────────────
+const NMAP={a:1,b:2,c:3,d:4,e:5,f:8,g:3,h:5,i:1,j:1,k:2,l:3,m:4,n:5,o:7,p:8,q:1,r:2,s:3,t:4,u:6,v:6,w:6,x:5,y:1,z:7};
+
+function reduce(n){
+  while(n>9&&n!==11&&n!==22&&n!==33){
+    n=String(n).split('').reduce((a,c)=>a+parseInt(c),0);
+  }
+  return n;
+}
+
+function computeNumerology(){
+  const val=document.getElementById('num-input').value.trim();
+  const res=document.getElementById('num-result');
+  if(val.length<2){res.style.display='none';return;}
+  const letters=val.toLowerCase().replace(/[^a-z]/g,'').split('');
+  if(!letters.length){res.style.display='none';return;}
+  const total=letters.reduce((a,c)=>a+(NMAP[c]||0),0);
+  const lifeNum=reduce(total)||1;
+  const vowels=letters.filter(c=>'aeiou'.includes(c));
+  const cons=letters.filter(c=>!'aeiou'.includes(c));
+  const soulNum=reduce(vowels.reduce((a,c)=>a+(NMAP[c]||0),0))||1;
+  const persNum=reduce(cons.reduce((a,c)=>a+(NMAP[c]||0),0))||1;
+  const msg=D.numMessages.find(m=>m.n===lifeNum)||D.numMessages[0];
+  res.style.display='block';
+  document.getElementById('num-orbs').innerHTML=`
+    <div class="num-orb"><div class="num-circle">${lifeNum}</div><div class="num-orb-label">Life Number</div></div>
+    <div class="num-orb"><div class="num-circle">${soulNum}</div><div class="num-orb-label">Soul Urge</div></div>
+    <div class="num-orb"><div class="num-circle">${persNum}</div><div class="num-orb-label">Personality</div></div>`;
+  document.getElementById('num-message').textContent=msg.msg;
+}
+
+// ── HISTORY ────────────────────────────────────────────────────
+let hist=[];
+try{hist=JSON.parse(localStorage.getItem('naHist')||'[]');}catch(e){}
+
+function saveToHistory(){
+  if(!lastResult)return;
+  const e={full:`${lastResult.forename.n} ${lastResult.surname.n}`,orig:lastResult.input,t:Date.now()};
+  hist=[e,...hist.filter(h=>h.full!==e.full)].slice(0,10);
+  localStorage.setItem('naHist',JSON.stringify(hist));
+  renderHistory();showToast('✦ Saved to your identity scrolls');
+}
+
+function renderHistory(){
+  const panel=document.getElementById('history-panel');
+  const list=document.getElementById('history-list');
+  if(!hist.length){panel.style.display='none';return;}
+  panel.style.display='block';
+  list.innerHTML=hist.map((h,i)=>`
+    <div class="history-item" onclick="loadHistory(${i})">
+      <div style="flex:1"><div class="history-name">${h.full}</div><div class="history-orig">from "${h.orig}"</div></div>
+      <i class="fa-solid fa-trash history-del" onclick="delHist(event,${i})"></i>
+    </div>`).join('');
+}
+
+function loadHistory(i){
+  document.getElementById('user-name').value=hist[i].orig;
+  generateIdentity();
+}
+
+function delHist(e,i){
+  e.stopPropagation();
+  hist.splice(i,1);
+  localStorage.setItem('naHist',JSON.stringify(hist));
+  renderHistory();
+}
+
+function clearHistory(){
+  hist=[];localStorage.removeItem('naHist');renderHistory();
+}
+
+function copyName(){
+  if(!lastResult)return;
+  const name=`${lastResult.forename.n} ${lastResult.surname.n}`;
+  navigator.clipboard.writeText(name).then(()=>{
+    const b=document.getElementById('copy-btn');
+    b.innerHTML='<i class="fa-solid fa-check"></i> Copied!';b.classList.add('copy-done');
+    showToast('✦ Name copied to clipboard');
+    setTimeout(()=>{b.innerHTML='<i class="fa-solid fa-copy"></i> Copy Name';b.classList.remove('copy-done');},2200);
+  }).catch(()=>showToast('✦ Copy not supported in this browser'));
+}
+
+function shareResult(){
+  if(!lastResult)return;
+  const text=`🔮 Name Alchemist revealed my identity: ${lastResult.forename.n} ${lastResult.surname.n}\n"${lastResult.forename.m}"\n${lastResult.surname.o}\n\n${lastResult.meaning.substring(0,90)}…`;
+  if(navigator.share){navigator.share({title:'Name Alchemist',text});}
+  else{navigator.clipboard.writeText(text).then(()=>showToast('✦ Copied result for sharing!'));}
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+function shakeCard(){
+  const c=document.querySelector('.main-card');c.style.animation='none';c.offsetHeight;
+  c.style.animation='shk .5s ease';setTimeout(()=>c.style.animation='',600);
+}
+
+const sks=document.createElement('style');
+sks.textContent='@keyframes shk{0%,100%{transform:translateX(0)}15%{transform:translateX(-8px)}30%{transform:translateX(8px)}45%{transform:translateX(-5px)}60%{transform:translateX(5px)}75%{transform:translateX(-3px)}90%{transform:translateX(3px)}}';
+document.head.appendChild(sks);
+
+document.getElementById('user-name').addEventListener('keypress',e=>{if(e.key==='Enter')generateIdentity();});
+
+initBgs();initStars();initParticles();renderHistory();
+</script>
 </body>
 </html>
