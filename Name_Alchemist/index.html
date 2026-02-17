@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Name Alchemist | Find Your True Identity</title>
+
+    <meta name="description" content="Generate meaningful alternative names and authentic surnames based on your input. Discover your hidden identity.">
+    <meta name="keywords" content="name generator, surname finder, identity, caste name, meaningful names">
+    <meta name="author" content="Name Alchemist">
+    <meta property="og:title" content="Name Alchemist">
+    <meta property="og:image" content="https://source.unsplash.com/random/1200x630/?nature,scenery">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #6a11cb;
+            --secondary: #2575fc;
+            --glass: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            overflow: hidden;
+            color: var(--text);
+            position: relative;
+        }
+
+        #bg-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+            transition: opacity 1s ease-in-out;
+            filter: brightness(0.6);
+        }
+
+        .container {
+            background: var(--glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            padding: 3rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            text-align: center;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        p.subtitle {
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.7);
+        }
+
+        input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border-radius: 50px;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            border: 1px solid transparent;
+            transition: 0.3s;
+        }
+
+        input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        input:focus {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255,255,255,0.5);
+            box-shadow: 0 0 15px rgba(255,255,255,0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            border-radius: 50px;
+            border: none;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        #result-area {
+            margin-top: 2rem;
+            display: none;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .result-item {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        .result-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #aaa;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .result-value {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .loader {
+            display: none;
+            margin-top: 20px;
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+
+    <img id="bg-image" src="" alt="Scenery">
+
+    <div class="container">
+        <h1><i class="fa-solid fa-wand-magic-sparkles"></i> Name Alchemist</h1>
+        <p class="subtitle">Discover a meaningful new identity rooted in reality.</p>
+
+        <div class="input-group">
+            <i class="fa-solid fa-user"></i>
+            <input type="text" id="user-name" placeholder="Enter your current name...">
+        </div>
+
+        <button onclick="generateIdentity()">Reveal Identity</button>
+
+        <div class="loader" id="loader">
+            <i class="fa-solid fa-circle-notch fa-spin"></i> Consulting the archives...
+        </div>
+
+        <div id="result-area">
+            <div class="result-item">
+                <span class="result-label">Meaningful Name</span>
+                <div class="result-value" id="new-name"></div>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Authentic Surname (Caste/Clan)</span>
+                <div class="result-value" id="new-surname"></div>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Meaning</span>
+                <div class="result-value" style="font-size: 1rem; font-style: italic;" id="name-meaning"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const bgImage = document.getElementById('bg-image');
+        const randomId = Math.floor(Math.random() * 1000);
+        bgImage.src = `https://picsum.photos/id/${randomId}/1920/1080`;
+        const prefixes = ["El", "Val", "Sol", "Aer", "Mar", "Lun", "Zen", "Kai", "Ori", "Nym"];
+        const suffixes = ["ian", "or", "is", "us", "a", "on", "en", "ix", "os", "ra"];
+        const meanings = ["Light", "Warrior", "Star", "Ocean", "Wind", "Peace", "Fire", "Shadow", "Hope", "Spirit"];
+        const surnames = [
+            "Patel", "Sharma", "Singh", "Gupta", "Kumar", "Reddy", "Nair", "Iyer", 
+            "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", 
+            "Müller", "Schmidt", "Schneider", "Fischer", "Weber", 
+            "Tanaka", "Suzuki", "Sato", "Watanabe", "Ito",
+            "Kim", "Lee", "Park", "Choi", "Jung",
+            "Rossi", "Russo", "Ferrari", "Esposito", "Bianchi",
+            "O'Connor", "Murphy", "Kelly", "O'Brien", "Ryan"
+        ];
+
+        function generateIdentity() {
+            const inputName = document.getElementById('user-name').value.trim();
+            const resultArea = document.getElementById('result-area');
+            const loader = document.getElementById('loader');
+
+            if (!inputName) {
+                alert("Please enter a name first!");
+                return;
+            }
+
+            resultArea.style.display = 'none';
+            loader.style.display = 'block';
+
+            setTimeout(() => {
+                loader.style.display = 'none';
+                resultArea.style.display = 'block';
+
+                const randomPrefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+                const randomSuffix = suffixes[Math.floor(Math.random() * suffixes.length)];
+                const randomMeaning = meanings[Math.floor(Math.random() * meanings.length)];
+
+                const generatedName = `${randomPrefix}${inputName.charAt(0).toLowerCase()}${randomSuffix}`;
+
+                const generatedSurname = surnames[Math.floor(Math.random() * surnames.length)];
+
+                document.getElementById('new-name').innerHTML = `<i class="fa-solid fa-feather"></i> ${generatedName}`;
+                document.getElementById('new-surname').innerHTML = `<i class="fa-solid fa-users"></i> ${generatedSurname}`;
+                document.getElementById('name-meaning').innerText = `Symbolizes "${randomMeaning}" and heritage.`;
+
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
