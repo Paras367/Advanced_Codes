@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Online Indian Calendar with Holidays by SoftwareLabs">
+    <meta name="keywords" content="Calendar, Indian Holidays, SoftwareLabs, Paras Dhiman">
+    <meta name="author" content="Paras Dhiman">
+    <title>Indian Calendar Pro | SoftwareLabs</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-color: #ff4757;
+            --secondary-color: #2f3542;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-color: #2f3542;
+            --holiday-color: #ff4757;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #ff6b81;
+            --secondary-color: #dfe4ea;
+            --bg-gradient: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            --glass-bg: rgba(30, 30, 30, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #f1f2f6;
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        /* --- Header & Controls --- */
+        header {
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 2.5rem;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        select, button {
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        select {
+            background: #fff;
+            color: #333;
+        }
+
+        button.theme-btn {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        button.theme-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+
+        /* --- Layout --- */
+        .main-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            width: 95%;
+            max-width: 1400px;
+            flex-grow: 1;
+        }
+
+        /* --- Ads --- */
+        .ad-banner {
+            width: 100%;
+            height: 100px;
+            background: rgba(255,255,255,0.1);
+            border: 2px dashed rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bold;
+            margin: 10px 0;
+            border-radius: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .sidebar-ad {
+            width: 200px;
+            height: 600px;
+            background: rgba(255,255,255,0.1);
+            border: 2px dashed rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bold;
+            border-radius: 10px;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+        }
+
+        /* --- Calendar Container --- */
+        .calendar-wrapper {
+            background: var(--glass-bg);
+            backdrop-filter: blur(8px);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--glass-border);
+            padding: 30px;
+            width: 100%;
+            max-width: 1000px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(0,0,0,0.1);
+            padding-bottom: 15px;
+        }
+
+        .month-year {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+
+        .nav-btn {
+            background: transparent;
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+            padding: 5px 15px;
+            box-shadow: none;
+        }
+
+        .nav-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+
+        .weekday {
+            text-align: center;
+            font-weight: 700;
+            color: var(--secondary-color);
+            padding: 10px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .day {
+            background: rgba(255,255,255,0.5);
+            border-radius: 10px;
+            height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 8px;
+            cursor: pointer;
+            position: relative;
+            border: 1px solid transparent;
+        }
+
+        [data-theme="dark"] .day {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .day:hover {
+            transform: scale(1.05);
+            background: rgba(255,255,255,0.8);
+            border-color: var(--primary-color);
+            z-index: 2;
+        }
+
+        .day-number {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .day.holiday {
+            border: 1px solid var(--holiday-color);
+            background: rgba(255, 71, 87, 0.1);
+        }
+
+        .day.holiday .day-number {
+            color: var(--holiday-color);
+            font-weight: 800;
+        }
+
+        .day.today {
+            background: var(--secondary-color);
+            color: #fff;
+        }
+        
+        .day.today .day-number {
+            color: #fff;
+        }
+
+        .holiday-indicator {
+            font-size: 0.7rem;
+            text-align: center;
+            color: var(--holiday-color);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 600;
+        }
+
+        /* --- Modal --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+            animation: popUp 0.3s ease;
+            color: #333;
+        }
+
+        .modal-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        .close-btn:hover {
+            color: var(--holiday-color);
+        }
+
+        /* --- Footer --- */
+        footer {
+            margin-top: auto;
+            width: 100%;
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        footer strong {
+            color: var(--primary-color);
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes popUp {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar-ad { display: none; }
+            .calendar-grid { gap: 5px; }
+            .day { height: 60px; padding: 4px; }
+            .day-number { font-size: 0.9rem; }
+            .holiday-indicator { font-size: 0.6rem; }
+            h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <h1><i class="fa-solid fa-calendar-days"></i> Indian Calendar Pro</h1>
+        <div class="controls">
+            <select id="yearSelect" onchange="renderCalendar()">
+                <!-- Years populated by JS -->
+            </select>
+            <select id="monthSelect" onchange="renderCalendar()">
+                <option value="0">January</option>
+                <option value="1">February</option>
+                <option value="2">March</option>
+                <option value="3">April</option>
+                <option value="4">May</option>
+                <option value="5">June</option>
+                <option value="6">July</option>
+                <option value="7">August</option>
+                <option value="8">September</option>
+                <option value="9">October</option>
+                <option value="10">November</option>
+                <option value="11">December</option>
+            </select>
+            <button class="theme-btn" onclick="toggleTheme()">
+                <i class="fa-solid fa-palette"></i> Theme
+            </button>
+        </div>
+    </header>
+
+    <!-- Top Ad -->
+    <div class="ad-banner">
+        <i class="fa-solid fa-bullhorn"></i> &nbsp; ADVERTISEMENT SPACE - YOUR SITE ONLY
+    </div>
+
+    <div class="main-container">
+        <!-- Sidebar Ad -->
+        <div class="sidebar-ad">
+            <i class="fa-solid fa-square-poll-vertical"></i> &nbsp; SIDEBAR AD
+        </div>
+
+        <!-- Calendar -->
+        <div class="calendar-wrapper">
+            <div class="calendar-header">
+                <button class="nav-btn" onclick="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                <div class="month-year" id="monthYearDisplay">January 2024</div>
+                <button class="nav-btn" onclick="changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+            
+            <div class="calendar-grid" id="calendarGrid">
+                <!-- JS will inject days here -->
+            </div>
+        </div>
+
+        <!-- Sidebar Ad 2 -->
+        <div class="sidebar-ad">
+            <i class="fa-solid fa-bag-shopping"></i> &nbsp; SIDEBAR AD
+        </div>
+    </div>
+
+    <!-- Bottom Ad -->
+    <div class="ad-banner">
+        <i class="fa-solid fa-bullhorn"></i> &nbsp; ADVERTISEMENT SPACE - YOUR SITE ONLY
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>Made By <strong>Paras Dhiman</strong> | CopyRights <strong>SoftwareLabs</strong> (by Paras & Arhan)</p>
+        <div style="margin-top: 10px; font-size: 1.2rem;">
+            <i class="fa-brands fa-github"></i>
+            <i class="fa-brands fa-linkedin"></i>
+            <i class="fa-brands fa-instagram"></i>
+        </div>
+    </footer>
+
+    <!-- Holiday Modal -->
+    <div class="modal" id="holidayModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div class="modal-icon"><i class="fa-solid fa-star"></i></div>
+            <h2 id="modalTitle">Holiday Name</h2>
+            <p id="modalDate" style="color: #666; margin: 10px 0;">Date</p>
+            <p id="modalDesc">This is a national holiday in India.</p>
+        </div>
+    </div>
+
+    <script>
+        // --- Configuration & Data ---
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        
+        // Static Holidays (MM-DD format)
+        // Note: Lunar holidays (Diwali, Holi, Eid) change every year. 
+        // For this demo, we use fixed major national holidays + approximations for demo purposes.
+        const fixedHolidays = {
+            "01-01": "New Year's Day",
+            "01-26": "Republic Day",
+            "08-15": "Independence Day",
+            "10-02": "Gandhi Jayanti",
+            "11-14": "Children's Day",
+            "12-25": "Christmas Day",
+            "01-14": "Makar Sankranti",
+            "08-19": "Raksha Bandhan (Approx)", 
+            "10-31": "Halloween / National Unity Day"
+        };
+
+        // Dynamic Holidays (Approximate for demo logic - In production, use an API)
+        // We will add specific logic for Diwali/Holi if needed, but fixed is safer for a standalone code.
+        
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth();
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            populateYearSelect();
+            renderCalendar();
+        });
+
+        function populateYearSelect() {
+            const select = document.getElementById('yearSelect');
+            const startYear = 2000;
+            const endYear = 2100;
+            
+            for (let i = startYear; i <= endYear; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.text = i;
+                if(i === currentYear) option.selected = true;
+                select.appendChild(option);
+            }
+        }
+
+        // --- Core Calendar Logic ---
+        function renderCalendar() {
+            const year = parseInt(document.getElementById('yearSelect').value);
+            const month = parseInt(document.getElementById('monthSelect').value);
+            
+            currentYear = year;
+            currentMonth = month;
+
+            // Update Header
+            document.getElementById('monthYearDisplay').innerText = `${monthNames[month]} ${year}`;
+
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+
+            // Add Weekday Headers
+            weekDays.forEach(day => {
+                const div = document.createElement('div');
+                div.classList.add('weekday');
+                div.innerText = day;
+                grid.appendChild(div);
+            });
+
+            // Calculate Days
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const lastDay = new Date(year, month + 1, 0).getDate();
+            
+            // Previous Month Padding
+            for (let i = 0; i < firstDayIndex; i++) {
+                const div = document.createElement('div');
+                grid.appendChild(div);
+            }
+
+            // Current Month Days
+            const today = new Date();
+            
+            for (let i = 1; i <= lastDay; i++) {
+                const dayDiv = document.createElement('div');
+                dayDiv.classList.add('day');
+                
+                // Format Date Key (MM-DD)
+                const monthStr = (month + 1).toString().padStart(2, '0');
+                const dayStr = i.toString().padStart(2, '0');
+                const dateKey = `${monthStr}-${dayStr}`;
+
+                // Check for Holiday
+                let holidayName = fixedHolidays[dateKey];
+                
+                // Special Logic for Diwali (Demo approximation: Oct/Nov Full Moon logic simplified)
+                // In a real app, fetch this from an API.
+                if (month === 10 && i === 12) holidayName = "Diwali (Deepavali)"; // Example static date
+
+                if (holidayName) {
+                    dayDiv.classList.add('holiday');
+                    dayDiv.innerHTML = `
+                        <span class="day-number">${i}</span>
+                        <span class="holiday-indicator">${holidayName}</span>
+                    `;
+                    dayDiv.onclick = () => showHolidayModal(holidayName, `${i} ${monthNames[month]}, ${year}`);
+                } else {
+                    dayDiv.innerHTML = `<span class="day-number">${i}</span>`;
+                }
+
+                // Highlight Today
+                if (i === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+                    dayDiv.classList.add('today');
+                }
+
+                grid.appendChild(dayDiv);
+            }
+        }
+
+        function changeMonth(step) {
+            let newMonth = currentMonth + step;
+            if (newMonth > 11) {
+                newMonth = 0;
+                currentYear++;
+                document.getElementById('yearSelect').value = currentYear;
+            } else if (newMonth < 0) {
+                newMonth = 11;
+                currentYear--;
+                document.getElementById('yearSelect').value = currentYear;
+            }
+            currentMonth = newMonth;
+            document.getElementById('monthSelect').value = currentMonth;
+            renderCalendar();
+        }
+
+        // --- Modal Logic ---
+        function showHolidayModal(title, date) {
+            const modal = document.getElementById('holidayModal');
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalDate').innerText = date;
+            
+            // Simple descriptions based on title
+            let desc = "A public holiday in India.";
+            if(title.includes("Republic")) desc = "Celebrates the date on which the Constitution of India came into effect.";
+            if(title.includes("Independence")) desc = "Commemorates the nation's independence from the United Kingdom.";
+            if(title.includes("Gandhi")) desc = "Birthday of Mahatma Gandhi, the father of the nation.";
+            if(title.includes("Diwali")) desc = "The festival of lights, symbolizing the victory of light over darkness.";
+            
+            document.getElementById('modalDesc').innerText = desc;
+            
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('holidayModal').style.display = 'none';
+        }
+
+        // Close modal if clicked outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('holidayModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        // --- Theme Logic ---
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                body.setAttribute('data-theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+            }
+        }
+    </script>
+</body>
+</html>
