@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Interactive Particle Heart - A stunning visual experience with regenerating heart animation">
+    <meta name="keywords" content="heart, particles, animation, love, interactive, CSS, JavaScript">
+    <meta name="author" content="Particle Heart Studio">
+    <meta name="theme-color" content="#e91e63">
+    
+
+    <meta property="og:title" content="Regenerating Particle Heart">
+    <meta property="og:description" content="An amazing interactive heart made of particles that heals when pierced">
+    <meta property="og:type" content="website">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:wght@700&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    
+    <title>✨ Eternal Heart - Particle Magic</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%);
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+        }
+
+        /* Animated Background Stars */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Heart Container */
+        #heartCanvas {
+            position: absolute;
+            z-index: 10;
+        }
+
+        /* Arrow Styles */
+        .arrow {
+            position: absolute;
+            font-size: 3rem;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8),
+                         0 0 40px rgba(255, 215, 0, 0.4);
+            z-index: 20;
+            animation: shoot 2s linear;
+            pointer-events: none;
+        }
+
+        @keyframes shoot {
+            0% {
+                transform: translateX(-100vw) rotate(45deg) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+                transform: translateX(-80vw) rotate(45deg) scale(1.2);
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(100vw) rotate(45deg) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Floating Text */
+        .floating-text {
+            position: absolute;
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(233, 30, 99, 0.8),
+                         0 0 40px rgba(233, 30, 99, 0.4);
+            opacity: 0;
+            animation: floatUp 3s ease-out;
+            z-index: 30;
+            pointer-events: none;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 0;
+                transform: translateY(0) scale(0.5);
+            }
+            20% {
+                opacity: 1;
+                transform: translateY(-20px) scale(1.2);
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) scale(1);
+            }
+        }
+
+        /* Title */
+        .title {
+            position: absolute;
+            top: 10%;
+            text-align: center;
+            z-index: 40;
+            color: white;
+        }
+
+        .title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            background: linear-gradient(45deg, #ff6b6b, #ffd93d, #ff6b6b);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shine 3s linear infinite;
+            text-shadow: 0 0 30px rgba(255, 107, 107, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .title p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            letter-spacing: 3px;
+        }
+
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+
+        /* Control Panel */
+        .controls {
+            position: absolute;
+            bottom: 5%;
+            display: flex;
+            gap: 20px;
+            z-index: 40;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(45deg, #e91e63, #ff6b6b);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(233, 30, 99, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Glow Effect */
+        .glow {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(233, 30, 99, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 5;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+
+        /* Particle Sparkle */
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: sparkleAnim 1s ease-out forwards;
+        }
+
+        @keyframes sparkleAnim {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2) rotate(180deg);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .title h1 { font-size: 2rem; }
+            .title p { font-size: 0.9rem; }
+            .arrow { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Stars -->
+    <div class="stars" id="stars"></div>
+    
+    <!-- Glow Effect -->
+    <div class="glow"></div>
+    
+    <!-- Title -->
+    <div class="title">
+        <h1><i class="fas fa-heart"></i> Eternal Love <i class="fas fa-heart"></i></h1>
+        <p>Watch the magic unfold</p>
+    </div>
+    
+    <!-- Main Container -->
+    <div class="container">
+        <canvas id="heartCanvas"></canvas>
+    </div>
+    
+    <!-- Controls -->
+    <div class="controls">
+        <button class="btn" onclick="shootArrow()">
+            <i class="fas fa-arrow-right"></i> Pierce Heart
+        </button>
+        <button class="btn" onclick="resetHeart()">
+            <i class="fas fa-redo"></i> Reset
+        </button>
+        <button class="btn" onclick="toggleAutoPierce()">
+            <i class="fas fa-play"></i> Auto Pierce
+        </button>
+    </div>
+
+    <script>
+        // Canvas Setup
+        const canvas = document.getElementById('heartCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas size
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        // Particle Class
+        class Particle {
+            constructor(targetX, targetY) {
+                this.targetX = targetX;
+                this.targetY = targetY;
+                this.x = targetX + (Math.random() - 0.5) * 100;
+                this.y = targetY + (Math.random() - 0.5) * 100;
+                this.size = Math.random() * 3 + 2;
+                this.speedX = 0;
+                this.speedY = 0;
+                this.color = `hsl(${Math.random() * 60 + 330}, 100%, ${Math.random() * 30 + 50}%)`;
+                this.originalColor = this.color;
+                this.scattered = false;
+                this.returning = false;
+                this.returnSpeed = 0.05 + Math.random() * 0.05;
+            }
+            
+            update() {
+                if (this.scattered) {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    this.speedX *= 0.98;
+                    this.speedY *= 0.98;
+                    
+                    // Gradually return
+                    if (Math.random() < 0.02) {
+                        this.returning = true;
+                    }
+                }
+                
+                if (this.returning || (!this.scattered && Math.random() < 0.01)) {
+                    const dx = this.targetX - this.x;
+                    const dy = this.targetY - this.y;
+                    this.x += dx * this.returnSpeed;
+                    this.y += dy * this.returnSpeed;
+                    this.scattered = false;
+                    this.returning = false;
+                }
+                
+                // Add some floating motion
+                this.x += Math.sin(Date.now() * 0.001 + this.y * 0.01) * 0.5;
+                this.y += Math.cos(Date.now() * 0.001 + this.x * 0.01) * 0.5;
+            }
+            
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                
+                // Glow effect
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = this.color;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+            
+            scatter(forceX, forceY) {
+                this.scattered = true;
+                this.speedX = (Math.random() - 0.5) * 20 + forceX;
+                this.speedY = (Math.random() - 0.5) * 20 + forceY;
+                this.color = '#fff';
+                
+                // Create sparkle effect
+                createSparkle(this.x, this.y);
+            }
+        }
+        
+        // Create Heart Shape
+        function getHeartPoints(centerX, centerY, scale) {
+            const points = [];
+            const steps = 1000;
+            
+            for (let i = 0; i < steps; i++) {
+                const t = (i / steps) * Math.PI * 2;
+                // Heart parametric equations
+                const x = 16 * Math.pow(Math.sin(t), 3);
+                const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+                
+                points.push({
+                    x: centerX + x * scale,
+                    y: centerY + y * scale
+                });
+            }
+            return points;
+        }
+        
+        // Initialize Particles
+        let particles = [];
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const heartPoints = getHeartPoints(centerX, centerY, 8);
+        
+        function initParticles() {
+            particles = [];
+            heartPoints.forEach((point, index) => {
+                if (index % 3 === 0) { // Reduce particle count for performance
+                    particles.push(new Particle(point.x, point.y));
+                }
+            });
+        }
+        
+        initParticles();
+        
+        // Animation Loop
+        function animate() {
+            ctx.fillStyle = 'rgba(30, 27, 75, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            
+            requestAnimationFrame(animate);
+        }
+        
+        animate();
+        
+        // Create Sparkle Effect
+        function createSparkle(x, y) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.style.left = x + 'px';
+            sparkle.style.top = y + 'px';
+            document.body.appendChild(sparkle);
+            
+            setTimeout(() => sparkle.remove(), 1000);
+        }
+        
+        // Shoot Arrow
+        function shootArrow() {
+            const arrow = document.createElement('div');
+            arrow.className = 'arrow';
+            arrow.innerHTML = '<i class="fas fa-arrow-right"></i>';
+            arrow.style.top = (canvas.height / 2 + (Math.random() - 0.5) * 100) + 'px';
+            arrow.style.left = '-100px';
+            document.body.appendChild(arrow);
+            
+            // Pierce effect
+            setTimeout(() => {
+                pierceHeart();
+            }, 1000);
+            
+            setTimeout(() => arrow.remove(), 2000);
+            
+            // Show floating text
+            showFloatingText();
+        }
+        
+        // Pierce Heart Effect
+        function pierceHeart() {
+            const arrowY = canvas.height / 2;
+            const forceX = 15;
+            const forceY = (Math.random() - 0.5) * 10;
+            
+            particles.forEach((particle, index) => {
+                const distance = Math.abs(particle.targetY - arrowY);
+                if (distance < 100) {
+                    setTimeout(() => {
+                        particle.scatter(forceX, forceY);
+                    }, index % 200);
+                }
+            });
+            
+            // Regenerate after delay
+            setTimeout(() => {
+                regenerateHeart();
+            }, 1500);
+        }
+        
+        // Regenerate Heart
+        function regenerateHeart() {
+            particles.forEach((particle, index) => {
+                setTimeout(() => {
+                    particle.returning = true;
+                    createSparkle(particle.x, particle.y);
+                }, Math.random() * 1000);
+            });
+            
+            // Show regeneration text
+            setTimeout(() => {
+                const text = document.createElement('div');
+                text.className = 'floating-text';
+                text.innerHTML = '<i class="fas fa-heart-crack"></i> Healing... <i class="fas fa-heart"></i>';
+                text.style.left = centerX + 'px';
+                text.style.top = (centerY - 200) + 'px';
+                document.body.appendChild(text);
+                setTimeout(() => text.remove(), 3000);
+            }, 500);
+        }
+        
+        // Show Floating Text
+        function showFloatingText() {
+            const texts = [
+                '<i class="fas fa-heart"></i> Love',
+                '<i class="fas fa-fire"></i> Passion',
+                '<i class="fas fa-infinity"></i> Forever',
+                '<i class="fas fa-sparkles"></i> Magic',
+                '<i class="fas fa-heart-pulse"></i> Beating'
+            ];
+            
+            const text = document.createElement('div');
+            text.className = 'floating-text';
+            text.innerHTML = texts[Math.floor(Math.random() * texts.length)];
+            text.style.left = (centerX + (Math.random() - 0.5) * 300) + 'px';
+            text.style.top = (centerY + (Math.random() - 0.5) * 200) + 'px';
+            document.body.appendChild(text);
+            
+            setTimeout(() => text.remove(), 3000);
+        }
+        
+        // Reset Heart
+        function resetHeart() {
+            particles.forEach(particle => {
+                particle.scattered = false;
+                particle.returning = true;
+                particle.color = particle.originalColor;
+            });
+        }
+        
+        // Auto Pierce
+        let autoPierceInterval;
+        function toggleAutoPierce() {
+            if (autoPierceInterval) {
+                clearInterval(autoPierceInterval);
+                autoPierceInterval = null;
+            } else {
+                shootArrow();
+                autoPierceInterval = setInterval(shootArrow, 3000);
+            }
+        }
+        
+        // Create Background Stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        createStars();
+        
+        // Auto shoot arrow every 5 seconds
+        setInterval(() => {
+            if (!autoPierceInterval) {
+                shootArrow();
+            }
+        }, 5000);
+        
+        // Click to shoot
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Create particles at click
+            for (let i = 0; i < 10; i++) {
+                createSparkle(x, y);
+            }
+        });
+    </script>
+</body>
+</html>
