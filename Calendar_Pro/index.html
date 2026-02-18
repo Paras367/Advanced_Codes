@@ -1,610 +1,1554 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Online Indian Calendar with Holidays by SoftwareLabs">
-    <meta name="keywords" content="Calendar, Indian Holidays, SoftwareLabs, Paras Dhiman">
-    <meta name="author" content="Paras Dhiman">
+    <meta name="description" content="Indian Calendar Pro – Advanced Online Indian Holiday Calendar with all festivals, lunar events, and national holidays. Made by Paras Dhiman, SoftwareLabs.">
+    <meta name="keywords" content="Indian Calendar, Indian Holidays, 2024 Calendar, Diwali, Holi, Republic Day, Independence Day, Eid, SoftwareLabs, Paras Dhiman">
+    <meta name="author" content="Paras Dhiman – SoftwareLabs">
+    <meta property="og:title" content="Indian Calendar Pro | SoftwareLabs">
+    <meta property="og:description" content="The most beautiful Indian holiday calendar online.">
+    <meta property="og:type" content="website">
     <title>Indian Calendar Pro | SoftwareLabs</title>
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome 6 -->
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
-            --primary-color: #ff4757;
-            --secondary-color: #2f3542;
-            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --glass-bg: rgba(255, 255, 255, 0.9);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --text-color: #2f3542;
-            --holiday-color: #ff4757;
-            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #111118;
+            --bg-card: #15151e;
+            --bg-glass: rgba(255,255,255,0.04);
+            --accent: #f97316;
+            --accent2: #fb923c;
+            --accent-glow: rgba(249, 115, 22, 0.35);
+            --red: #ef4444;
+            --red-soft: rgba(239,68,68,0.12);
+            --gold: #f59e0b;
+            --green: #22c55e;
+            --text-primary: #f5f0e8;
+            --text-secondary: #a09890;
+            --text-muted: #5c5550;
+            --border: rgba(255,255,255,0.07);
+            --border-accent: rgba(249,115,22,0.3);
+            --shadow-card: 0 20px 60px rgba(0,0,0,0.6);
+            --shadow-glow: 0 0 40px rgba(249,115,22,0.2);
+            --radius: 16px;
+            --radius-sm: 10px;
         }
 
-        [data-theme="dark"] {
-            --primary-color: #ff6b81;
-            --secondary-color: #dfe4ea;
-            --bg-gradient: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-            --glass-bg: rgba(30, 30, 30, 0.85);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --text-color: #f1f2f6;
-            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        [data-theme="light"] {
+            --bg-primary: #fef9f3;
+            --bg-secondary: #fff8f0;
+            --bg-card: #ffffff;
+            --bg-glass: rgba(0,0,0,0.03);
+            --accent: #ea6c00;
+            --accent2: #f97316;
+            --accent-glow: rgba(234,108,0,0.15);
+            --red: #dc2626;
+            --red-soft: rgba(220,38,38,0.08);
+            --gold: #d97706;
+            --green: #16a34a;
+            --text-primary: #1a0f00;
+            --text-secondary: #78716c;
+            --text-muted: #a8a29e;
+            --border: rgba(0,0,0,0.08);
+            --border-accent: rgba(234,108,0,0.3);
+            --shadow-card: 0 10px 40px rgba(0,0,0,0.08);
+            --shadow-glow: 0 0 40px rgba(234,108,0,0.1);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-            transition: all 0.3s ease;
-        }
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior: smooth; }
 
         body {
-            background: var(--bg-gradient);
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--text-color);
             overflow-x: hidden;
+            line-height: 1.6;
         }
 
-        /* --- Header & Controls --- */
-        header {
-            width: 100%;
-            padding: 20px;
-            text-align: center;
-            background: rgba(0,0,0,0.2);
-            backdrop-filter: blur(10px);
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--glass-border);
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 50% at 20% 10%, rgba(249,115,22,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 80% 80%, rgba(251,191,36,0.05) 0%, transparent 50%),
+                radial-gradient(ellipse 50% 60% at 50% 50%, rgba(239,68,68,0.04) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
         }
 
-        h1 {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 800;
-            font-size: 2.5rem;
-            color: #fff;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            margin-bottom: 10px;
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.4;
         }
 
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 99px; }
 
-        select, button {
+        /* ===================== LAYOUT ===================== */
+        .page-wrapper { position: relative; z-index: 1; }
+
+        /* ===================== TOP HEADER AD ===================== */
+        .top-ad-strip {
+            background: linear-gradient(90deg, #f97316, #f59e0b, #f97316);
+            background-size: 200% 100%;
+            animation: shiftGold 4s linear infinite;
             padding: 10px 20px;
-            border-radius: 25px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 1rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        select {
-            background: #fff;
-            color: #333;
-        }
-
-        button.theme-btn {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        button.theme-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-        }
-
-        /* --- Layout --- */
-        .main-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-            width: 95%;
-            max-width: 1400px;
-            flex-grow: 1;
-        }
-
-        /* --- Ads --- */
-        .ad-banner {
-            width: 100%;
-            height: 100px;
-            background: rgba(255,255,255,0.1);
-            border: 2px dashed rgba(255,255,255,0.3);
+            text-align: center;
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            color: #1a0f00;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #fff;
-            font-weight: bold;
-            margin: 10px 0;
-            border-radius: 10px;
-            text-transform: uppercase;
+            gap: 12px;
+        }
+
+        @keyframes shiftGold {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        .top-ad-strip .ad-badge {
+            background: rgba(0,0,0,0.2);
+            padding: 2px 8px;
+            border-radius: 99px;
+            font-size: 0.7rem;
             letter-spacing: 2px;
         }
 
-        .sidebar-ad {
-            width: 200px;
-            height: 600px;
-            background: rgba(255,255,255,0.1);
-            border: 2px dashed rgba(255,255,255,0.3);
+        /* ===================== MAIN HEADER ===================== */
+        .main-header {
+            padding: 30px 40px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-icon {
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, var(--accent), var(--gold));
+            border-radius: var(--radius-sm);
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 1.4rem;
             color: #fff;
-            font-weight: bold;
-            border-radius: 10px;
-            writing-mode: vertical-rl;
-            text-orientation: mixed;
+            box-shadow: 0 4px 20px var(--accent-glow);
         }
 
-        /* --- Calendar Container --- */
-        .calendar-wrapper {
-            background: var(--glass-bg);
-            backdrop-filter: blur(8px);
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--glass-border);
-            padding: 30px;
-            width: 100%;
-            max-width: 1000px;
-            animation: fadeIn 0.8s ease-out;
+        .brand-text h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
         }
 
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid rgba(0,0,0,0.1);
-            padding-bottom: 15px;
-        }
-
-        .month-year {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--secondary-color);
-        }
-
-        .nav-btn {
-            background: transparent;
-            color: var(--secondary-color);
-            font-size: 1.5rem;
-            padding: 5px 15px;
-            box-shadow: none;
-        }
-
-        .nav-btn:hover {
-            color: var(--primary-color);
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
-        }
-
-        .weekday {
-            text-align: center;
-            font-weight: 700;
-            color: var(--secondary-color);
-            padding: 10px;
+        .brand-text span {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
             text-transform: uppercase;
-            font-size: 0.9rem;
+            font-weight: 500;
         }
 
-        .day {
-            background: rgba(255,255,255,0.5);
-            border-radius: 10px;
-            height: 80px;
+        /* Controls */
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 18px;
+            border-radius: 99px;
+            border: 1px solid var(--border);
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+        .btn-accent { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .btn-accent:hover { background: var(--accent2); color: #fff; border-color: var(--accent2); }
+
+        select.styled-select {
+            padding: 9px 16px;
+            border-radius: 99px;
+            border: 1px solid var(--border);
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            padding-right: 30px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a09890' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+        }
+
+        select.styled-select:focus { border-color: var(--accent); }
+        select.styled-select option { background: #1a1a24; color: var(--text-primary); }
+
+        /* ===================== CONTENT AREA ===================== */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 220px 1fr 220px;
+            gap: 24px;
+            padding: 24px 40px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* ===================== SIDEBAR ADS ===================== */
+        .sidebar-ad {
             display: flex;
             flex-direction: column;
+            gap: 16px;
+        }
+
+        .ad-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .ad-card-inner {
+            padding: 20px 16px;
+            text-align: center;
+        }
+
+        .ad-label {
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        /* SoftwareLabs Ad */
+        .sl-ad {
+            background: linear-gradient(145deg, #0d0d18, #1a0a2e);
+            border-color: rgba(139,92,246,0.2);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .sl-ad:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(139,92,246,0.2); }
+        .sl-ad-icon { font-size: 2.5rem; margin-bottom: 10px; background: linear-gradient(135deg, #8b5cf6, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .sl-ad h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 800; color: #e0d7ff; }
+        .sl-ad p { font-size: 0.75rem; color: #9ca3af; margin: 6px 0 12px; }
+        .sl-ad-btn { background: linear-gradient(135deg, #8b5cf6, #3b82f6); color: white; border: none; padding: 7px 16px; border-radius: 99px; font-size: 0.78rem; font-weight: 700; cursor: pointer; width: 100%; font-family: 'Syne', sans-serif; }
+
+        /* Weather ad */
+        .wx-ad { background: linear-gradient(145deg, #0a1628, #0c2040); border-color: rgba(59,130,246,0.2); cursor: pointer; transition: transform 0.3s; }
+        .wx-ad:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(59,130,246,0.2); }
+        .wx-temp { font-family: 'Syne', sans-serif; font-size: 2.8rem; font-weight: 800; color: #60a5fa; }
+        .wx-city { font-size: 0.78rem; color: #93c5fd; margin-bottom: 6px; }
+        .wx-desc { font-size: 0.72rem; color: #6b7280; }
+
+        /* Festival promo ad */
+        .fest-ad { background: linear-gradient(145deg, #1a0800, #2d1400); border-color: rgba(249,115,22,0.2); cursor: pointer; transition: transform 0.3s; }
+        .fest-ad:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(249,115,22,0.2); }
+        .fest-ad-emoji { font-size: 2.5rem; margin-bottom: 8px; display: block; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+        .fest-ad h3 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 800; color: var(--accent2); }
+        .fest-ad p { font-size: 0.72rem; color: #9ca3af; margin: 5px 0 10px; }
+        .fest-ad-btn { background: var(--accent); color: white; border: none; padding: 6px 14px; border-radius: 99px; font-size: 0.78rem; font-weight: 700; cursor: pointer; width: 100%; font-family: 'Syne', sans-serif; }
+
+        /* Stats card */
+        .stats-card { padding: 16px; }
+        .stat-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
+        .stat-item:last-child { border: none; }
+        .stat-label { font-size: 0.75rem; color: var(--text-muted); }
+        .stat-value { font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700; color: var(--accent); }
+
+        /* ===================== MAIN CALENDAR ===================== */
+        .calendar-main { display: flex; flex-direction: column; gap: 20px; }
+
+        /* Mini nav bar */
+        .cal-nav {
+            display: flex;
+            align-items: center;
             justify-content: space-between;
-            padding: 8px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px 24px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .cal-month-display {
+            text-align: center;
+        }
+
+        .cal-month-display .month-name {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.2rem;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .cal-month-display .month-name em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .cal-month-display .year-badge {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        .nav-arrow {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .nav-arrow:hover { background: var(--accent); border-color: var(--accent); color: #fff; transform: scale(1.1); }
+
+        /* Calendar Grid */
+        .calendar-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-card);
+        }
+
+        .weekday-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .weekday-label {
+            text-align: center;
+            padding: 14px 8px;
+            font-family: 'Syne', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .weekday-label.sun { color: var(--red); }
+        .weekday-label.sat { color: var(--accent); }
+
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+        }
+
+        .day-cell {
+            min-height: 90px;
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 8px 6px;
             cursor: pointer;
             position: relative;
-            border: 1px solid transparent;
+            overflow: hidden;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
         }
 
-        [data-theme="dark"] .day {
-            background: rgba(255,255,255,0.05);
+        .day-cell:nth-child(7n) { border-right: none; }
+        .day-cell:hover { background: var(--bg-glass); }
+
+        .day-cell.empty { background: transparent; cursor: default; }
+        .day-cell.empty:hover { background: transparent; }
+
+        /* Sunday cells */
+        .day-cell.is-sunday .day-num { color: var(--red); }
+
+        /* Today */
+        .day-cell.is-today {
+            background: linear-gradient(135deg, rgba(249,115,22,0.12), rgba(251,191,36,0.06));
         }
 
-        .day:hover {
-            transform: scale(1.05);
-            background: rgba(255,255,255,0.8);
-            border-color: var(--primary-color);
-            z-index: 2;
+        .day-cell.is-today .day-num {
+            background: var(--accent);
+            color: #fff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .day-number {
+        /* Holiday */
+        .day-cell.is-holiday {
+            background: var(--red-soft);
+        }
+
+        .day-cell.is-holiday .day-num { color: var(--red); font-weight: 700; }
+
+        /* Hindu festival */
+        .day-cell.is-festival {
+            background: linear-gradient(135deg, rgba(249,115,22,0.08), rgba(251,191,36,0.05));
+        }
+
+        .day-cell.is-festival .day-num { color: var(--gold); font-weight: 700; }
+
+        .day-num {
+            font-family: 'Syne', sans-serif;
+            font-size: 1rem;
             font-weight: 600;
-            font-size: 1.1rem;
+            line-height: 1;
+            transition: all 0.2s;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .day.holiday {
-            border: 1px solid var(--holiday-color);
-            background: rgba(255, 71, 87, 0.1);
+        .day-event-tags {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            margin-top: 6px;
         }
 
-        .day.holiday .day-number {
-            color: var(--holiday-color);
-            font-weight: 800;
-        }
-
-        .day.today {
-            background: var(--secondary-color);
-            color: #fff;
-        }
-        
-        .day.today .day-number {
-            color: #fff;
-        }
-
-        .holiday-indicator {
-            font-size: 0.7rem;
-            text-align: center;
-            color: var(--holiday-color);
+        .event-tag {
+            font-size: 0.58rem;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-weight: 600;
+            line-height: 1.3;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            font-weight: 600;
+            max-width: 100%;
         }
 
-        /* --- Modal --- */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(5px);
-        }
+        .event-tag.national { background: rgba(239,68,68,0.18); color: #f87171; }
+        .event-tag.festival { background: rgba(249,115,22,0.18); color: #fb923c; }
+        .event-tag.religious { background: rgba(245,158,11,0.18); color: #fbbf24; }
 
-        .modal-content {
-            background: #fff;
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            position: relative;
-            animation: popUp 0.3s ease;
-            color: #333;
-        }
+        /* Today + holiday combo */
+        .day-cell.is-today.is-holiday { background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(249,115,22,0.08)); }
 
-        .modal-icon {
-            font-size: 3rem;
-            color: var(--primary-color);
-            margin-bottom: 15px;
-        }
-
-        .close-btn {
+        /* Hover glow */
+        .day-cell:not(.empty):hover::before {
+            content: '';
             position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 1.5rem;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(249,115,22,0.06), transparent);
+            pointer-events: none;
+        }
+
+        /* ===================== MINI CALENDAR (year overview) ===================== */
+        .year-overview {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .year-overview-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .year-overview-header h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .mini-months-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .mini-month {
             cursor: pointer;
-            color: #aaa;
+            transition: all 0.2s;
+            border-radius: 10px;
+            border: 1px solid transparent;
+            padding: 10px 8px;
         }
 
-        .close-btn:hover {
-            color: var(--holiday-color);
-        }
+        .mini-month:hover { border-color: var(--border-accent); background: var(--bg-glass); }
+        .mini-month.active-mini { border-color: var(--accent); background: rgba(249,115,22,0.08); }
 
-        /* --- Footer --- */
-        footer {
-            margin-top: auto;
-            width: 100%;
-            background: rgba(0,0,0,0.8);
-            color: #fff;
+        .mini-month-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
             text-align: center;
+        }
+
+        .mini-month.active-mini .mini-month-name { color: var(--accent); }
+
+        .mini-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+        }
+
+        .mini-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.55rem;
+            border-radius: 3px;
+            color: var(--text-muted);
+        }
+
+        .mini-cell.holiday { color: var(--red); font-weight: 700; }
+        .mini-cell.festival { color: var(--gold); font-weight: 700; }
+        .mini-cell.today-mini { background: var(--accent); color: #fff; border-radius: 50%; }
+        .mini-cell.wd { color: var(--text-muted); font-size: 0.48rem; font-weight: 700; opacity: 0.5; }
+
+        /* ===================== HOLIDAY LEGEND ===================== */
+        .legend {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .legend-title { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+
+        .legend-item { display: flex; align-items: center; gap: 7px; font-size: 0.8rem; color: var(--text-secondary); }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .legend-dot.national { background: var(--red); }
+        .legend-dot.festival { background: var(--accent); }
+        .legend-dot.religious { background: var(--gold); }
+        .legend-dot.today-dot { background: var(--accent); outline: 2px solid var(--accent); outline-offset: 2px; }
+
+        /* ===================== UPCOMING HOLIDAYS ===================== */
+        .upcoming-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+        }
+
+        .section-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i { color: var(--accent); }
+
+        .upcoming-list { display: flex; flex-direction: column; gap: 10px; }
+
+        .upcoming-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upcoming-item:hover { border-color: var(--border-accent); transform: translateX(3px); }
+
+        .upcoming-date-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: var(--red-soft);
+            border: 1px solid rgba(239,68,68,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .upcoming-date-box.festival { background: rgba(249,115,22,0.1); border-color: rgba(249,115,22,0.2); }
+        .upcoming-date-box.religious { background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.2); }
+
+        .upcoming-dd { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 800; color: var(--red); line-height: 1; }
+        .upcoming-date-box.festival .upcoming-dd { color: var(--accent2); }
+        .upcoming-date-box.religious .upcoming-dd { color: var(--gold); }
+        .upcoming-mmm { font-size: 0.6rem; color: var(--text-muted); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+
+        .upcoming-info h4 { font-size: 0.88rem; font-weight: 600; color: var(--text-primary); }
+        .upcoming-info p { font-size: 0.72rem; color: var(--text-muted); margin-top: 1px; }
+
+        .upcoming-chip {
+            margin-left: auto;
+            font-size: 0.62rem;
+            padding: 3px 8px;
+            border-radius: 99px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .upcoming-chip.national { background: rgba(239,68,68,0.15); color: var(--red); }
+        .upcoming-chip.festival { background: rgba(249,115,22,0.15); color: var(--accent2); }
+        .upcoming-chip.religious { background: rgba(245,158,11,0.15); color: var(--gold); }
+
+        /* ===================== MIDDLE AD BANNER ===================== */
+        .mid-ad-banner {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 0;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .mid-ad-banner:hover { transform: translateY(-2px); box-shadow: var(--shadow-glow); }
+
+        .mid-ad-inner {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            min-height: 90px;
+        }
+
+        .mid-ad-color-bar {
+            width: 8px;
+            min-height: 90px;
+            background: linear-gradient(180deg, var(--accent), var(--gold));
+        }
+
+        .mid-ad-content {
+            padding: 20px 24px;
+            flex: 1;
+        }
+
+        .mid-ad-label { font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+
+        .mid-ad-headline {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .mid-ad-headline span { color: var(--accent); }
+
+        .mid-ad-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+
+        .mid-ad-cta {
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+        }
+
+        .cta-pill {
+            background: linear-gradient(135deg, var(--accent), var(--gold));
+            color: #fff;
+            font-family: 'Syne', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 9px 20px;
+            border-radius: 99px;
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===================== BOTTOM AD ===================== */
+        .bottom-ad {
+            background: linear-gradient(135deg, #0d0820, #1a0a2e, #0a1020);
+            padding: 30px 40px;
+            text-align: center;
+            margin-top: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bottom-ad::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -10%;
+            width: 60%;
+            height: 200%;
+            background: radial-gradient(ellipse, rgba(139,92,246,0.12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .bottom-ad-content { position: relative; z-index: 1; }
+        .bottom-ad-label { font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase; color: #6b7280; margin-bottom: 10px; }
+        .bottom-ad h2 { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; color: #e0d7ff; margin-bottom: 6px; }
+        .bottom-ad h2 span { background: linear-gradient(135deg, #a78bfa, #60a5fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .bottom-ad p { color: #9ca3af; font-size: 0.9rem; margin-bottom: 16px; }
+        .bottom-ad-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .bottom-ad-btns button { padding: 10px 24px; border-radius: 99px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem; cursor: pointer; border: none; transition: all 0.2s; }
+        .btn-purple { background: linear-gradient(135deg, #8b5cf6, #3b82f6); color: #fff; }
+        .btn-outline-purple { background: transparent; border: 1px solid rgba(139,92,246,0.4) !important; color: #a78bfa; }
+        .btn-purple:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(139,92,246,0.3); }
+        .btn-outline-purple:hover { background: rgba(139,92,246,0.1); transform: translateY(-2px); }
+
+        /* ===================== FOOTER ===================== */
+        footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            padding: 30px 40px 20px;
+        }
+
+        .footer-inner {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .footer-brand h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer-brand p { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
+
+        .footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
+
+        .footer-links a {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover { color: var(--accent); }
+
+        .footer-social { display: flex; gap: 12px; }
+
+        .social-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: var(--bg-glass);
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .social-btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+        .footer-bottom {
+            max-width: 1600px;
+            margin: 20px auto 0;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .footer-bottom p { font-size: 0.78rem; color: var(--text-muted); }
+        .footer-bottom strong { color: var(--accent); }
+
+        /* ===================== MODAL ===================== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
             padding: 20px;
-            font-size: 0.9rem;
-            border-top: 1px solid var(--glass-border);
         }
 
-        footer strong {
-            color: var(--primary-color);
+        .modal-overlay.open { display: flex; }
+
+        .modal-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            max-width: 480px;
+            width: 100%;
+            padding: 32px;
+            position: relative;
+            animation: modalPop 0.3s cubic-bezier(0.34,1.56,0.64,1);
         }
 
-        /* --- Animations --- */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes popUp {
-            from { transform: scale(0.8); opacity: 0; }
+        @keyframes modalPop {
+            from { transform: scale(0.85); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .sidebar-ad { display: none; }
-            .calendar-grid { gap: 5px; }
-            .day { height: 60px; padding: 4px; }
-            .day-number { font-size: 0.9rem; }
-            .holiday-indicator { font-size: 0.6rem; }
-            h1 { font-size: 1.8rem; }
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: var(--bg-glass);
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            transition: all 0.2s;
         }
+
+        .modal-close:hover { border-color: var(--red); color: var(--red); }
+
+        .modal-icon-wrap {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: var(--red-soft);
+            border: 1px solid rgba(239,68,68,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 16px;
+        }
+
+        .modal-icon-wrap.festival { background: rgba(249,115,22,0.1); border-color: rgba(249,115,22,0.2); }
+        .modal-icon-wrap.religious { background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.2); }
+
+        .modal-box h2 { font-family: 'DM Serif Display', serif; font-size: 1.6rem; color: var(--text-primary); margin-bottom: 4px; }
+
+        .modal-date-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            padding: 4px 12px;
+            border-radius: 99px;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-bottom: 14px;
+        }
+
+        .modal-box p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.7; }
+
+        .modal-type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 99px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            margin-top: 14px;
+        }
+
+        .modal-type-badge.national { background: rgba(239,68,68,0.15); color: var(--red); }
+        .modal-type-badge.festival { background: rgba(249,115,22,0.15); color: var(--accent2); }
+        .modal-type-badge.religious { background: rgba(245,158,11,0.15); color: var(--gold); }
+
+        /* ===================== TOAST ===================== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 99px;
+            padding: 10px 20px;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 2000;
+            transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+        }
+
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .toast i { color: var(--accent); }
+
+        /* ===================== RESPONSIVE ===================== */
+        @media (max-width: 1200px) {
+            .content-grid { grid-template-columns: 1fr; padding: 16px 20px; }
+            .sidebar-ad { display: grid; grid-template-columns: 1fr 1fr; }
+            .mini-months-grid { grid-template-columns: repeat(6, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .main-header { padding: 16px 20px; }
+            .content-grid { padding: 12px 16px; }
+            .day-cell { min-height: 60px; padding: 6px 4px 4px; }
+            .day-num { font-size: 0.85rem; width: 24px; height: 24px; }
+            .event-tag { font-size: 0.52rem; }
+            .cal-month-display .month-name { font-size: 1.6rem; }
+            .sidebar-ad { grid-template-columns: 1fr; }
+            .mini-months-grid { grid-template-columns: repeat(3, 1fr); }
+            .footer-inner { flex-direction: column; }
+        }
+
+        /* ===================== PRINT STYLES ===================== */
+        @media print {
+            .sidebar-ad, .top-ad-strip, .bottom-ad, .mid-ad-banner, .header-controls { display: none; }
+            body { background: #fff; color: #000; }
+        }
+
+        /* ===================== LOADING ANIMATION ===================== */
+        .loading-pulse { animation: pulse 1.5s ease-in-out infinite; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Fade in calendar on render */
+        @keyframes calFadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .calendar-days { animation: calFadeIn 0.35s ease-out; }
     </style>
 </head>
 <body>
+<div class="page-wrapper">
 
-    <!-- Header -->
-    <header>
-        <h1><i class="fa-solid fa-calendar-days"></i> Indian Calendar Pro</h1>
-        <div class="controls">
-            <select id="yearSelect" onchange="renderCalendar()">
-                <!-- Years populated by JS -->
+    <!-- ===== TOP AD STRIP ===== -->
+    <div class="top-ad-strip">
+        <span class="ad-badge">AD</span>
+        <i class="fa-solid fa-bolt"></i>
+        Build your next app with <strong>SoftwareLabs Dev Tools</strong> — Fast, Modern, Free.
+        <span style="background:rgba(0,0,0,0.2);padding:2px 10px;border-radius:99px;cursor:pointer;" onclick="showToast('Redirecting to SoftwareLabs...')">Visit Now →</span>
+        <span class="ad-badge">AD</span>
+    </div>
+
+    <!-- ===== MAIN HEADER ===== -->
+    <header class="main-header">
+        <div class="brand">
+            <div class="brand-icon"><i class="fa-solid fa-calendar-days"></i></div>
+            <div class="brand-text">
+                <h1>Indian Calendar Pro</h1>
+                <span><i class="fa-solid fa-map-pin"></i> &nbsp;All States · All Festivals</span>
+            </div>
+        </div>
+        <div class="header-controls">
+            <select id="monthSelect" class="styled-select" onchange="renderCalendar()">
+                <option value="0">January</option><option value="1">February</option>
+                <option value="2">March</option><option value="3">April</option>
+                <option value="4">May</option><option value="5">June</option>
+                <option value="6">July</option><option value="7">August</option>
+                <option value="8">September</option><option value="9">October</option>
+                <option value="10">November</option><option value="11">December</option>
             </select>
-            <select id="monthSelect" onchange="renderCalendar()">
-                <option value="0">January</option>
-                <option value="1">February</option>
-                <option value="2">March</option>
-                <option value="3">April</option>
-                <option value="4">May</option>
-                <option value="5">June</option>
-                <option value="6">July</option>
-                <option value="7">August</option>
-                <option value="8">September</option>
-                <option value="9">October</option>
-                <option value="10">November</option>
-                <option value="11">December</option>
-            </select>
-            <button class="theme-btn" onclick="toggleTheme()">
-                <i class="fa-solid fa-palette"></i> Theme
-            </button>
+            <select id="yearSelect" class="styled-select" onchange="renderCalendar()"></select>
+            <button class="btn" onclick="goToToday()"><i class="fa-regular fa-circle-dot"></i> Today</button>
+            <button class="btn" onclick="toggleTheme()" id="themeBtn"><i class="fa-solid fa-sun"></i> Light</button>
+            <button class="btn btn-accent" onclick="window.print()"><i class="fa-solid fa-print"></i> Print</button>
         </div>
     </header>
 
-    <!-- Top Ad -->
-    <div class="ad-banner">
-        <i class="fa-solid fa-bullhorn"></i> &nbsp; ADVERTISEMENT SPACE - YOUR SITE ONLY
-    </div>
+    <!-- ===== CONTENT GRID ===== -->
+    <div class="content-grid">
 
-    <div class="main-container">
-        <!-- Sidebar Ad -->
-        <div class="sidebar-ad">
-            <i class="fa-solid fa-square-poll-vertical"></i> &nbsp; SIDEBAR AD
-        </div>
+        <!-- LEFT SIDEBAR -->
+        <aside class="sidebar-ad">
 
-        <!-- Calendar -->
-        <div class="calendar-wrapper">
-            <div class="calendar-header">
-                <button class="nav-btn" onclick="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-                <div class="month-year" id="monthYearDisplay">January 2024</div>
-                <button class="nav-btn" onclick="changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
+            <!-- SoftwareLabs Ad -->
+            <div class="ad-card sl-ad" onclick="showToast('Opening SoftwareLabs...')">
+                <div class="ad-card-inner">
+                    <div class="ad-label">Sponsored</div>
+                    <div class="sl-ad-icon"><i class="fa-solid fa-microchip"></i></div>
+                    <h3>SoftwareLabs</h3>
+                    <p>Premium developer tools built for India's next generation of coders.</p>
+                    <button class="sl-ad-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i> &nbsp;Explore Now</button>
+                </div>
             </div>
-            
-            <div class="calendar-grid" id="calendarGrid">
-                <!-- JS will inject days here -->
+
+            <!-- Weather-style ad -->
+            <div class="ad-card wx-ad" onclick="showToast('Opening Weather App...')">
+                <div class="ad-card-inner">
+                    <div class="ad-label">Your City Today</div>
+                    <div style="font-size:2.5rem;margin-bottom:4px;">🌤️</div>
+                    <div class="wx-temp">28°</div>
+                    <div class="wx-city"><i class="fa-solid fa-location-dot"></i> New Delhi, IN</div>
+                    <div class="wx-desc">Partly cloudy · Perfect for a festival!</div>
+                </div>
+            </div>
+
+            <!-- Stats card -->
+            <div class="ad-card">
+                <div class="ad-card-inner">
+                    <div class="ad-label">This Month</div>
+                    <div class="stats-card" id="statsCard">
+                        <div class="stat-item"><span class="stat-label">🎉 Festivals</span><span class="stat-value" id="statFestivals">—</span></div>
+                        <div class="stat-item"><span class="stat-label">🇮🇳 National Holidays</span><span class="stat-value" id="statNational">—</span></div>
+                        <div class="stat-item"><span class="stat-label">🕌 Religious Days</span><span class="stat-value" id="statReligious">—</span></div>
+                        <div class="stat-item"><span class="stat-label">📅 Days This Month</span><span class="stat-value" id="statDays">—</span></div>
+                        <div class="stat-item"><span class="stat-label">📆 Sundays</span><span class="stat-value" id="statSundays">—</span></div>
+                    </div>
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- CENTER CALENDAR -->
+        <main class="calendar-main">
+
+            <!-- Navigation Bar -->
+            <div class="cal-nav">
+                <button class="nav-arrow" onclick="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                <div class="cal-month-display">
+                    <div class="month-name" id="monthNameDisplay"><em>January</em></div>
+                    <div class="year-badge" id="yearBadgeDisplay">2025</div>
+                </div>
+                <button class="nav-arrow" onclick="changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+
+            <!-- Legend -->
+            <div class="legend">
+                <span class="legend-title"><i class="fa-solid fa-circle-info"></i> Legend</span>
+                <div class="legend-item"><div class="legend-dot national"></div> National Holiday</div>
+                <div class="legend-item"><div class="legend-dot festival"></div> Festival</div>
+                <div class="legend-item"><div class="legend-dot religious"></div> Religious Day</div>
+                <div class="legend-item"><div class="legend-dot today-dot"></div> Today</div>
+            </div>
+
+            <!-- Calendar Card -->
+            <div class="calendar-card">
+                <div class="weekday-header">
+                    <div class="weekday-label sun">Sun</div>
+                    <div class="weekday-label">Mon</div>
+                    <div class="weekday-label">Tue</div>
+                    <div class="weekday-label">Wed</div>
+                    <div class="weekday-label">Thu</div>
+                    <div class="weekday-label">Fri</div>
+                    <div class="weekday-label sat">Sat</div>
+                </div>
+                <div class="calendar-days" id="calendarDays"></div>
+            </div>
+
+            <!-- Mid Ad Banner -->
+            <div class="mid-ad-banner" onclick="showToast('Opening SoftwareLabs Portal...')">
+                <div class="mid-ad-inner">
+                    <div class="mid-ad-color-bar"></div>
+                    <div class="mid-ad-content">
+                        <div class="mid-ad-label">Advertisement · SoftwareLabs</div>
+                        <div class="mid-ad-headline">Build <span>Stunning Websites</span> with Zero Effort</div>
+                        <div class="mid-ad-sub">Paras Dhiman's flagship web builder — free for students and developers</div>
+                    </div>
+                    <div class="mid-ad-cta">
+                        <button class="cta-pill"><i class="fa-solid fa-rocket"></i> &nbsp;Start Free</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Holidays -->
+            <div class="upcoming-section">
+                <div class="section-title"><i class="fa-solid fa-star"></i> Upcoming Holidays</div>
+                <div class="upcoming-list" id="upcomingList"></div>
+            </div>
+
+        </main>
+
+        <!-- RIGHT SIDEBAR -->
+        <aside class="sidebar-ad">
+
+            <!-- Festival Promo Ad -->
+            <div class="ad-card fest-ad" onclick="showToast('Opening Festival Store...')">
+                <div class="ad-card-inner">
+                    <div class="ad-label">Festive Season</div>
+                    <span class="fest-ad-emoji">🪔</span>
+                    <h3>Festival Ready?</h3>
+                    <p>Shop curated gifts for every Indian festival. Delivered in 24 hours.</p>
+                    <button class="fest-ad-btn"><i class="fa-solid fa-bag-shopping"></i> &nbsp;Shop Now</button>
+                </div>
+            </div>
+
+            <!-- Year Overview -->
+            <div class="year-overview">
+                <div class="year-overview-header">
+                    <h3><i class="fa-solid fa-calendar-week" style="color:var(--accent);margin-right:6px;"></i>Year At a Glance</h3>
+                </div>
+                <div class="mini-months-grid" id="miniMonthsGrid"></div>
+            </div>
+
+            <!-- Another Ad -->
+            <div class="ad-card sl-ad" style="background:linear-gradient(145deg,#001a0d,#002a14);border-color:rgba(34,197,94,0.2);" onclick="showToast('Opening SoftwareLabs Tools...')">
+                <div class="ad-card-inner">
+                    <div class="ad-label">Sponsored</div>
+                    <div class="sl-ad-icon" style="background:linear-gradient(135deg,#22c55e,#16a34a);-webkit-background-clip:text;background-clip:text;"><i class="fa-solid fa-leaf"></i></div>
+                    <h3 style="color:#86efac;">EcoTrack India</h3>
+                    <p>Monitor your carbon footprint this festive season. Go green 🌿</p>
+                    <button class="sl-ad-btn" style="background:linear-gradient(135deg,#22c55e,#16a34a);"><i class="fa-solid fa-seedling"></i> &nbsp;Learn More</button>
+                </div>
+            </div>
+
+        </aside>
+    </div>
+
+    <!-- ===== BOTTOM AD ===== -->
+    <div class="bottom-ad">
+        <div class="bottom-ad-content">
+            <div class="bottom-ad-label">Advertisement · SoftwareLabs</div>
+            <h2>Build with <span>SoftwareLabs</span> Dev Suite</h2>
+            <p>The complete toolkit by Paras Dhiman & Arhan — from web apps to AI tools, all in one place.</p>
+            <div class="bottom-ad-btns">
+                <button class="btn-purple" onclick="showToast('Welcome to SoftwareLabs!')"><i class="fa-solid fa-rocket"></i> &nbsp;Get Started Free</button>
+                <button class="btn-outline-purple" onclick="showToast('Opening documentation...')"><i class="fa-solid fa-book"></i> &nbsp;View Docs</button>
             </div>
         </div>
-
-        <!-- Sidebar Ad 2 -->
-        <div class="sidebar-ad">
-            <i class="fa-solid fa-bag-shopping"></i> &nbsp; SIDEBAR AD
-        </div>
     </div>
 
-    <!-- Bottom Ad -->
-    <div class="ad-banner">
-        <i class="fa-solid fa-bullhorn"></i> &nbsp; ADVERTISEMENT SPACE - YOUR SITE ONLY
-    </div>
-
-    <!-- Footer -->
+    <!-- ===== FOOTER ===== -->
     <footer>
-        <p>Made By <strong>Paras Dhiman</strong> | CopyRights <strong>SoftwareLabs</strong> (by Paras & Arhan)</p>
-        <div style="margin-top: 10px; font-size: 1.2rem;">
-            <i class="fa-brands fa-github"></i>
-            <i class="fa-brands fa-linkedin"></i>
-            <i class="fa-brands fa-instagram"></i>
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <h3><i class="fa-solid fa-calendar-days"></i> Indian Calendar Pro</h3>
+                <p>Your complete Indian festival & holiday companion.<br>Updated yearly with all national & regional events.</p>
+            </div>
+            <div>
+                <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">Quick Links</p>
+                <div class="footer-links" style="flex-direction:column;gap:8px;">
+                    <a href="#" onclick="showToast('Navigating...'); return false;"><i class="fa-solid fa-chevron-right" style="font-size:0.6rem;color:var(--accent);"></i> National Holidays</a>
+                    <a href="#" onclick="showToast('Navigating...'); return false;"><i class="fa-solid fa-chevron-right" style="font-size:0.6rem;color:var(--accent);"></i> Hindu Festivals</a>
+                    <a href="#" onclick="showToast('Navigating...'); return false;"><i class="fa-solid fa-chevron-right" style="font-size:0.6rem;color:var(--accent);"></i> Muslim Festivals</a>
+                    <a href="#" onclick="showToast('Navigating...'); return false;"><i class="fa-solid fa-chevron-right" style="font-size:0.6rem;color:var(--accent);"></i> Print Calendar</a>
+                </div>
+            </div>
+            <div>
+                <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">SoftwareLabs</p>
+                <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:12px;">Made with <i class="fa-solid fa-heart" style="color:var(--red);"></i> by <strong style="color:var(--accent);">Paras Dhiman</strong> & <strong style="color:var(--accent);">Arhan</strong></p>
+                <div class="footer-social">
+                    <div class="social-btn" onclick="showToast('GitHub: SoftwareLabs')"><i class="fa-brands fa-github"></i></div>
+                    <div class="social-btn" onclick="showToast('LinkedIn: Paras Dhiman')"><i class="fa-brands fa-linkedin-in"></i></div>
+                    <div class="social-btn" onclick="showToast('Instagram: @SoftwareLabs')"><i class="fa-brands fa-instagram"></i></div>
+                    <div class="social-btn" onclick="showToast('Twitter/X: @SoftwareLabs')"><i class="fa-brands fa-x-twitter"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© <span id="footerYear"></span> <strong>SoftwareLabs</strong> by Paras Dhiman &amp; Arhan. All rights reserved.</p>
+            <p style="color:var(--text-muted);font-size:0.72rem;">Indian Calendar Pro · Holidays sourced from public records</p>
         </div>
     </footer>
 
-    <!-- Holiday Modal -->
-    <div class="modal" id="holidayModal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">&times;</span>
-            <div class="modal-icon"><i class="fa-solid fa-star"></i></div>
-            <h2 id="modalTitle">Holiday Name</h2>
-            <p id="modalDate" style="color: #666; margin: 10px 0;">Date</p>
-            <p id="modalDesc">This is a national holiday in India.</p>
-        </div>
+</div>
+
+<!-- ===== HOLIDAY MODAL ===== -->
+<div class="modal-overlay" id="holidayModal" onclick="closeModal(event)">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModalBtn()"><i class="fa-solid fa-xmark"></i></button>
+        <div class="modal-icon-wrap" id="modalIconWrap"><i class="fa-solid fa-star" id="modalIcon"></i></div>
+        <h2 id="modalTitle">Holiday</h2>
+        <div class="modal-date-badge"><i class="fa-regular fa-calendar"></i> <span id="modalDate">—</span></div>
+        <p id="modalDesc">Description</p>
+        <div class="modal-type-badge" id="modalTypeBadge"><i id="modalTypeIcon" class="fa-solid fa-flag"></i> <span id="modalType">National</span></div>
     </div>
+</div>
 
-    <script>
-        // --- Configuration & Data ---
-        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-        
-        // Static Holidays (MM-DD format)
-        // Note: Lunar holidays (Diwali, Holi, Eid) change every year. 
-        // For this demo, we use fixed major national holidays + approximations for demo purposes.
-        const fixedHolidays = {
-            "01-01": "New Year's Day",
-            "01-26": "Republic Day",
-            "08-15": "Independence Day",
-            "10-02": "Gandhi Jayanti",
-            "11-14": "Children's Day",
-            "12-25": "Christmas Day",
-            "01-14": "Makar Sankranti",
-            "08-19": "Raksha Bandhan (Approx)", 
-            "10-31": "Halloween / National Unity Day"
-        };
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i> <span id="toastMsg">Done</span></div>
 
-        // Dynamic Holidays (Approximate for demo logic - In production, use an API)
-        // We will add specific logic for Diwali/Holi if needed, but fixed is safer for a standalone code.
-        
-        let currentYear = new Date().getFullYear();
-        let currentMonth = new Date().getMonth();
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+    // ===== DATA =====
+    const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    const TODAY = new Date();
 
-        // --- Initialization ---
-        document.addEventListener('DOMContentLoaded', () => {
-            populateYearSelect();
-            renderCalendar();
-        });
+    // All holidays: key = "MM-DD", value = { name, type, icon, desc }
+    // Types: national, festival, religious
+    const HOLIDAYS = {
+        "01-01": { name: "New Year's Day", type: "national", icon: "fa-champagne-glasses", desc: "The first day of the Gregorian calendar year. Celebrated across India and the world with fireworks, gatherings, and festive cheer." },
+        "01-14": { name: "Makar Sankranti", type: "festival", icon: "fa-sun", desc: "A Hindu harvest festival marking the transition of the Sun into the zodiac sign of Capricorn (Makar). Celebrated with kite-flying, til-gur sweets, and bonfires." },
+        "01-15": { name: "Pongal", type: "festival", icon: "fa-bowl-food", desc: "A four-day harvest festival celebrated predominantly in Tamil Nadu. It marks the end of the winter solstice and the beginning of the sun's northward journey." },
+        "01-23": { name: "Netaji Subhas Chandra Bose Jayanti", type: "national", icon: "fa-flag", desc: "Birth anniversary of freedom fighter Netaji Subhas Chandra Bose, celebrated as 'Parakram Diwas' (Day of Courage) across India." },
+        "01-26": { name: "Republic Day", type: "national", icon: "fa-flag", desc: "Celebrates the date on which the Constitution of India came into effect on 26 January 1950. A national holiday with grand parade at Kartavya Path, New Delhi." },
+        "02-19": { name: "Chhatrapati Shivaji Maharaj Jayanti", type: "national", icon: "fa-crown", desc: "Birth anniversary of Chhatrapati Shivaji Maharaj, the founder of the Maratha Empire. Widely celebrated in Maharashtra with great reverence." },
+        "03-08": { name: "International Women's Day", type: "national", icon: "fa-venus", desc: "A global celebration of the social, economic, cultural, and political achievements of women. Widely observed in India." },
+        "03-22": { name: "Holi", type: "festival", icon: "fa-palette", desc: "The festival of colours! Holi is a joyous Hindu spring festival celebrated with colours, water, and festive sweets. It signifies the victory of good over evil." },
+        "03-29": { name: "Good Friday", type: "religious", icon: "fa-cross", desc: "Commemorates the crucifixion of Jesus Christ. A gazetted holiday in India observed by the Christian community with church services and prayer." },
+        "03-31": { name: "Easter Sunday", type: "religious", icon: "fa-egg", desc: "Christian festival celebrating the resurrection of Jesus Christ. Observed with special church services, prayers, and family gatherings." },
+        "04-14": { name: "Ambedkar Jayanti", type: "national", icon: "fa-book-open", desc: "Birth anniversary of Dr. B.R. Ambedkar, the chief architect of the Indian Constitution and a champion of social justice and equality." },
+        "04-14": { name: "Tamil New Year (Puthandu)", type: "festival", icon: "fa-star-and-crescent", desc: "The traditional new year's day of the Tamil calendar, celebrated with elaborate kolam, prayers, and festive meals." },
+        "04-17": { name: "Eid ul-Fitr (Approx)", type: "religious", icon: "fa-star-and-crescent", desc: "Marks the end of Ramadan, the Islamic month of fasting. Celebrated with Eid prayers, feasting, gifts, and charity (Zakat al-Fitr)." },
+        "05-01": { name: "Labour Day (May Day)", type: "national", icon: "fa-person-digging", desc: "International Workers' Day, a public holiday in several Indian states celebrating the labour movement and workers' rights." },
+        "06-24": { name: "Eid ul-Adha (Approx)", type: "religious", icon: "fa-star-and-crescent", desc: "Also known as Bakrid or Bakra Eid. It honours Ibrahim's willingness to sacrifice his son as an act of obedience to God. Celebrated with prayers and feast." },
+        "07-16": { name: "Muharram", type: "religious", icon: "fa-mosque", desc: "The Islamic New Year and a solemn day of mourning for Shia Muslims commemorating the martyrdom of Imam Hussein at the Battle of Karbala." },
+        "08-15": { name: "Independence Day", type: "national", icon: "fa-flag-usa", desc: "Celebrates India's independence from British rule on 15 August 1947. The Prime Minister hoists the national flag at Red Fort in New Delhi. A national holiday." },
+        "08-16": { name: "Parsi New Year (Navroz)", type: "religious", icon: "fa-fire-flame-curved", desc: "Nowruz (New Day), the Zoroastrian/Parsi New Year. Celebrated with prayers, feasting, and charitable acts." },
+        "08-27": { name: "Raksha Bandhan", type: "festival", icon: "fa-hands-holding-heart", desc: "A festival celebrating the bond between brothers and sisters. Sisters tie a rakhi (protective thread) on their brothers' wrists and brothers give gifts in return." },
+        "08-26": { name: "Onam", type: "festival", icon: "fa-flower", desc: "The main harvest festival of Kerala, commemorating the annual visit of King Mahabali. Celebrated with Pookalam (flower carpet), Vallamkali (boat race), and Sadya (feast)." },
+        "09-01": { name: "Ganesh Chaturthi", type: "festival", icon: "fa-om", desc: "A major Hindu festival celebrating the birth of Lord Ganesha, the elephant-headed god of wisdom and prosperity. Celebrated with great grandeur in Maharashtra." },
+        "10-02": { name: "Gandhi Jayanti", type: "national", icon: "fa-peace", desc: "Birth anniversary of Mahatma Gandhi, the Father of the Nation. Observed as an International Day of Non-Violence by the United Nations. A national holiday." },
+        "10-02": { name: "Lal Bahadur Shastri Jayanti", type: "national", icon: "fa-wheat-awn", desc: "Birth anniversary of India's second Prime Minister Lal Bahadur Shastri, known for his slogan 'Jai Jawan Jai Kisan'." },
+        "10-12": { name: "Navratri Begins", type: "festival", icon: "fa-sparkles", desc: "A 9-night Hindu festival dedicated to the goddess Durga in her various forms. Celebrated with Garba and Dandiya dances, especially in Gujarat." },
+        "10-20": { name: "Vijayadashami (Dussehra)", type: "festival", icon: "fa-fire", desc: "Celebrates the victory of Lord Rama over Ravana, symbolising the triumph of good over evil. Effigies of Ravana are burned across India on this day." },
+        "10-31": { name: "Sardar Patel Jayanti (Rashtriya Ekta Diwas)", type: "national", icon: "fa-chess-rook", desc: "Birth anniversary of Sardar Vallabhbhai Patel, the Iron Man of India. Observed as National Unity Day to commemorate India's unification." },
+        "11-01": { name: "Diwali", type: "festival", icon: "fa-fire-flame-curved", desc: "The festival of lights! One of India's most significant festivals, symbolising the victory of light over darkness and good over evil. Celebrated with diyas, fireworks, sweets, and family gatherings." },
+        "11-02": { name: "Govardhan Puja", type: "festival", icon: "fa-leaf", desc: "Celebrated the day after Diwali, this festival honours Lord Krishna lifting the Govardhan mountain to protect villagers from Indra's wrath." },
+        "11-03": { name: "Bhai Dooj", type: "festival", icon: "fa-heart", desc: "Celebrated two days after Diwali, Bhai Dooj (also Bhai Tika) is a Hindu festival celebrating the bond between brothers and sisters." },
+        "11-05": { name: "Guru Nanak Jayanti (Gurpurab)", type: "religious", icon: "fa-khanda", desc: "Celebrates the birth of Guru Nanak Dev Ji, the founder of Sikhism. One of the most sacred Sikh festivals, observed with Prabhat Pheris (morning processions) and Langar." },
+        "11-14": { name: "Children's Day (Bal Diwas)", type: "national", icon: "fa-child-reaching", desc: "Celebrated on the birth anniversary of India's first Prime Minister Jawaharlal Nehru, who loved children. School events and cultural programmes are held." },
+        "12-24": { name: "Christmas Eve", type: "religious", icon: "fa-tree", desc: "The evening before Christmas Day, celebrated by Christians with midnight mass services, carol singing, and festive decorations." },
+        "12-25": { name: "Christmas Day", type: "religious", icon: "fa-gift", desc: "A public holiday in India celebrating the birth of Jesus Christ. Observed with church services, festive decorations, gift-giving, and family feasts." },
+        "12-31": { name: "New Year's Eve", type: "festival", icon: "fa-champagne-glasses", desc: "The last day of the year! Celebrated across India and the world with parties, fireworks, countdowns, and festive gatherings." }
+    };
 
-        function populateYearSelect() {
-            const select = document.getElementById('yearSelect');
-            const startYear = 2000;
-            const endYear = 2100;
-            
-            for (let i = startYear; i <= endYear; i++) {
-                const option = document.createElement('option');
-                option.value = i;
-                option.text = i;
-                if(i === currentYear) option.selected = true;
-                select.appendChild(option);
-            }
+    // State
+    let curYear = TODAY.getFullYear();
+    let curMonth = TODAY.getMonth();
+    let isDark = true;
+
+    // ===== INIT =====
+    document.addEventListener('DOMContentLoaded', () => {
+        const yearSel = document.getElementById('yearSelect');
+        for (let y = 2000; y <= 2100; y++) {
+            const opt = document.createElement('option');
+            opt.value = y; opt.text = y;
+            if (y === curYear) opt.selected = true;
+            yearSel.appendChild(opt);
+        }
+        document.getElementById('monthSelect').value = curMonth;
+        document.getElementById('footerYear').textContent = TODAY.getFullYear();
+        renderCalendar();
+    });
+
+    // ===== RENDER CALENDAR =====
+    function renderCalendar() {
+        const year = parseInt(document.getElementById('yearSelect').value);
+        const month = parseInt(document.getElementById('monthSelect').value);
+        curYear = year; curMonth = month;
+
+        // Update header
+        document.getElementById('monthNameDisplay').innerHTML = `<em>${MONTHS[month]}</em>`;
+        document.getElementById('yearBadgeDisplay').textContent = year;
+
+        const container = document.getElementById('calendarDays');
+        container.innerHTML = '';
+
+        const firstDay = new Date(year, month, 1).getDay();
+        const totalDays = new Date(year, month + 1, 0).getDate();
+
+        let festCount = 0, natCount = 0, relCount = 0, sunCount = 0;
+
+        // Empty cells
+        for (let i = 0; i < firstDay; i++) {
+            const empty = document.createElement('div');
+            empty.className = 'day-cell empty';
+            container.appendChild(empty);
         }
 
-        // --- Core Calendar Logic ---
-        function renderCalendar() {
-            const year = parseInt(document.getElementById('yearSelect').value);
-            const month = parseInt(document.getElementById('monthSelect').value);
-            
-            currentYear = year;
-            currentMonth = month;
+        // Day cells
+        for (let d = 1; d <= totalDays; d++) {
+            const cell = document.createElement('div');
+            cell.className = 'day-cell';
 
-            // Update Header
-            document.getElementById('monthYearDisplay').innerText = `${monthNames[month]} ${year}`;
+            const mm = String(month + 1).padStart(2, '0');
+            const dd = String(d).padStart(2, '0');
+            const key = `${mm}-${dd}`;
+            const holiday = HOLIDAYS[key];
+            const dow = new Date(year, month, d).getDay();
 
-            const grid = document.getElementById('calendarGrid');
-            grid.innerHTML = '';
+            if (dow === 0) { cell.classList.add('is-sunday'); sunCount++; }
 
-            // Add Weekday Headers
-            weekDays.forEach(day => {
-                const div = document.createElement('div');
-                div.classList.add('weekday');
-                div.innerText = day;
-                grid.appendChild(div);
+            const isToday = (d === TODAY.getDate() && month === TODAY.getMonth() && year === TODAY.getFullYear());
+            if (isToday) cell.classList.add('is-today');
+
+            if (holiday) {
+                if (holiday.type === 'national') { cell.classList.add('is-holiday'); natCount++; }
+                else if (holiday.type === 'festival') { cell.classList.add('is-festival'); festCount++; }
+                else { cell.classList.add('is-festival'); relCount++; }
+            }
+
+            // Day number
+            const numEl = document.createElement('div');
+            numEl.className = 'day-num';
+            numEl.textContent = d;
+            cell.appendChild(numEl);
+
+            // Event tags
+            if (holiday) {
+                const tags = document.createElement('div');
+                tags.className = 'day-event-tags';
+                const tag = document.createElement('div');
+                tag.className = `event-tag ${holiday.type}`;
+                tag.textContent = holiday.name;
+                tags.appendChild(tag);
+                cell.appendChild(tags);
+                cell.onclick = () => showModal(holiday, d, month, year);
+            }
+
+            container.appendChild(cell);
+        }
+
+        // Update stats
+        document.getElementById('statFestivals').textContent = festCount;
+        document.getElementById('statNational').textContent = natCount;
+        document.getElementById('statReligious').textContent = relCount;
+        document.getElementById('statDays').textContent = totalDays;
+        document.getElementById('statSundays').textContent = sunCount;
+
+        // Render mini months & upcoming
+        renderMiniMonths(year, month);
+        renderUpcoming(year, month);
+    }
+
+    // ===== MINI MONTHS =====
+    function renderMiniMonths(year, activeMonth) {
+        const grid = document.getElementById('miniMonthsGrid');
+        grid.innerHTML = '';
+        for (let m = 0; m < 12; m++) {
+            const mini = document.createElement('div');
+            mini.className = 'mini-month' + (m === activeMonth ? ' active-mini' : '');
+            mini.onclick = () => {
+                document.getElementById('monthSelect').value = m;
+                renderCalendar();
+            };
+
+            const name = document.createElement('div');
+            name.className = 'mini-month-name';
+            name.textContent = MONTHS[m].slice(0, 3);
+            mini.appendChild(name);
+
+            const g = document.createElement('div');
+            g.className = 'mini-grid';
+
+            // weekday headers
+            ['S','M','T','W','T','F','S'].forEach(w => {
+                const wd = document.createElement('div');
+                wd.className = 'mini-cell wd';
+                wd.textContent = w;
+                g.appendChild(wd);
             });
 
-            // Calculate Days
-            const firstDayIndex = new Date(year, month, 1).getDay();
-            const lastDay = new Date(year, month + 1, 0).getDate();
-            
-            // Previous Month Padding
-            for (let i = 0; i < firstDayIndex; i++) {
-                const div = document.createElement('div');
-                grid.appendChild(div);
+            const fd = new Date(year, m, 1).getDay();
+            const td = new Date(year, m + 1, 0).getDate();
+            for (let i = 0; i < fd; i++) {
+                const e = document.createElement('div');
+                e.className = 'mini-cell';
+                g.appendChild(e);
+            }
+            for (let d = 1; d <= td; d++) {
+                const c = document.createElement('div');
+                const mm2 = String(m + 1).padStart(2,'0');
+                const dd2 = String(d).padStart(2,'0');
+                const key2 = `${mm2}-${dd2}`;
+                const isT = (d === TODAY.getDate() && m === TODAY.getMonth() && year === TODAY.getFullYear());
+                const hol = HOLIDAYS[key2];
+                c.className = 'mini-cell' + (isT ? ' today-mini' : hol ? (hol.type === 'national' ? ' holiday' : ' festival') : '');
+                c.textContent = d;
+                g.appendChild(c);
             }
 
-            // Current Month Days
-            const today = new Date();
-            
-            for (let i = 1; i <= lastDay; i++) {
-                const dayDiv = document.createElement('div');
-                dayDiv.classList.add('day');
-                
-                // Format Date Key (MM-DD)
-                const monthStr = (month + 1).toString().padStart(2, '0');
-                const dayStr = i.toString().padStart(2, '0');
-                const dateKey = `${monthStr}-${dayStr}`;
+            mini.appendChild(g);
+            grid.appendChild(mini);
+        }
+    }
 
-                // Check for Holiday
-                let holidayName = fixedHolidays[dateKey];
-                
-                // Special Logic for Diwali (Demo approximation: Oct/Nov Full Moon logic simplified)
-                // In a real app, fetch this from an API.
-                if (month === 10 && i === 12) holidayName = "Diwali (Deepavali)"; // Example static date
+    // ===== UPCOMING HOLIDAYS =====
+    function renderUpcoming(year, month) {
+        const list = document.getElementById('upcomingList');
+        list.innerHTML = '';
 
-                if (holidayName) {
-                    dayDiv.classList.add('holiday');
-                    dayDiv.innerHTML = `
-                        <span class="day-number">${i}</span>
-                        <span class="holiday-indicator">${holidayName}</span>
-                    `;
-                    dayDiv.onclick = () => showHolidayModal(holidayName, `${i} ${monthNames[month]}, ${year}`);
-                } else {
-                    dayDiv.innerHTML = `<span class="day-number">${i}</span>`;
-                }
-
-                // Highlight Today
-                if (i === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
-                    dayDiv.classList.add('today');
-                }
-
-                grid.appendChild(dayDiv);
+        // Collect all holidays in the year from current month onwards
+        const upcoming = [];
+        for (const [key, val] of Object.entries(HOLIDAYS)) {
+            const [mm, dd] = key.split('-').map(Number);
+            // Include this month and forward
+            if (mm - 1 >= month) {
+                upcoming.push({ month: mm - 1, day: dd, ...val });
             }
         }
 
-        function changeMonth(step) {
-            let newMonth = currentMonth + step;
-            if (newMonth > 11) {
-                newMonth = 0;
-                currentYear++;
-                document.getElementById('yearSelect').value = currentYear;
-            } else if (newMonth < 0) {
-                newMonth = 11;
-                currentYear--;
-                document.getElementById('yearSelect').value = currentYear;
-            }
-            currentMonth = newMonth;
-            document.getElementById('monthSelect').value = currentMonth;
-            renderCalendar();
-        }
+        // Sort by month then day
+        upcoming.sort((a, b) => (a.month * 100 + a.day) - (b.month * 100 + b.day));
 
-        // --- Modal Logic ---
-        function showHolidayModal(title, date) {
-            const modal = document.getElementById('holidayModal');
-            document.getElementById('modalTitle').innerText = title;
-            document.getElementById('modalDate').innerText = date;
-            
-            // Simple descriptions based on title
-            let desc = "A public holiday in India.";
-            if(title.includes("Republic")) desc = "Celebrates the date on which the Constitution of India came into effect.";
-            if(title.includes("Independence")) desc = "Commemorates the nation's independence from the United Kingdom.";
-            if(title.includes("Gandhi")) desc = "Birthday of Mahatma Gandhi, the father of the nation.";
-            if(title.includes("Diwali")) desc = "The festival of lights, symbolizing the victory of light over darkness.";
-            
-            document.getElementById('modalDesc').innerText = desc;
-            
-            modal.style.display = 'flex';
-        }
+        const shown = upcoming.slice(0, 6);
+        shown.forEach(h => {
+            const item = document.createElement('div');
+            item.className = 'upcoming-item';
+            item.onclick = () => showModal(h, h.day, h.month, year);
+            item.innerHTML = `
+                <div class="upcoming-date-box ${h.type}">
+                    <div class="upcoming-dd">${String(h.day).padStart(2,'0')}</div>
+                    <div class="upcoming-mmm">${MONTHS[h.month].slice(0,3)}</div>
+                </div>
+                <div class="upcoming-info">
+                    <h4>${h.name}</h4>
+                    <p>${MONTHS[h.month]} ${h.day}, ${year}</p>
+                </div>
+                <div class="upcoming-chip ${h.type}">${h.type.charAt(0).toUpperCase()+h.type.slice(1)}</div>
+            `;
+            list.appendChild(item);
+        });
 
-        function closeModal() {
-            document.getElementById('holidayModal').style.display = 'none';
+        if (shown.length === 0) {
+            list.innerHTML = '<p style="font-size:0.82rem;color:var(--text-muted);text-align:center;padding:10px;">No more holidays this year.</p>';
         }
+    }
 
-        // Close modal if clicked outside
-        window.onclick = function(event) {
-            const modal = document.getElementById('holidayModal');
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
+    // ===== MODAL =====
+    function showModal(holiday, day, month, year) {
+        document.getElementById('modalTitle').textContent = holiday.name;
+        document.getElementById('modalDate').textContent = `${day} ${MONTHS[month]}, ${year}`;
+        document.getElementById('modalDesc').textContent = holiday.desc;
 
-        // --- Theme Logic ---
-        function toggleTheme() {
-            const body = document.body;
-            const currentTheme = body.getAttribute('data-theme');
-            if (currentTheme === 'dark') {
-                body.setAttribute('data-theme', 'light');
-            } else {
-                body.setAttribute('data-theme', 'dark');
-            }
-        }
-    </script>
+        const iconWrap = document.getElementById('modalIconWrap');
+        const icon = document.getElementById('modalIcon');
+        const badge = document.getElementById('modalTypeBadge');
+        const typeIcon = document.getElementById('modalTypeIcon');
+        const typeText = document.getElementById('modalType');
+
+        iconWrap.className = 'modal-icon-wrap ' + holiday.type;
+        icon.className = `fa-solid ${holiday.icon}`;
+        badge.className = 'modal-type-badge ' + holiday.type;
+
+        const typeMap = { national: ['fa-flag','National Holiday'], festival: ['fa-star','Festival'], religious: ['fa-praying-hands','Religious Day'] };
+        const [ti, tt] = typeMap[holiday.type] || ['fa-calendar','Holiday'];
+        typeIcon.className = `fa-solid ${ti}`;
+        typeText.textContent = tt;
+
+        document.getElementById('holidayModal').classList.add('open');
+    }
+
+    function closeModalBtn() { document.getElementById('holidayModal').classList.remove('open'); }
+
+    function closeModal(e) {
+        if (e.target === document.getElementById('holidayModal')) closeModalBtn();
+    }
+
+    // ===== NAVIGATION =====
+    function changeMonth(step) {
+        let m = parseInt(document.getElementById('monthSelect').value) + step;
+        let y = parseInt(document.getElementById('yearSelect').value);
+        if (m > 11) { m = 0; y++; document.getElementById('yearSelect').value = y; }
+        if (m < 0) { m = 11; y--; document.getElementById('yearSelect').value = y; }
+        document.getElementById('monthSelect').value = m;
+        renderCalendar();
+    }
+
+    function goToToday() {
+        curYear = TODAY.getFullYear();
+        curMonth = TODAY.getMonth();
+        document.getElementById('yearSelect').value = curYear;
+        document.getElementById('monthSelect').value = curMonth;
+        renderCalendar();
+        showToast("Jumped to today!");
+    }
+
+    function toggleTheme() {
+        isDark = !isDark;
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+        const btn = document.getElementById('themeBtn');
+        btn.innerHTML = isDark
+            ? '<i class="fa-solid fa-sun"></i> Light'
+            : '<i class="fa-solid fa-moon"></i> Dark';
+    }
+
+    let toastTimer;
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        document.getElementById('toastMsg').textContent = msg;
+        t.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+    }
+</script>
+
 </body>
 </html>
