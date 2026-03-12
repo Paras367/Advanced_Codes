@@ -75,7 +75,7 @@ This repository is officially maintained under **SoftwareLabs**.
 We believe in **learning by building**.
 
 🌐 **Official Website:**  
-👉 https://softwarelabs.lovable.app
+👉 https://softwarelabschd.github.io/softwarelabs
 
 ---
 
@@ -107,7 +107,7 @@ If you want to:
 - Give feedback  
 - Contribute ideas  
 
-Visit: 🌐 https://softwarelabs.lovable.app
+Visit: 🌐 https://softwarelabschd.github.io/softwarelabs
 
 ---
 
