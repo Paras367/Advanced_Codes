@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📚 BookVault — ISBN Collector</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --ink: #0d0d0d;
+    --paper: #f5f0e8;
+    --cream: #faf7f2;
+    --amber: #d4820a;
+    --amber-light: #f5a623;
+    --amber-glow: rgba(212,130,10,0.15);
+    --rust: #b84a2e;
+    --sage: #4a7c59;
+    --slate: #2c3e50;
+    --muted: #7a7060;
+    --border: #d8cfc0;
+    --card-bg: #fffdf8;
+    --shadow-warm: 0 4px 24px rgba(100,60,0,0.12);
+    --shadow-deep: 0 12px 48px rgba(100,60,0,0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(245,240,232,0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 2px solid var(--border);
+    padding: 0 2rem;
+  }
+
+  .header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 70px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+  }
+
+  .logo-icon {
+    width: 42px; height: 42px;
+    background: var(--ink);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    color: var(--amber-light);
+    box-shadow: 3px 3px 0 var(--amber);
+    transition: transform 0.2s;
+  }
+  .logo:hover .logo-icon { transform: rotate(-5deg) scale(1.05); }
+
+  .logo-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--ink);
+    letter-spacing: -0.5px;
+  }
+
+  .logo-sub {
+    font-size: 0.65rem;
+    font-family: 'Space Mono', monospace;
+    color: var(--amber);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    display: block;
+    margin-top: -4px;
+  }
+
+  .header-actions {
+    display: flex; align-items: center; gap: 1rem;
+  }
+
+  .stats-pill {
+    background: var(--ink);
+    color: var(--amber-light);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    padding: 6px 14px;
+    border-radius: 50px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .btn-icon {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+  .btn-icon:hover { border-color: var(--amber); color: var(--amber); background: var(--amber-glow); }
+
+  /* ─── HERO SEARCH ─── */
+  .hero {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 3rem 2rem 2rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--amber);
+  }
+
+  .hero-sub {
+    color: var(--muted);
+    font-size: 1.05rem;
+    margin-bottom: 2rem;
+    font-weight: 300;
+  }
+
+  .search-container {
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-warm);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    align-items: end;
+    margin-bottom: 1rem;
+  }
+
+  .search-tabs {
+    display: flex; gap: 0.5rem; margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .tab-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    padding: 6px 14px;
+    border-radius: 50px;
+    border: 2px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    color: var(--muted);
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .tab-btn.active {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--amber-light);
+  }
+  .tab-btn:not(.active):hover { border-color: var(--amber); color: var(--amber); }
+
+  .search-fields {
+    display: flex; flex-direction: column; gap: 0.75rem;
+  }
+
+  .field-group {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+
+  .field-label {
+    font-size: 0.72rem;
+    font-family: 'Space Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+  }
+
+  .field-row {
+    display: flex; gap: 0.75rem; flex-wrap: wrap;
+  }
+
+  .search-input {
+    flex: 1; min-width: 200px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    padding: 12px 16px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    background: var(--cream);
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .search-input:focus {
+    border-color: var(--amber);
+    box-shadow: 0 0 0 4px var(--amber-glow);
+  }
+  .search-input::placeholder { color: var(--border); }
+
+  .select-input {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    padding: 12px 16px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    background: var(--cream);
+    color: var(--ink);
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .select-input:focus { border-color: var(--amber); }
+
+  .search-btn {
+    padding: 14px 32px;
+    background: var(--ink);
+    color: var(--amber-light);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    transition: all 0.2s;
+    white-space: nowrap;
+    box-shadow: 4px 4px 0 var(--amber);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .search-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--amber);
+  }
+  .search-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--amber);
+  }
+  .search-btn.loading { opacity: 0.7; pointer-events: none; }
+
+  .quick-tags {
+    display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+  }
+
+  .quick-label {
+    font-size: 0.72rem;
+    font-family: 'Space Mono', monospace;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .quick-tag {
+    font-size: 0.78rem;
+    padding: 4px 12px;
+    border-radius: 50px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    color: var(--slate);
+    transition: all 0.15s;
+  }
+  .quick-tag:hover { border-color: var(--amber); color: var(--amber); background: var(--amber-glow); }
+
+  /* ─── TOOLBAR ─── */
+  .toolbar {
+    max-width: 1400px;
+    margin: 0 auto 1.5rem;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    position: relative; z-index: 1;
+  }
+
+  .results-info {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .results-info span { color: var(--ink); font-weight: 700; }
+
+  .toolbar-right { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+
+  .sort-select {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    padding: 8px 12px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    background: var(--card-bg);
+    color: var(--ink);
+    outline: none; cursor: pointer;
+  }
+
+  .view-toggle { display: flex; border: 2px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .view-btn {
+    padding: 7px 12px;
+    border: none; background: transparent; cursor: pointer;
+    color: var(--muted); font-size: 0.9rem; transition: all 0.2s;
+  }
+  .view-btn.active { background: var(--ink); color: var(--amber-light); }
+
+  .export-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    padding: 8px 16px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer; color: var(--slate);
+    display: flex; align-items: center; gap: 6px;
+    transition: all 0.2s; text-transform: uppercase; letter-spacing: 1px;
+  }
+  .export-btn:hover { border-color: var(--sage); color: var(--sage); background: rgba(74,124,89,0.08); }
+
+  /* ─── GRID ─── */
+  .results-grid {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem 3rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    position: relative; z-index: 1;
+  }
+
+  .results-grid.list-view {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  /* ─── BOOK CARD ─── */
+  .book-card {
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    cursor: pointer;
+    position: relative;
+    animation: cardIn 0.4s ease both;
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .book-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-deep);
+    border-color: var(--amber);
+  }
+
+  .book-card.in-collection { border-color: var(--sage); }
+  .book-card.in-collection::after {
+    content: '✓';
+    position: absolute; top: 12px; right: 12px;
+    width: 28px; height: 28px;
+    background: var(--sage);
+    color: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem; font-weight: 700;
+    z-index: 2;
+  }
+
+  .book-cover-wrap {
+    position: relative;
+    height: 200px;
+    background: linear-gradient(135deg, #e8e0d0 0%, #d5c9b5 100%);
+    overflow: hidden;
+  }
+
+  .book-cover-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .book-card:hover .book-cover-wrap img { transform: scale(1.05); }
+
+  .cover-placeholder {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 8px;
+    color: var(--muted);
+  }
+  .cover-placeholder i { font-size: 3rem; opacity: 0.3; }
+  .cover-placeholder span { font-size: 0.75rem; font-family: 'Space Mono', monospace; opacity: 0.5; }
+
+  .cover-genre-badge {
+    position: absolute; bottom: 10px; left: 10px;
+    font-size: 0.65rem;
+    font-family: 'Space Mono', monospace;
+    text-transform: uppercase; letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 50px;
+    background: rgba(13,13,13,0.75);
+    color: var(--amber-light);
+    backdrop-filter: blur(4px);
+  }
+
+  .book-info { padding: 1.2rem; }
+
+  .book-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .book-author {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .book-meta {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .book-isbn {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--amber);
+    background: var(--amber-glow);
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(212,130,10,0.2);
+  }
+
+  .book-year {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+  }
+
+  .book-rating {
+    display: flex; align-items: center; gap: 4px;
+    margin-bottom: 10px;
+  }
+
+  .stars { color: var(--amber-light); font-size: 0.8rem; }
+  .rating-num { font-size: 0.75rem; color: var(--muted); font-family: 'Space Mono', monospace; }
+
+  .book-description {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+
+  .book-actions {
+    display: flex; gap: 0.5rem;
+  }
+
+  .btn-collect {
+    flex: 1;
+    padding: 9px;
+    border-radius: 10px;
+    border: 2px solid var(--ink);
+    background: var(--ink);
+    color: var(--amber-light);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .btn-collect:hover { background: var(--amber); border-color: var(--amber); color: var(--ink); }
+  .btn-collect.collected { background: var(--sage); border-color: var(--sage); color: white; }
+
+  .btn-detail {
+    padding: 9px 14px;
+    border-radius: 10px;
+    border: 2px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .btn-detail:hover { border-color: var(--amber); color: var(--amber); }
+
+  /* ─── LIST VIEW CARD ─── */
+  .results-grid.list-view .book-card {
+    display: flex; align-items: center;
+    border-radius: 12px;
+  }
+  .results-grid.list-view .book-cover-wrap { width: 80px; height: 80px; flex-shrink: 0; }
+  .results-grid.list-view .book-cover-wrap { border-radius: 0; }
+  .results-grid.list-view .book-info { display: flex; align-items: center; flex: 1; gap: 1rem; }
+  .results-grid.list-view .book-title { font-size: 0.95rem; -webkit-line-clamp: 1; margin-bottom: 2px; }
+  .results-grid.list-view .book-description { display: none; }
+  .results-grid.list-view .book-meta { margin-bottom: 0; }
+
+  /* ─── COLLECTION PANEL ─── */
+  .collection-sidebar {
+    position: fixed;
+    top: 0; right: -420px;
+    width: 420px; height: 100vh;
+    background: var(--card-bg);
+    border-left: 2px solid var(--border);
+    z-index: 200;
+    overflow-y: auto;
+    transition: right 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    display: flex; flex-direction: column;
+  }
+  .collection-sidebar.open { right: 0; box-shadow: -8px 0 48px rgba(0,0,0,0.15); }
+
+  .sidebar-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 199;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .sidebar-overlay.active { opacity: 1; pointer-events: all; }
+
+  .sidebar-header {
+    padding: 1.5rem;
+    border-bottom: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; background: var(--card-bg); z-index: 1;
+  }
+
+  .sidebar-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+  }
+
+  .sidebar-close {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: transparent; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; color: var(--muted);
+    transition: all 0.2s;
+  }
+  .sidebar-close:hover { border-color: var(--rust); color: var(--rust); }
+
+  .sidebar-stats {
+    padding: 1rem 1.5rem;
+    border-bottom: 2px solid var(--border);
+    display: flex; gap: 1.5rem;
+  }
+
+  .stat-item { text-align: center; }
+  .stat-num {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--amber);
+  }
+  .stat-label {
+    font-size: 0.68rem;
+    font-family: 'Space Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+  }
+
+  .sidebar-filters {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
+  }
+
+  .filter-chip {
+    font-size: 0.72rem;
+    font-family: 'Space Mono', monospace;
+    padding: 4px 12px; border-radius: 50px;
+    border: 1.5px solid var(--border);
+    background: transparent; cursor: pointer;
+    color: var(--muted); transition: all 0.15s;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .filter-chip.active { background: var(--ink); border-color: var(--ink); color: var(--amber-light); }
+
+  .sidebar-list { flex: 1; padding: 1rem 1.5rem; }
+
+  .collection-item {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+    animation: slideIn 0.3s ease both;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .coll-thumb {
+    width: 52px; height: 68px;
+    border-radius: 6px;
+    overflow: hidden; flex-shrink: 0;
+    background: var(--border);
+  }
+  .coll-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+  .coll-info { flex: 1; min-width: 0; }
+  .coll-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    margin-bottom: 2px;
+  }
+  .coll-author { font-size: 0.75rem; color: var(--muted); margin-bottom: 4px; }
+  .coll-isbn {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--amber);
+  }
+
+  .coll-status {
+    flex-shrink: 0;
+  }
+
+  .status-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    display: inline-block; margin-right: 4px;
+  }
+  .status-read .status-dot { background: var(--sage); }
+  .status-reading .status-dot { background: var(--amber); }
+  .status-wishlist .status-dot { background: var(--rust); }
+
+  .status-select {
+    font-size: 0.7rem;
+    font-family: 'Space Mono', monospace;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 6px;
+    background: transparent; cursor: pointer;
+    color: var(--muted);
+  }
+
+  .remove-btn {
+    padding: 4px 6px;
+    border: none; background: transparent; cursor: pointer;
+    color: var(--border); transition: color 0.2s; font-size: 0.8rem;
+  }
+  .remove-btn:hover { color: var(--rust); }
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 300; backdrop-filter: blur(4px);
+    display: none; align-items: center; justify-content: center;
+    padding: 2rem;
+  }
+  .modal-overlay.active { display: flex; }
+
+  .modal {
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    width: 100%; max-width: 700px;
+    max-height: 85vh;
+    overflow-y: auto;
+    animation: modalIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.9) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .modal-header {
+    display: flex; gap: 1.5rem;
+    padding: 1.5rem;
+    border-bottom: 2px solid var(--border);
+    position: relative;
+  }
+
+  .modal-close {
+    position: absolute; top: 1rem; right: 1rem;
+    width: 36px; height: 36px;
+    border-radius: 50%; border: 2px solid var(--border);
+    background: transparent; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; color: var(--muted); transition: all 0.2s;
+  }
+  .modal-close:hover { border-color: var(--rust); color: var(--rust); }
+
+  .modal-cover {
+    width: 120px; height: 160px; flex-shrink: 0;
+    border-radius: 10px; overflow: hidden;
+    background: var(--border);
+    box-shadow: var(--shadow-warm);
+  }
+  .modal-cover img { width: 100%; height: 100%; object-fit: cover; }
+
+  .modal-title-area { flex: 1; padding-right: 2rem; }
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem; font-weight: 900;
+    line-height: 1.2; margin-bottom: 6px;
+  }
+  .modal-author { color: var(--muted); margin-bottom: 12px; }
+
+  .modal-badges { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 12px; }
+  .badge {
+    font-size: 0.7rem; font-family: 'Space Mono', monospace;
+    text-transform: uppercase; letter-spacing: 1px;
+    padding: 4px 10px; border-radius: 50px;
+    border: 1.5px solid var(--border); color: var(--muted);
+  }
+  .badge.amber { border-color: var(--amber); color: var(--amber); background: var(--amber-glow); }
+  .badge.sage { border-color: var(--sage); color: var(--sage); background: rgba(74,124,89,0.1); }
+
+  .modal-body { padding: 1.5rem; }
+
+  .detail-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1rem; margin-bottom: 1.5rem;
+  }
+
+  .detail-item {}
+  .detail-item .detail-label {
+    font-size: 0.68rem; font-family: 'Space Mono', monospace;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--muted); margin-bottom: 2px;
+  }
+  .detail-item .detail-val {
+    font-size: 0.9rem; font-weight: 500; color: var(--ink);
+  }
+
+  .modal-description {
+    font-size: 0.9rem; line-height: 1.65; color: #4a3f30;
+    margin-bottom: 1.5rem;
+  }
+
+  .modal-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+
+  .btn-primary {
+    padding: 12px 24px;
+    background: var(--ink); color: var(--amber-light);
+    border: 2px solid var(--ink); border-radius: 10px;
+    font-family: 'Space Mono', monospace; font-size: 0.78rem;
+    font-weight: 700; cursor: pointer; transition: all 0.2s;
+    text-transform: uppercase; letter-spacing: 1px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .btn-primary:hover { background: var(--amber); border-color: var(--amber); color: var(--ink); }
+
+  .btn-secondary {
+    padding: 12px 24px;
+    background: transparent; color: var(--slate);
+    border: 2px solid var(--border); border-radius: 10px;
+    font-family: 'Space Mono', monospace; font-size: 0.78rem;
+    cursor: pointer; transition: all 0.2s;
+    text-transform: uppercase; letter-spacing: 1px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .btn-secondary:hover { border-color: var(--amber); color: var(--amber); }
+
+  /* ─── TOAST ─── */
+  .toast-container {
+    position: fixed; bottom: 2rem; right: 2rem;
+    z-index: 400; display: flex; flex-direction: column; gap: 0.5rem;
+  }
+
+  .toast {
+    background: var(--ink); color: white;
+    padding: 12px 20px; border-radius: 12px;
+    font-family: 'Space Mono', monospace; font-size: 0.78rem;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: var(--shadow-deep);
+    animation: toastIn 0.3s ease;
+    min-width: 200px;
+  }
+  .toast.success { border-left: 4px solid var(--sage); }
+  .toast.info { border-left: 4px solid var(--amber); }
+  .toast.error { border-left: 4px solid var(--rust); }
+
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes toastOut {
+    to { opacity: 0; transform: translateX(20px); }
+  }
+
+  /* ─── EMPTY / LOADING STATES ─── */
+  .empty-state {
+    grid-column: 1 / -1;
+    text-align: center; padding: 4rem 2rem;
+  }
+  .empty-icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.3; }
+  .empty-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--muted);
+  }
+  .empty-sub { font-size: 0.9rem; color: var(--border); }
+
+  .loader {
+    grid-column: 1 / -1;
+    display: flex; align-items: center; justify-content: center;
+    gap: 0.5rem; padding: 4rem;
+  }
+  .loader-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--amber);
+    animation: bounce 0.6s infinite alternate;
+  }
+  .loader-dot:nth-child(2) { animation-delay: 0.15s; }
+  .loader-dot:nth-child(3) { animation-delay: 0.3s; }
+
+  @keyframes bounce {
+    from { transform: translateY(0); opacity: 0.4; }
+    to { transform: translateY(-12px); opacity: 1; }
+  }
+
+  /* ─── PAGINATION ─── */
+  .pagination {
+    max-width: 1400px; margin: 0 auto 3rem;
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: center;
+    gap: 0.5rem; flex-wrap: wrap;
+    position: relative; z-index: 1;
+  }
+
+  .page-btn {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    border: 2px solid var(--border);
+    background: var(--card-bg); cursor: pointer;
+    font-family: 'Space Mono', monospace; font-size: 0.8rem;
+    color: var(--muted); transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .page-btn:hover { border-color: var(--amber); color: var(--amber); }
+  .page-btn.active { background: var(--ink); border-color: var(--ink); color: var(--amber-light); }
+  .page-btn:disabled { opacity: 0.3; pointer-events: none; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    .hero-title { font-size: 2rem; }
+    .search-container { grid-template-columns: 1fr; }
+    .collection-sidebar { width: 100%; right: -100%; }
+    .modal { max-width: 100%; border-radius: 20px 20px 0 0; position: fixed; bottom: 0; max-height: 90vh; }
+    .modal-overlay { align-items: flex-end; padding: 0; }
+    .detail-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ─── BARCODE SCANNER ANIMATION ─── */
+  .scan-line {
+    position: absolute;
+    left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--amber), transparent);
+    animation: scanMove 2s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes scanMove {
+    0% { top: 20%; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 80%; opacity: 0; }
+  }
+
+  .isbn-scanner-wrap {
+    position: relative;
+    display: inline-block;
+    border: 2px dashed var(--amber);
+    border-radius: 8px;
+    padding: 6px 12px;
+    overflow: hidden;
+  }
+
+  /* Scroll-triggered animation */
+  .book-card { transition-delay: calc(var(--i, 0) * 0.05s); }
+</style>
+</head>
+<body>
+
+<!-- ─── HEADER ─── -->
+<header>
+  <div class="header-inner">
+    <a class="logo" href="#">
+      <div class="logo-icon">📚</div>
+      <div>
+        <div class="logo-text">BookVault</div>
+        <span class="logo-sub">ISBN Collector</span>
+      </div>
+    </a>
+    <div class="header-actions">
+      <div class="stats-pill" id="headerStats">
+        <i class="fas fa-bookmark"></i>
+        <span id="collectionCount">0</span> collected
+      </div>
+      <button class="btn-icon" onclick="openCollection()" title="My Collection">
+        <i class="fas fa-layer-group"></i>
+      </button>
+      <button class="btn-icon" onclick="exportCSV()" title="Export CSV">
+        <i class="fas fa-file-csv"></i>
+      </button>
+      <button class="btn-icon" onclick="toggleTheme()" title="Toggle Theme" id="themeBtn">
+        <i class="fas fa-moon"></i>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ─── HERO ─── -->
+<section class="hero">
+  <h1 class="hero-title">Discover & Collect<br><em>Your Library</em></h1>
+  <p class="hero-sub">Search by ISBN, title, author, or subject — powered by Google Books</p>
+
+  <div class="search-container">
+    <div>
+      <div class="search-tabs">
+        <button class="tab-btn active" onclick="setSearchMode('isbn', this)">
+          <i class="fas fa-barcode"></i> ISBN
+        </button>
+        <button class="tab-btn" onclick="setSearchMode('title', this)">
+          <i class="fas fa-font"></i> Title
+        </button>
+        <button class="tab-btn" onclick="setSearchMode('author', this)">
+          <i class="fas fa-user-pen"></i> Author
+        </button>
+        <button class="tab-btn" onclick="setSearchMode('subject', this)">
+          <i class="fas fa-tag"></i> Subject
+        </button>
+        <button class="tab-btn" onclick="setSearchMode('advanced', this)">
+          <i class="fas fa-sliders"></i> Advanced
+        </button>
+      </div>
+
+      <div class="search-fields">
+        <div id="isbnMode">
+          <div class="field-group">
+            <div class="field-label">Enter ISBN-10 or ISBN-13</div>
+            <div class="isbn-scanner-wrap">
+              <div class="scan-line"></div>
+              <input type="text" id="mainInput" class="search-input"
+                placeholder="e.g. 9780140449136 or 0140449138"
+                style="border:none; background:transparent; padding-left:0; min-width:340px;"
+                onkeydown="if(event.key==='Enter') doSearch()">
+            </div>
+          </div>
+        </div>
+
+        <div id="titleMode" style="display:none">
+          <div class="field-row">
+            <input type="text" id="titleInput" class="search-input" placeholder="Book title..." style="flex:2">
+            <input type="text" id="titleAuthorInput" class="search-input" placeholder="Author (optional)">
+          </div>
+        </div>
+
+        <div id="authorMode" style="display:none">
+          <input type="text" id="authorInput" class="search-input" placeholder="Author name..." style="width:100%">
+        </div>
+
+        <div id="subjectMode" style="display:none">
+          <input type="text" id="subjectInput" class="search-input" placeholder="Subject / genre / topic..." style="width:100%">
+        </div>
+
+        <div id="advancedMode" style="display:none">
+          <div class="field-row">
+            <div class="field-group" style="flex:2">
+              <div class="field-label">Title</div>
+              <input type="text" id="advTitle" class="search-input" placeholder="Book title">
+            </div>
+            <div class="field-group">
+              <div class="field-label">Author</div>
+              <input type="text" id="advAuthor" class="search-input" placeholder="Author name">
+            </div>
+          </div>
+          <div class="field-row" style="margin-top:0.75rem">
+            <div class="field-group">
+              <div class="field-label">Publisher</div>
+              <input type="text" id="advPublisher" class="search-input" placeholder="Publisher">
+            </div>
+            <div class="field-group">
+              <div class="field-label">Subject</div>
+              <input type="text" id="advSubject" class="search-input" placeholder="Subject">
+            </div>
+            <div class="field-group">
+              <div class="field-label">Language</div>
+              <select id="advLang" class="select-input">
+                <option value="">Any</option>
+                <option value="en">English</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <option value="es">Spanish</option>
+                <option value="hi">Hindi</option>
+                <option value="ja">Japanese</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:0.5rem; align-items:flex-end;">
+      <button class="search-btn" id="searchBtn" onclick="doSearch()">
+        <i class="fas fa-magnifying-glass"></i> Search
+      </button>
+      <select class="select-input" id="maxResults" style="font-size:0.78rem">
+        <option value="10">10 results</option>
+        <option value="20" selected>20 results</option>
+        <option value="40">40 results</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="quick-tags">
+    <span class="quick-label">🔥 Popular:</span>
+    <button class="quick-tag" onclick="quickSearch('Harry Potter')">Harry Potter</button>
+    <button class="quick-tag" onclick="quickSearch('Atomic Habits')">Atomic Habits</button>
+    <button class="quick-tag" onclick="quickSearch('Dune Frank Herbert')">Dune</button>
+    <button class="quick-tag" onclick="quickSearch('1984 Orwell')">1984</button>
+    <button class="quick-tag" onclick="quickSearch('Sapiens Harari')">Sapiens</button>
+    <button class="quick-tag" onclick="quickSearch('Clean Code')">Clean Code</button>
+    <button class="quick-tag" onclick="quickSearch('subject:programming')">Programming</button>
+  </div>
+</section>
+
+<!-- ─── TOOLBAR ─── -->
+<div class="toolbar" id="toolbar" style="display:none">
+  <div class="results-info" id="resultsInfo">— results</div>
+  <div class="toolbar-right">
+    <select class="sort-select" id="sortSelect" onchange="sortResults()">
+      <option value="relevance">Relevance</option>
+      <option value="newest">Newest</option>
+      <option value="title_asc">Title A→Z</option>
+      <option value="title_desc">Title Z→A</option>
+    </select>
+    <div class="view-toggle">
+      <button class="view-btn active" onclick="setView('grid', this)" title="Grid View"><i class="fas fa-grip"></i></button>
+      <button class="view-btn" onclick="setView('list', this)" title="List View"><i class="fas fa-list"></i></button>
+    </div>
+    <button class="export-btn" onclick="exportCSV()"><i class="fas fa-download"></i> Export CSV</button>
+    <button class="export-btn" onclick="exportJSON()"><i class="fas fa-code"></i> Export JSON</button>
+  </div>
+</div>
+
+<!-- ─── RESULTS ─── -->
+<div class="results-grid" id="resultsGrid">
+  <div class="empty-state">
+    <div class="empty-icon">📖</div>
+    <div class="empty-title">Your search begins here</div>
+    <div class="empty-sub">Enter an ISBN, title, or author to discover books</div>
+  </div>
+</div>
+
+<!-- ─── PAGINATION ─── -->
+<div class="pagination" id="pagination"></div>
+
+<!-- ─── COLLECTION SIDEBAR ─── -->
+<div class="sidebar-overlay" id="overlay" onclick="closeCollection()"></div>
+<div class="collection-sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-title">📚 My Collection</div>
+    <button class="sidebar-close" onclick="closeCollection()"><i class="fas fa-xmark"></i></button>
+  </div>
+  <div class="sidebar-stats">
+    <div class="stat-item"><span class="stat-num" id="totalBooks">0</span><span class="stat-label">Books</span></div>
+    <div class="stat-item"><span class="stat-num" id="readCount">0</span><span class="stat-label">Read</span></div>
+    <div class="stat-item"><span class="stat-num" id="readingCount">0</span><span class="stat-label">Reading</span></div>
+    <div class="stat-item"><span class="stat-num" id="wishlistCount">0</span><span class="stat-label">Wishlist</span></div>
+  </div>
+  <div class="sidebar-filters">
+    <button class="filter-chip active" onclick="filterCollection('all', this)">All</button>
+    <button class="filter-chip" onclick="filterCollection('read', this)">Read</button>
+    <button class="filter-chip" onclick="filterCollection('reading', this)">Reading</button>
+    <button class="filter-chip" onclick="filterCollection('wishlist', this)">Wishlist</button>
+  </div>
+  <div class="sidebar-list" id="sidebarList">
+    <div style="text-align:center; padding:2rem; color:var(--muted); font-family:'Space Mono',monospace; font-size:0.8rem;">
+      No books collected yet.<br>Search and add books!
+    </div>
+  </div>
+  <div style="padding:1rem 1.5rem; border-top:2px solid var(--border); display:flex; gap:0.5rem;">
+    <button class="btn-secondary" style="flex:1; justify-content:center" onclick="exportCSV()">
+      <i class="fas fa-file-csv"></i> CSV
+    </button>
+    <button class="btn-secondary" style="flex:1; justify-content:center" onclick="exportJSON()">
+      <i class="fas fa-code"></i> JSON
+    </button>
+    <button class="btn-secondary" style="flex:1; justify-content:center" onclick="clearCollection()">
+      <i class="fas fa-trash"></i> Clear
+    </button>
+  </div>
+</div>
+
+<!-- ─── MODAL ─── -->
+<div class="modal-overlay" id="modal" onclick="e => e.target === this && closeModal()">
+  <div class="modal" id="modalContent">
+    <div class="modal-header">
+      <div class="modal-cover" id="modalCover"></div>
+      <div class="modal-title-area">
+        <div class="modal-title" id="modalTitle"></div>
+        <div class="modal-author" id="modalAuthor"></div>
+        <div class="modal-badges" id="modalBadges"></div>
+        <div class="book-rating" id="modalRating"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-grid" id="modalDetails"></div>
+      <div class="modal-description" id="modalDesc"></div>
+      <div class="modal-actions" id="modalActions"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── TOAST ─── -->
+<div class="toast-container" id="toasts"></div>
+
+<script src="books.js"></script>
+</body>
+</html>
