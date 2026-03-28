@@ -1,32 +1,12 @@
 // ============================================================
 //  BookVault — ISBN Collector  |  books.js
-//  Google Books API Integration — Full Featured
+//  Google Books API via Cloudflare Worker Proxy
+//  🔐 API Key: SECURED (server-side only)
 // ============================================================
 
-// ── Obfuscated API key (XOR + Base64 encoding) ──────────────
-const _k = (function () {
-  const _e = "QUlhelpSyD6QMeMAs9NDkdUIxrKV-MR3EluxNVsUTo";
-  // XOR decode with rolling key
-  const _x = [0x42,0x56,0x61,0x75,0x6c,0x74,0x4b,0x65,0x79];
-  try {
-    // Reconstruct: Base64 decode then XOR
-    const raw = atob("QUlhU3lENlFNZU1BczlORGtkVUl4cktWLU1SM0VsdXhOVnNVVG8=");
-    let out = "";
-    for (let i = 0; i < raw.length; i++) {
-      out += String.fromCharCode(raw.charCodeAt(i) ^ _x[i % _x.length]);
-    }
-    return out;
-  } catch (_) {
-    // Fallback reconstruction
-    return atob("QUlhU3lENlFNZU1BczlORGtkVUl4cktWLU1SM0VsdXhOVnNVVG8=")
-      .split('').map((c,i) => String.fromCharCode(c.charCodeAt(0) ^ _x[i%_x.length])).join('');
-  }
-})();
-
-// Direct key (the XOR approach above is obfuscation, not true encryption)
-// For production, proxy through your own server!
-const API_KEY = "AIzaSyD6QMeMAs9NDkdUIxrKV-MR3EluxNVsUTo";
-const BASE_URL = "https://www.googleapis.com/books/v1/volumes";
+// ── Configuration ────────────────────────────────────────────
+const WORKER_BASE_URL = 'https://bookvault-proxy.dhimanparas605.workers.dev';
+const WORKER_ENDPOINT = `${WORKER_BASE_URL}/api/books`;
 
 // ── State ────────────────────────────────────────────────────
 let state = {
@@ -53,24 +33,27 @@ function toggleTheme() {
 }
 
 function applyTheme() {
+  const root = document.documentElement;
   if (darkMode) {
-    document.documentElement.style.setProperty("--ink", "#f5f0e8");
-    document.documentElement.style.setProperty("--paper", "#1a1612");
-    document.documentElement.style.setProperty("--cream", "#221e18");
-    document.documentElement.style.setProperty("--card-bg", "#24201a");
-    document.documentElement.style.setProperty("--border", "#3d3428");
-    document.documentElement.style.setProperty("--muted", "#8a7d6a");
-    document.documentElement.style.setProperty("--slate", "#c4b8a4");
-    document.getElementById("themeBtn").innerHTML = '<i class="fas fa-sun"></i>';
+    root.style.setProperty("--ink", "#f5f0e8");
+    root.style.setProperty("--paper", "#1a1612");
+    root.style.setProperty("--cream", "#221e18");
+    root.style.setProperty("--card-bg", "#24201a");
+    root.style.setProperty("--border", "#3d3428");
+    root.style.setProperty("--muted", "#8a7d6a");
+    root.style.setProperty("--slate", "#c4b8a4");
+    const btn = document.getElementById("themeBtn");
+    if (btn) btn.innerHTML = '<i class="fas fa-sun"></i>';
   } else {
-    document.documentElement.style.setProperty("--ink", "#0d0d0d");
-    document.documentElement.style.setProperty("--paper", "#f5f0e8");
-    document.documentElement.style.setProperty("--cream", "#faf7f2");
-    document.documentElement.style.setProperty("--card-bg", "#fffdf8");
-    document.documentElement.style.setProperty("--border", "#d8cfc0");
-    document.documentElement.style.setProperty("--muted", "#7a7060");
-    document.documentElement.style.setProperty("--slate", "#2c3e50");
-    document.getElementById("themeBtn").innerHTML = '<i class="fas fa-moon"></i>';
+    root.style.setProperty("--ink", "#0d0d0d");
+    root.style.setProperty("--paper", "#f5f0e8");
+    root.style.setProperty("--cream", "#faf7f2");
+    root.style.setProperty("--card-bg", "#fffdf8");
+    root.style.setProperty("--border", "#d8cfc0");
+    root.style.setProperty("--muted", "#7a7060");
+    root.style.setProperty("--slate", "#2c3e50");
+    const btn = document.getElementById("themeBtn");
+    if (btn) btn.innerHTML = '<i class="fas fa-moon"></i>';
   }
 }
 
@@ -78,24 +61,37 @@ function applyTheme() {
 function setSearchMode(mode, btn) {
   state.mode = mode;
   document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
+  if (btn) btn.classList.add("active");
+  
   ["isbnMode","titleMode","authorMode","subjectMode","advancedMode"].forEach(id => {
-    document.getElementById(id).style.display = "none";
+    const el = document.getElementById(id);
+    if (el) el.style.display = "none";
   });
-  document.getElementById(mode + "Mode").style.display = "block";
-  // Focus the right input
+  const modeEl = document.getElementById(mode + "Mode");
+  if (modeEl) modeEl.style.display = "block";
+  
   setTimeout(() => {
-    const map = { isbn:"mainInput", title:"titleInput", author:"authorInput", subject:"subjectInput", advanced:"advTitle" };
+    const map = { 
+      isbn:"mainInput", 
+      title:"titleInput", 
+      author:"authorInput", 
+      subject:"subjectInput", 
+      advanced:"advTitle" 
+    };
     const el = document.getElementById(map[mode]);
-    if (el) el.focus();
+    if (el) { el.focus(); el.select?.(); }
   }, 50);
 }
 
 // ── Quick Search ──────────────────────────────────────────────
 function quickSearch(q) {
-  setSearchMode("title", document.querySelectorAll(".tab-btn")[1]);
-  document.getElementById("titleInput").value = q;
-  doSearch();
+  const titleBtn = document.querySelectorAll(".tab-btn")[1];
+  if (titleBtn) setSearchMode("title", titleBtn);
+  const input = document.getElementById("titleInput");
+  if (input) {
+    input.value = q;
+    doSearch();
+  }
 }
 
 // ── Build Query ───────────────────────────────────────────────
@@ -104,33 +100,34 @@ function buildQuery() {
   let q = "";
 
   if (mode === "isbn") {
-    const v = document.getElementById("mainInput").value.trim().replace(/[-\s]/g,"");
+    const input = document.getElementById("mainInput");
+    const v = input?.value.trim().replace(/[-\s]/g,"") || "";
     if (!v) return null;
     q = `isbn:${v}`;
 
   } else if (mode === "title") {
-    const t = document.getElementById("titleInput").value.trim();
-    const a = document.getElementById("titleAuthorInput").value.trim();
+    const t = document.getElementById("titleInput")?.value.trim() || "";
+    const a = document.getElementById("titleAuthorInput")?.value.trim() || "";
     if (!t) return null;
     q = `intitle:${t}`;
     if (a) q += `+inauthor:${a}`;
 
   } else if (mode === "author") {
-    const a = document.getElementById("authorInput").value.trim();
+    const a = document.getElementById("authorInput")?.value.trim() || "";
     if (!a) return null;
     q = `inauthor:${a}`;
 
   } else if (mode === "subject") {
-    const s = document.getElementById("subjectInput").value.trim();
+    const s = document.getElementById("subjectInput")?.value.trim() || "";
     if (!s) return null;
     q = `subject:${s}`;
 
   } else if (mode === "advanced") {
     const parts = [];
-    const t = document.getElementById("advTitle").value.trim();
-    const a = document.getElementById("advAuthor").value.trim();
-    const p = document.getElementById("advPublisher").value.trim();
-    const s = document.getElementById("advSubject").value.trim();
+    const t = document.getElementById("advTitle")?.value.trim() || "";
+    const a = document.getElementById("advAuthor")?.value.trim() || "";
+    const p = document.getElementById("advPublisher")?.value.trim() || "";
+    const s = document.getElementById("advSubject")?.value.trim() || "";
     if (t) parts.push(`intitle:${t}`);
     if (a) parts.push(`inauthor:${a}`);
     if (p) parts.push(`inpublisher:${p}`);
@@ -144,32 +141,61 @@ function buildQuery() {
 // ── Main Search ───────────────────────────────────────────────
 async function doSearch(page = 0) {
   const query = buildQuery();
-  if (!query) { showToast("Please enter a search term", "error"); return; }
+  if (!query) { 
+    showToast("Please enter a search term", "error"); 
+    return; 
+  }
 
   state.currentPage = page;
   state.lastQuery = query;
 
   const btn = document.getElementById("searchBtn");
-  btn.classList.add("loading");
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching…';
+  if (btn) {
+    btn.classList.add("loading");
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching…';
+    btn.disabled = true;
+  }
 
   showLoader();
-  document.getElementById("toolbar").style.display = "none";
-  document.getElementById("pagination").innerHTML = "";
+  const toolbar = document.getElementById("toolbar");
+  if (toolbar) toolbar.style.display = "none";
+  const pagination = document.getElementById("pagination");
+  if (pagination) pagination.innerHTML = "";
 
-  const maxResults = parseInt(document.getElementById("maxResults").value);
-  const lang = document.getElementById("advLang")?.value || "";
+  const maxResultsSelect = document.getElementById("maxResults");
+  const maxResults = parseInt(maxResultsSelect?.value || "20");
+  
+  const langSelect = document.getElementById("advLang");
+  const lang = langSelect?.value || "";
+  
   const startIndex = page * maxResults;
   const sortOrder = state.sortBy === "newest" ? "&orderBy=newest" : "&orderBy=relevance";
 
-  let url = `${BASE_URL}?q=${encodeURIComponent(query)}&maxResults=${maxResults}&startIndex=${startIndex}${sortOrder}&key=${API_KEY}`;
-  if (lang) url += `&langRestrict=${lang}`;
-  // Get full book info
-  url += "&projection=full&printType=books";
+  // 🔐 Build URL for Cloudflare Worker (NO API KEY EXPOSED)
+  const workerUrl = new URL(WORKER_ENDPOINT);
+  workerUrl.searchParams.set('q', query);
+  workerUrl.searchParams.set('maxResults', maxResults.toString());
+  workerUrl.searchParams.set('startIndex', startIndex.toString());
+  if (sortOrder.includes('newest')) {
+    workerUrl.searchParams.set('orderBy', 'newest');
+  }
+  if (lang) workerUrl.searchParams.set('langRestrict', lang);
+  
+  const url = workerUrl.toString();
 
   try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`API error: ${res.status}`);
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+      // Add cache busting for development
+      cache: 'no-store'
+    });
+    
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || `API error: ${res.status}`);
+    }
+    
     const data = await res.json();
 
     state.totalItems = data.totalItems || 0;
@@ -181,11 +207,15 @@ async function doSearch(page = 0) {
     updateToolbar(query);
 
   } catch (err) {
-    showError(err.message);
+    console.error('Search error:', err);
+    showError(err.message || 'Failed to fetch results');
     showToast("Search failed: " + err.message, "error");
   } finally {
-    btn.classList.remove("loading");
-    btn.innerHTML = '<i class="fas fa-magnifying-glass"></i> Search';
+    if (btn) {
+      btn.classList.remove("loading");
+      btn.innerHTML = '<i class="fas fa-magnifying-glass"></i> Search';
+      btn.disabled = false;
+    }
   }
 }
 
@@ -200,8 +230,8 @@ function parseBook(item) {
   const isbn10 = isbns.find(i => i.type === "ISBN_10")?.identifier || "";
 
   const thumb = info.imageLinks?.thumbnail || info.imageLinks?.smallThumbnail || "";
-  // Use HTTPS
-  const cover = thumb.replace("http://", "https://");
+  // Force HTTPS for images
+  const cover = thumb ? thumb.replace(/^http:\/\//i, 'https://') : "";
 
   return {
     id: item.id,
@@ -210,7 +240,7 @@ function parseBook(item) {
     authors: info.authors || [],
     publisher: info.publisher || "",
     publishedDate: info.publishedDate || "",
-    description: info.description || "",
+    description: (info.description || "").replace(/<[^>]*>/g, ''), // Strip HTML
     pages: info.pageCount || 0,
     categories: info.categories || [],
     language: info.language || "",
@@ -233,6 +263,8 @@ function parseBook(item) {
 // ── Render Results ─────────────────────────────────────────────
 function renderResults() {
   const grid = document.getElementById("resultsGrid");
+  if (!grid) return;
+  
   grid.innerHTML = "";
   grid.className = `results-grid${state.view === "list" ? " list-view" : ""}`;
 
@@ -247,8 +279,11 @@ function renderResults() {
 
   // Apply client-side sort
   let books = [...state.results];
-  if (state.sortBy === "title_asc") books.sort((a,b) => a.title.localeCompare(b.title));
-  else if (state.sortBy === "title_desc") books.sort((a,b) => b.title.localeCompare(a.title));
+  if (state.sortBy === "title_asc") {
+    books.sort((a,b) => a.title.localeCompare(b.title));
+  } else if (state.sortBy === "title_desc") {
+    books.sort((a,b) => b.title.localeCompare(a.title));
+  }
 
   books.forEach((book, i) => {
     const card = createBookCard(book, i);
@@ -260,12 +295,15 @@ function createBookCard(book, i) {
   const card = document.createElement("div");
   card.className = `book-card${isCollected(book.id) ? " in-collection" : ""}`;
   card.style.setProperty("--i", i);
+  card.tabIndex = 0; // Accessibility
+  card.setAttribute('role', 'article');
+  card.setAttribute('aria-label', `${book.title} by ${book.authors?.join(', ') || 'Unknown'}`);
 
   const cover = book.cover
-    ? `<img src="${book.cover}" alt="${esc(book.title)}" loading="lazy" onerror="this.parentElement.innerHTML=coverPlaceholder()">`
+    ? `<img src="${esc(book.cover)}" alt="${esc(book.title)}" loading="lazy" onerror="this.parentElement.innerHTML=coverPlaceholder()">`
     : coverPlaceholder();
 
-  const genre = book.categories?.[0] || book.language?.toUpperCase() || "";
+  const genre = book.categories?.[0] || (book.language ? book.language.toUpperCase() : "");
   const year = book.publishedDate?.slice(0,4) || "";
   const author = book.authors?.join(", ") || "Unknown Author";
   const isbn = book.isbn13 || book.isbn10 || book.id;
@@ -285,17 +323,35 @@ function createBookCard(book, i) {
         ${year ? `<div class="book-year">${year}</div>` : ""}
       </div>
       ${stars}
-      ${book.description ? `<div class="book-description">${esc(book.description)}</div>` : ""}
+      ${book.description ? `<div class="book-description">${esc(book.description.substring(0, 150))}${book.description.length > 150 ? '...' : ''}</div>` : ""}
       <div class="book-actions">
-        <button class="btn-collect${collected ? " collected" : ""}" onclick="toggleCollect('${book.id}', this)" id="btn_${book.id}">
+        <button class="btn-collect${collected ? " collected" : ""}" onclick="toggleCollect('${book.id}', this)" id="btn_${book.id}" aria-label="${collected ? 'Remove from collection' : 'Add to collection'}">
           ${collected ? '<i class="fas fa-check"></i> Collected' : '<i class="fas fa-plus"></i> Collect'}
         </button>
-        <button class="btn-detail" onclick="openModal('${book.id}')" title="View Details">
+        <button class="btn-detail" onclick="openModal('${book.id}')" title="View Details" aria-label="View details">
           <i class="fas fa-circle-info"></i>
         </button>
-        ${book.previewLink ? `<button class="btn-detail" onclick="window.open('${book.previewLink}','_blank')" title="Preview on Google Books"><i class="fas fa-eye"></i></button>` : ""}
+        ${book.previewLink ? `<button class="btn-detail" onclick="event.stopPropagation(); window.open('${esc(book.previewLink)}','_blank')" title="Preview on Google Books"><i class="fas fa-eye"></i></button>` : ""}
       </div>
     </div>`;
+
+  // Add click handler for card (open modal)
+  card.addEventListener('click', (e) => {
+    // Don't open modal if clicking buttons
+    if (!e.target.closest('button')) {
+      openModal(book.id);
+    }
+  });
+  
+  // Keyboard accessibility
+  card.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      if (!e.target.closest('button')) {
+        openModal(book.id);
+      }
+    }
+  });
 
   return card;
 }
@@ -305,46 +361,56 @@ function coverPlaceholder() {
 }
 
 function renderStars(rating, count) {
-  if (!rating) return "";
+  if (!rating || rating <= 0) return "";
   const full = Math.floor(rating);
   const half = rating % 1 >= 0.5 ? 1 : 0;
   const empty = 5 - full - half;
   let stars = "";
-  for (let i=0;i<full;i++) stars += "★";
+  for (let i=0; i<full; i++) stars += "★";
   if (half) stars += "½";
-  for (let i=0;i<empty;i++) stars += "☆";
-  return `<div class="book-rating"><span class="stars">${stars}</span><span class="rating-num">${rating.toFixed(1)} (${count})</span></div>`;
+  for (let i=0; i<empty; i++) stars += "☆";
+  return `<div class="book-rating"><span class="stars" aria-label="${rating} out of 5 stars">${stars}</span><span class="rating-num">${rating.toFixed(1)} ${count ? `(${count})` : ''}</span></div>`;
 }
 
 // ── Update Toolbar ─────────────────────────────────────────────
 function updateToolbar(query) {
-  document.getElementById("toolbar").style.display = "flex";
-  document.getElementById("resultsInfo").innerHTML =
-    `Found <span>${state.totalItems.toLocaleString()}</span> results for "<span>${esc(query)}</span>"`;
+  const toolbar = document.getElementById("toolbar");
+  const resultsInfo = document.getElementById("resultsInfo");
+  if (!toolbar || !resultsInfo) return;
+  
+  toolbar.style.display = "flex";
+  resultsInfo.innerHTML = `Found <span>${state.totalItems.toLocaleString()}</span> results for "<span>${esc(query)}</span>"`;
 }
 
 // ── Pagination ─────────────────────────────────────────────────
 function renderPagination() {
   const pg = document.getElementById("pagination");
+  if (!pg) return;
+  
   pg.innerHTML = "";
-  const totalPages = Math.min(Math.ceil(state.totalItems / state.perPage), 10); // API max 10 pages
+  const totalPages = Math.min(Math.ceil(state.totalItems / state.perPage), 10); // Google API max ~10 pages
   if (totalPages <= 1) return;
 
   const cur = state.currentPage;
 
+  // Previous button
   const prev = document.createElement("button");
   prev.className = "page-btn";
   prev.innerHTML = '<i class="fas fa-chevron-left"></i>';
   prev.disabled = cur === 0;
+  prev.setAttribute('aria-label', 'Previous page');
   prev.onclick = () => doSearch(cur - 1);
   pg.appendChild(prev);
 
+  // Page numbers
   for (let i = 0; i < totalPages; i++) {
+    // Show ellipsis for long pagination
     if (totalPages > 7 && Math.abs(i - cur) > 2 && i !== 0 && i !== totalPages-1) {
       if (i === 1 || i === totalPages-2) {
         const dots = document.createElement("span");
         dots.style.cssText = "padding:0 8px;color:var(--muted);font-family:'Space Mono',monospace";
         dots.textContent = "…";
+        dots.setAttribute('aria-hidden', 'true');
         pg.appendChild(dots);
       }
       continue;
@@ -352,14 +418,18 @@ function renderPagination() {
     const btn = document.createElement("button");
     btn.className = `page-btn${i === cur ? " active" : ""}`;
     btn.textContent = i + 1;
+    btn.setAttribute('aria-label', `Page ${i + 1}`);
+    btn.setAttribute('aria-current', i === cur ? 'page' : 'false');
     btn.onclick = () => doSearch(i);
     pg.appendChild(btn);
   }
 
+  // Next button
   const next = document.createElement("button");
   next.className = "page-btn";
   next.innerHTML = '<i class="fas fa-chevron-right"></i>';
   next.disabled = cur >= totalPages - 1;
+  next.setAttribute('aria-label', 'Next page');
   next.onclick = () => doSearch(cur + 1);
   pg.appendChild(next);
 }
@@ -370,20 +440,31 @@ function isCollected(id) {
 }
 
 function toggleCollect(id, btn) {
+  event?.stopPropagation?.(); // Prevent card click
   const book = state.results.find(b => b.id === id);
   if (!book) return;
 
   if (isCollected(id)) {
     state.collection = state.collection.filter(b => b.id !== id);
-    btn.className = "btn-collect";
-    btn.innerHTML = '<i class="fas fa-plus"></i> Collect';
-    btn.closest(".book-card").classList.remove("in-collection");
+    if (btn) {
+      btn.className = "btn-collect";
+      btn.innerHTML = '<i class="fas fa-plus"></i> Collect';
+    }
+    const card = btn?.closest?.(".book-card");
+    if (card) card.classList.remove("in-collection");
     showToast(`"${book.title}" removed from collection`, "info");
   } else {
-    state.collection.push({ ...book, status: "wishlist", addedAt: new Date().toISOString() });
-    btn.className = "btn-collect collected";
-    btn.innerHTML = '<i class="fas fa-check"></i> Collected';
-    btn.closest(".book-card").classList.add("in-collection");
+    state.collection.push({ 
+      ...book, 
+      status: "wishlist", 
+      addedAt: new Date().toISOString() 
+    });
+    if (btn) {
+      btn.className = "btn-collect collected";
+      btn.innerHTML = '<i class="fas fa-check"></i> Collected';
+    }
+    const card = btn?.closest?.(".book-card");
+    if (card) card.classList.add("in-collection");
     showToast(`📚 "${book.title}" added to collection!`, "success");
   }
 
@@ -393,12 +474,14 @@ function toggleCollect(id, btn) {
 }
 
 function removeFromCollection(id) {
+  event?.stopPropagation?.();
   const book = state.collection.find(b => b.id === id);
   state.collection = state.collection.filter(b => b.id !== id);
   saveCollection();
   updateCollectionCount();
   renderSidebar();
-  // Update card if visible
+  
+  // Update card if visible in results
   const btn = document.getElementById(`btn_${id}`);
   if (btn) {
     btn.className = "btn-collect";
@@ -409,49 +492,72 @@ function removeFromCollection(id) {
 }
 
 function updateReadStatus(id, status) {
+  event?.stopPropagation?.();
   const book = state.collection.find(b => b.id === id);
   if (book) {
     book.status = status;
     saveCollection();
     renderSidebar();
+    showToast(`"${book.title}" marked as ${status}`, "success");
   }
 }
 
 function saveCollection() {
-  localStorage.setItem("bookVault_collection", JSON.stringify(state.collection));
+  try {
+    localStorage.setItem("bookVault_collection", JSON.stringify(state.collection));
+  } catch (e) {
+    console.warn('Failed to save collection:', e);
+    showToast("Could not save collection (storage full?)", "error");
+  }
 }
 
 function updateCollectionCount() {
   const count = state.collection.length;
-  document.getElementById("collectionCount").textContent = count;
-  document.getElementById("totalBooks").textContent = count;
-  document.getElementById("readCount").textContent = state.collection.filter(b=>b.status==="read").length;
-  document.getElementById("readingCount").textContent = state.collection.filter(b=>b.status==="reading").length;
-  document.getElementById("wishlistCount").textContent = state.collection.filter(b=>b.status==="wishlist").length;
+  const els = {
+    collectionCount: document.getElementById("collectionCount"),
+    totalBooks: document.getElementById("totalBooks"),
+    readCount: document.getElementById("readCount"),
+    readingCount: document.getElementById("readingCount"),
+    wishlistCount: document.getElementById("wishlistCount"),
+  };
+  
+  if (els.collectionCount) els.collectionCount.textContent = count;
+  if (els.totalBooks) els.totalBooks.textContent = count;
+  if (els.readCount) els.readCount.textContent = state.collection.filter(b=>b.status==="read").length;
+  if (els.readingCount) els.readingCount.textContent = state.collection.filter(b=>b.status==="reading").length;
+  if (els.wishlistCount) els.wishlistCount.textContent = state.collection.filter(b=>b.status==="wishlist").length;
 }
 
 // ── Sidebar ────────────────────────────────────────────────────
 function openCollection() {
-  document.getElementById("sidebar").classList.add("open");
-  document.getElementById("overlay").classList.add("active");
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+  if (sidebar) sidebar.classList.add("open");
+  if (overlay) overlay.classList.add("active");
+  document.body.style.overflow = "hidden"; // Prevent background scroll
   renderSidebar();
 }
 
 function closeCollection() {
-  document.getElementById("sidebar").classList.remove("open");
-  document.getElementById("overlay").classList.remove("active");
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+  if (sidebar) sidebar.classList.remove("open");
+  if (overlay) overlay.classList.remove("active");
+  document.body.style.overflow = "";
 }
 
 function filterCollection(filter, btn) {
   state.collectionFilter = filter;
   document.querySelectorAll(".filter-chip").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
+  if (btn) btn.classList.add("active");
   renderSidebar();
 }
 
 function renderSidebar() {
   updateCollectionCount();
   const list = document.getElementById("sidebarList");
+  if (!list) return;
+  
   let books = state.collection;
   if (state.collectionFilter !== "all") {
     books = books.filter(b => b.status === state.collectionFilter);
@@ -465,23 +571,23 @@ function renderSidebar() {
   }
 
   list.innerHTML = books.map((b, i) => `
-    <div class="collection-item" style="animation-delay:${i*0.04}s">
+    <div class="collection-item" style="animation-delay:${i*0.04}s" tabindex="0">
       <div class="coll-thumb">
-        ${b.cover ? `<img src="${b.cover}" alt="" loading="lazy">` : `<div style="width:100%;height:100%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:1.2rem">📖</div>`}
+        ${b.cover ? `<img src="${esc(b.cover)}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\'width:100%;height:100%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:1.2rem\'>📖</div>'">` : `<div style="width:100%;height:100%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:1.2rem">📖</div>`}
       </div>
       <div class="coll-info">
         <div class="coll-title">${esc(b.title)}</div>
         <div class="coll-author">${esc(b.authors?.join(", ") || "—")}</div>
-        <div class="coll-isbn">${b.isbn13 || b.isbn10 || b.id}</div>
+        <div class="coll-isbn">${esc(b.isbn13 || b.isbn10 || b.id)}</div>
       </div>
       <div class="coll-status">
-        <select class="status-select" onchange="updateReadStatus('${b.id}', this.value)">
+        <select class="status-select" onchange="updateReadStatus('${esc(b.id)}', this.value)" aria-label="Reading status">
           <option value="wishlist"${b.status==="wishlist"?" selected":""}>📌 Wishlist</option>
           <option value="reading"${b.status==="reading"?" selected":""}>📖 Reading</option>
           <option value="read"${b.status==="read"?" selected":""}>✅ Read</option>
         </select>
       </div>
-      <button class="remove-btn" onclick="removeFromCollection('${b.id}')"><i class="fas fa-xmark"></i></button>
+      <button class="remove-btn" onclick="removeFromCollection('${esc(b.id)}')" title="Remove" aria-label="Remove from collection"><i class="fas fa-xmark"></i></button>
     </div>
   `).join("");
 }
@@ -493,11 +599,15 @@ function clearCollection() {
   updateCollectionCount();
   renderSidebar();
   showToast("Collection cleared", "info");
-  // Update all cards
+  
+  // Update all visible cards
   document.querySelectorAll(".book-card.in-collection").forEach(card => {
     card.classList.remove("in-collection");
     const btn = card.querySelector(".btn-collect");
-    if (btn) { btn.className = "btn-collect"; btn.innerHTML = '<i class="fas fa-plus"></i> Collect'; }
+    if (btn) { 
+      btn.className = "btn-collect"; 
+      btn.innerHTML = '<i class="fas fa-plus"></i> Collect'; 
+    }
   });
 }
 
@@ -506,74 +616,155 @@ function openModal(id) {
   const book = state.results.find(b => b.id === id);
   if (!book) return;
 
-  document.getElementById("modalCover").innerHTML = book.cover
-    ? `<img src="${book.cover}" alt="${esc(book.title)}" onerror="this.src=''">`
-    : `<div style="width:100%;height:100%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:2rem">📚</div>`;
+  const modalCover = document.getElementById("modalCover");
+  if (modalCover) {
+    modalCover.innerHTML = book.cover
+      ? `<img src="${esc(book.cover)}" alt="${esc(book.title)}" onerror="this.src=''; this.parentElement.innerHTML='<div style=\\'width:100%;height:100%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:2rem\\'>📚</div>'">`
+      : `<div style="width:100%;height:100%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:2rem">📚</div>`;
+  }
 
-  document.getElementById("modalTitle").textContent = book.title;
-  if (book.subtitle) document.getElementById("modalTitle").textContent += `: ${book.subtitle}`;
-  document.getElementById("modalAuthor").innerHTML = `<i class="fas fa-user-pen" style="margin-right:6px;opacity:0.5"></i>${book.authors?.join(", ") || "Unknown Author"}`;
+  const modalTitle = document.getElementById("modalTitle");
+  if (modalTitle) {
+    modalTitle.textContent = book.title;
+    if (book.subtitle) modalTitle.textContent += `: ${book.subtitle}`;
+  }
+  
+  const modalAuthor = document.getElementById("modalAuthor");
+  if (modalAuthor) {
+    modalAuthor.innerHTML = `<i class="fas fa-user-pen" style="margin-right:6px;opacity:0.5"></i>${esc(book.authors?.join(", ") || "Unknown Author")}`;
+  }
 
   const badges = document.getElementById("modalBadges");
-  badges.innerHTML = "";
-  if (book.isbn13) badges.innerHTML += `<span class="badge amber">ISBN-13: ${book.isbn13}</span>`;
-  if (book.isbn10) badges.innerHTML += `<span class="badge">ISBN-10: ${book.isbn10}</span>`;
-  if (book.language) badges.innerHTML += `<span class="badge">${book.language.toUpperCase()}</span>`;
-  if (book.isEbook) badges.innerHTML += `<span class="badge sage">eBook</span>`;
-  if (book.epub) badges.innerHTML += `<span class="badge sage">EPUB</span>`;
-  if (book.pdf) badges.innerHTML += `<span class="badge sage">PDF</span>`;
+  if (badges) {
+    badges.innerHTML = "";
+    if (book.isbn13) badges.innerHTML += `<span class="badge amber">ISBN-13: ${esc(book.isbn13)}</span>`;
+    if (book.isbn10) badges.innerHTML += `<span class="badge">ISBN-10: ${esc(book.isbn10)}</span>`;
+    if (book.language) badges.innerHTML += `<span class="badge">${esc(book.language.toUpperCase())}</span>`;
+    if (book.isEbook) badges.innerHTML += `<span class="badge sage">eBook</span>`;
+    if (book.epub) badges.innerHTML += `<span class="badge sage">EPUB</span>`;
+    if (book.pdf) badges.innerHTML += `<span class="badge sage">PDF</span>`;
+  }
 
-  document.getElementById("modalRating").innerHTML = book.rating ? renderStars(book.rating, book.ratingsCount) : "";
+  const modalRating = document.getElementById("modalRating");
+  if (modalRating) {
+    modalRating.innerHTML = book.rating ? renderStars(book.rating, book.ratingsCount) : "";
+  }
 
-  document.getElementById("modalDetails").innerHTML = `
-    <div class="detail-item"><div class="detail-label">Publisher</div><div class="detail-val">${esc(book.publisher || "—")}</div></div>
-    <div class="detail-item"><div class="detail-label">Published</div><div class="detail-val">${esc(book.publishedDate || "—")}</div></div>
-    <div class="detail-item"><div class="detail-label">Pages</div><div class="detail-val">${book.pages || "—"}</div></div>
-    <div class="detail-item"><div class="detail-label">Categories</div><div class="detail-val">${book.categories?.join(", ") || "—"}</div></div>
-    <div class="detail-item"><div class="detail-label">Google ID</div><div class="detail-val" style="font-family:'Space Mono',monospace;font-size:0.8rem">${book.id}</div></div>
-    <div class="detail-item"><div class="detail-label">Maturity</div><div class="detail-val">${book.maturity || "—"}</div></div>
-  `;
+  const modalDetails = document.getElementById("modalDetails");
+  if (modalDetails) {
+    modalDetails.innerHTML = `
+      <div class="detail-item"><div class="detail-label">Publisher</div><div class="detail-val">${esc(book.publisher || "—")}</div></div>
+      <div class="detail-item"><div class="detail-label">Published</div><div class="detail-val">${esc(book.publishedDate || "—")}</div></div>
+      <div class="detail-item"><div class="detail-label">Pages</div><div class="detail-val">${book.pages || "—"}</div></div>
+      <div class="detail-item"><div class="detail-label">Categories</div><div class="detail-val">${esc(book.categories?.join(", ") || "—")}</div></div>
+      <div class="detail-item"><div class="detail-label">Google ID</div><div class="detail-val" style="font-family:'Space Mono',monospace;font-size:0.8rem">${esc(book.id)}</div></div>
+      <div class="detail-item"><div class="detail-label">Maturity</div><div class="detail-val">${esc(book.maturity || "—")}</div></div>
+    `;
+  }
 
-  document.getElementById("modalDesc").textContent = book.description || "No description available.";
+  const modalDesc = document.getElementById("modalDesc");
+  if (modalDesc) {
+    modalDesc.textContent = book.description || "No description available.";
+  }
 
   const collected = isCollected(book.id);
-  document.getElementById("modalActions").innerHTML = `
-    <button class="btn-primary${collected ? "" : ""}" onclick="toggleCollect('${book.id}', this); this.innerHTML = isCollected('${book.id}') ? '<i class=\\'fas fa-check\\'></i> Collected' : '<i class=\\'fas fa-plus\\'></i> Add to Collection'; this.className = isCollected('${book.id}') ? 'btn-primary' : 'btn-primary'">
-      <i class="${collected ? "fas fa-check" : "fas fa-plus"}"></i> ${collected ? "Collected" : "Add to Collection"}
-    </button>
-    ${book.previewLink ? `<a href="${book.previewLink}" target="_blank" class="btn-secondary"><i class="fas fa-eye"></i> Preview</a>` : ""}
-    ${book.infoLink ? `<a href="${book.infoLink}" target="_blank" class="btn-secondary"><i class="fas fa-arrow-up-right-from-square"></i> Google Books</a>` : ""}
-    ${book.buyLink ? `<a href="${book.buyLink}" target="_blank" class="btn-secondary" style="border-color:var(--sage);color:var(--sage)"><i class="fas fa-cart-shopping"></i> Buy</a>` : ""}
-    <button class="btn-secondary" onclick="copyISBN('${book.isbn13 || book.isbn10}')"><i class="fas fa-copy"></i> Copy ISBN</button>
-    <button class="btn-secondary" onclick="shareBook('${book.id}')"><i class="fas fa-share-nodes"></i> Share</button>
-  `;
+  const modalActions = document.getElementById("modalActions");
+  if (modalActions) {
+    modalActions.innerHTML = `
+      <button class="btn-primary" onclick="toggleCollect('${esc(book.id)}', this); updateModalCollectBtn(this, '${esc(book.id)}')">
+        <i class="${collected ? "fas fa-check" : "fas fa-plus"}"></i> ${collected ? "Collected" : "Add to Collection"}
+      </button>
+      ${book.previewLink ? `<a href="${esc(book.previewLink)}" target="_blank" rel="noopener" class="btn-secondary"><i class="fas fa-eye"></i> Preview</a>` : ""}
+      ${book.infoLink ? `<a href="${esc(book.infoLink)}" target="_blank" rel="noopener" class="btn-secondary"><i class="fas fa-arrow-up-right-from-square"></i> Google Books</a>` : ""}
+      ${book.buyLink ? `<a href="${esc(book.buyLink)}" target="_blank" rel="noopener" class="btn-secondary" style="border-color:var(--sage);color:var(--sage)"><i class="fas fa-cart-shopping"></i> Buy</a>` : ""}
+      <button class="btn-secondary" onclick="copyISBN('${esc(book.isbn13 || book.isbn10)}')"><i class="fas fa-copy"></i> Copy ISBN</button>
+      <button class="btn-secondary" onclick="shareBook('${esc(book.id)}')"><i class="fas fa-share-nodes"></i> Share</button>
+    `;
+  }
 
-  document.getElementById("modal").classList.add("active");
-  document.body.style.overflow = "hidden";
+  const modal = document.getElementById("modal");
+  if (modal) {
+    modal.classList.add("active");
+    document.body.style.overflow = "hidden";
+  }
+  
+  // Focus trap for accessibility
+  setTimeout(() => {
+    const closeBtn = document.querySelector(".modal-close");
+    closeBtn?.focus();
+  }, 100);
+}
+
+// Helper: Update modal collect button state
+function updateModalCollectBtn(btn, bookId) {
+  const collected = isCollected(bookId);
+  btn.innerHTML = `<i class="${collected ? "fas fa-check" : "fas fa-plus"}"></i> ${collected ? "Collected" : "Add to Collection"}`;
 }
 
 function closeModal() {
-  document.getElementById("modal").classList.remove("active");
+  const modal = document.getElementById("modal");
+  if (modal) modal.classList.remove("active");
   document.body.style.overflow = "";
+  
+  // Return focus to last focused element (basic implementation)
+  const searchInput = document.getElementById("mainInput");
+  searchInput?.focus();
 }
 
-document.getElementById("modal").addEventListener("click", function(e) {
-  if (e.target === this) closeModal();
+// Close modal on overlay click
+document.addEventListener('DOMContentLoaded', () => {
+  const modal = document.getElementById("modal");
+  if (modal) {
+    modal.addEventListener("click", function(e) {
+      if (e.target === this) closeModal();
+    });
+  }
+  
+  // Close on Escape key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") { 
+      closeModal(); 
+      closeCollection(); 
+    }
+    // Ctrl/Cmd + K to focus search
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+      e.preventDefault();
+      const input = document.getElementById("mainInput") || document.getElementById("titleInput");
+      input?.focus();
+      input?.select();
+    }
+  });
 });
 
 function copyISBN(isbn) {
+  event?.stopPropagation?.();
   if (!isbn) { showToast("No ISBN available", "error"); return; }
-  navigator.clipboard.writeText(isbn).then(() => showToast(`ISBN ${isbn} copied!`, "success"));
+  navigator.clipboard.writeText(isbn).then(
+    () => showToast(`ISBN ${isbn} copied!`, "success"),
+    () => showToast("Failed to copy ISBN", "error")
+  );
 }
 
 function shareBook(id) {
-  const book = state.results.find(b => b.id === id);
+  event?.stopPropagation?.();
+  const book = state.results.find(b => b.id === id) || state.collection.find(b => b.id === id);
   if (!book) return;
+  
   const text = `📚 "${book.title}" by ${book.authors?.join(", ") || "Unknown"}\nISBN: ${book.isbn13 || book.isbn10 || "—"}\n${book.infoLink}`;
+  
   if (navigator.share) {
-    navigator.share({ title: book.title, text, url: book.infoLink });
+    navigator.share({ 
+      title: book.title, 
+      text, 
+      url: book.infoLink 
+    }).catch(err => {
+      if (err.name !== 'AbortError') console.warn('Share failed:', err);
+    });
   } else {
-    navigator.clipboard.writeText(text).then(() => showToast("Book info copied to clipboard!", "success"));
+    navigator.clipboard.writeText(text).then(
+      () => showToast("Book info copied to clipboard!", "success"),
+      () => showToast("Failed to copy", "error")
+    );
   }
 }
 
@@ -581,22 +772,31 @@ function shareBook(id) {
 function setView(view, btn) {
   state.view = view;
   document.querySelectorAll(".view-btn").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
+  if (btn) btn.classList.add("active");
   renderResults();
 }
 
 function sortResults() {
-  state.sortBy = document.getElementById("sortSelect").value;
+  const select = document.getElementById("sortSelect");
+  if (!select) return;
+  
+  state.sortBy = select.value;
   if (state.sortBy === "newest") {
-    doSearch(state.currentPage); // API-level sort
+    // Re-fetch with API-level sort
+    doSearch(state.currentPage);
   } else {
-    renderResults(); // Client-level sort
+    // Client-side sort only
+    renderResults();
   }
 }
 
 // ── Export ─────────────────────────────────────────────────────
 function exportCSV() {
-  if (!state.collection.length) { showToast("Your collection is empty", "error"); return; }
+  if (!state.collection.length) { 
+    showToast("Your collection is empty", "error"); 
+    return; 
+  }
+  
   const headers = ["Title","Authors","ISBN-13","ISBN-10","Publisher","Year","Pages","Language","Status","Rating","Categories","Google ID"];
   const rows = state.collection.map(b => [
     `"${(b.title||"").replace(/"/g,'""')}"`,
@@ -613,14 +813,25 @@ function exportCSV() {
   ].join(","));
 
   const csv = [headers.join(","), ...rows].join("\n");
-  downloadFile(csv, "bookvault_collection.csv", "text/csv");
+  downloadFile(csv, `bookvault_collection_${new Date().toISOString().slice(0,10)}.csv`, "text/csv");
   showToast(`Exported ${state.collection.length} books as CSV`, "success");
 }
 
 function exportJSON() {
-  if (!state.collection.length) { showToast("Your collection is empty", "error"); return; }
-  const json = JSON.stringify(state.collection, null, 2);
-  downloadFile(json, "bookvault_collection.json", "application/json");
+  if (!state.collection.length) { 
+    showToast("Your collection is empty", "error"); 
+    return; 
+  }
+  
+  const exportData = {
+    exportedAt: new Date().toISOString(),
+    app: "BookVault",
+    version: "1.0",
+    books: state.collection
+  };
+  
+  const json = JSON.stringify(exportData, null, 2);
+  downloadFile(json, `bookvault_collection_${new Date().toISOString().slice(0,10)}.json`, "application/json");
   showToast(`Exported ${state.collection.length} books as JSON`, "success");
 }
 
@@ -628,23 +839,30 @@ function downloadFile(content, filename, type) {
   const blob = new Blob([content], { type });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
-  a.href = url; a.download = filename;
+  a.href = url; 
+  a.download = filename;
+  document.body.appendChild(a);
   a.click();
+  document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
 
 // ── UI Helpers ─────────────────────────────────────────────────
 function showLoader() {
   const grid = document.getElementById("resultsGrid");
-  grid.innerHTML = `<div class="loader">
+  if (!grid) return;
+  grid.innerHTML = `<div class="loader" role="status" aria-live="polite">
     <div class="loader-dot"></div>
     <div class="loader-dot"></div>
     <div class="loader-dot"></div>
+    <span class="sr-only">Loading results...</span>
   </div>`;
 }
 
 function showError(msg) {
-  document.getElementById("resultsGrid").innerHTML = `<div class="empty-state">
+  const grid = document.getElementById("resultsGrid");
+  if (!grid) return;
+  grid.innerHTML = `<div class="empty-state" role="alert">
     <div class="empty-icon">⚠️</div>
     <div class="empty-title">Something went wrong</div>
     <div class="empty-sub">${esc(msg)}</div>
@@ -653,15 +871,35 @@ function showError(msg) {
 
 function showToast(msg, type = "info") {
   const container = document.getElementById("toasts");
+  if (!container) return;
+  
   const toast = document.createElement("div");
   toast.className = `toast ${type}`;
-  const icons = { success: "fa-circle-check", info: "fa-circle-info", error: "fa-circle-exclamation" };
-  toast.innerHTML = `<i class="fas ${icons[type]||icons.info}"></i> ${msg}`;
+  toast.setAttribute('role', 'alert');
+  toast.setAttribute('aria-live', 'assertive');
+  
+  const icons = { 
+    success: "fa-circle-check", 
+    info: "fa-circle-info", 
+    error: "fa-circle-exclamation" 
+  };
+  
+  toast.innerHTML = `<i class="fas ${icons[type]||icons.info}"></i> ${esc(msg)}`;
   container.appendChild(toast);
-  setTimeout(() => {
+  
+  // Auto-remove after delay
+  const timeout = setTimeout(() => {
     toast.style.animation = "toastOut 0.3s ease forwards";
     setTimeout(() => toast.remove(), 300);
-  }, 3000);
+  }, 4000);
+  
+  // Allow manual dismiss on click
+  toast.style.cursor = "pointer";
+  toast.onclick = () => {
+    clearTimeout(timeout);
+    toast.style.animation = "toastOut 0.3s ease forwards";
+    setTimeout(() => toast.remove(), 300);
+  };
 }
 
 function esc(str) {
@@ -670,20 +908,63 @@ function esc(str) {
     .replace(/&/g,"&amp;")
     .replace(/</g,"&lt;")
     .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;");
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 }
 
-// ── Keyboard Shortcuts ─────────────────────────────────────────
-document.addEventListener("keydown", e => {
-  if (e.key === "Escape") { closeModal(); closeCollection(); }
-  if ((e.ctrlKey || e.metaKey) && e.key === "k") {
-    e.preventDefault();
-    document.getElementById("mainInput")?.focus();
-  }
+// ── Init ───────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize collection count
+  updateCollectionCount();
+  renderSidebar();
+  
+  // Log for debugging (remove in production)
+  console.log("%c📚 BookVault", "font-size:1.5rem;font-weight:bold;color:#d4820a");
+  console.log("%cISBN Collector | Secure Worker Proxy", "color:#7a7060");
+  console.log("%cWorker Endpoint:", "font-weight:bold", WORKER_ENDPOINT);
+  
+  // Add Enter key support for search inputs
+  const searchInputs = ["mainInput", "titleInput", "titleAuthorInput", "authorInput", "subjectInput", "advTitle", "advAuthor", "advPublisher", "advSubject"];
+  searchInputs.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          doSearch();
+        }
+      });
+    }
+  });
+  
+  // Handle view toggle buttons if they exist
+  const viewBtns = document.querySelectorAll(".view-btn");
+  viewBtns.forEach(btn => {
+    btn.addEventListener("click", function() {
+      const view = this.getAttribute("onclick")?.includes("list") ? "list" : "grid";
+      setView(view, this);
+    });
+  });
 });
 
-// ── Init ───────────────────────────────────────────────────────
-updateCollectionCount();
-renderSidebar();
-console.log("%c📚 BookVault", "font-size:2rem;font-weight:bold;color:#d4820a");
-console.log("%cISBN Collector | Google Books API", "color:#7a7060");
+// Expose functions globally for inline onclick handlers
+window.doSearch = doSearch;
+window.setSearchMode = setSearchMode;
+window.quickSearch = quickSearch;
+window.toggleCollect = toggleCollect;
+window.openModal = openModal;
+window.closeModal = closeModal;
+window.openCollection = openCollection;
+window.closeCollection = closeCollection;
+window.filterCollection = filterCollection;
+window.removeFromCollection = removeFromCollection;
+window.updateReadStatus = updateReadStatus;
+window.clearCollection = clearCollection;
+window.copyISBN = copyISBN;
+window.shareBook = shareBook;
+window.setView = setView;
+window.sortResults = sortResults;
+window.exportCSV = exportCSV;
+window.exportJSON = exportJSON;
+window.toggleTheme = toggleTheme;
+window.coverPlaceholder = coverPlaceholder;
