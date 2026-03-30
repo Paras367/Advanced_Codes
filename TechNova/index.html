@@ -1,0 +1,1684 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{ darkMode: false, mobileMenu: false }" :class="{ 'dark': darkMode }">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>TechNova – Computer Accessories, Mobile Repairs & Custom Modifications</title>
+  <meta name="description" content="TechNova offers premium computer accessories, expert mobile & laptop repairs, custom phone covers, and high-performance device modifications. Your one-stop tech destination." />
+  <meta name="keywords" content="computer accessories, mobile repair, laptop repair, phone covers, device modification, tech store" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://technova.store/" />
+  <meta property="og:title" content="TechNova – Your Ultimate Tech Destination" />
+  <meta property="og:description" content="Computer accessories, mobile repairs, custom phone covers & device mods." />
+  <meta property="og:image" content="https://placehold.co/1200x630/0f172a/00d4ff?text=TechNova" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://technova.store/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@technovastore" />
+  <meta name="twitter:title" content="TechNova – Your Ultimate Tech Destination" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="icon" href="https://placehold.co/32x32/00d4ff/0f172a?text=T" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- AOS CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+
+  <!-- Swiper CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+  <!-- SweetAlert2 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
+
+  <!-- Toastify CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+
+  <!-- Prism.js CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+
+  <!-- Select2 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    :root {
+      --neon: #00d4ff;
+      --neon2: #ff6b35;
+      --accent: #7c3aed;
+      --bg-dark: #0a0f1e;
+      --bg-card: rgba(255,255,255,0.04);
+      --border: rgba(0,212,255,0.18);
+      --text-muted: #8892b0;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg-dark);
+      color: #e2e8f0;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, h5 { font-family: 'Syne', sans-serif; }
+
+    /* PRELOADER */
+    #preloader {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #0a0f1e;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 20px;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+    #preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .loader-ring {
+      width: 64px; height: 64px;
+      border: 3px solid rgba(0,212,255,0.15);
+      border-top-color: var(--neon);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loader-text { font-family: 'Syne', sans-serif; font-size: 1.4rem; color: var(--neon); letter-spacing: 3px; }
+
+    /* SCROLL PROGRESS */
+    #scroll-progress {
+      position: fixed; top: 0; left: 0; height: 3px; z-index: 9998;
+      background: linear-gradient(90deg, var(--neon), var(--accent), var(--neon2));
+      transition: width 0.1s linear;
+      box-shadow: 0 0 12px var(--neon);
+    }
+
+    /* NAVBAR */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 1000;
+      padding: 1rem 0;
+      transition: all 0.3s ease;
+    }
+    nav.scrolled {
+      background: rgba(10,15,30,0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.6rem 0;
+    }
+    .nav-link {
+      position: relative;
+      color: #94a3b8;
+      font-weight: 500;
+      transition: color 0.3s;
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
+    }
+    .nav-link::after {
+      content: ''; position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 2px;
+      background: linear-gradient(90deg, var(--neon), var(--accent));
+      transition: width 0.3s ease;
+      border-radius: 2px;
+    }
+    .nav-link:hover { color: var(--neon); }
+    .nav-link:hover::after { width: 100%; }
+
+    .logo-text {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--neon), var(--accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      position: relative;
+      display: flex; align-items: center;
+      overflow: hidden;
+    }
+    #particles-js {
+      position: absolute; inset: 0; z-index: 0;
+    }
+    .hero-content { position: relative; z-index: 2; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(0,212,255,0.1);
+      border: 1px solid rgba(0,212,255,0.3);
+      border-radius: 50px; padding: 6px 16px;
+      font-size: 0.8rem; color: var(--neon); font-weight: 500;
+      letter-spacing: 1px; text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+    .hero-badge .dot { width: 7px; height: 7px; background: var(--neon); border-radius: 50%; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(1.4)} }
+
+    .hero-title {
+      font-size: clamp(2.8rem, 7vw, 6rem);
+      font-weight: 800; line-height: 1.05;
+      letter-spacing: -2px;
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, var(--neon) 0%, var(--accent) 50%, var(--neon2) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      background-size: 200% 200%;
+      animation: gradientShift 4s ease infinite;
+    }
+    @keyframes gradientShift { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--neon), var(--accent));
+      color: #fff; font-family: 'Syne', sans-serif;
+      padding: 14px 32px; border-radius: 50px;
+      font-weight: 700; font-size: 0.95rem;
+      border: none; cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 25px rgba(0,212,255,0.35);
+      letter-spacing: 0.5px;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 45px rgba(0,212,255,0.6);
+    }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: #e2e8f0; font-family: 'Syne', sans-serif;
+      padding: 13px 32px; border-radius: 50px;
+      font-weight: 600; font-size: 0.95rem;
+      cursor: pointer; transition: all 0.3s ease;
+    }
+    .btn-ghost:hover {
+      border-color: var(--neon); color: var(--neon);
+      box-shadow: 0 0 20px rgba(0,212,255,0.2);
+    }
+
+    /* GLASS CARD */
+    .glass-card {
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      transition: all 0.3s ease;
+    }
+    .glass-card:hover {
+      border-color: rgba(0,212,255,0.4);
+      box-shadow: 0 0 30px rgba(0,212,255,0.1);
+    }
+
+    /* SECTION TITLE */
+    .section-tag {
+      font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: var(--neon); margin-bottom: 0.5rem;
+    }
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800; line-height: 1.1;
+      letter-spacing: -1px;
+    }
+
+    /* STATS NUMBERS */
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 3rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--neon), var(--accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* SERVICE ICON */
+    .service-icon {
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(124,58,237,0.15));
+      border: 1px solid rgba(0,212,255,0.2);
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; color: var(--neon);
+      margin-bottom: 1.2rem;
+      transition: all 0.3s ease;
+    }
+    .glass-card:hover .service-icon {
+      background: linear-gradient(135deg, rgba(0,212,255,0.25), rgba(124,58,237,0.25));
+      box-shadow: 0 0 20px rgba(0,212,255,0.3);
+    }
+
+    /* PRICING */
+    .price-card {
+      border-radius: 24px;
+      padding: 2.5rem;
+      position: relative; overflow: hidden;
+    }
+    .price-card.popular {
+      background: linear-gradient(135deg, rgba(0,212,255,0.08), rgba(124,58,237,0.08));
+      border: 1px solid rgba(0,212,255,0.4);
+    }
+    .price-card.popular::before {
+      content: 'MOST POPULAR';
+      position: absolute; top: 20px; right: -30px;
+      background: linear-gradient(90deg, var(--neon), var(--accent));
+      color: #0a0f1e; font-size: 0.65rem; font-weight: 800;
+      letter-spacing: 2px; padding: 5px 50px;
+      transform: rotate(35deg); font-family: 'Syne', sans-serif;
+    }
+    .price-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 3.5rem; font-weight: 800; line-height: 1;
+    }
+
+    /* FAQ */
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-question {
+      width: 100%; text-align: left;
+      padding: 1.4rem 0;
+      background: none; border: none;
+      color: #e2e8f0; cursor: pointer;
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem; font-weight: 600;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem;
+    }
+    .faq-answer {
+      overflow: hidden;
+      color: var(--text-muted);
+      font-size: 0.95rem; line-height: 1.7;
+      max-height: 0;
+      transition: max-height 0.4s ease, padding 0.3s ease;
+    }
+    .faq-answer.open { max-height: 300px; padding-bottom: 1.4rem; }
+
+    /* SWIPER CUSTOM */
+    .swiper-pagination-bullet { background: var(--text-muted) !important; }
+    .swiper-pagination-bullet-active { background: var(--neon) !important; }
+    .swiper-button-next, .swiper-button-prev { color: var(--neon) !important; }
+
+    /* PRISM custom override */
+    pre[class*="language-"] {
+      border-radius: 16px !important;
+      border: 1px solid var(--border) !important;
+      background: #0d1117 !important;
+      font-size: 0.85rem !important;
+    }
+
+    /* FORM */
+    .form-input {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 13px 18px;
+      color: #e2e8f0;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+    .form-input:focus {
+      border-color: var(--neon);
+      box-shadow: 0 0 0 3px rgba(0,212,255,0.1);
+    }
+    .form-input::placeholder { color: #475569; }
+    .form-label {
+      display: block; margin-bottom: 6px;
+      font-size: 0.85rem; font-weight: 600;
+      color: #94a3b8; letter-spacing: 0.5px;
+    }
+
+    /* FOOTER */
+    footer {
+      background: #060a14;
+      border-top: 1px solid var(--border);
+    }
+
+    /* BACK TO TOP */
+    #back-to-top {
+      position: fixed; bottom: 30px; right: 30px; z-index: 1000;
+      width: 48px; height: 48px;
+      background: linear-gradient(135deg, var(--neon), var(--accent));
+      border: none; border-radius: 50%; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: #0a0f1e; font-size: 1.1rem;
+      opacity: 0; transform: translateY(20px);
+      transition: all 0.3s ease;
+      box-shadow: 0 0 20px rgba(0,212,255,0.4);
+    }
+    #back-to-top.visible { opacity: 1; transform: translateY(0); }
+    #back-to-top:hover { transform: translateY(-4px); box-shadow: 0 0 35px rgba(0,212,255,0.6); }
+
+    /* GRID LINES BG */
+    .grid-lines {
+      background-image:
+        linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+
+    /* TESTIMONIAL CARD */
+    .testimonial-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+    }
+    .stars { color: #f59e0b; letter-spacing: 2px; }
+
+    /* CATEGORY BADGE */
+    .cat-badge {
+      display: inline-block;
+      padding: 4px 12px; border-radius: 50px;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* PRODUCT CARD */
+    .product-img {
+      width: 100%; aspect-ratio: 1;
+      object-fit: cover; border-radius: 12px;
+      transition: transform 0.4s ease;
+    }
+    .product-card:hover .product-img { transform: scale(1.04); }
+
+    /* MARQUEE */
+    .marquee-container { overflow: hidden; }
+    .marquee-track {
+      display: flex; gap: 2.5rem;
+      animation: marqueeScroll 20s linear infinite;
+      width: max-content;
+    }
+    .marquee-track:hover { animation-play-state: paused; }
+    @keyframes marqueeScroll { to { transform: translateX(-50%); } }
+    .marquee-item {
+      display: flex; align-items: center; gap: 10px;
+      color: #475569; font-size: 0.9rem; font-weight: 600;
+      letter-spacing: 0.5px; white-space: nowrap;
+      font-family: 'Syne', sans-serif;
+      text-transform: uppercase;
+    }
+    .marquee-item i { color: var(--neon); font-size: 0.8rem; }
+
+    /* GLOW ORB */
+    .glow-orb {
+      position: absolute; border-radius: 50%;
+      filter: blur(80px); pointer-events: none; z-index: 0;
+    }
+
+    /* CHART CONTAINER */
+    #analyticsChart { max-height: 320px; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .hero-title { font-size: 2.4rem; letter-spacing: -1px; }
+    }
+
+    /* Select2 dark override */
+    .select2-container--default .select2-selection--single {
+      background: rgba(255,255,255,0.05) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 12px !important;
+      height: 48px !important;
+      display: flex; align-items: center;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+      color: #e2e8f0 !important; padding-left: 18px !important;
+    }
+    .select2-dropdown {
+      background: #0f1829 !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 12px !important;
+    }
+    .select2-container--default .select2-results__option--highlighted {
+      background: rgba(0,212,255,0.15) !important;
+      color: var(--neon) !important;
+    }
+    .select2-results__option { color: #94a3b8 !important; }
+    .select2-search__field { background: rgba(255,255,255,0.05) !important; color: #e2e8f0 !important; border-color: var(--border) !important; }
+
+    /* Counter section */
+    .counter-card {
+      text-align: center; padding: 2.5rem 1.5rem;
+    }
+
+    /* Notification dot */
+    .notif-dot {
+      width: 8px; height: 8px; background: var(--neon2);
+      border-radius: 50%; position: absolute; top: -2px; right: -2px;
+      animation: pulse 1.5s infinite;
+    }
+
+    /* Horizontal rule */
+    .divider {
+      height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent);
+      border: none; margin: 0;
+    }
+
+    /* Floating shapes */
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-18px)} }
+    .float-anim { animation: float 5s ease-in-out infinite; }
+    .float-anim-delay { animation: float 6s ease-in-out 1.5s infinite; }
+  </style>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            neon: '#00d4ff',
+            accent: '#7c3aed',
+            dark: '#0a0f1e',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="antialiased">
+
+  <!-- PRELOADER -->
+  <div id="preloader">
+    <div class="loader-ring"></div>
+    <div class="loader-text">TECHNOVA</div>
+    <p style="color:#475569;font-size:0.75rem;letter-spacing:2px;">LOADING EXPERIENCE...</p>
+  </div>
+
+  <!-- SCROLL PROGRESS BAR -->
+  <div id="scroll-progress" style="width:0%"></div>
+
+  <!-- ===================== NAVBAR ===================== -->
+  <nav id="navbar">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="flex items-center justify-between">
+        <a href="#" class="logo-text flex items-center gap-2">
+          <i class="fa-solid fa-microchip" style="color:#00d4ff;font-size:1.3rem;"></i>
+          TechNova
+        </a>
+        <!-- Desktop Menu -->
+        <div class="hidden md:flex items-center gap-8">
+          <a href="#services" class="nav-link">Services</a>
+          <a href="#products" class="nav-link">Products</a>
+          <a href="#pricing" class="nav-link">Pricing</a>
+          <a href="#about" class="nav-link">About</a>
+          <a href="#testimonials" class="nav-link">Reviews</a>
+          <a href="#contact" class="nav-link">Contact</a>
+        </div>
+        <div class="hidden md:flex items-center gap-3">
+          <button onclick="toggleDark()" class="w-9 h-9 rounded-full glass-card flex items-center justify-center text-sm text-neon hover:scale-110 transition-transform" title="Toggle Theme">
+            <i class="fa-solid fa-circle-half-stroke"></i>
+          </button>
+          <button class="btn-primary text-sm py-2 px-5" onclick="openBookingModal()">
+            <i class="fa-solid fa-calendar-check mr-2"></i>Book Repair
+          </button>
+        </div>
+        <!-- Mobile Hamburger -->
+        <button class="md:hidden text-neon text-xl" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+      <!-- Mobile Menu -->
+      <div id="mobile-menu" class="hidden md:hidden py-4 border-t border-white/5 mt-3">
+        <div class="flex flex-col gap-4">
+          <a href="#services" class="nav-link" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Services</a>
+          <a href="#products" class="nav-link" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Products</a>
+          <a href="#pricing" class="nav-link" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Pricing</a>
+          <a href="#about" class="nav-link" onclick="document.getElementById('mobile-menu').classList.add('hidden')">About</a>
+          <a href="#contact" class="nav-link" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Contact</a>
+          <button class="btn-primary text-sm py-2 px-5 self-start" onclick="openBookingModal()">Book Repair</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===================== HERO ===================== -->
+  <section id="hero" class="grid-lines">
+    <div id="particles-js"></div>
+    <!-- Glow Orbs -->
+    <div class="glow-orb" style="width:500px;height:500px;background:rgba(0,212,255,0.06);top:-100px;left:-150px;"></div>
+    <div class="glow-orb" style="width:400px;height:400px;background:rgba(124,58,237,0.07);bottom:-80px;right:-80px;"></div>
+
+    <div class="hero-content max-w-7xl mx-auto px-6 py-32 grid lg:grid-cols-2 gap-16 items-center w-full">
+      <div>
+        <div class="hero-badge" id="hero-badge">
+          <span class="dot"></span>
+          #1 Tech Destination in the City
+        </div>
+        <h1 class="hero-title text-white mb-6" id="hero-title">
+          Expert Repairs.<br/>
+          Premium <span class="gradient-text">Accessories.</span><br/>
+          Custom Mods.
+        </h1>
+        <p class="text-slate-400 text-lg leading-relaxed mb-10 max-w-xl" id="hero-sub">
+          From lightning-fast mobile repairs to custom device modifications and curated tech accessories — TechNova delivers premium quality with same-day turnaround.
+        </p>
+        <div class="flex flex-wrap gap-4" id="hero-btns">
+          <button class="btn-primary" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">
+            <i class="fa-solid fa-bolt mr-2"></i>Explore Services
+          </button>
+          <button class="btn-ghost" onclick="openBookingModal()">
+            <i class="fa-solid fa-wrench mr-2"></i>Book a Repair
+          </button>
+        </div>
+        <!-- Hero Stats Row -->
+        <div class="flex flex-wrap gap-8 mt-12 pt-8 border-t border-white/5" id="hero-stats">
+          <div>
+            <div class="text-2xl font-bold text-white" style="font-family:'Syne',sans-serif;">12K+</div>
+            <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Devices Repaired</div>
+          </div>
+          <div>
+            <div class="text-2xl font-bold text-white" style="font-family:'Syne',sans-serif;">98%</div>
+            <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Success Rate</div>
+          </div>
+          <div>
+            <div class="text-2xl font-bold text-white" style="font-family:'Syne',sans-serif;">4.9★</div>
+            <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Avg Rating</div>
+          </div>
+          <div>
+            <div class="text-2xl font-bold text-white" style="font-family:'Syne',sans-serif;">2hr</div>
+            <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Avg Turnaround</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HERO RIGHT - Device Visual -->
+      <div class="hidden lg:flex flex-col items-center justify-center relative">
+        <div class="float-anim relative">
+          <div class="w-72 h-72 rounded-3xl glass-card p-6 flex flex-col items-center justify-center gap-4 relative">
+            <div class="absolute inset-0 rounded-3xl" style="background:linear-gradient(135deg,rgba(0,212,255,0.07),rgba(124,58,237,0.07));"></div>
+            <i class="fa-solid fa-mobile-screen-button text-7xl" style="color:var(--neon);filter:drop-shadow(0 0 20px rgba(0,212,255,0.5));"></i>
+            <div style="font-family:'Syne',sans-serif;" class="text-white font-bold text-xl">Screen Replaced</div>
+            <div class="text-xs text-slate-400">in under 2 hours</div>
+            <div class="flex gap-2">
+              <span style="background:rgba(0,212,255,0.15);color:var(--neon);" class="cat-badge">✓ Warranty</span>
+              <span style="background:rgba(0,255,127,0.12);color:#00ff7f;" class="cat-badge">✓ Genuine</span>
+            </div>
+          </div>
+          <!-- Floating mini cards -->
+          <div class="absolute -top-6 -right-10 float-anim-delay glass-card p-3 rounded-2xl flex items-center gap-3" style="min-width:160px;">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(0,212,255,0.15);">
+              <i class="fa-solid fa-star text-yellow-400"></i>
+            </div>
+            <div>
+              <div class="text-white text-sm font-bold" style="font-family:'Syne',sans-serif;">4.9/5</div>
+              <div class="text-slate-500 text-xs">2400+ Reviews</div>
+            </div>
+          </div>
+          <div class="absolute -bottom-6 -left-10 glass-card p-3 rounded-2xl flex items-center gap-3" style="min-width:170px;">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(124,58,237,0.2);">
+              <i class="fa-solid fa-shield-halved" style="color:var(--accent);"></i>
+            </div>
+            <div>
+              <div class="text-white text-sm font-bold" style="font-family:'Syne',sans-serif;">6-Month</div>
+              <div class="text-slate-500 text-xs">Repair Warranty</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-slate-500 text-xs">
+      <span class="uppercase tracking-widest">Scroll</span>
+      <div style="width:1px;height:40px;background:linear-gradient(to bottom,var(--neon),transparent);animation:float 2s ease infinite;"></div>
+    </div>
+  </section>
+
+  <!-- ===================== MARQUEE STRIP ===================== -->
+  <section style="background:#06090f;padding:1.2rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+    <div class="marquee-container">
+      <div class="marquee-track">
+        <!-- duplicated for seamless loop -->
+        <div class="marquee-item"><i class="fa-solid fa-circle-dot"></i> iPhone Repair</div>
+        <div class="marquee-item"><i class="fa-solid fa-circle-dot"></i> Samsung Screens</div>
+        <div class="marquee-item"><i class="fa-solid fa-circle-dot"></i> Laptop Servicing</div>
+        <div class="marquee-item"><i class="fa-solid fa-circle-dot"></i> Custom Phone Covers</div>
+        <div class="marquee-item"><i class="fa-solid fa-circle-dot"></i> GPU Upgrades</div>
+        <div class="marquee-item"><i class="fa-solid fa-circle-dot"></i> Battery Replacement</div>
+        <div class="marquee-item"><i class="fa-solid fa-circle-dot"></i> Water Damage Fix</div>
+        <div class="marquee-item"><i class="fa-solid fa-circle-dot"></i> SSD Installation</div>
+        <div class="marquee-item"><i class="fa-solid fa-circle-dot"></i> RAM Upgrades</div>
+        <div class="marquee-item"><i class="fa-solid fa-circle-dot"></i> Device Mods</div>
+        <!-- duplicate for infinite loop -->
+        <div class="marquee-item"><i class="fa-solid fa-circle-dot"></i> iPhone Repair</div>
+        <div class="marquee-item"><i class="fa-solid fa-circle-dot"></i> Samsung Screens</div>
+        <div class="marquee-item"><i class="fa-solid fa-circle-dot"></i> Laptop Servicing</div>
+        <div class="marquee-item"><i class="fa-solid fa-circle-dot"></i> Custom Phone Covers</div>
+        <div class="marquee-item"><i class="fa-solid fa-circle-dot"></i> GPU Upgrades</div>
+        <div class="marquee-item"><i class="fa-solid fa-circle-dot"></i> Battery Replacement</div>
+        <div class="marquee-item"><i class="fa-solid fa-circle-dot"></i> Water Damage Fix</div>
+        <div class="marquee-item"><i class="fa-solid fa-circle-dot"></i> SSD Installation</div>
+        <div class="marquee-item"><i class="fa-solid fa-circle-dot"></i> RAM Upgrades</div>
+        <div class="marquee-item"><i class="fa-solid fa-circle-dot"></i> Device Mods</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SERVICES ===================== -->
+  <section id="services" class="py-28 max-w-7xl mx-auto px-6">
+    <div class="text-center mb-16" data-aos="fade-up">
+      <div class="section-tag">What We Do</div>
+      <h2 class="section-title text-white">Expert Tech <span class="gradient-text">Services</span></h2>
+      <p class="text-slate-400 mt-4 max-w-xl mx-auto">Everything your devices need — repaired, upgraded, and customized by certified technicians.</p>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Service 1 -->
+      <div class="glass-card p-7 service-card" data-aos="fade-up" data-aos-delay="0" data-tilt>
+        <div class="service-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+        <h3 style="font-family:'Syne',sans-serif;" class="text-white text-xl font-bold mb-3">Mobile Repair</h3>
+        <p class="text-slate-400 text-sm leading-relaxed mb-4">Screen replacements, battery swaps, charging port fixes, speaker & camera repairs for all brands.</p>
+        <div class="flex flex-wrap gap-2">
+          <span class="cat-badge" style="background:rgba(0,212,255,0.1);color:var(--neon);">iPhone</span>
+          <span class="cat-badge" style="background:rgba(0,212,255,0.1);color:var(--neon);">Samsung</span>
+          <span class="cat-badge" style="background:rgba(0,212,255,0.1);color:var(--neon);">OnePlus</span>
+        </div>
+      </div>
+      <!-- Service 2 -->
+      <div class="glass-card p-7 service-card" data-aos="fade-up" data-aos-delay="100" data-tilt>
+        <div class="service-icon"><i class="fa-solid fa-laptop"></i></div>
+        <h3 style="font-family:'Syne',sans-serif;" class="text-white text-xl font-bold mb-3">Laptop Servicing</h3>
+        <p class="text-slate-400 text-sm leading-relaxed mb-4">Deep cleaning, thermal paste reapplication, screen & keyboard replacement, OS installation & data recovery.</p>
+        <div class="flex flex-wrap gap-2">
+          <span class="cat-badge" style="background:rgba(124,58,237,0.15);color:#a78bfa;">MacBook</span>
+          <span class="cat-badge" style="background:rgba(124,58,237,0.15);color:#a78bfa;">Dell</span>
+          <span class="cat-badge" style="background:rgba(124,58,237,0.15);color:#a78bfa;">HP</span>
+        </div>
+      </div>
+      <!-- Service 3 -->
+      <div class="glass-card p-7 service-card" data-aos="fade-up" data-aos-delay="200" data-tilt>
+        <div class="service-icon"><i class="fa-solid fa-palette"></i></div>
+        <h3 style="font-family:'Syne',sans-serif;" class="text-white text-xl font-bold mb-3">Custom Phone Covers</h3>
+        <p class="text-slate-400 text-sm leading-relaxed mb-4">Personalized designs, UV printed cases, leather covers, and designer skins for 500+ phone models.</p>
+        <div class="flex flex-wrap gap-2">
+          <span class="cat-badge" style="background:rgba(255,107,53,0.12);color:var(--neon2);">UV Print</span>
+          <span class="cat-badge" style="background:rgba(255,107,53,0.12);color:var(--neon2);">Leather</span>
+          <span class="cat-badge" style="background:rgba(255,107,53,0.12);color:var(--neon2);">Skin Wrap</span>
+        </div>
+      </div>
+      <!-- Service 4 -->
+      <div class="glass-card p-7 service-card" data-aos="fade-up" data-aos-delay="300" data-tilt>
+        <div class="service-icon"><i class="fa-solid fa-microchip"></i></div>
+        <h3 style="font-family:'Syne',sans-serif;" class="text-white text-xl font-bold mb-3">Device Modifications</h3>
+        <p class="text-slate-400 text-sm leading-relaxed mb-4">RAM upgrades, SSD swaps, custom lighting (RGB), overclocking, and performance tuning for laptops & PCs.</p>
+        <div class="flex flex-wrap gap-2">
+          <span class="cat-badge" style="background:rgba(0,212,255,0.1);color:var(--neon);">RAM</span>
+          <span class="cat-badge" style="background:rgba(0,212,255,0.1);color:var(--neon);">SSD</span>
+          <span class="cat-badge" style="background:rgba(0,212,255,0.1);color:var(--neon);">RGB</span>
+        </div>
+      </div>
+      <!-- Service 5 -->
+      <div class="glass-card p-7 service-card" data-aos="fade-up" data-aos-delay="400" data-tilt>
+        <div class="service-icon"><i class="fa-solid fa-computer"></i></div>
+        <h3 style="font-family:'Syne',sans-serif;" class="text-white text-xl font-bold mb-3">PC Accessories</h3>
+        <p class="text-slate-400 text-sm leading-relaxed mb-4">Keyboards, mice, monitors, headsets, cables, hubs, and gaming peripherals — all top brands, great prices.</p>
+        <div class="flex flex-wrap gap-2">
+          <span class="cat-badge" style="background:rgba(124,58,237,0.15);color:#a78bfa;">Gaming</span>
+          <span class="cat-badge" style="background:rgba(124,58,237,0.15);color:#a78bfa;">Office</span>
+          <span class="cat-badge" style="background:rgba(124,58,237,0.15);color:#a78bfa;">Pro</span>
+        </div>
+      </div>
+      <!-- Service 6 -->
+      <div class="glass-card p-7 service-card" data-aos="fade-up" data-aos-delay="500" data-tilt>
+        <div class="service-icon"><i class="fa-solid fa-droplet"></i></div>
+        <h3 style="font-family:'Syne',sans-serif;" class="text-white text-xl font-bold mb-3">Water Damage Recovery</h3>
+        <p class="text-slate-400 text-sm leading-relaxed mb-4">Advanced ultrasonic cleaning and corrosion treatment to recover liquid-damaged phones and laptops.</p>
+        <div class="flex flex-wrap gap-2">
+          <span class="cat-badge" style="background:rgba(255,107,53,0.12);color:var(--neon2);">Phones</span>
+          <span class="cat-badge" style="background:rgba(255,107,53,0.12);color:var(--neon2);">Laptops</span>
+          <span class="cat-badge" style="background:rgba(255,107,53,0.12);color:var(--neon2);">Tablets</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== COUNTERS ===================== -->
+  <section class="py-20" style="background:#06090f;border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-8" id="counters">
+        <div class="counter-card" data-aos="zoom-in" data-aos-delay="0">
+          <div class="stat-num" id="count1">0</div>
+          <div class="text-slate-400 text-sm mt-2 uppercase tracking-wider">Devices Repaired</div>
+        </div>
+        <div class="counter-card" data-aos="zoom-in" data-aos-delay="100">
+          <div class="stat-num" id="count2">0</div>
+          <div class="text-slate-400 text-sm mt-2 uppercase tracking-wider">Happy Customers</div>
+        </div>
+        <div class="counter-card" data-aos="zoom-in" data-aos-delay="200">
+          <div class="stat-num" id="count3">0</div>
+          <div class="text-slate-400 text-sm mt-2 uppercase tracking-wider">Products in Stock</div>
+        </div>
+        <div class="counter-card" data-aos="zoom-in" data-aos-delay="300">
+          <div class="stat-num" id="count4">0</div>
+          <div class="text-slate-400 text-sm mt-2 uppercase tracking-wider">Years Experience</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PRODUCTS ===================== -->
+  <section id="products" class="py-28 max-w-7xl mx-auto px-6">
+    <div class="text-center mb-16" data-aos="fade-up">
+      <div class="section-tag">Our Store</div>
+      <h2 class="section-title text-white">Featured <span class="gradient-text">Products</span></h2>
+      <p class="text-slate-400 mt-4 max-w-xl mx-auto">Browse our curated selection of accessories, covers, and components.</p>
+    </div>
+
+    <!-- Swiper Products -->
+    <div class="swiper productsSwiper" data-aos="fade-up">
+      <div class="swiper-wrapper pb-12">
+        <!-- Product 1 -->
+        <div class="swiper-slide">
+          <div class="glass-card p-5 product-card cursor-pointer" onclick="showProductDetail('Gaming Mechanical Keyboard','₹4,499','RGB backlit, tactile switches, aluminium frame. Compatible with PC/Mac.')">
+            <div style="overflow:hidden;border-radius:12px;aspect-ratio:1;background:#0d1117;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+              <i class="fa-solid fa-keyboard text-7xl" style="color:var(--neon);filter:drop-shadow(0 0 15px rgba(0,212,255,0.4));"></i>
+            </div>
+            <span class="cat-badge mb-2" style="background:rgba(0,212,255,0.1);color:var(--neon);">Accessory</span>
+            <h4 style="font-family:'Syne',sans-serif;" class="text-white font-bold mt-2">Gaming Mechanical Keyboard</h4>
+            <p class="text-slate-400 text-sm mt-1">RGB Backlit · Tactile Switches</p>
+            <div class="flex items-center justify-between mt-4">
+              <span class="text-xl font-bold text-white" style="font-family:'Syne',sans-serif;">₹4,499</span>
+              <button class="btn-primary py-2 px-4 text-sm" onclick="event.stopPropagation();addToCart('Gaming Mechanical Keyboard')">
+                <i class="fa-solid fa-cart-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Product 2 -->
+        <div class="swiper-slide">
+          <div class="glass-card p-5 product-card cursor-pointer" onclick="showProductDetail('Custom UV Phone Case','₹799','High-quality UV printed case for iPhone/Samsung/OnePlus. Personalize your design.')">
+            <div style="overflow:hidden;border-radius:12px;aspect-ratio:1;background:#0d1117;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+              <i class="fa-solid fa-mobile-screen text-7xl" style="color:var(--accent);filter:drop-shadow(0 0 15px rgba(124,58,237,0.5));"></i>
+            </div>
+            <span class="cat-badge mb-2" style="background:rgba(124,58,237,0.15);color:#a78bfa;">Phone Cover</span>
+            <h4 style="font-family:'Syne',sans-serif;" class="text-white font-bold mt-2">Custom UV Phone Case</h4>
+            <p class="text-slate-400 text-sm mt-1">500+ Models · Personalized</p>
+            <div class="flex items-center justify-between mt-4">
+              <span class="text-xl font-bold text-white" style="font-family:'Syne',sans-serif;">₹799</span>
+              <button class="btn-primary py-2 px-4 text-sm" onclick="event.stopPropagation();addToCart('Custom UV Phone Case')">
+                <i class="fa-solid fa-cart-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Product 3 -->
+        <div class="swiper-slide">
+          <div class="glass-card p-5 product-card cursor-pointer" onclick="showProductDetail('256GB NVMe SSD','₹3,299','M.2 NVMe PCIe Gen 4. Up to 7000MB/s read speed. Compatible with all modern laptops.')">
+            <div style="overflow:hidden;border-radius:12px;aspect-ratio:1;background:#0d1117;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+              <i class="fa-solid fa-hard-drive text-7xl" style="color:var(--neon2);filter:drop-shadow(0 0 15px rgba(255,107,53,0.5));"></i>
+            </div>
+            <span class="cat-badge mb-2" style="background:rgba(255,107,53,0.1);color:var(--neon2);">Component</span>
+            <h4 style="font-family:'Syne',sans-serif;" class="text-white font-bold mt-2">256GB NVMe SSD</h4>
+            <p class="text-slate-400 text-sm mt-1">M.2 PCIe Gen 4 · 7000MB/s</p>
+            <div class="flex items-center justify-between mt-4">
+              <span class="text-xl font-bold text-white" style="font-family:'Syne',sans-serif;">₹3,299</span>
+              <button class="btn-primary py-2 px-4 text-sm" onclick="event.stopPropagation();addToCart('256GB NVMe SSD')">
+                <i class="fa-solid fa-cart-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Product 4 -->
+        <div class="swiper-slide">
+          <div class="glass-card p-5 product-card cursor-pointer" onclick="showProductDetail('Wireless Earbuds Pro','₹2,199','Active noise cancellation, 30hr battery, IPX5 waterproof. Works with all Bluetooth devices.')">
+            <div style="overflow:hidden;border-radius:12px;aspect-ratio:1;background:#0d1117;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+              <i class="fa-solid fa-headphones text-7xl" style="color:var(--neon);filter:drop-shadow(0 0 15px rgba(0,212,255,0.4));"></i>
+            </div>
+            <span class="cat-badge mb-2" style="background:rgba(0,212,255,0.1);color:var(--neon);">Audio</span>
+            <h4 style="font-family:'Syne',sans-serif;" class="text-white font-bold mt-2">Wireless Earbuds Pro</h4>
+            <p class="text-slate-400 text-sm mt-1">ANC · 30hr Battery · IPX5</p>
+            <div class="flex items-center justify-between mt-4">
+              <span class="text-xl font-bold text-white" style="font-family:'Syne',sans-serif;">₹2,199</span>
+              <button class="btn-primary py-2 px-4 text-sm" onclick="event.stopPropagation();addToCart('Wireless Earbuds Pro')">
+                <i class="fa-solid fa-cart-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Product 5 -->
+        <div class="swiper-slide">
+          <div class="glass-card p-5 product-card cursor-pointer" onclick="showProductDetail('RGB Mouse Pad XL','₹1,199','Extra-large 900x400mm gaming mousepad with 14 RGB modes and non-slip base.')">
+            <div style="overflow:hidden;border-radius:12px;aspect-ratio:1;background:#0d1117;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+              <i class="fa-solid fa-computer-mouse text-7xl" style="color:var(--accent);filter:drop-shadow(0 0 15px rgba(124,58,237,0.5));"></i>
+            </div>
+            <span class="cat-badge mb-2" style="background:rgba(124,58,237,0.15);color:#a78bfa;">Gaming</span>
+            <h4 style="font-family:'Syne',sans-serif;" class="text-white font-bold mt-2">RGB Mouse Pad XL</h4>
+            <p class="text-slate-400 text-sm mt-1">900×400mm · 14 RGB Modes</p>
+            <div class="flex items-center justify-between mt-4">
+              <span class="text-xl font-bold text-white" style="font-family:'Syne',sans-serif;">₹1,199</span>
+              <button class="btn-primary py-2 px-4 text-sm" onclick="event.stopPropagation();addToCart('RGB Mouse Pad XL')">
+                <i class="fa-solid fa-cart-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="swiper-pagination"></div>
+    </div>
+  </section>
+
+  <!-- ===================== ANALYTICS / CHART ===================== -->
+  <section class="py-20" style="background:#06090f;border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid lg:grid-cols-2 gap-16 items-center">
+        <div data-aos="fade-right">
+          <div class="section-tag">Live Performance</div>
+          <h2 class="section-title text-white mb-6">Real-Time <span class="gradient-text">Repair Stats</span></h2>
+          <p class="text-slate-400 leading-relaxed mb-8">Our workshop processes hundreds of devices every week. Here's a live snapshot of this week's repair performance across device categories.</p>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="glass-card p-4">
+              <div class="text-neon text-2xl font-bold" style="font-family:'Syne',sans-serif;">94%</div>
+              <div class="text-slate-400 text-sm mt-1">Same-day completion</div>
+            </div>
+            <div class="glass-card p-4">
+              <div class="text-purple-400 text-2xl font-bold" style="font-family:'Syne',sans-serif;">2hr</div>
+              <div class="text-slate-400 text-sm mt-1">Average repair time</div>
+            </div>
+            <div class="glass-card p-4">
+              <div class="text-orange-400 text-2xl font-bold" style="font-family:'Syne',sans-serif;">100%</div>
+              <div class="text-slate-400 text-sm mt-1">Genuine parts used</div>
+            </div>
+            <div class="glass-card p-4">
+              <div class="text-green-400 text-2xl font-bold" style="font-family:'Syne',sans-serif;">6mo</div>
+              <div class="text-slate-400 text-sm mt-1">Repair warranty</div>
+            </div>
+          </div>
+        </div>
+        <div data-aos="fade-left">
+          <div class="glass-card p-6">
+            <canvas id="analyticsChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CODE DEMO / FEATURES ===================== -->
+  <section class="py-28 max-w-7xl mx-auto px-6">
+    <div class="text-center mb-16" data-aos="fade-up">
+      <div class="section-tag">How It Works</div>
+      <h2 class="section-title text-white">Book a Repair <span class="gradient-text">Online</span></h2>
+      <p class="text-slate-400 mt-4 max-w-xl mx-auto">Our simple 3-step process gets your device diagnosed and repaired without the hassle.</p>
+    </div>
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+      <div class="space-y-6" data-aos="fade-right">
+        <div class="glass-card p-6 flex gap-5 items-start">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 text-xl font-black" style="background:linear-gradient(135deg,var(--neon),var(--accent));color:#0a0f1e;font-family:'Syne',sans-serif;">1</div>
+          <div>
+            <h4 style="font-family:'Syne',sans-serif;" class="text-white font-bold text-lg mb-2">Book Online or Walk In</h4>
+            <p class="text-slate-400 text-sm leading-relaxed">Fill out our quick repair form or simply walk into our store. Our technicians assess your device for free.</p>
+          </div>
+        </div>
+        <div class="glass-card p-6 flex gap-5 items-start">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 text-xl font-black" style="background:linear-gradient(135deg,var(--accent),var(--neon2));color:#fff;font-family:'Syne',sans-serif;">2</div>
+          <div>
+            <h4 style="font-family:'Syne',sans-serif;" class="text-white font-bold text-lg mb-2">Get a Quote & Approve</h4>
+            <p class="text-slate-400 text-sm leading-relaxed">We diagnose your device and send you a transparent quote. No hidden charges — you approve before we start.</p>
+          </div>
+        </div>
+        <div class="glass-card p-6 flex gap-5 items-start">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 text-xl font-black" style="background:linear-gradient(135deg,var(--neon2),#ff4d4d);color:#fff;font-family:'Syne',sans-serif;">3</div>
+          <div>
+            <h4 style="font-family:'Syne',sans-serif;" class="text-white font-bold text-lg mb-2">Pick Up Your Fixed Device</h4>
+            <p class="text-slate-400 text-sm leading-relaxed">Most repairs done in 2 hours. Get SMS notification when ready. 6-month warranty on all repairs.</p>
+          </div>
+        </div>
+      </div>
+      <!-- Code Snippet -->
+      <div data-aos="fade-left">
+        <div class="section-tag mb-3">Quick Booking API</div>
+        <pre class="language-javascript"><code class="language-javascript">// TechNova Repair Booking API
+const bookRepair = async (deviceInfo) => {
+  const response = await fetch('/api/repairs', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      device: deviceInfo.model,
+      issue: deviceInfo.problem,
+      customer: deviceInfo.name,
+      phone: deviceInfo.contact,
+      date: deviceInfo.preferredDate
+    })
+  });
+  
+  const { bookingId, eta, technicianName } = 
+    await response.json();
+  
+  return {
+    bookingId,       // "TN-2024-08471"
+    eta: `${eta}hrs`, // "2hrs"
+    message: `Booking confirmed! 
+    Your tech: ${technicianName}`
+  };
+};
+
+// Returns: booking confirmation + 
+// real-time tracking link</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PRICING ===================== -->
+  <section id="pricing" class="py-28" style="background:#06090f;border-top:1px solid var(--border);">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center mb-16" data-aos="fade-up">
+        <div class="section-tag">Repair Plans</div>
+        <h2 class="section-title text-white">Transparent <span class="gradient-text">Pricing</span></h2>
+        <p class="text-slate-400 mt-4 max-w-xl mx-auto">No hidden charges. No surprises. Pay only what we quote.</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Basic -->
+        <div class="glass-card price-card" data-aos="fade-up" data-aos-delay="0">
+          <div class="cat-badge mb-4" style="background:rgba(255,255,255,0.06);color:#94a3b8;">Basic</div>
+          <div class="price-value text-white mb-1">₹499<span style="font-size:1rem;font-weight:400;color:#64748b;">/repair</span></div>
+          <p class="text-slate-400 text-sm mb-6">For minor software & hardware issues</p>
+          <ul class="space-y-3 text-sm mb-8">
+            <li class="flex gap-3 text-slate-300"><i class="fa-solid fa-check text-neon mt-0.5"></i>Free Diagnosis</li>
+            <li class="flex gap-3 text-slate-300"><i class="fa-solid fa-check text-neon mt-0.5"></i>Software Troubleshooting</li>
+            <li class="flex gap-3 text-slate-300"><i class="fa-solid fa-check text-neon mt-0.5"></i>Basic Cleaning</li>
+            <li class="flex gap-3 text-slate-300"><i class="fa-solid fa-check text-neon mt-0.5"></i>1-Month Warranty</li>
+            <li class="flex gap-3 text-slate-500"><i class="fa-solid fa-xmark mt-0.5"></i>Hardware Replacement</li>
+            <li class="flex gap-3 text-slate-500"><i class="fa-solid fa-xmark mt-0.5"></i>Priority Support</li>
+          </ul>
+          <button class="btn-ghost w-full" onclick="openBookingModal()">Get Started</button>
+        </div>
+        <!-- Standard (Popular) -->
+        <div class="glass-card price-card popular" data-aos="fade-up" data-aos-delay="100">
+          <div class="cat-badge mb-4" style="background:rgba(0,212,255,0.15);color:var(--neon);">Standard</div>
+          <div class="price-value mb-1" style="background:linear-gradient(135deg,var(--neon),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">₹1,499<span style="font-size:1rem;font-weight:400;color:#64748b;-webkit-text-fill-color:#64748b;">/repair</span></div>
+          <p class="text-slate-400 text-sm mb-6">For screen, battery & component repairs</p>
+          <ul class="space-y-3 text-sm mb-8">
+            <li class="flex gap-3 text-slate-300"><i class="fa-solid fa-check text-neon mt-0.5"></i>Everything in Basic</li>
+            <li class="flex gap-3 text-slate-300"><i class="fa-solid fa-check text-neon mt-0.5"></i>Screen Replacement</li>
+            <li class="flex gap-3 text-slate-300"><i class="fa-solid fa-check text-neon mt-0.5"></i>Battery Replacement</li>
+            <li class="flex gap-3 text-slate-300"><i class="fa-solid fa-check text-neon mt-0.5"></i>3-Month Warranty</li>
+            <li class="flex gap-3 text-slate-300"><i class="fa-solid fa-check text-neon mt-0.5"></i>Free Return Pickup</li>
+            <li class="flex gap-3 text-slate-500"><i class="fa-solid fa-xmark mt-0.5"></i>Motherboard Repair</li>
+          </ul>
+          <button class="btn-primary w-full" onclick="openBookingModal()">Book Now</button>
+        </div>
+        <!-- Premium -->
+        <div class="glass-card price-card" data-aos="fade-up" data-aos-delay="200">
+          <div class="cat-badge mb-4" style="background:rgba(255,107,53,0.12);color:var(--neon2);">Premium</div>
+          <div class="price-value text-white mb-1">₹3,499<span style="font-size:1rem;font-weight:400;color:#64748b;">/repair</span></div>
+          <p class="text-slate-400 text-sm mb-6">For complex motherboard & water damage</p>
+          <ul class="space-y-3 text-sm mb-8">
+            <li class="flex gap-3 text-slate-300"><i class="fa-solid fa-check text-neon mt-0.5"></i>Everything in Standard</li>
+            <li class="flex gap-3 text-slate-300"><i class="fa-solid fa-check text-neon mt-0.5"></i>Motherboard Repair</li>
+            <li class="flex gap-3 text-slate-300"><i class="fa-solid fa-check text-neon mt-0.5"></i>Water Damage Recovery</li>
+            <li class="flex gap-3 text-slate-300"><i class="fa-solid fa-check text-neon mt-0.5"></i>6-Month Warranty</li>
+            <li class="flex gap-3 text-slate-300"><i class="fa-solid fa-check text-neon mt-0.5"></i>Priority 24hr Support</li>
+            <li class="flex gap-3 text-slate-300"><i class="fa-solid fa-check text-neon mt-0.5"></i>Free Doorstep Pickup</li>
+          </ul>
+          <button class="btn-ghost w-full" onclick="openBookingModal()">Get Premium</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TESTIMONIALS ===================== -->
+  <section id="testimonials" class="py-28 max-w-7xl mx-auto px-6">
+    <div class="text-center mb-16" data-aos="fade-up">
+      <div class="section-tag">Customer Reviews</div>
+      <h2 class="section-title text-white">What Our <span class="gradient-text">Customers Say</span></h2>
+    </div>
+    <div class="swiper testimonialsSwiper" data-aos="fade-up">
+      <div class="swiper-wrapper pb-12">
+        <div class="swiper-slide">
+          <div class="testimonial-card">
+            <div class="stars mb-3">★★★★★</div>
+            <p class="text-slate-300 leading-relaxed mb-5">"Got my iPhone screen replaced in literally 45 minutes. The quality is perfect — couldn't tell it wasn't the original. Will always come back here!"</p>
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm" style="background:linear-gradient(135deg,var(--neon),var(--accent));color:#0a0f1e;font-family:'Syne',sans-serif;">AK</div>
+              <div>
+                <div class="text-white font-semibold text-sm" style="font-family:'Syne',sans-serif;">Arjun Kapoor</div>
+                <div class="text-slate-500 text-xs">iPhone 14 Pro · Screen Repair</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="testimonial-card">
+            <div class="stars mb-3">★★★★★</div>
+            <p class="text-slate-300 leading-relaxed mb-5">"My laptop was completely dead after a water spill. These guys recovered all my data AND got it working. Insane skill. 10/10 recommend!"</p>
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm" style="background:linear-gradient(135deg,var(--accent),var(--neon2));color:#fff;font-family:'Syne',sans-serif;">PS</div>
+              <div>
+                <div class="text-white font-semibold text-sm" style="font-family:'Syne',sans-serif;">Priya Sharma</div>
+                <div class="text-slate-500 text-xs">Dell Laptop · Water Damage</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="testimonial-card">
+            <div class="stars mb-3">★★★★★</div>
+            <p class="text-slate-300 leading-relaxed mb-5">"Ordered a custom phone cover with my dog's photo — it came out beautifully! Print quality is amazing and the case fits perfectly. Super fast delivery too."</p>
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm" style="background:linear-gradient(135deg,#00b4d8,#0077b6);color:#fff;font-family:'Syne',sans-serif;">MK</div>
+              <div>
+                <div class="text-white font-semibold text-sm" style="font-family:'Syne',sans-serif;">Meera Krishnan</div>
+                <div class="text-slate-500 text-xs">Samsung S24 · Custom Cover</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="testimonial-card">
+            <div class="stars mb-3">★★★★★</div>
+            <p class="text-slate-300 leading-relaxed mb-5">"Had my old laptop upgraded with an NVMe SSD and 16GB RAM. It boots in 8 seconds now — feels like a brand new machine. Excellent value!"</p>
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm" style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-family:'Syne',sans-serif;">RV</div>
+              <div>
+                <div class="text-white font-semibold text-sm" style="font-family:'Syne',sans-serif;">Ravi Verma</div>
+                <div class="text-slate-500 text-xs">HP Laptop · RAM + SSD Upgrade</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="swiper-pagination"></div>
+    </div>
+  </section>
+
+  <!-- ===================== FAQ ===================== -->
+  <section id="about" class="py-28" style="background:#06090f;border-top:1px solid var(--border);">
+    <div class="max-w-4xl mx-auto px-6">
+      <div class="text-center mb-16" data-aos="fade-up">
+        <div class="section-tag">FAQ</div>
+        <h2 class="section-title text-white">Common <span class="gradient-text">Questions</span></h2>
+      </div>
+      <div id="faq-container" data-aos="fade-up">
+        <!-- FAQ items rendered by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CONTACT ===================== -->
+  <section id="contact" class="py-28 max-w-7xl mx-auto px-6">
+    <div class="grid lg:grid-cols-2 gap-16">
+      <!-- Info Side -->
+      <div data-aos="fade-right">
+        <div class="section-tag">Get In Touch</div>
+        <h2 class="section-title text-white mb-6">Book a Repair <span class="gradient-text">Today</span></h2>
+        <p class="text-slate-400 leading-relaxed mb-10">Fill out the form and our team will reach out within 30 minutes to confirm your appointment. Walk-ins always welcome.</p>
+        <div class="space-y-6">
+          <div class="flex gap-4 items-start">
+            <div class="service-icon w-12 h-12 text-base"><i class="fa-solid fa-location-dot"></i></div>
+            <div>
+              <div style="font-family:'Syne',sans-serif;" class="text-white font-bold">Visit Us</div>
+              <div class="text-slate-400 text-sm mt-1">Shop #14, Sector 17 Market, Chandigarh, 160017</div>
+            </div>
+          </div>
+          <div class="flex gap-4 items-start">
+            <div class="service-icon w-12 h-12 text-base"><i class="fa-solid fa-phone"></i></div>
+            <div>
+              <div style="font-family:'Syne',sans-serif;" class="text-white font-bold">Call or WhatsApp</div>
+              <div class="text-slate-400 text-sm mt-1">+91 98765 43210</div>
+            </div>
+          </div>
+          <div class="flex gap-4 items-start">
+            <div class="service-icon w-12 h-12 text-base"><i class="fa-solid fa-clock"></i></div>
+            <div>
+              <div style="font-family:'Syne',sans-serif;" class="text-white font-bold">Working Hours</div>
+              <div class="text-slate-400 text-sm mt-1">Mon–Sat: 10am – 8pm · Sun: 11am – 6pm</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <div data-aos="fade-left">
+        <div class="glass-card p-8">
+          <h3 style="font-family:'Syne',sans-serif;" class="text-white text-2xl font-bold mb-6">Request a Callback</h3>
+          <form id="contact-form" onsubmit="handleFormSubmit(event)" novalidate>
+            <div class="space-y-5">
+              <div>
+                <label class="form-label">Full Name *</label>
+                <input type="text" id="fname" class="form-input" placeholder="Your full name" required />
+              </div>
+              <div>
+                <label class="form-label">Phone Number *</label>
+                <input type="tel" id="fphone" class="form-input" placeholder="+91 XXXXX XXXXX" required />
+              </div>
+              <div>
+                <label class="form-label">Service Required *</label>
+                <select id="fservice" style="width:100%">
+                  <option value="">Select a service...</option>
+                  <option>Mobile Screen Repair</option>
+                  <option>Battery Replacement</option>
+                  <option>Laptop Servicing</option>
+                  <option>Custom Phone Cover</option>
+                  <option>Device Modification</option>
+                  <option>Water Damage Recovery</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div>
+                <label class="form-label">Message / Issue Description</label>
+                <textarea id="fmessage" class="form-input" rows="4" placeholder="Describe your device issue in detail..."></textarea>
+              </div>
+              <button type="submit" class="btn-primary w-full py-4 text-base">
+                <i class="fa-solid fa-paper-plane mr-2"></i>Send Request
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="py-16">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+        <div>
+          <a href="#" class="logo-text text-xl mb-4 block">
+            <i class="fa-solid fa-microchip mr-2" style="font-size:1.1rem;"></i>TechNova
+          </a>
+          <p class="text-slate-500 text-sm leading-relaxed">Your trusted partner for all things tech. Repairs, accessories, and custom mods — done right.</p>
+          <div class="flex gap-3 mt-5">
+            <a href="#" class="w-9 h-9 rounded-lg glass-card flex items-center justify-center text-slate-400 hover:text-neon transition-colors text-sm"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" class="w-9 h-9 rounded-lg glass-card flex items-center justify-center text-slate-400 hover:text-neon transition-colors text-sm"><i class="fa-brands fa-whatsapp"></i></a>
+            <a href="#" class="w-9 h-9 rounded-lg glass-card flex items-center justify-center text-slate-400 hover:text-neon transition-colors text-sm"><i class="fa-brands fa-youtube"></i></a>
+            <a href="#" class="w-9 h-9 rounded-lg glass-card flex items-center justify-center text-slate-400 hover:text-neon transition-colors text-sm"><i class="fa-brands fa-twitter"></i></a>
+          </div>
+        </div>
+        <div>
+          <h5 style="font-family:'Syne',sans-serif;" class="text-white font-bold mb-5">Services</h5>
+          <ul class="space-y-3 text-sm text-slate-500">
+            <li><a href="#" class="hover:text-neon transition-colors">Mobile Repair</a></li>
+            <li><a href="#" class="hover:text-neon transition-colors">Laptop Servicing</a></li>
+            <li><a href="#" class="hover:text-neon transition-colors">Custom Phone Covers</a></li>
+            <li><a href="#" class="hover:text-neon transition-colors">Device Modifications</a></li>
+            <li><a href="#" class="hover:text-neon transition-colors">Water Damage Recovery</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5 style="font-family:'Syne',sans-serif;" class="text-white font-bold mb-5">Products</h5>
+          <ul class="space-y-3 text-sm text-slate-500">
+            <li><a href="#" class="hover:text-neon transition-colors">Gaming Peripherals</a></li>
+            <li><a href="#" class="hover:text-neon transition-colors">Storage & Memory</a></li>
+            <li><a href="#" class="hover:text-neon transition-colors">Audio Accessories</a></li>
+            <li><a href="#" class="hover:text-neon transition-colors">Cables & Hubs</a></li>
+            <li><a href="#" class="hover:text-neon transition-colors">Custom Cases</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5 style="font-family:'Syne',sans-serif;" class="text-white font-bold mb-5">Hours</h5>
+          <ul class="space-y-3 text-sm text-slate-500">
+            <li class="flex justify-between"><span>Monday–Friday</span><span class="text-neon">10am–8pm</span></li>
+            <li class="flex justify-between"><span>Saturday</span><span class="text-neon">10am–8pm</span></li>
+            <li class="flex justify-between"><span>Sunday</span><span class="text-neon">11am–6pm</span></li>
+          </ul>
+          <div class="mt-6 p-3 rounded-xl text-xs" style="background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.15);color:var(--neon);">
+            <i class="fa-solid fa-circle-dot mr-2 animate-pulse"></i>We're Open Today!
+          </div>
+        </div>
+      </div>
+      <hr class="divider mb-6" />
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-slate-600 text-sm">
+        <p>© 2024 TechNova. All rights reserved.</p>
+        <p id="footer-time" class="text-slate-500"></p>
+        <div class="flex gap-5">
+          <a href="#" class="hover:text-neon transition-colors">Privacy</a>
+          <a href="#" class="hover:text-neon transition-colors">Terms</a>
+          <a href="#" class="hover:text-neon transition-colors">Warranty</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- BACK TO TOP -->
+  <button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
+
+  <!-- BOOKING MODAL -->
+  <div id="booking-modal" style="display:none;position:fixed;inset:0;z-index:9997;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);align-items:center;justify-content:center;" onclick="if(event.target===this)closeBookingModal()">
+    <div class="glass-card p-8 mx-4" style="max-width:480px;width:100%;border-radius:24px;animation:fadeInUp 0.3s ease;">
+      <div class="flex justify-between items-center mb-6">
+        <h3 style="font-family:'Syne',sans-serif;" class="text-white text-2xl font-bold">Quick Booking</h3>
+        <button onclick="closeBookingModal()" class="text-slate-400 hover:text-white text-xl transition-colors"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="space-y-4">
+        <input type="text" class="form-input" placeholder="Your Name" id="modal-name" />
+        <input type="tel" class="form-input" placeholder="+91 XXXXX XXXXX" id="modal-phone" />
+        <select class="form-input" id="modal-service">
+          <option value="">Select Service</option>
+          <option>Mobile Screen Repair</option>
+          <option>Battery Replacement</option>
+          <option>Laptop Servicing</option>
+          <option>Custom Phone Cover</option>
+          <option>Device Modification</option>
+        </select>
+        <button class="btn-primary w-full py-3" onclick="submitBooking()">
+          <i class="fa-solid fa-calendar-check mr-2"></i>Confirm Booking
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== SCRIPTS ===================== -->
+
+  <!-- jQuery (required for Select2) -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" defer></script>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+
+  <!-- Swiper.js -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+
+  <!-- AOS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js" defer></script>
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+
+  <!-- Axios -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js" defer></script>
+
+  <!-- Day.js -->
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js" defer></script>
+
+  <!-- Lodash -->
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4/lodash.min.js" defer></script>
+
+  <!-- Prism.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js" defer></script>
+
+  <!-- Particles.js -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js" defer></script>
+
+  <!-- Vanilla Tilt -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js" defer></script>
+
+  <!-- CountUp.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.8.0/countUp.umd.js" defer></script>
+
+  <!-- Toastify -->
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js" defer></script>
+
+  <!-- Select2 -->
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js" defer></script>
+
+  <!-- Inputmask -->
+  <script src="https://cdn.jsdelivr.net/npm/inputmask@5/dist/inputmask.min.js" defer></script>
+
+  <style>
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+
+  <script>
+    // Wait for deferred scripts to load
+    window.addEventListener('load', () => {
+      // ===================== PRELOADER =====================
+      setTimeout(() => {
+        document.getElementById('preloader').classList.add('hidden');
+      }, 1200);
+
+      // ===================== AOS =====================
+      try {
+        AOS.init({ duration: 700, easing: 'ease-out-cubic', once: true, offset: 60 });
+      } catch(e) { console.warn('AOS failed', e); }
+
+      // ===================== GSAP HERO ANIMATIONS =====================
+      try {
+        gsap.registerPlugin(ScrollTrigger);
+        const tl = gsap.timeline({ delay: 1.3 });
+        tl.from('#hero-badge',  { opacity: 0, y: 30, duration: 0.6, ease: 'power3.out' })
+          .from('#hero-title',  { opacity: 0, y: 40, duration: 0.7, ease: 'power3.out' }, '-=0.3')
+          .from('#hero-sub',    { opacity: 0, y: 30, duration: 0.6, ease: 'power3.out' }, '-=0.4')
+          .from('#hero-btns',   { opacity: 0, y: 20, duration: 0.5, ease: 'power3.out' }, '-=0.3')
+          .from('#hero-stats',  { opacity: 0, y: 20, duration: 0.5, ease: 'power3.out' }, '-=0.3');
+
+        // Navbar scroll
+        ScrollTrigger.create({
+          start: 'top -80px',
+          onToggle: self => document.getElementById('navbar').classList.toggle('scrolled', self.isActive)
+        });
+      } catch(e) { console.warn('GSAP failed', e); }
+
+      // ===================== PARTICLES.JS =====================
+      try {
+        particlesJS('particles-js', {
+          particles: {
+            number: { value: 55, density: { enable: true, value_area: 900 } },
+            color: { value: ['#00d4ff', '#7c3aed', '#ff6b35'] },
+            shape: { type: 'circle' },
+            opacity: { value: 0.35, random: true, anim: { enable: true, speed: 0.8, opacity_min: 0.1 } },
+            size: { value: 2, random: true },
+            line_linked: { enable: true, distance: 130, color: '#00d4ff', opacity: 0.08, width: 1 },
+            move: { enable: true, speed: 1.2, direction: 'none', random: true, out_mode: 'out' }
+          },
+          interactivity: {
+            detect_on: 'canvas',
+            events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' } },
+            modes: { repulse: { distance: 80 }, push: { particles_nb: 3 } }
+          },
+          retina_detect: true
+        });
+      } catch(e) { console.warn('Particles failed', e); }
+
+      // ===================== SWIPER - PRODUCTS =====================
+      try {
+        new Swiper('.productsSwiper', {
+          slidesPerView: 1.2,
+          spaceBetween: 20,
+          centeredSlides: false,
+          pagination: { el: '.productsSwiper .swiper-pagination', clickable: true },
+          breakpoints: {
+            640:  { slidesPerView: 2.2 },
+            1024: { slidesPerView: 3.2 }
+          }
+        });
+      } catch(e) { console.warn('Products Swiper failed', e); }
+
+      // ===================== SWIPER - TESTIMONIALS =====================
+      try {
+        new Swiper('.testimonialsSwiper', {
+          slidesPerView: 1,
+          spaceBetween: 24,
+          autoplay: { delay: 4000, disableOnInteraction: false },
+          pagination: { el: '.testimonialsSwiper .swiper-pagination', clickable: true },
+          breakpoints: { 768: { slidesPerView: 2 }, 1024: { slidesPerView: 3 } }
+        });
+      } catch(e) { console.warn('Testimonials Swiper failed', e); }
+
+      // ===================== CHART.JS =====================
+      try {
+        const ctx = document.getElementById('analyticsChart').getContext('2d');
+        const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels,
+            datasets: [
+              {
+                label: 'Mobile Repairs',
+                data: [28, 35, 22, 41, 38, 52, 44],
+                backgroundColor: 'rgba(0,212,255,0.25)',
+                borderColor: '#00d4ff',
+                borderWidth: 2,
+                borderRadius: 8,
+              },
+              {
+                label: 'Laptop Repairs',
+                data: [12, 18, 15, 24, 20, 28, 22],
+                backgroundColor: 'rgba(124,58,237,0.2)',
+                borderColor: '#7c3aed',
+                borderWidth: 2,
+                borderRadius: 8,
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { labels: { color: '#94a3b8', font: { family: 'DM Sans' } } }
+            },
+            scales: {
+              x: { ticks: { color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+              y: { ticks: { color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.04)' } }
+            }
+          }
+        });
+      } catch(e) { console.warn('Chart.js failed', e); }
+
+      // ===================== COUNTUP.JS =====================
+      try {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              new countUp.CountUp('count1', 12450, { duration: 2.5, separator: ',' }).start();
+              new countUp.CountUp('count2', 8900,  { duration: 2.5, separator: ',' }).start();
+              new countUp.CountUp('count3', 2340,  { duration: 2.5, separator: ',' }).start();
+              new countUp.CountUp('count4', 7,     { duration: 2 }).start();
+              observer.disconnect();
+            }
+          });
+        }, { threshold: 0.3 });
+        observer.observe(document.getElementById('counters'));
+      } catch(e) { console.warn('CountUp failed', e); }
+
+      // ===================== VANILLA TILT =====================
+      try {
+        VanillaTilt.init(document.querySelectorAll('.service-card'), {
+          max: 8, speed: 400, glare: true, 'max-glare': 0.08
+        });
+      } catch(e) { console.warn('VanillaTilt failed', e); }
+
+      // ===================== SELECT2 =====================
+      try {
+        if (window.$) {
+          $('#fservice').select2({
+            placeholder: 'Select a service...',
+            allowClear: true,
+            dropdownParent: $('#contact-form')
+          });
+        }
+      } catch(e) { console.warn('Select2 failed', e); }
+
+      // ===================== INPUTMASK =====================
+      try {
+        Inputmask('+99 99999 99999').mask(document.getElementById('fphone'));
+        Inputmask('+99 99999 99999').mask(document.getElementById('modal-phone'));
+      } catch(e) { console.warn('Inputmask failed', e); }
+
+      // ===================== PRISM.JS =====================
+      try { Prism.highlightAll(); } catch(e) { console.warn('Prism failed', e); }
+
+      // ===================== FAQ =====================
+      const faqs = [
+        { q: 'How long does a phone screen repair take?', a: 'Most screen replacements are completed within 45–90 minutes depending on the model. We carry stock for all major models.' },
+        { q: 'Do you use genuine/original parts?', a: 'Yes, we exclusively use OEM-grade or manufacturer-certified parts. All repairs come with a 6-month warranty on parts and labor.' },
+        { q: 'Can I get a custom design on my phone cover?', a: 'Absolutely! Upload your image, choose your phone model, pick your case type, and we\'ll UV print and deliver it within 24–48 hours.' },
+        { q: 'Do you offer doorstep repair or pickup?', a: 'Yes! Our Premium plan includes free doorstep device pickup and drop-off. For Premium repairs, we come to you within 2 hours.' },
+        { q: 'What if my device isn\'t fixed after the repair?', a: 'We stand behind our work. If the same issue recurs within 6 months, we fix it free of charge. No questions asked.' },
+        { q: 'Can I upgrade my old laptop instead of buying a new one?', a: 'Definitely! Upgrading to an NVMe SSD + extra RAM can make a 5-year-old laptop feel brand new for a fraction of the cost.' }
+      ];
+
+      const faqContainer = document.getElementById('faq-container');
+      faqs.forEach((item, i) => {
+        faqContainer.innerHTML += `
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFAQ(${i})">
+              <span>${item.q}</span>
+              <i class="fa-solid fa-plus text-neon transition-transform" id="faq-icon-${i}"></i>
+            </button>
+            <div class="faq-answer" id="faq-answer-${i}">${item.a}</div>
+          </div>
+        `;
+      });
+
+      // ===================== DAYJS - Footer Time =====================
+      try {
+        const updateTime = () => {
+          document.getElementById('footer-time').textContent =
+            'Local time: ' + dayjs().format('ddd, MMM D · h:mm A');
+        };
+        updateTime();
+        setInterval(updateTime, 60000);
+      } catch(e) { console.warn('dayjs failed', e); }
+
+    }); // end window.load
+
+    // ===================== SCROLL PROGRESS & BACK TO TOP =====================
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      document.getElementById('scroll-progress').style.width = (scrolled / max * 100) + '%';
+      document.getElementById('back-to-top').classList.toggle('visible', scrolled > 500);
+    });
+
+    // ===================== DARK MODE TOGGLE =====================
+    function toggleDark() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      if (isDark) {
+        document.body.style.background = '#0a0f1e';
+      } else {
+        document.body.style.background = '#f8fafc';
+        document.body.style.color = '#0f172a';
+      }
+      try {
+        Toastify({
+          text: isDark ? '🌙 Dark mode enabled' : '☀️ Light mode enabled',
+          duration: 2000,
+          gravity: 'bottom', position: 'right',
+          style: { background: isDark ? 'linear-gradient(135deg,#0f172a,#1e293b)' : 'linear-gradient(135deg,#f8fafc,#e2e8f0)', color: isDark ? '#00d4ff' : '#0f172a', border: '1px solid rgba(0,212,255,0.2)', borderRadius: '12px', fontFamily: 'DM Sans' }
+        }).showToast();
+      } catch(e){}
+    }
+
+    // ===================== FAQ TOGGLE =====================
+    function toggleFAQ(index) {
+      const answer = document.getElementById(`faq-answer-${index}`);
+      const icon = document.getElementById(`faq-icon-${index}`);
+      const isOpen = answer.classList.contains('open');
+      // Close all
+      document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
+      document.querySelectorAll('[id^="faq-icon-"]').forEach(i => { i.className = 'fa-solid fa-plus text-neon'; });
+      if (!isOpen) {
+        answer.classList.add('open');
+        icon.className = 'fa-solid fa-minus text-neon rotate-0';
+      }
+    }
+
+    // ===================== BOOKING MODAL =====================
+    function openBookingModal() {
+      const modal = document.getElementById('booking-modal');
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+    function closeBookingModal() {
+      document.getElementById('booking-modal').style.display = 'none';
+      document.body.style.overflow = '';
+    }
+    function submitBooking() {
+      const name = document.getElementById('modal-name').value.trim();
+      const phone = document.getElementById('modal-phone').value.trim();
+      const service = document.getElementById('modal-service').value;
+      if (!name || !phone || !service) {
+        try {
+          Toastify({ text: '⚠️ Please fill all fields!', duration: 2500, gravity: 'top', position: 'right',
+            style: { background: 'linear-gradient(135deg,#dc2626,#b91c1c)', borderRadius: '12px' }
+          }).showToast();
+        } catch(e){}
+        return;
+      }
+      closeBookingModal();
+      try {
+        Swal.fire({
+          title: '🎉 Booking Confirmed!',
+          html: `<p style="color:#94a3b8;font-family:DM Sans">Hi <strong style="color:#e2e8f0">${_.escape(name)}</strong>!<br>We'll call you on <strong style="color:#00d4ff">${_.escape(phone)}</strong> shortly to confirm your <strong style="color:#a78bfa">${_.escape(service)}</strong> appointment.</p>`,
+          icon: 'success',
+          background: '#0f172a',
+          color: '#e2e8f0',
+          confirmButtonText: 'Awesome!',
+          confirmButtonColor: '#00d4ff',
+          customClass: { popup: 'swal-dark' }
+        });
+      } catch(e) { alert(`Booking confirmed for ${name}!`); }
+    }
+
+    // ===================== FORM SUBMIT =====================
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const name    = document.getElementById('fname').value.trim();
+      const phone   = document.getElementById('fphone').value.trim();
+      const service = document.getElementById('fservice').value || window.$?.('#fservice').val() || '';
+      const message = document.getElementById('fmessage').value.trim();
+
+      if (!name || !phone) {
+        try {
+          Toastify({ text: '⚠️ Name and phone are required!', duration: 2500, gravity: 'top', position: 'right',
+            style: { background: 'linear-gradient(135deg,#dc2626,#b91c1c)', borderRadius: '12px' }
+          }).showToast();
+        } catch(e){}
+        return;
+      }
+
+      // Axios dummy POST
+      try {
+        axios.post('https://jsonplaceholder.typicode.com/posts', {
+          name, phone, service, message
+        }).then(res => {
+          Toastify({ text: '✅ Request sent! We\'ll contact you soon.', duration: 3500, gravity: 'bottom', position: 'right',
+            style: { background: 'linear-gradient(135deg,#0f172a,#1e293b)', color: '#00d4ff', border: '1px solid rgba(0,212,255,0.25)', borderRadius: '12px', fontFamily: 'DM Sans' }
+          }).showToast();
+        }).catch(() => {});
+      } catch(e){}
+
+      try {
+        Swal.fire({
+          title: '📨 Request Received!',
+          html: `<p style="color:#94a3b8;font-family:DM Sans">Thanks, <strong style="color:#e2e8f0">${_.escape(name)}</strong>! Our team will call you at <strong style="color:#00d4ff">${_.escape(phone)}</strong> within 30 minutes.</p>`,
+          icon: 'success',
+          background: '#0f172a',
+          color: '#e2e8f0',
+          confirmButtonText: 'Got it!',
+          confirmButtonColor: '#7c3aed'
+        });
+      } catch(e) { alert('Request sent!'); }
+
+      e.target.reset();
+      try { if(window.$) $('#fservice').val('').trigger('change'); } catch(e){}
+    }
+
+    // ===================== PRODUCT DETAIL =====================
+    function showProductDetail(name, price, desc) {
+      try {
+        Swal.fire({
+          title: `<span style="font-family:Syne,sans-serif;font-size:1.3rem;">${_.escape(name)}</span>`,
+          html: `
+            <div style="text-align:left;color:#94a3b8;font-family:DM Sans">
+              <p style="font-size:2rem;font-weight:800;color:#00d4ff;font-family:Syne,sans-serif;margin-bottom:0.5rem;">${_.escape(price)}</p>
+              <p style="line-height:1.7;">${_.escape(desc)}</p>
+            </div>`,
+          background: '#0f172a',
+          color: '#e2e8f0',
+          showCancelButton: true,
+          confirmButtonText: '🛒 Add to Cart',
+          cancelButtonText: 'Close',
+          confirmButtonColor: '#00d4ff',
+          cancelButtonColor: '#334155'
+        }).then(result => {
+          if (result.isConfirmed) addToCart(name);
+        });
+      } catch(e) {}
+    }
+
+    // ===================== ADD TO CART =====================
+    function addToCart(name) {
+      try {
+        Toastify({
+          text: `🛒 ${name} added to cart!`,
+          duration: 2800,
+          gravity: 'bottom', position: 'right',
+          style: { background: 'linear-gradient(135deg,#0f172a,#1e293b)', color: '#00d4ff', border: '1px solid rgba(0,212,255,0.25)', borderRadius: '12px', fontFamily: 'DM Sans', fontSize: '0.9rem' }
+        }).showToast();
+      } catch(e) {}
+    }
+  </script>
+</body>
+</html>
