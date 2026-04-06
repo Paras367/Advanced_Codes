@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NPR — Number Plate Recognition</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg transform-origin='50 50'%3E%3Cpath d='M10 50 Q50 15 90 50 Q50 85 10 50 Z' fill='none' stroke='%230f172a' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='50' r='18' fill='%233b82f6'/%3E%3Ccircle cx='50' cy='50' r='7' fill='%230f172a'/%3E%3Ccircle cx='58' cy='42' r='4' fill='%23ffffff'/%3E%3CanimateTransform attributeName='transform' type='scale' values='1 1; 1 1; 1 0.1; 1 0.1; 1 1' keyTimes='0; 0.92; 0.95; 0.97; 1' dur='4s' repeatCount='indefinite'/%3E%3C/g%3E%3Cline x1='15' y1='35' x2='85' y2='35' stroke='%2310b981' stroke-width='3' stroke-linecap='round'%3E%3Canimate attributeName='y1' values='35; 65; 35' dur='1.5s' repeatCount='indefinite'/%3E%3Canimate attributeName='y2' values='35; 65; 35' dur='1.5s' repeatCount='indefinite'/%3E%3Canimate attributeName='opacity' values='1; 0.6; 1' dur='1.5s' repeatCount='indefinite'/%3E%3C/line%3E%3C/svg%3E">
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script async src="https://docs.opencv.org/4.8.0/opencv.js" onload="onOpenCvReady()"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #050a0f;
+  --surface: #0a1520;
+  --panel: #0d1e2e;
+  --border: #1a3a5c;
+  --accent: #00d4ff;
+  --accent2: #ff6b35;
+  --accent3: #39ff14;
+  --text: #c8e6f5;
+  --muted: #4a7a9b;
+  --glow: 0 0 20px rgba(0,212,255,0.4);
+  --glow2: 0 0 20px rgba(57,255,20,0.4);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,212,255,0.015) 2px,
+    rgba(0,212,255,0.015) 4px
+  );
+  pointer-events: none;
+  z-index: 999;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 40px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(10,21,32,0.95);
+  backdrop-filter: blur(20px);
+  position: sticky; top: 0; z-index: 100;
+}
+
+.logo {
+  display: flex; align-items: center; gap: 14px;
+}
+.logo-icon {
+  width: 42px; height: 42px;
+  border: 2px solid var(--accent);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--glow);
+  position: relative; overflow: hidden;
+}
+.logo-icon::after {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: linear-gradient(45deg, transparent 40%, rgba(0,212,255,0.3) 50%, transparent 60%);
+  animation: sheen 3s infinite;
+}
+@keyframes sheen { 0%,100%{transform:translateX(-100%)} 50%{transform:translateX(100%)} }
+
+.logo-icon svg { width: 22px; color: var(--accent); }
+.logo-title { font-family: 'Orbitron', monospace; font-size: 1.1rem; font-weight: 700; letter-spacing: 3px; color: var(--accent); text-shadow: var(--glow); }
+.logo-sub { font-size: 0.7rem; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
+
+.status-bar {
+  display: flex; gap: 20px; align-items: center;
+}
+.stat-pill {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+.stat-pill .dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--muted);
+}
+.stat-pill.live .dot { background: var(--accent3); box-shadow: var(--glow2); animation: pulse 1.5s infinite; }
+.stat-pill.live { color: var(--accent3); border-color: var(--accent3); }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.main {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  grid-template-rows: auto 1fr;
+  gap: 0;
+  height: calc(100vh - 73px);
+}
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  padding: 24px 28px;
+  gap: 20px;
+  overflow-y: auto;
+  border-right: 1px solid var(--border);
+}
+
+.viewport-wrap {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 0 40px rgba(0,212,255,0.08);
+  flex-shrink: 0;
+}
+
+.viewport-wrap video,
+.viewport-wrap canvas#displayCanvas {
+  width: 100%;
+  display: block;
+  max-height: 420px;
+  object-fit: cover;
+}
+
+canvas#displayCanvas {
+  position: absolute;
+  top: 0; left: 0;
+  pointer-events: none;
+}
+
+
+.corner { position: absolute; width: 20px; height: 20px; border-color: var(--accent); border-style: solid; opacity: 0.7; }
+.corner.tl { top:10px;left:10px; border-width: 2px 0 0 2px; }
+.corner.tr { top:10px;right:10px; border-width: 2px 2px 0 0; }
+.corner.bl { bottom:10px;left:10px; border-width: 0 0 2px 2px; }
+.corner.br { bottom:10px;right:10px; border-width: 0 2px 2px 0; }
+
+.scan-line {
+  position: absolute; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+  animation: none;
+}
+.scanning .scan-line { opacity: 1; animation: scanMove 2s linear infinite; }
+@keyframes scanMove { 0%{top:0} 100%{top:100%} }
+
+.video-label {
+  position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  color: var(--accent);
+  background: rgba(0,0,0,0.7);
+  padding: 3px 10px;
+  border-radius: 3px;
+  border: 1px solid rgba(0,212,255,0.3);
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 20px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); box-shadow: var(--glow); }
+.btn.primary { border-color: var(--accent); color: var(--accent); }
+.btn.primary:hover { background: rgba(0,212,255,0.1); }
+.btn.active { background: rgba(57,255,20,0.1); border-color: var(--accent3); color: var(--accent3); box-shadow: var(--glow2); }
+.btn.danger { border-color: #ff4444; color: #ff4444; }
+.btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+.upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: 10px;
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.upload-zone:hover { border-color: var(--accent); background: rgba(0,212,255,0.03); }
+.upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.upload-zone .uz-icon { font-size: 2rem; margin-bottom: 8px; opacity: 0.5; }
+.upload-zone p { font-size: 0.8rem; color: var(--muted); letter-spacing: 1px; }
+.upload-zone span { color: var(--accent); }
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.setting-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+}
+.setting-label {
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.setting-card input[type=range] {
+  width: 100%;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.setting-value {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.9rem;
+  color: var(--accent);
+  text-align: right;
+  margin-top: 4px;
+}
+.toggle-row {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.toggle {
+  width: 38px; height: 20px;
+  background: var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
+  border: none;
+}
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 16px; height: 16px;
+  background: var(--muted);
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+.toggle.on { background: rgba(0,212,255,0.3); }
+.toggle.on::after { left: 20px; background: var(--accent); box-shadow: var(--glow); }
+
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  overflow-y: auto;
+}
+
+.panel-section {
+  padding: 18px 18px 0;
+}
+.panel-section + .panel-section { border-top: 1px solid var(--border); margin-top: 0; }
+
+.section-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-title::before { content: ''; width: 12px; height: 1px; background: var(--muted); }
+
+.result-display {
+  background: #000;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 18px;
+  text-align: center;
+  position: relative;
+  min-height: 100px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px;
+}
+.result-display.detected { border-color: var(--accent3); box-shadow: var(--glow2); }
+.result-plate {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 2rem;
+  color: var(--accent3);
+  letter-spacing: 6px;
+  text-shadow: var(--glow2);
+  word-break: break-all;
+  line-height: 1.2;
+}
+.result-plate.empty { color: var(--muted); font-size: 0.8rem; letter-spacing: 2px; }
+.confidence-bar {
+  width: 100%;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+.confidence-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent3));
+  border-radius: 2px;
+  transition: width 0.5s ease;
+  width: 0%;
+}
+.conf-label {
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+.log-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 18px;
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+.log-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  animation: slideIn 0.3s ease;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.log-item:hover { border-color: var(--accent); }
+@keyframes slideIn { from { opacity:0; transform:translateX(10px); } to { opacity:1; transform:none; } }
+
+.log-plate { color: var(--accent3); font-weight: bold; letter-spacing: 2px; flex: 1; }
+.log-conf { color: var(--muted); font-size: 0.65rem; }
+.log-time { color: var(--muted); font-size: 0.65rem; }
+.log-badge {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent3);
+  flex-shrink: 0;
+}
+
+.status-msg {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-align: center;
+  padding: 10px;
+  letter-spacing: 1px;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.spinner {
+  width: 14px; height: 14px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: none;
+}
+.spinner.show { display: block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.stats-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 14px 18px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.stat-block { text-align: center; }
+.stat-num {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.3rem;
+  color: var(--accent);
+  text-shadow: var(--glow);
+}
+.stat-lbl { font-size: 0.65rem; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+
+.tab-bar {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  padding: 0 18px;
+}
+.tab {
+  padding: 12px 16px;
+  font-size: 0.75rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  position: relative;
+  top: 1px;
+}
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+.export-section {
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.export-btn {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--muted);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+}
+.export-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+.export-btn svg { width: 15px; opacity: 0.7; }
+
+@media (max-width: 900px) {
+  .main { grid-template-columns: 1fr; grid-template-rows: auto auto; height: auto; }
+  .right-panel { border-top: 1px solid var(--border); }
+  header { padding: 14px 16px; }
+  .left-panel { padding: 16px; }
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+#processingCanvas { display: none; }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="2" y="6" width="20" height="12" rx="2"/>
+        <path d="M6 10h12M6 14h8"/>
+      </svg>
+    </div>
+    <div>
+      <div class="logo-title">PLATEYE</div>
+      <div class="logo-sub">Number Plate Recognition System</div>
+    </div>
+  </div>
+  <div class="status-bar">
+    <div class="stat-pill" id="cvStatus">
+      <span class="dot"></span>
+      <span>CV Loading…</span>
+    </div>
+    <div class="stat-pill" id="ocrStatus">
+      <span class="dot"></span>
+      <span>OCR Loading…</span>
+    </div>
+    <div class="stat-pill live" id="systemStatus" style="display:none">
+      <span class="dot"></span>
+      <span>SYSTEM LIVE</span>
+    </div>
+  </div>
+</header>
+
+
+<div class="main">
+  <div class="left-panel">
+    <div class="viewport-wrap" id="viewportWrap">
+      <video id="video" autoplay playsinline muted></video>
+      <canvas id="displayCanvas"></canvas>
+      <div class="scan-line" id="scanLine"></div>
+      <div class="corner tl"></div>
+      <div class="corner tr"></div>
+      <div class="corner bl"></div>
+      <div class="corner br"></div>
+      <div class="video-label" id="videoLabel">NO FEED</div>
+    </div>
+
+    <div class="controls">
+      <button class="btn primary" id="btnCamera" onclick="startCamera()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M20 12a8 8 0 10-8 8"/><path d="M16 4h4v4"/></svg>
+        Start Camera
+      </button>
+      <button class="btn" id="btnCapture" onclick="captureFrame()" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M3 9a2 2 0 012-2h1l2-3h8l2 3h1a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+        Capture
+      </button>
+      <button class="btn" id="btnLive" onclick="toggleLive()" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3l14 9-14 9V3z"/></svg>
+        Live Scan
+      </button>
+      <button class="btn danger" id="btnStop" onclick="stopAll()" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+        Stop
+      </button>
+    </div>
+
+    <div class="upload-zone" id="dropZone">
+      <input type="file" accept="image/*" id="fileInput" onchange="handleFile(event)">
+      <div class="uz-icon">🖼️</div>
+      <p>Drop an image or <span>browse</span></p>
+      <p>Supports JPG, PNG, WEBP, BMP</p>
+    </div>
+
+    <div class="settings-grid">
+      <div class="setting-card">
+        <div class="setting-label">Scan Interval</div>
+        <input type="range" min="500" max="5000" step="500" value="1500" id="slInterval" oninput="updateInterval(this.value)">
+        <div class="setting-value" id="valInterval">1500ms</div>
+      </div>
+      <div class="setting-card">
+        <div class="setting-label">Contrast Boost</div>
+        <input type="range" min="1" max="3" step="0.1" value="1.5" id="slContrast" oninput="document.getElementById('valContrast').textContent=parseFloat(this.value).toFixed(1)+'x'">
+        <div class="setting-value" id="valContrast">1.5x</div>
+      </div>
+      <div class="setting-card">
+        <div class="setting-label">Show Boxes</div>
+        <div class="toggle-row">
+          <span style="font-size:0.75rem;color:var(--muted)">Plate boxes</span>
+          <button class="toggle on" id="toggleBoxes" onclick="this.classList.toggle('on')"></button>
+        </div>
+      </div>
+      <div class="setting-card">
+        <div class="setting-label">Auto-Log</div>
+        <div class="toggle-row">
+          <span style="font-size:0.75rem;color:var(--muted)">Save results</span>
+          <button class="toggle on" id="toggleAutoLog" onclick="this.classList.toggle('on')"></button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="right-panel">
+    <div class="panel-section" style="padding-top:20px">
+      <div class="section-title">Detection Result</div>
+      <div class="result-display" id="resultDisplay">
+        <div class="result-plate empty" id="resultPlate">AWAITING SCAN</div>
+        <div class="conf-label" id="confLabel">Confidence: —</div>
+        <div class="confidence-bar"><div class="confidence-fill" id="confFill"></div></div>
+      </div>
+    </div>
+
+    <div class="stats-strip">
+      <div class="stat-block">
+        <div class="stat-num" id="statTotal">0</div>
+        <div class="stat-lbl">Detected</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num" id="statSession">0</div>
+        <div class="stat-lbl">This Session</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num" id="statAvgConf">—</div>
+        <div class="stat-lbl">Avg Conf</div>
+      </div>
+    </div>
+
+    <div class="tab-bar">
+      <div class="tab active" onclick="switchTab('log',this)">Log</div>
+      <div class="tab" onclick="switchTab('export',this)">Export</div>
+    </div>
+
+    <div id="tabLog" style="padding:12px 18px; flex:1; overflow:hidden; display:flex; flex-direction:column;">
+      <div class="log-list" id="logList">
+        <div style="color:var(--muted);font-size:0.75rem;text-align:center;padding:20px;font-family:'Share Tech Mono',monospace;letter-spacing:1px">No detections yet</div>
+      </div>
+      <div style="padding:8px 0; display:flex; gap:8px;">
+        <button class="btn" style="flex:1;font-size:0.7rem;padding:7px" onclick="clearLog()">Clear Log</button>
+      </div>
+    </div>
+
+    <div id="tabExport" style="padding:12px 18px; display:none;">
+      <div class="section-title" style="margin-top:6px">Export Data</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <button class="export-btn" onclick="exportCSV()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10,9 9,9 8,9"/></svg>
+          Export as CSV
+        </button>
+        <button class="export-btn" onclick="exportJSON()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+          Export as JSON
+        </button>
+        <button class="export-btn" onclick="exportTXT()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/><line x1="9" y1="9" x2="10" y2="9"/></svg>
+          Export as TXT
+        </button>
+        <button class="export-btn" onclick="copyAll()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Copy All Plates
+        </button>
+      </div>
+    </div>
+    <div class="status-msg" id="statusMsg">
+      <div class="spinner" id="spinner"></div>
+      <span id="statusText">Initializing engines…</span>
+    </div>
+
+  </div>
+
+</div>
+
+<canvas id="processingCanvas"></canvas>
+
+<script>
+let cvReady = false;
+let ocrWorker = null;
+let stream = null;
+let liveInterval = null;
+let scanIntervalMs = 1500;
+let detections = [];
+let totalDetections = 0;
+let confidenceSum = 0;
+let isProcessing = false;
+
+const video = document.getElementById('video');
+const displayCanvas = document.getElementById('displayCanvas');
+const dCtx = displayCanvas.getContext('2d');
+const procCanvas = document.getElementById('processingCanvas');
+const procCtx = procCanvas.getContext('2d');
+
+
+function onOpenCvReady() {
+  cvReady = true;
+  updatePill('cvStatus', true, 'OpenCV Ready');
+  checkReady();
+}
+
+async function initOCR() {
+  try {
+    setStatus('Loading OCR engine…', true);
+    ocrWorker = await Tesseract.createWorker('eng', 1, {
+      logger: () => {}
+    });
+    await ocrWorker.setParameters({
+      tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789- ',
+      tessedit_pageseg_mode: '7', 
+    });
+    updatePill('ocrStatus', true, 'OCR Ready');
+    setStatus('OCR engine loaded');
+    checkReady();
+  } catch(e) {
+    setStatus('OCR load failed: ' + e.message);
+  }
+}
+
+function checkReady() {
+  if (cvReady && ocrWorker) {
+    document.getElementById('systemStatus').style.display = 'flex';
+    setStatus('System ready — start camera or upload an image');
+  }
+}
+
+function updatePill(id, ok, text) {
+  const el = document.getElementById(id);
+  el.querySelector('span:last-child').textContent = text;
+  el.querySelector('.dot').style.background = ok ? 'var(--accent3)' : 'var(--muted)';
+  if (ok) { el.style.color='var(--accent3)'; el.style.borderColor='var(--accent3)'; }
+}
+async function startCamera() {
+  try {
+    setStatus('Requesting camera access…', true);
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
+    });
+    video.srcObject = stream;
+    video.style.display = 'block';
+    await new Promise(r => video.onloadedmetadata = r);
+    video.play();
+    syncCanvasSize();
+    document.getElementById('videoLabel').textContent = 'LIVE FEED';
+    document.getElementById('btnCapture').disabled = false;
+    document.getElementById('btnLive').disabled = false;
+    document.getElementById('btnStop').style.display = 'flex';
+    document.getElementById('btnCamera').disabled = true;
+    setStatus('Camera active — capture or start live scan');
+  } catch(e) {
+    setStatus('Camera error: ' + e.message);
+  }
+}
+
+function syncCanvasSize() {
+  displayCanvas.width = video.videoWidth || 640;
+  displayCanvas.height = video.videoHeight || 480;
+  procCanvas.width = video.videoWidth || 640;
+  procCanvas.height = video.videoHeight || 480;
+}
+
+function stopAll() {
+  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+  stopLive();
+  video.srcObject = null;
+  document.getElementById('videoLabel').textContent = 'NO FEED';
+  document.getElementById('btnCapture').disabled = true;
+  document.getElementById('btnLive').disabled = true;
+  document.getElementById('btnStop').style.display = 'none';
+  document.getElementById('btnCamera').disabled = false;
+  document.getElementById('btnLive').classList.remove('active');
+  document.getElementById('viewportWrap').classList.remove('scanning');
+  dCtx.clearRect(0,0,displayCanvas.width,displayCanvas.height);
+  setStatus('Feed stopped');
+}
+
+function toggleLive() {
+  if (liveInterval) { stopLive(); return; }
+  document.getElementById('btnLive').classList.add('active');
+  document.getElementById('btnLive').innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>Pause`;
+  document.getElementById('viewportWrap').classList.add('scanning');
+  liveInterval = setInterval(captureFrame, scanIntervalMs);
+}
+
+function stopLive() {
+  clearInterval(liveInterval);
+  liveInterval = null;
+  document.getElementById('btnLive').classList.remove('active');
+  document.getElementById('btnLive').innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3l14 9-14 9V3z"/></svg>Live Scan`;
+  document.getElementById('viewportWrap').classList.remove('scanning');
+}
+
+function updateInterval(v) {
+  scanIntervalMs = parseInt(v);
+  document.getElementById('valInterval').textContent = v + 'ms';
+  if (liveInterval) { stopLive(); toggleLive(); }
+}
+
+async function captureFrame() {
+  if (isProcessing || !ocrWorker) return;
+  if (!video.srcObject && !procCanvas._fromFile) return;
+  isProcessing = true;
+  setStatus('Processing frame…', true);
+  syncCanvasSize();
+  procCtx.drawImage(video, 0, 0, procCanvas.width, procCanvas.height);
+  await processImage(procCanvas);
+  isProcessing = false;
+}
+
+async function handleFile(evt) {
+  const file = evt.target.files[0];
+  if (!file) return;
+  if (!ocrWorker) { setStatus('OCR not ready yet'); return; }
+  setStatus('Loading image…', true);
+  const img = new Image();
+  img.onload = async () => {
+    procCanvas._fromFile = true;
+    procCanvas.width = img.width;
+    procCanvas.height = img.height;
+    displayCanvas.width = img.width;
+    displayCanvas.height = img.height;
+    procCtx.drawImage(img, 0, 0);
+    video.style.display = 'none';
+    dCtx.drawImage(img, 0, 0, displayCanvas.width, displayCanvas.height);
+    document.getElementById('videoLabel').textContent = 'IMAGE: ' + file.name.toUpperCase();
+    await processImage(procCanvas);
+  };
+  img.src = URL.createObjectURL(file);
+}
+
+const dropZone = document.getElementById('dropZone');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.style.borderColor='var(--accent)'; });
+dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor=''; });
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.style.borderColor='';
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) {
+    const dt = new DataTransfer(); dt.items.add(file);
+    document.getElementById('fileInput').files = dt.files;
+    handleFile({ target: { files: [file] } });
+  }
+});
+
+async function processImage(sourceCanvas) {
+  if (!cvReady) {
+    await runOCR(sourceCanvas);
+    return;
+  }
+  try {
+    const contrast = parseFloat(document.getElementById('slContrast').value);
+    const src = cv.imread(sourceCanvas);
+    const dst = new cv.Mat();
+    const gray = new cv.Mat();
+    const blur = new cv.Mat();
+    const thresh = new cv.Mat();
+
+    cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
+    gray.convertTo(dst, -1, contrast, -20);
+    cv.GaussianBlur(dst, blur, new cv.Size(3, 3), 0);
+    cv.adaptiveThreshold(blur, thresh, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY, 11, 2);
+    const contours = new cv.MatVector();
+    const hierarchy = new cv.Mat();
+    cv.findContours(thresh, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+
+    let plateRegion = null;
+    let bestScore = 0;
+
+    for (let i = 0; i < contours.size(); i++) {
+      const cnt = contours.get(i);
+      const rect = cv.boundingRect(cnt);
+      const ar = rect.width / rect.height;
+      const area = rect.width * rect.height;
+      const imgArea = src.rows * src.cols;
+      if (ar >= 1.5 && ar <= 7 && area > imgArea * 0.005 && area < imgArea * 0.5) {
+        const score = area * (1 - Math.abs(ar - 3.5) / 4);
+        if (score > bestScore) {
+          bestScore = score;
+          plateRegion = rect;
+        }
+      }
+      cnt.delete();
+    }
+
+    if (document.getElementById('toggleBoxes').classList.contains('on') && plateRegion) {
+      dCtx.clearRect(0,0,displayCanvas.width,displayCanvas.height);
+      if (video.srcObject) {
+        dCtx.drawImage(video, 0, 0, displayCanvas.width, displayCanvas.height);
+      } else {
+        dCtx.drawImage(sourceCanvas, 0, 0, displayCanvas.width, displayCanvas.height);
+      }
+      drawPlateBox(plateRegion);
+    }
+
+    if (plateRegion && bestScore > 0) {
+      const cropCanvas = document.createElement('canvas');
+      const pad = 6;
+      cropCanvas.width = plateRegion.width + pad*2;
+      cropCanvas.height = plateRegion.height + pad*2;
+      const cCtx = cropCanvas.getContext('2d');
+      cCtx.drawImage(sourceCanvas,
+        plateRegion.x - pad, plateRegion.y - pad,
+        plateRegion.width + pad*2, plateRegion.height + pad*2,
+        0, 0, cropCanvas.width, cropCanvas.height
+      );
+      await runOCR(cropCanvas);
+    } else {
+      await runOCR(sourceCanvas);
+    }
+
+    src.delete(); dst.delete(); gray.delete(); blur.delete(); thresh.delete();
+    contours.delete(); hierarchy.delete();
+  } catch(e) {
+    console.warn('CV error, falling back to direct OCR:', e);
+    await runOCR(sourceCanvas);
+  }
+}
+
+function drawPlateBox(r) {
+  const scaleX = displayCanvas.width / procCanvas.width;
+  const scaleY = displayCanvas.height / procCanvas.height;
+  const x = r.x * scaleX, y = r.y * scaleY;
+  const w = r.width * scaleX, h = r.height * scaleY;
+  dCtx.strokeStyle = '#39ff14';
+  dCtx.lineWidth = 2;
+  dCtx.shadowColor = '#39ff14';
+  dCtx.shadowBlur = 8;
+  dCtx.strokeRect(x, y, w, h);
+  const cs = 12;
+  dCtx.strokeStyle = '#00d4ff';
+  dCtx.lineWidth = 3;
+  [
+    [x,y,cs,0,0,cs],[x+w,y,-cs,0,0,cs],
+    [x,y+h,cs,0,0,-cs],[x+w,y+h,-cs,0,0,-cs]
+  ].forEach(([ox,oy,dx1,dy1,dx2,dy2]) => {
+    dCtx.beginPath(); dCtx.moveTo(ox+dx1,oy+dy1); dCtx.lineTo(ox,oy); dCtx.lineTo(ox+dx2,oy+dy2); dCtx.stroke();
+  });
+  dCtx.shadowBlur = 0;
+}
+
+async function runOCR(canvas) {
+  try {
+    setStatus('Running OCR…', true);
+    const { data } = await ocrWorker.recognize(canvas);
+    const raw = data.text.trim();
+    const confidence = data.confidence || 0;
+
+
+    const cleaned = raw.toUpperCase().replace(/[^A-Z0-9\- ]/g, '').replace(/\s+/g, ' ').trim();
+
+    if (cleaned.length >= 2) {
+      showResult(cleaned, confidence);
+      if (document.getElementById('toggleAutoLog').classList.contains('on')) {
+        addToLog(cleaned, confidence);
+      }
+    } else {
+      setStatus('No plate found — try again or upload a clearer image');
+      document.getElementById('resultPlate').textContent = 'NOT DETECTED';
+      document.getElementById('resultPlate').className = 'result-plate empty';
+      document.getElementById('resultDisplay').classList.remove('detected');
+    }
+  } catch(e) {
+    setStatus('OCR error: ' + e.message);
+  }
+}
+
+function showResult(plate, confidence) {
+  const conf = Math.round(confidence);
+  document.getElementById('resultPlate').textContent = plate;
+  document.getElementById('resultPlate').className = 'result-plate';
+  document.getElementById('confLabel').textContent = `Confidence: ${conf}%`;
+  document.getElementById('confFill').style.width = conf + '%';
+  document.getElementById('resultDisplay').classList.add('detected');
+  setStatus(`Detected: ${plate} (${conf}% confidence)`);
+}
+
+function addToLog(plate, confidence) {
+  const conf = Math.round(confidence);
+  const now = new Date();
+  const timeStr = now.toTimeString().slice(0,8);
+  detections.unshift({ plate, confidence: conf, time: timeStr, ts: now.toISOString() });
+  totalDetections++;
+  confidenceSum += conf;
+
+  document.getElementById('statTotal').textContent = totalDetections;
+  document.getElementById('statSession').textContent = detections.length;
+  document.getElementById('statAvgConf').textContent = Math.round(confidenceSum / totalDetections) + '%';
+
+  renderLog();
+}
+
+function renderLog() {
+  const list = document.getElementById('logList');
+  if (detections.length === 0) {
+    list.innerHTML = '<div style="color:var(--muted);font-size:0.75rem;text-align:center;padding:20px;font-family:\'Share Tech Mono\',monospace;letter-spacing:1px">No detections yet</div>';
+    return;
+  }
+  list.innerHTML = detections.map((d, i) => `
+    <div class="log-item" onclick="copyPlate('${d.plate}')">
+      <div class="log-badge"></div>
+      <div class="log-plate">${d.plate}</div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px">
+        <div class="log-conf">${d.confidence}%</div>
+        <div class="log-time">${d.time}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function clearLog() {
+  detections = [];
+  renderLog();
+  document.getElementById('statSession').textContent = '0';
+}
+
+function copyPlate(plate) {
+  navigator.clipboard.writeText(plate).then(() => setStatus('Copied: ' + plate));
+}
+
+function setStatus(msg, loading = false) {
+  document.getElementById('statusText').textContent = msg;
+  document.getElementById('spinner').classList.toggle('show', loading);
+}
+
+function switchTab(tab, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tabLog').style.display = tab === 'log' ? 'flex' : 'none';
+  document.getElementById('tabExport').style.display = tab === 'export' ? 'block' : 'none';
+}
+
+function exportCSV() {
+  const rows = ['Plate,Confidence,Time'];
+  detections.forEach(d => rows.push(`${d.plate},${d.confidence}%,${d.time}`));
+  download('plateye_detections.csv', rows.join('\n'), 'text/csv');
+}
+
+function exportJSON() {
+  download('plateye_detections.json', JSON.stringify(detections, null, 2), 'application/json');
+}
+
+function exportTXT() {
+  const txt = detections.map(d => `${d.time} | ${d.plate} | ${d.confidence}%`).join('\n');
+  download('plateye_detections.txt', txt, 'text/plain');
+}
+
+function copyAll() {
+  const txt = detections.map(d => d.plate).join('\n');
+  navigator.clipboard.writeText(txt).then(() => setStatus('Copied ' + detections.length + ' plates'));
+}
+
+function download(filename, content, type) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content], { type }));
+  a.download = filename;
+  a.click();
+  setStatus('Downloaded ' + filename);
+}
+window.addEventListener('DOMContentLoaded', () => {
+  initOCR();
+});
+if (window.cv && cv.getBuildInformation) { onOpenCvReady(); }
+</script>
+</body>
+</html>
+
+<!--- By - PARAS DHIMAN --->
+<!-- Do Not Copy -->
+<!-- All Rights Reserved -->
