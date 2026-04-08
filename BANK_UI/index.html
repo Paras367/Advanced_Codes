@@ -3,112 +3,280 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SecureBank Portal | Your Trusted Financial Partner</title>
-  <meta name="description" content="Secure online banking with advanced protection, real-time transactions, and 24/7 support">
+  <title>SecureBank Pro | Advanced Digital Banking</title>
+  <meta name="description" content="Next-generation secure banking with AI-powered insights, instant transfers, and military-grade encryption">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   
-  <!-- Bootstrap 5.3.3 CSS (Embedded) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
+  
   <style>
-    @charset "UTF-8";/*!
-    * Bootstrap  v5.3.3 (https://getbootstrap.com/)
-    * Copyright 2011-2024 The Bootstrap Authors
-    * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
-    */:root,[data-bs-theme=light]{--bs-blue:#0d6efd;--bs-indigo:#6610f2;--bs-purple:#6f42c1;--bs-pink:#d63384;--bs-red:#dc3545;--bs-orange:#fd7e14;--bs-yellow:#ffc107;--bs-green:#198754;--bs-teal:#20c997;--bs-cyan:#0dcaf0;--bs-black:#000;--bs-white:#fff;--bs-gray:#6c757d;--bs-gray-dark:#343a40;--bs-gray-100:#f8f9fa;--bs-gray-200:#e9ecef;--bs-gray-300:#dee2e6;--bs-gray-400:#ced4da;--bs-gray-500:#adb5bd;--bs-gray-600:#6c757d;--bs-gray-700:#495057;--bs-gray-800:#343a40;--bs-gray-900:#212529;--bs-primary:#0d6efd;--bs-secondary:#6c757d;--bs-success:#198754;--bs-info:#0dcaf0;--bs-warning:#ffc107;--bs-danger:#dc3545;--bs-light:#f8f9fa;--bs-dark:#212529;--bs-primary-rgb:13,110,253;--bs-secondary-rgb:108,117,125;--bs-success-rgb:25,135,84;--bs-info-rgb:13,202,240;--bs-warning-rgb:255,193,7;--bs-danger-rgb:220,53,69;--bs-light-rgb:248,249,250;--bs-dark-rgb:33,37,41;--bs-primary-text-emphasis:#052c65;--bs-secondary-text-emphasis:#2b2f32;--bs-success-text-emphasis:#0a3622;--bs-info-text-emphasis:#055160;--bs-warning-text-emphasis:#664d03;--bs-danger-text-emphasis:#58151c;--bs-light-text-emphasis:#495057;--bs-dark-text-emphasis:#495057;--bs-primary-bg-subtle:#cfe2ff;--bs-secondary-bg-subtle:#e2e3e5;--bs-success-bg-subtle:#d1e7dd;--bs-info-bg-subtle:#cff4fc;--bs-warning-bg-subtle:#fff3cd;--bs-danger-bg-subtle:#f8d7da;--bs-light-bg-subtle:#fcfcfd;--bs-dark-bg-subtle:#ced4da;--bs-primary-border-subtle:#9ec5fe;--bs-secondary-border-subtle:#c4c8cb;--bs-success-border-subtle:#a3cfbb;--bs-info-border-subtle:#9eeaf9;--bs-warning-border-subtle:#ffe69c;--bs-danger-border-subtle:#f1aeb5;--bs-light-border-subtle:#e9ecef;--bs-dark-border-subtle:#adb5bd;--bs-white-rgb:255,255,255;--bs-black-rgb:0,0,0;--bs-font-sans-serif:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans","Liberation Sans",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";--bs-font-monospace:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;--bs-gradient:linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));--bs-body-font-family:var(--bs-font-sans-serif);--bs-body-font-size:1rem;--bs-body-font-weight:400;--bs-body-line-height:1.5;--bs-body-color:#212529;--bs-body-color-rgb:33,37,41;--bs-body-bg:#fff;--bs-body-bg-rgb:255,255,255;--bs-emphasis-color:#000;--bs-emphasis-color-rgb:0,0,0;--bs-secondary-color:rgba(33, 37, 41, 0.75);--bs-secondary-color-rgb:33,37,41;--bs-secondary-bg:#e9ecef;--bs-secondary-bg-rgb:233,236,239;--bs-tertiary-color:rgba(33, 37, 41, 0.5);--bs-tertiary-color-rgb:33,37,41;--bs-tertiary-bg:#f8f9fa;--bs-tertiary-bg-rgb:248,249,250;--bs-heading-color:inherit;--bs-link-color:#0d6efd;--bs-link-color-rgb:13,110,253;--bs-link-decoration:underline;--bs-link-hover-color:#0a58ca;--bs-link-hover-color-rgb:10,88,202;--bs-code-color:#d63384;--bs-highlight-color:#212529;--bs-highlight-bg:#fff3cd;--bs-border-width:1px;--bs-border-style:solid;--bs-border-color:#dee2e6;--bs-border-color-translucent:rgba(0, 0, 0, 0.175);--bs-border-radius:0.375rem;--bs-border-radius-sm:0.25rem;--bs-border-radius-lg:0.5rem;--bs-border-radius-xl:1rem;--bs-border-radius-xxl:2rem;--bs-border-radius-2xl:var(--bs-border-radius-xxl);--bs-border-radius-pill:50rem;--bs-box-shadow:0 0.5rem 1rem rgba(0, 0, 0, 0.15);--bs-box-shadow-sm:0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);--bs-box-shadow-lg:0 1rem 3rem rgba(0, 0, 0, 0.175);--bs-box-shadow-inset:inset 0 1px 2px rgba(0, 0, 0, 0.075);--bs-focus-ring-width:0.25rem;--bs-focus-ring-opacity:0.25;--bs-focus-ring-color:rgba(13, 110, 253, 0.25);--bs-form-valid-color:#198754;--bs-form-valid-border-color:#198754;--bs-form-invalid-color:#dc3545;--bs-form-invalid-border-color:#dc3545}[data-bs-theme=dark]{color-scheme:dark;--bs-body-color:#dee2e6;--bs-body-color-rgb:222,226,230;--bs-body-bg:#212529;--bs-body-bg-rgb:33,37,41;--bs-emphasis-color:#fff;--bs-emphasis-color-rgb:255,255,255;--bs-secondary-color:rgba(222, 226, 230, 0.75);--bs-secondary-color-rgb:222,226,230;--bs-secondary-bg:#343a40;--bs-secondary-bg-rgb:52,58,64;--bs-tertiary-color:rgba(222, 226, 230, 0.5);--bs-tertiary-color-rgb:222,226,230;--bs-tertiary-bg:#2b3035;--bs-tertiary-bg-rgb:43,48,53;--bs-primary-text-emphasis:#6ea8fe;--bs-secondary-text-emphasis:#a7acb1;--bs-success-text-emphasis:#75b798;--bs-info-text-emphasis:#6edff6;--bs-warning-text-emphasis:#ffda6a;--bs-danger-text-emphasis:#ea868f;--bs-light-text-emphasis:#f8f9fa;--bs-dark-text-emphasis:#dee2e6;--bs-primary-bg-subtle:#031633;--bs-secondary-bg-subtle:#161719;--bs-success-bg-subtle:#051b11;--bs-info-bg-subtle:#032830;--bs-warning-bg-subtle:#332701;--bs-danger-bg-subtle:#2c0b0e;--bs-light-bg-subtle:#343a40;--bs-dark-bg-subtle:#1a1d20;--bs-primary-border-subtle:#084298;--bs-secondary-border-subtle:#41464b;--bs-success-border-subtle:#0f5132;--bs-info-border-subtle:#087990;--bs-warning-border-subtle:#997404;--bs-danger-border-subtle:#842029;--bs-light-border-subtle:#495057;--bs-dark-border-subtle:#343a40;--bs-heading-color:inherit;--bs-link-color:#6ea8fe;--bs-link-hover-color:#8bb9fe;--bs-link-color-rgb:110,168,254;--bs-link-hover-color-rgb:139,185,254;--bs-code-color:#e685b5;--bs-highlight-color:#dee2e6;--bs-highlight-bg:#664d03;--bs-border-color:#495057;--bs-border-color-translucent:rgba(255, 255, 255, 0.15);--bs-form-valid-color:#75b798;--bs-form-valid-border-color:#75b798;--bs-form-invalid-color:#ea868f;--bs-form-invalid-border-color:#ea868f}*,::after,::before{box-sizing:border-box}@media (prefers-reduced-motion:no-preference){:root{scroll-behavior:smooth}}body{margin:0;font-family:var(--bs-body-font-family);font-size:var(--bs-body-font-size);font-weight:var(--bs-body-font-weight);line-height:var(--bs-body-line-height);color:var(--bs-body-color);text-align:var(--bs-body-text-align);background-color:var(--bs-body-bg);-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+@charset "UTF-8";
+:root,[data-bs-theme=light]{--bs-blue:#0d6efd;--bs-indigo:#6610f2;--bs-purple:#6f42c1;--bs-pink:#d63384;--bs-red:#dc3545;--bs-orange:#fd7e14;--bs-yellow:#ffc107;--bs-green:#198754;--bs-teal:#20c997;--bs-cyan:#0dcaf0;--bs-black:#000;--bs-white:#fff;--bs-gray:#6c757d;--bs-gray-dark:#343a40;--bs-gray-100:#f8f9fa;--bs-gray-200:#e9ecef;--bs-gray-300:#dee2e6;--bs-gray-400:#ced4da;--bs-gray-500:#adb5bd;--bs-gray-600:#6c757d;--bs-gray-700:#495057;--bs-gray-800:#343a40;--bs-gray-900:#212529;--bs-primary:#0d6efd;--bs-secondary:#6c757d;--bs-success:#198754;--bs-info:#0dcaf0;--bs-warning:#ffc107;--bs-danger:#dc3545;--bs-light:#f8f9fa;--bs-dark:#212529;--bs-primary-rgb:13,110,253;--bs-secondary-rgb:108,117,125;--bs-success-rgb:25,135,84;--bs-info-rgb:13,202,240;--bs-warning-rgb:255,193,7;--bs-danger-rgb:220,53,69;--bs-light-rgb:248,249,250;--bs-dark-rgb:33,37,41;--bs-primary-text-emphasis:#052c65;--bs-secondary-text-emphasis:#2b2f32;--bs-success-text-emphasis:#0a3622;--bs-info-text-emphasis:#055160;--bs-warning-text-emphasis:#664d03;--bs-danger-text-emphasis:#58151c;--bs-light-text-emphasis:#495057;--bs-dark-text-emphasis:#495057;--bs-primary-bg-subtle:#cfe2ff;--bs-secondary-bg-subtle:#e2e3e5;--bs-success-bg-subtle:#d1e7dd;--bs-info-bg-subtle:#cff4fc;--bs-warning-bg-subtle:#fff3cd;--bs-danger-bg-subtle:#f8d7da;--bs-light-bg-subtle:#fcfcfd;--bs-dark-bg-subtle:#ced4da;--bs-primary-border-subtle:#9ec5fe;--bs-secondary-border-subtle:#c4c8cb;--bs-success-border-subtle:#a3cfbb;--bs-info-border-subtle:#9eeaf9;--bs-warning-border-subtle:#ffe69c;--bs-danger-border-subtle:#f1aeb5;--bs-light-border-subtle:#e9ecef;--bs-dark-border-subtle:#adb5bd;--bs-white-rgb:255,255,255;--bs-black-rgb:0,0,0;--bs-font-sans-serif:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans","Liberation Sans",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";--bs-font-monospace:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;--bs-gradient:linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));--bs-body-font-family:var(--bs-font-sans-serif);--bs-body-font-size:1rem;--bs-body-font-weight:400;--bs-body-line-height:1.5;--bs-body-color:#212529;--bs-body-color-rgb:33,37,41;--bs-body-bg:#fff;--bs-body-bg-rgb:255,255,255;--bs-emphasis-color:#000;--bs-emphasis-color-rgb:0,0,0;--bs-secondary-color:rgba(33, 37, 41, 0.75);--bs-secondary-color-rgb:33,37,41;--bs-secondary-bg:#e9ecef;--bs-secondary-bg-rgb:233,236,239;--bs-tertiary-color:rgba(33, 37, 41, 0.5);--bs-tertiary-color-rgb:33,37,41;--bs-tertiary-bg:#f8f9fa;--bs-tertiary-bg-rgb:248,249,250;--bs-heading-color:inherit;--bs-link-color:#0d6efd;--bs-link-color-rgb:13,110,253;--bs-link-decoration:underline;--bs-link-hover-color:#0a58ca;--bs-link-hover-color-rgb:10,88,202;--bs-code-color:#d63384;--bs-highlight-color:#212529;--bs-highlight-bg:#fff3cd;--bs-border-width:1px;--bs-border-style:solid;--bs-border-color:#dee2e6;--bs-border-color-translucent:rgba(0, 0, 0, 0.175);--bs-border-radius:0.375rem;--bs-border-radius-sm:0.25rem;--bs-border-radius-lg:0.5rem;--bs-border-radius-xl:1rem;--bs-border-radius-xxl:2rem;--bs-border-radius-2xl:var(--bs-border-radius-xxl);--bs-border-radius-pill:50rem;--bs-box-shadow:0 0.5rem 1rem rgba(0, 0, 0, 0.15);--bs-box-shadow-sm:0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);--bs-box-shadow-lg:0 1rem 3rem rgba(0, 0, 0, 0.175);--bs-box-shadow-inset:inset 0 1px 2px rgba(0, 0, 0, 0.075);--bs-focus-ring-width:0.25rem;--bs-focus-ring-opacity:0.25;--bs-focus-ring-color:rgba(13, 110, 253, 0.25);--bs-form-valid-color:#198754;--bs-form-valid-border-color:#198754;--bs-form-invalid-color:#dc3545;--bs-form-invalid-border-color:#dc3545}[data-bs-theme=dark]{color-scheme:dark;--bs-body-color:#dee2e6;--bs-body-color-rgb:222,226,230;--bs-body-bg:#212529;--bs-body-bg-rgb:33,37,41;--bs-emphasis-color:#fff;--bs-emphasis-color-rgb:255,255,255;--bs-secondary-color:rgba(222, 226, 230, 0.75);--bs-secondary-color-rgb:222,226,230;--bs-secondary-bg:#343a40;--bs-secondary-bg-rgb:52,58,64;--bs-tertiary-color:rgba(222, 226, 230, 0.5);--bs-tertiary-color-rgb:222,226,230;--bs-tertiary-bg:#2b3035;--bs-tertiary-bg-rgb:43,48,53;--bs-primary-text-emphasis:#6ea8fe;--bs-secondary-text-emphasis:#a7acb1;--bs-success-text-emphasis:#75b798;--bs-info-text-emphasis:#6edff6;--bs-warning-text-emphasis:#ffda6a;--bs-danger-text-emphasis:#ea868f;--bs-light-text-emphasis:#f8f9fa;--bs-dark-text-emphasis:#dee2e6;--bs-primary-bg-subtle:#031633;--bs-secondary-bg-subtle:#161719;--bs-success-bg-subtle:#051b11;--bs-info-bg-subtle:#032830;--bs-warning-bg-subtle:#332701;--bs-danger-bg-subtle:#2c0b0e;--bs-light-bg-subtle:#343a40;--bs-dark-bg-subtle:#1a1d20;--bs-primary-border-subtle:#084298;--bs-secondary-border-subtle:#41464b;--bs-success-border-subtle:#0f5132;--bs-info-border-subtle:#087990;--bs-warning-border-subtle:#997404;--bs-danger-border-subtle:#842029;--bs-light-border-subtle:#495057;--bs-dark-border-subtle:#343a40;--bs-heading-color:inherit;--bs-link-color:#6ea8fe;--bs-link-hover-color:#8bb9fe;--bs-link-color-rgb:110,168,254;--bs-link-hover-color-rgb:139,185,254;--bs-code-color:#e685b5;--bs-highlight-color:#dee2e6;--bs-highlight-bg:#664d03;--bs-border-color:#495057;--bs-border-color-translucent:rgba(255, 255, 255, 0.15);--bs-form-valid-color:#75b798;--bs-form-valid-border-color:#75b798;--bs-form-invalid-color:#ea868f;--bs-form-invalid-border-color:#ea868f}*,::after,::before{box-sizing:border-box}@media (prefers-reduced-motion:no-preference){:root{scroll-behavior:smooth}}body{margin:0;font-family:var(--bs-body-font-family);font-size:var(--bs-body-font-size);font-weight:var(--bs-body-font-weight);line-height:var(--bs-body-line-height);color:var(--bs-body-color);text-align:var(--bs-body-text-align);background-color:var(--bs-body-bg);-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
   </style>
   
   <!-- Custom Bank Portal CSS -->
   <style>
     :root {
-      --bank-primary: #0a3d62;
-      --bank-secondary: #1e5799;
-      --bank-accent: #00b894;
-      --bank-danger: #e17055;
-      --bank-warning: #fdcb6e;
-      --bank-light: #f8f9fa;
-      --bank-dark: #2d3436;
-      --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
-      --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
-      --shadow-lg: 0 8px 24px rgba(0,0,0,0.15);
-      --transition: all 0.3s ease;
+      --bank-primary: #0a2540;
+      --bank-secondary: #1a4a7a;
+      --bank-accent: #00c9a7;
+      --bank-accent-dark: #00a88a;
+      --bank-danger: #e63946;
+      --bank-warning: #ffb703;
+      --bank-light: #f8fafc;
+      --bank-dark: #1e293b;
+      --bank-gray: #64748b;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+      --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --radius-sm: 0.375rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1.25rem;
+      --radius-xl: 1.75rem;
+      --radius-full: 9999px;
     }
     
     * { margin: 0; padding: 0; box-sizing: border-box; }
     
+    html { scroll-behavior: smooth; }
+    
     body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
-      color: #333;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #f0f4f8 0%, #e6f0fa 100%);
+      color: var(--bank-dark);
       line-height: 1.6;
       min-height: 100vh;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
     
-    /* Header & Navigation */
+    /* ===== UTILITIES ===== */
+    .text-gradient {
+      background: linear-gradient(135deg, var(--bank-primary), var(--bank-accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .bg-gradient-primary {
+      background: linear-gradient(135deg, var(--bank-primary), var(--bank-secondary));
+    }
+    
+    .bg-gradient-accent {
+      background: linear-gradient(135deg, var(--bank-accent), var(--bank-accent-dark));
+    }
+    
+    .glass {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .glass-dark {
+      background: rgba(10, 37, 64, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .animate-float {
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+    
+    .animate-pulse-slow {
+      animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    
+    .animate-shimmer {
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    
+    .hover-lift {
+      transition: var(--transition);
+    }
+    
+    .hover-lift:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-xl);
+    }
+    
+    .hover-glow {
+      transition: var(--transition);
+      position: relative;
+    }
+    
+    .hover-glow:hover {
+      box-shadow: 0 0 30px rgba(0, 201, 167, 0.4);
+    }
+    
+    .hover-glow:hover::after {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: inherit;
+      padding: 2px;
+      background: linear-gradient(135deg, var(--bank-accent), var(--bank-primary));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+    
+    /* ===== HEADER & NAVIGATION ===== */
     .bank-header {
-      background: linear-gradient(120deg, var(--bank-primary), var(--bank-secondary));
-      color: white;
-      padding: 0.75rem 0;
       position: sticky;
       top: 0;
       z-index: 1000;
-      box-shadow: var(--shadow-md);
+      background: linear-gradient(120deg, var(--bank-primary), var(--bank-secondary));
+      color: white;
+      padding: 0.75rem 0;
+      box-shadow: var(--shadow-lg);
+      transition: var(--transition);
+    }
+    
+    .bank-header.scrolled {
+      padding: 0.5rem 0;
+      background: rgba(10, 37, 64, 0.98);
+      backdrop-filter: blur(10px);
     }
     
     .bank-logo {
       display: flex;
       align-items: center;
       gap: 12px;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 1.5rem;
       text-decoration: none;
       color: white;
+      transition: var(--transition);
+    }
+    
+    .bank-logo:hover {
+      transform: scale(1.03);
     }
     
     .bank-logo-icon {
-      width: 40px;
-      height: 40px;
-      background: white;
-      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--bank-accent), var(--bank-accent-dark));
+      border-radius: var(--radius-md);
       display: flex;
       align-items: center;
       justify-content: center;
       color: var(--bank-primary);
-      font-weight: bold;
-      font-size: 1.2rem;
+      font-weight: 800;
+      font-size: 1.3rem;
+      box-shadow: 0 4px 12px rgba(0, 201, 167, 0.35);
     }
     
     .navbar {
-      padding: 0.5rem 0;
+      padding: 0.25rem 0;
     }
     
     .navbar-nav .nav-link {
-      color: rgba(255,255,255,0.9) !important;
+      color: rgba(255,255,255,0.92) !important;
       font-weight: 500;
-      padding: 0.5rem 1rem !important;
-      margin: 0 2px;
-      border-radius: 4px;
+      padding: 0.6rem 1.1rem !important;
+      margin: 0 3px;
+      border-radius: var(--radius-sm);
       transition: var(--transition);
+      position: relative;
+      font-size: 0.95rem;
+    }
+    
+    .navbar-nav .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: var(--bank-accent);
+      transition: var(--transition);
+      transform: translateX(-50%);
+      border-radius: var(--radius-full);
+    }
+    
+    .navbar-nav .nav-link:hover::after,
+    .navbar-nav .nav-link.active::after {
+      width: 70%;
     }
     
     .navbar-nav .nav-link:hover,
     .navbar-nav .nav-link.active {
-      background: rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.12);
       color: white !important;
     }
     
     .navbar-toggler {
       border: none;
-      padding: 0.25rem 0.5rem;
+      padding: 0.35rem 0.6rem;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+    }
+    
+    .navbar-toggler:hover {
+      background: rgba(255,255,255,0.15);
     }
     
     .navbar-toggler-icon {
-      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.85%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2.5' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+      width: 1.6em;
+      height: 1.6em;
     }
     
-    /* Hero Section */
+    .nav-cta {
+      background: var(--bank-accent);
+      color: var(--bank-primary) !important;
+      font-weight: 600;
+      padding: 0.6rem 1.5rem !important;
+      border-radius: var(--radius-full);
+      transition: var(--transition);
+      box-shadow: 0 4px 14px rgba(0, 201, 167, 0.3);
+      margin-left: 0.5rem;
+    }
+    
+    .nav-cta:hover {
+      background: var(--bank-accent-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 201, 167, 0.45);
+      color: white !important;
+    }
+    
+    /* ===== HERO SECTION ===== */
     .hero-section {
-      background: linear-gradient(135deg, var(--bank-primary) 0%, #1a5276 100%);
+      background: linear-gradient(135deg, var(--bank-primary) 0%, #0f3d6e 50%, var(--bank-secondary) 100%);
       color: white;
-      padding: 4rem 0;
+      padding: 5rem 0 4rem;
       position: relative;
       overflow: hidden;
     }
@@ -116,257 +284,721 @@
     .hero-section::before {
       content: "";
       position: absolute;
-      top: -50%;
-      right: -20%;
-      width: 600px;
-      height: 600px;
+      top: -30%;
+      right: -15%;
+      width: 700px;
+      height: 700px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.08);
+      background: radial-gradient(circle, rgba(0,201,167,0.15) 0%, transparent 70%);
+      z-index: 0;
+      animation: pulse 8s ease-in-out infinite;
+    }
+    
+    .hero-section::after {
+      content: "";
+      position: absolute;
+      bottom: -20%;
+      left: -10%;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(26,74,122,0.2) 0%, transparent 70%);
       z-index: 0;
     }
     
     .hero-content {
       position: relative;
       z-index: 1;
-      max-width: 600px;
+      max-width: 620px;
+    }
+    
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.15);
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+      backdrop-filter: blur(4px);
     }
     
     .hero-title {
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-      line-height: 1.2;
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 1.25rem;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
     }
     
     .hero-subtitle {
       font-size: 1.25rem;
-      opacity: 0.9;
-      margin-bottom: 2rem;
+      opacity: 0.95;
+      margin-bottom: 2.25rem;
+      font-weight: 300;
+      line-height: 1.6;
     }
     
     .hero-cta {
       display: flex;
       gap: 1rem;
       flex-wrap: wrap;
+      margin-bottom: 2.5rem;
     }
     
     .btn-bank {
       background: white;
       color: var(--bank-primary);
       font-weight: 600;
-      padding: 0.75rem 1.75rem;
+      padding: 0.875rem 2rem;
       border: none;
-      border-radius: 50px;
+      border-radius: var(--radius-full);
       transition: var(--transition);
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--shadow-lg);
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      font-size: 1.05rem;
+      text-decoration: none;
     }
     
     .btn-bank:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-xl);
       color: var(--bank-secondary);
+    }
+    
+    .btn-bank i {
+      font-size: 1.1rem;
+      transition: var(--transition);
+    }
+    
+    .btn-bank:hover i {
+      transform: translateX(3px);
     }
     
     .btn-bank-outline {
       background: transparent;
       color: white;
-      border: 2px solid white;
+      border: 2px solid rgba(255,255,255,0.85);
       font-weight: 600;
-      padding: 0.75rem 1.75rem;
-      border-radius: 50px;
+      padding: 0.875rem 2rem;
+      border-radius: var(--radius-full);
       transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.05rem;
+      text-decoration: none;
     }
     
     .btn-bank-outline:hover {
-      background: white;
-      color: var(--bank-primary);
+      background: rgba(255,255,255,0.15);
+      border-color: white;
+      transform: translateY(-2px);
     }
     
-    /* Banking Cards */
-    .banking-cards {
-      padding: 4rem 0;
+    .hero-stats {
+      display: flex;
+      gap: 2rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
     }
     
-    .card-bank {
-      border: none;
-      border-radius: 16px;
-      box-shadow: var(--shadow-md);
-      transition: var(--transition);
-      overflow: hidden;
-      margin-bottom: 1.5rem;
-      background: white;
+    .stat-item {
+      display: flex;
+      flex-direction: column;
     }
     
-    .card-bank:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-lg);
-    }
-    
-    .card-bank-header {
-      background: linear-gradient(120deg, var(--bank-secondary), var(--bank-primary));
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 700;
       color: white;
-      padding: 1.25rem;
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      opacity: 0.85;
+      font-weight: 400;
+    }
+    
+    /* ===== DASHBOARD PREVIEW ===== */
+    .dashboard-preview {
+      background: white;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-xl);
+      overflow: hidden;
+      margin: 2rem 0;
+      position: relative;
+      z-index: 1;
+      transform: perspective(1000px) rotateY(-3deg) rotateX(2deg);
+      transition: var(--transition);
+      max-width: 480px;
+      margin-left: auto;
+    }
+    
+    .dashboard-preview:hover {
+      transform: perspective(1000px) rotateY(0) rotateX(0);
+    }
+    
+    .dashboard-header {
+      background: linear-gradient(120deg, var(--bank-primary), var(--bank-secondary));
+      color: white;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .dashboard-user {
       display: flex;
       align-items: center;
       gap: 12px;
     }
     
-    .card-bank-icon {
+    .user-avatar {
       width: 48px;
       height: 48px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 12px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--bank-accent), var(--bank-accent-dark));
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--bank-primary);
+      font-size: 1.2rem;
     }
     
-    .card-bank-body {
+    .user-info .user-name {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+    
+    .user-info .user-status {
+      font-size: 0.85rem;
+      opacity: 0.9;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .user-status::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+      display: inline-block;
+      animation: pulse 2s infinite;
+    }
+    
+    .dashboard-balance {
+      text-align: right;
+    }
+    
+    .balance-label {
+      font-size: 0.9rem;
+      opacity: 0.9;
+      margin-bottom: 4px;
+    }
+    
+    .balance-amount {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    
+    .dashboard-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
       padding: 1.5rem;
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .stat-card {
+      text-align: center;
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      background: white;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .stat-card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 0.75rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    
+    .stat-card.income .stat-card-icon {
+      background: rgba(34, 197, 94, 0.15);
+      color: #22c55e;
+    }
+    
+    .stat-card.spent .stat-card-icon {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+    }
+    
+    .stat-card.saved .stat-card-icon {
+      background: rgba(59, 130, 246, 0.15);
+      color: #3b82f6;
+    }
+    
+    .stat-card-value {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--bank-primary);
+      margin-bottom: 0.25rem;
+    }
+    
+    .stat-card-label {
+      font-size: 0.8rem;
+      color: var(--bank-gray);
+      font-weight: 500;
+    }
+    
+    .dashboard-actions {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      padding: 1.25rem 1.5rem 1.5rem;
+    }
+    
+    .action-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 0.5rem;
+      border-radius: var(--radius-md);
+      background: #f8fafc;
+      text-decoration: none;
+      color: var(--bank-dark);
+      transition: var(--transition);
+      font-size: 0.85rem;
+      font-weight: 500;
+      border: 1px solid transparent;
+    }
+    
+    .action-btn:hover {
+      background: white;
+      border-color: var(--bank-accent);
+      color: var(--bank-primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .action-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--bank-primary), var(--bank-secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 10px rgba(10, 37, 64, 0.2);
+      transition: var(--transition);
+    }
+    
+    .action-btn:hover .action-icon {
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(10, 37, 64, 0.3);
+    }
+    
+    .action-btn.transfer .action-icon { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+    .action-btn.pay .action-icon { background: linear-gradient(135deg, #ec4899, #f43f5e); }
+    .action-btn.invest .action-icon { background: linear-gradient(135deg, #14b8a6, #0ea5e9); }
+    .action-btn.more .action-icon { background: linear-gradient(135deg, #64748b, #94a3b8); }
+    
+    /* ===== BANKING CARDS ===== */
+    .banking-cards {
+      padding: 5rem 0;
+    }
+    
+    .section-header {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 4rem;
+    }
+    
+    .section-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 201, 167, 0.12);
+      color: var(--bank-accent-dark);
+      padding: 0.35rem 1rem;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+    }
+    
+    .section-title {
+      font-size: 2.25rem;
+      font-weight: 800;
+      color: var(--bank-primary);
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    
+    .section-subtitle {
+      color: var(--bank-gray);
+      font-size: 1.1rem;
+      font-weight: 400;
+      line-height: 1.6;
+    }
+    
+    .card-bank {
+      border: none;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      transition: var(--transition);
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+      background: white;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .card-bank:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-xl);
+    }
+    
+    .card-bank-header {
+      background: linear-gradient(120deg, var(--bank-secondary), var(--bank-primary));
+      color: white;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    
+    .card-bank-icon {
+      width: 56px;
+      height: 56px;
+      background: rgba(255,255,255,0.18);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      font-weight: 600;
     }
     
     .card-bank-title {
-      font-weight: 600;
-      font-size: 1.25rem;
-      margin-bottom: 0.5rem;
-      color: var(--bank-primary);
+      font-weight: 700;
+      font-size: 1.35rem;
+      margin: 0;
+    }
+    
+    .card-bank-body {
+      padding: 1.75rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
     }
     
     .card-bank-text {
-      color: #555;
-      margin-bottom: 1rem;
+      color: var(--bank-gray);
+      margin-bottom: 1.5rem;
+      line-height: 1.65;
+      font-size: 1.05rem;
+    }
+    
+    .feature-list {
+      list-style: none;
+      margin-bottom: 1.5rem;
+      flex: 1;
+    }
+    
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+      color: var(--bank-dark);
+    }
+    
+    .feature-list li i {
+      color: var(--bank-accent);
+      font-size: 1.1rem;
+      margin-top: 3px;
+      flex-shrink: 0;
     }
     
     .card-bank-footer {
-      padding: 0 1.5rem 1.5rem;
+      padding: 0 1.75rem 1.75rem;
     }
     
     .btn-card {
       background: var(--bank-accent);
       color: white;
       border: none;
-      padding: 0.5rem 1.25rem;
-      border-radius: 8px;
-      font-weight: 500;
+      padding: 0.7rem 1.5rem;
+      border-radius: var(--radius-full);
+      font-weight: 600;
       transition: var(--transition);
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+      font-size: 0.95rem;
+      text-decoration: none;
+      width: 100%;
+      justify-content: center;
     }
     
     .btn-card:hover {
-      background: #00a384;
-      transform: translateY(-1px);
+      background: var(--bank-accent-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 201, 167, 0.35);
+      color: white;
     }
     
-    /* Login Section */
+    /* ===== LOGIN SECTION ===== */
     .login-section {
-      padding: 4rem 0;
+      padding: 5rem 0;
       background: white;
+      position: relative;
+    }
+    
+    .login-section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--bank-primary), var(--bank-accent), var(--bank-secondary));
     }
     
     .login-card {
-      max-width: 450px;
+      max-width: 480px;
       margin: 0 auto;
-      border-radius: 20px;
-      box-shadow: var(--shadow-lg);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-xl);
       overflow: hidden;
       background: white;
+      border: 1px solid rgba(0,0,0,0.06);
     }
     
     .login-header {
       background: linear-gradient(120deg, var(--bank-primary), var(--bank-secondary));
       color: white;
-      padding: 1.75rem;
+      padding: 2rem;
       text-align: center;
+      position: relative;
+    }
+    
+    .login-header::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--bank-accent), transparent);
     }
     
     .login-title {
-      font-size: 1.75rem;
+      font-size: 1.85rem;
       font-weight: 700;
       margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
     }
     
     .login-subtitle {
-      opacity: 0.9;
+      opacity: 0.92;
       font-size: 1.05rem;
+      font-weight: 400;
     }
     
     .login-body {
-      padding: 2rem;
+      padding: 2.25rem;
     }
     
     .form-floating {
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    
+    .form-label {
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: var(--bank-dark);
+      display: block;
+      font-size: 0.95rem;
+    }
+    
+    .input-group {
+      position: relative;
+    }
+    
+    .input-icon {
+      position: absolute;
+      left: 1.1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--bank-gray);
+      z-index: 3;
+      font-size: 1.1rem;
+      transition: var(--transition);
     }
     
     .form-control-bank {
-      border-radius: 12px;
-      border: 1px solid #ddd;
-      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      border: 1px solid #cbd5e1;
+      padding: 0.875rem 1rem 0.875rem 2.75rem;
       transition: var(--transition);
+      font-size: 1rem;
+      background: #f8fafc;
     }
     
     .form-control-bank:focus {
       border-color: var(--bank-accent);
-      box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.15);
+      box-shadow: 0 0 0 4px rgba(0, 201, 167, 0.15);
+      background: white;
+      outline: none;
+    }
+    
+    .form-control-bank:focus + .input-icon,
+    .input-group:focus-within .input-icon {
+      color: var(--bank-accent);
+    }
+    
+    .btn-toggle-password {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--bank-gray);
+      cursor: pointer;
+      padding: 0.25rem;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+      z-index: 3;
+      font-size: 1.1rem;
+    }
+    
+    .btn-toggle-password:hover {
+      color: var(--bank-accent);
+      background: rgba(0, 201, 167, 0.1);
     }
     
     .btn-login {
-      background: var(--bank-primary);
+      background: linear-gradient(135deg, var(--bank-primary), var(--bank-secondary));
       color: white;
       border: none;
       width: 100%;
-      padding: 0.875rem;
-      border-radius: 12px;
+      padding: 1rem;
+      border-radius: var(--radius-md);
       font-weight: 600;
       font-size: 1.05rem;
       transition: var(--transition);
-      margin: 1rem 0;
+      margin: 1.25rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 4px 14px rgba(10, 37, 64, 0.25);
     }
     
     .btn-login:hover {
-      background: var(--bank-secondary);
-      transform: translateY(-1px);
-      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(10, 37, 64, 0.35);
+      background: linear-gradient(135deg, var(--bank-secondary), #0d3a63);
+    }
+    
+    .btn-login:active {
+      transform: translateY(0);
+    }
+    
+    .btn-login .loading {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    .btn-login.loading .btn-text { display: none; }
+    .btn-login.loading .loading { display: inline-block; }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
     
     .login-options {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       margin-top: 1.5rem;
-      font-size: 0.9rem;
+      font-size: 0.92rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
     }
     
     .login-options a {
       color: var(--bank-secondary);
       text-decoration: none;
       transition: var(--transition);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
     
     .login-options a:hover {
-      color: var(--bank-primary);
-      text-decoration: underline;
+      color: var(--bank-accent-dark);
+      text-decoration: none;
+    }
+    
+    .login-options a i {
+      font-size: 0.9rem;
     }
     
     .divider {
       display: flex;
       align-items: center;
       text-align: center;
-      margin: 1.5rem 0;
-      color: #777;
+      margin: 2rem 0;
+      color: var(--bank-gray);
       font-size: 0.9rem;
+      font-weight: 500;
     }
     
     .divider::before,
     .divider::after {
       content: "";
       flex: 1;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid #e2e8f0;
     }
     
     .divider::before { margin-right: 1rem; }
@@ -376,161 +1008,189 @@
       display: flex;
       gap: 1rem;
       justify-content: center;
-      margin-top: 1rem;
+      margin-top: 0.5rem;
     }
     
     .btn-social {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius-md);
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 1px solid #ddd;
+      border: 1px solid #e2e8f0;
       background: white;
-      color: #555;
-      font-size: 1.25rem;
+      color: var(--bank-dark);
+      font-size: 1.3rem;
       transition: var(--transition);
       text-decoration: none;
+      box-shadow: var(--shadow-sm);
     }
     
     .btn-social:hover {
-      transform: translateY(-2px);
+      transform: translateY(-3px);
       box-shadow: var(--shadow-md);
       color: var(--bank-primary);
       border-color: var(--bank-accent);
+      background: rgba(0, 201, 167, 0.08);
     }
     
-    /* Features Section */
-    .features-section {
-      padding: 4rem 0;
-      background: #f8fafc;
-    }
+    .btn-social.google:hover { color: #ea4335; border-color: #ea4335; background: rgba(234, 67, 53, 0.08); }
+    .btn-social.apple:hover { color: #000; border-color: #000; background: rgba(0,0,0,0.08); }
+    .btn-social.microsoft:hover { color: #f25022; border-color: #f25022; background: rgba(242, 80, 34, 0.08); }
     
-    .section-title {
-      text-align: center;
-      margin-bottom: 3rem;
-    }
-    
-    .section-title h2 {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--bank-primary);
-      margin-bottom: 0.75rem;
-    }
-    
-    .section-title p {
-      color: #666;
-      max-width: 600px;
-      margin: 0 auto;
-      font-size: 1.1rem;
-    }
-    
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-      margin-top: 2rem;
-    }
-    
-    .feature-card {
-      background: white;
-      border-radius: 16px;
-      padding: 2rem;
-      text-align: center;
-      box-shadow: var(--shadow-sm);
-      transition: var(--transition);
-    }
-    
-    .feature-card:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-lg);
-    }
-    
-    .feature-icon {
-      width: 70px;
-      height: 70px;
-      background: linear-gradient(135deg, var(--bank-accent), #00d9a4);
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1.25rem;
-      color: white;
-      font-size: 1.75rem;
-      font-weight: bold;
-    }
-    
-    .feature-title {
-      font-weight: 600;
-      font-size: 1.25rem;
-      margin-bottom: 0.75rem;
-      color: var(--bank-primary);
-    }
-    
-    .feature-text {
-      color: #666;
-      font-size: 0.95rem;
-    }
-    
-    /* Security Badges */
+    /* ===== SECURITY BADGES ===== */
     .security-badges {
       display: flex;
       justify-content: center;
-      gap: 2rem;
-      margin-top: 3rem;
+      gap: 2.5rem;
+      margin-top: 3.5rem;
       flex-wrap: wrap;
+      padding: 0 1rem;
     }
     
     .badge-item {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0.5rem;
-      max-width: 120px;
+      gap: 0.75rem;
+      max-width: 140px;
+      text-align: center;
+      padding: 1.25rem;
+      border-radius: var(--radius-lg);
+      transition: var(--transition);
+      background: rgba(255,255,255,0.6);
+    }
+    
+    .badge-item:hover {
+      background: white;
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
     }
     
     .badge-icon {
-      width: 60px;
-      height: 60px;
-      background: white;
-      border-radius: 16px;
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, var(--bank-accent), var(--bank-accent-dark));
+      border-radius: var(--radius-md);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: var(--shadow-sm);
-      color: var(--bank-accent);
-      font-size: 1.5rem;
-      font-weight: bold;
+      color: white;
+      font-size: 1.6rem;
+      font-weight: 700;
+      box-shadow: 0 6px 16px rgba(0, 201, 167, 0.3);
+      transition: var(--transition);
+    }
+    
+    .badge-item:hover .badge-icon {
+      transform: scale(1.08);
+      box-shadow: 0 8px 24px rgba(0, 201, 167, 0.45);
     }
     
     .badge-text {
-      font-size: 0.85rem;
-      text-align: center;
-      color: #555;
-      font-weight: 500;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--bank-primary);
+      line-height: 1.4;
     }
     
-    /* Footer */
+    /* ===== FEATURES SECTION ===== */
+    .features-section {
+      padding: 5rem 0;
+      background: linear-gradient(180deg, #f8fafc 0%, white 100%);
+    }
+    
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.75rem;
+      margin-top: 2.5rem;
+    }
+    
+    .feature-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      text-align: center;
+      box-shadow: var(--shadow-md);
+      transition: var(--transition);
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-xl);
+      border-color: rgba(0, 201, 167, 0.3);
+    }
+    
+    .feature-icon {
+      width: 76px;
+      height: 76px;
+      background: linear-gradient(135deg, var(--bank-accent), var(--bank-accent-dark));
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      color: white;
+      font-size: 2rem;
+      font-weight: 700;
+      box-shadow: 0 8px 20px rgba(0, 201, 167, 0.35);
+      transition: var(--transition);
+    }
+    
+    .feature-card:hover .feature-icon {
+      transform: scale(1.1) rotate(3deg);
+      box-shadow: 0 12px 28px rgba(0, 201, 167, 0.5);
+    }
+    
+    .feature-title {
+      font-weight: 700;
+      font-size: 1.3rem;
+      margin-bottom: 0.85rem;
+      color: var(--bank-primary);
+    }
+    
+    .feature-text {
+      color: var(--bank-gray);
+      font-size: 0.98rem;
+      line-height: 1.6;
+    }
+    
+    /* ===== FOOTER ===== */
     .bank-footer {
       background: var(--bank-dark);
       color: rgba(255,255,255,0.85);
-      padding: 3rem 0 1.5rem;
-      margin-top: 4rem;
+      padding: 4rem 0 2rem;
+      margin-top: 5rem;
     }
     
     .footer-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 2rem;
-      margin-bottom: 2rem;
+      gap: 2.5rem;
+      margin-bottom: 2.5rem;
     }
     
     .footer-col h4 {
       color: white;
-      font-weight: 600;
-      margin-bottom: 1.25rem;
-      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      font-size: 1.15rem;
+      position: relative;
+      padding-bottom: 0.75rem;
+    }
+    
+    .footer-col h4::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 40px;
+      height: 2px;
+      background: var(--bank-accent);
+      border-radius: var(--radius-full);
     }
     
     .footer-links {
@@ -538,7 +1198,7 @@
     }
     
     .footer-links li {
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
     }
     
     .footer-links a {
@@ -546,56 +1206,95 @@
       text-decoration: none;
       transition: var(--transition);
       font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
     
     .footer-links a:hover {
       color: white;
       padding-left: 4px;
+      text-decoration: none;
+    }
+    
+    .footer-links a i {
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: var(--transition);
+      transform: translateX(-4px);
+    }
+    
+    .footer-links a:hover i {
+      opacity: 1;
+      transform: translateX(0);
     }
     
     .footer-bottom {
       text-align: center;
-      padding-top: 1.5rem;
+      padding-top: 2rem;
       border-top: 1px solid rgba(255,255,255,0.1);
       font-size: 0.9rem;
-      color: rgba(255,255,255,0.6);
+      color: rgba(255,255,255,0.65);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
     }
     
     .copyright {
-      margin-bottom: 0.5rem;
+      margin: 0;
+    }
+    
+    .footer-legal {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .footer-legal a {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    
+    .footer-legal a:hover {
+      color: var(--bank-accent);
+      text-decoration: none;
     }
     
     .footer-social {
       display: flex;
-      gap: 1rem;
-      justify-content: center;
+      gap: 0.85rem;
       margin-top: 1rem;
     }
     
     .footer-social a {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.1);
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      background: rgba(255,255,255,0.12);
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
       text-decoration: none;
       transition: var(--transition);
-      font-size: 1rem;
+      font-size: 1.05rem;
     }
     
     .footer-social a:hover {
       background: var(--bank-accent);
-      transform: translateY(-2px);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0, 201, 167, 0.4);
+      color: var(--bank-primary);
     }
     
-    /* Animations */
+    /* ===== ANIMATIONS ===== */
     @keyframes fadeInUp {
       from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(30px);
       }
       to {
         opacity: 1;
@@ -603,18 +1302,42 @@
       }
     }
     
-    .animate-fade-in {
-      animation: fadeInUp 0.6s ease forwards;
+    .animate-on-scroll {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
     }
     
-    .animate-delay-1 { animation-delay: 0.1s; }
-    .animate-delay-2 { animation-delay: 0.2s; }
-    .animate-delay-3 { animation-delay: 0.3s; }
+    .animate-on-scroll.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
     
-    /* Responsive Adjustments */
+    .delay-1 { transition-delay: 0.1s; }
+    .delay-2 { transition-delay: 0.2s; }
+    .delay-3 { transition-delay: 0.3s; }
+    .delay-4 { transition-delay: 0.4s; }
+    
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 992px) {
+      .hero-title {
+        font-size: 2.5rem;
+      }
+      
+      .dashboard-preview {
+        margin: 3rem auto 0;
+        transform: none;
+        max-width: 100%;
+      }
+      
+      .dashboard-preview:hover {
+        transform: none;
+      }
+    }
+    
     @media (max-width: 768px) {
       .hero-title {
-        font-size: 2rem;
+        font-size: 2.1rem;
       }
       
       .hero-subtitle {
@@ -631,22 +1354,85 @@
         justify-content: center;
       }
       
+      .section-title {
+        font-size: 1.85rem;
+      }
+      
+      .dashboard-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .dashboard-actions {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
       .login-card {
         margin: 0 1rem;
       }
       
-      .section-title h2 {
-        font-size: 1.75rem;
+      .security-badges {
+        gap: 1.5rem;
+      }
+      
+      .badge-item {
+        max-width: 120px;
+        padding: 1rem;
+      }
+      
+      .badge-icon {
+        width: 56px;
+        height: 56px;
+        font-size: 1.4rem;
       }
     }
     
     @media (max-width: 480px) {
-      .bank-logo span {
-        display: none;
+      .hero-section {
+        padding: 4rem 0 3rem;
       }
       
-      .navbar-nav {
-        padding-top: 1rem;
+      .hero-title {
+        font-size: 1.9rem;
+      }
+      
+      .hero-stats {
+        gap: 1.5rem;
+        justify-content: center;
+      }
+      
+      .stat-value {
+        font-size: 1.4rem;
+      }
+      
+      .dashboard-stats {
+        grid-template-columns: 1fr;
+      }
+      
+      .dashboard-actions {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+      }
+      
+      .action-btn {
+        padding: 0.85rem 0.25rem;
+        font-size: 0.8rem;
+      }
+      
+      .action-icon {
+        width: 38px;
+        height: 38px;
+        font-size: 0.95rem;
+      }
+      
+      .card-bank-header {
+        padding: 1.25rem;
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+      }
+      
+      .card-bank-body {
+        padding: 1.5rem;
       }
       
       .feature-grid {
@@ -654,12 +1440,165 @@
       }
     }
     
-    /* Utility Classes */
+    /* ===== FORM ENHANCEMENTS ===== */
+    .form-check {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin: 0.5rem 0;
+    }
+    
+    .form-check-input {
+      width: 1.3rem;
+      height: 1.3rem;
+      border-radius: 4px;
+      border: 1px solid #cbd5e1;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .form-check-input:checked {
+      background-color: var(--bank-accent);
+      border-color: var(--bank-accent);
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
+    }
+    
+    .form-check-input:focus {
+      box-shadow: 0 0 0 4px rgba(0, 201, 167, 0.2);
+      border-color: var(--bank-accent);
+    }
+    
+    .form-check-label {
+      font-size: 0.95rem;
+      color: var(--bank-dark);
+      cursor: pointer;
+      user-select: none;
+    }
+    
+    /* ===== NOTIFICATIONS ===== */
+    .notification {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      z-index: 9999;
+      background: white;
+      border-radius: var(--radius-md);
+      padding: 1rem 1.5rem;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      max-width: 380px;
+      transform: translateX(400px);
+      transition: transform 0.3s ease;
+      border-left: 4px solid var(--bank-accent);
+    }
+    
+    .notification.show {
+      transform: translateX(0);
+    }
+    
+    .notification.success { border-left-color: #22c55e; }
+    .notification.error { border-left-color: var(--bank-danger); }
+    .notification.warning { border-left-color: var(--bank-warning); }
+    
+    .notification-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    
+    .notification.success .notification-icon {
+      background: rgba(34, 197, 94, 0.15);
+      color: #22c55e;
+    }
+    
+    .notification.error .notification-icon {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+    }
+    
+    .notification.warning .notification-icon {
+      background: rgba(251, 191, 36, 0.15);
+      color: #f59e0b;
+    }
+    
+    .notification-content {
+      flex: 1;
+    }
+    
+    .notification-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 2px;
+      color: var(--bank-dark);
+    }
+    
+    .notification-message {
+      font-size: 0.85rem;
+      color: var(--bank-gray);
+      line-height: 1.4;
+    }
+    
+    .notification-close {
+      background: none;
+      border: none;
+      color: var(--bank-gray);
+      cursor: pointer;
+      padding: 0.25rem;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+      font-size: 1.1rem;
+    }
+    
+    .notification-close:hover {
+      color: var(--bank-dark);
+      background: #f1f5f9;
+    }
+    
+    /* ===== LOADING STATES ===== */
+    .skeleton {
+      background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: var(--radius-sm);
+    }
+    
+    .skeleton-text {
+      height: 1rem;
+      margin: 0.5rem 0;
+      border-radius: 4px;
+    }
+    
+    .skeleton-text.short { width: 40%; }
+    .skeleton-text.medium { width: 70%; }
+    .skeleton-text.long { width: 100%; }
+    
+    .skeleton-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      margin: 0 auto 1rem;
+    }
+    
+    .skeleton-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    /* ===== MISC ===== */
     .text-bank-primary { color: var(--bank-primary) !important; }
     .text-bank-accent { color: var(--bank-accent) !important; }
     .bg-bank-light { background: var(--bank-light) !important; }
     .shadow-bank { box-shadow: var(--shadow-md) !important; }
-    .rounded-bank { border-radius: 16px !important; }
+    .rounded-bank { border-radius: var(--radius-lg) !important; }
     
     .d-flex { display: flex !important; }
     .align-items-center { align-items: center !important; }
@@ -708,216 +1647,100 @@
       }
     }
     
-    /* Form Enhancements */
-    .form-label {
-      font-weight: 500;
-      margin-bottom: 0.5rem;
-      color: var(--bank-dark);
-      display: block;
-    }
-    
-    .input-group {
-      position: relative;
-    }
-    
-    .input-icon {
-      position: absolute;
-      left: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #888;
-      z-index: 2;
-    }
-    
-    .form-control-bank {
-      padding-left: 2.75rem !important;
-    }
-    
-    .form-check {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin: 0.75rem 0;
-    }
-    
-    .form-check-input {
-      width: 1.25rem;
-      height: 1.25rem;
-      border-radius: 4px;
-      border: 1px solid #ddd;
-    }
-    
-    .form-check-input:checked {
-      background-color: var(--bank-accent);
-      border-color: var(--bank-accent);
-    }
-    
-    /* Dashboard Preview */
-    .dashboard-preview {
-      background: white;
-      border-radius: 20px;
-      box-shadow: var(--shadow-lg);
-      overflow: hidden;
-      margin: 2rem 0;
-    }
-    
-    .dashboard-header {
-      background: linear-gradient(120deg, var(--bank-primary), var(--bank-secondary));
-      color: white;
-      padding: 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .dashboard-balance {
-      font-size: 1.75rem;
-      font-weight: 700;
-    }
-    
-    .dashboard-subtitle {
-      opacity: 0.9;
-      font-size: 0.95rem;
-    }
-    
-    .dashboard-stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 1rem;
-      padding: 1.5rem;
-      background: #f8fafc;
-    }
-    
-    .stat-item {
-      text-align: center;
-      padding: 1rem;
-      border-radius: 12px;
-      background: white;
-      box-shadow: var(--shadow-sm);
-    }
-    
-    .stat-value {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--bank-primary);
-      margin: 0.25rem 0;
-    }
-    
-    .stat-label {
-      font-size: 0.85rem;
-      color: #666;
-    }
-    
-    .dashboard-actions {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-      gap: 1rem;
-      padding: 0 1.5rem 1.5rem;
-    }
-    
-    .action-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 1rem;
-      border-radius: 12px;
-      background: #f8fafc;
-      text-decoration: none;
-      color: var(--bank-dark);
-      transition: var(--transition);
-      font-size: 0.9rem;
-      font-weight: 500;
-    }
-    
-    .action-btn:hover {
-      background: var(--bank-accent);
-      color: white;
-      transform: translateY(-2px);
-    }
-    
-    .action-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      background: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--bank-primary);
-      font-weight: bold;
-      font-size: 1.25rem;
-    }
-    
-    .action-btn:hover .action-icon {
-      background: rgba(255,255,255,0.2);
-      color: white;
-    }
-    
-    /* Notification Badge */
+    /* ===== BADGE ===== */
     .badge {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-width: 20px;
-      height: 20px;
-      border-radius: 10px;
+      min-width: 22px;
+      height: 22px;
+      border-radius: var(--radius-full);
       background: var(--bank-danger);
       color: white;
       font-size: 0.75rem;
-      font-weight: 600;
-      padding: 0 6px;
+      font-weight: 700;
+      padding: 0 7px;
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      box-shadow: 0 2px 6px rgba(230, 57, 70, 0.3);
     }
     
-    /* Loading Animation */
-    .loading {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(255,255,255,0.3);
+    /* ===== CAROUSEL ENHANCEMENTS ===== */
+    .carousel-indicators [data-bs-target] {
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
-      border-top-color: white;
-      animation: spin 1s linear infinite;
-      margin-right: 8px;
+      border: none;
+      background: rgba(255,255,255,0.5);
+      transition: var(--transition);
     }
     
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    .carousel-indicators .active {
+      background: var(--bank-accent);
+      width: 28px;
+      border-radius: var(--radius-full);
     }
     
-    /* Success Animation */
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      background-size: 70%;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
     }
     
-    .animate-pulse {
-      animation: pulse 2s infinite;
+    .carousel-control-prev,
+    .carousel-control-next {
+      width: 5%;
+      opacity: 0.7;
+      transition: var(--transition);
+    }
+    
+    .carousel-control-prev:hover,
+    .carousel-control-next:hover {
+      opacity: 1;
     }
   </style>
 </head>
 <body>
+  <!-- Notification Container -->
+  <div id="notification" class="notification" role="alert" aria-live="polite">
+    <div class="notification-icon">
+      <i class="fas fa-check"></i>
+    </div>
+    <div class="notification-content">
+      <div class="notification-title">Success</div>
+      <div class="notification-message">Operation completed successfully</div>
+    </div>
+    <button class="notification-close" aria-label="Close notification">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
   <!-- Header & Navigation -->
-  <header class="bank-header">
+  <header class="bank-header" id="header">
     <div class="container">
       <nav class="navbar navbar-expand-lg">
         <a href="#" class="bank-logo">
-          <div class="bank-logo-icon">SB</div>
-          <span>SecureBank</span>
+          <div class="bank-logo-icon">
+            <i class="fas fa-shield-halved"></i>
+          </div>
+          <span>SecureBank Pro</span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
-            <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+            <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
             <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
             <li class="nav-item"><a class="nav-link" href="#security">Security</a></li>
             <li class="nav-item"><a class="nav-link" href="#support">Support</a></li>
-            <li class="nav-item ms-lg-3">
-              <a href="#login" class="btn btn-bank-outline">
-                <i>🔐</i> Login
+            <li class="nav-item"><a class="nav-link" href="#login">Login</a></li>
+            <li class="nav-item ms-lg-2">
+              <a href="#login" class="nav-link nav-cta">
+                <i class="fas fa-user"></i> Get Started
               </a>
             </li>
           </ul>
@@ -927,61 +1750,104 @@
   </header>
 
   <!-- Hero Section -->
-  <section class="hero-section">
+  <section class="hero-section" id="home">
     <div class="container">
       <div class="row align-items-center">
-        <div class="col-md-6 hero-content animate-fade-in">
-          <h1 class="hero-title">Banking Made Simple, Secure & Smart</h1>
-          <p class="hero-subtitle">Experience next-generation online banking with advanced security, instant transfers, and 24/7 support—all in one place.</p>
+        <div class="col-md-6 hero-content" data-aos="fade-right" data-aos-duration="800">
+          <div class="hero-badge">
+            <i class="fas fa-bolt"></i>
+            <span>Next-Gen Banking Platform</span>
+          </div>
+          <h1 class="hero-title">Banking Made <span class="text-gradient">Simple, Secure & Smart</span></h1>
+          <p class="hero-subtitle">Experience the future of finance with AI-powered insights, instant global transfers, and military-grade security—all in one beautifully designed platform.</p>
           <div class="hero-cta">
-            <a href="#login" class="btn btn-bank">
-              <span>🚀</span> Get Started
+            <a href="#login" class="btn-bank">
+              <i class="fas fa-rocket"></i>
+              <span>Start Banking Now</span>
             </a>
-            <a href="#features" class="btn btn-bank-outline">
-              <span>✨</span> Explore Features
+            <a href="#features" class="btn-bank-outline">
+              <i class="fas fa-play-circle"></i>
+              <span>Watch Demo</span>
             </a>
           </div>
+          <div class="hero-stats">
+            <div class="stat-item">
+              <div class="stat-value">2M+</div>
+              <div class="stat-label">Active Users</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">99.99%</div>
+              <div class="stat-label">Uptime</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">150+</div>
+              <div class="stat-label">Countries</div>
+            </div>
+          </div>
         </div>
-        <div class="col-md-6 d-flex justify-content-center animate-fade-in animate-delay-1">
+        <div class="col-md-6 d-flex justify-content-center" data-aos="fade-left" data-aos-duration="800" data-aos-delay="200">
           <!-- Dashboard Preview -->
-          <div class="dashboard-preview w-100" style="max-width: 450px;">
+          <div class="dashboard-preview animate-float">
             <div class="dashboard-header">
-              <div>
-                <div class="dashboard-subtitle">Welcome back, Alex</div>
-                <div class="dashboard-balance">$24,853.42</div>
+              <div class="dashboard-user">
+                <div class="user-avatar">PD</div>
+                <div class="user-info">
+                  <div class="user-name">Paras Dhiman</div>
+                  <div class="user-status">Premium Member</div>
+                </div>
               </div>
-              <div class="badge">3</div>
+              <div class="dashboard-balance">
+                <div class="balance-label">Total Balance</div>
+                <div class="balance-amount">$24,853.42</div>
+              </div>
             </div>
             <div class="dashboard-stats">
-              <div class="stat-item">
-                <div class="stat-value">$1,240</div>
-                <div class="stat-label">Spent</div>
+              <div class="stat-card income">
+                <div class="stat-card-icon">
+                  <i class="fas fa-arrow-down"></i>
+                </div>
+                <div class="stat-card-value">$3,240</div>
+                <div class="stat-card-label">Income</div>
               </div>
-              <div class="stat-item">
-                <div class="stat-value">$3,500</div>
-                <div class="stat-label">Saved</div>
+              <div class="stat-card spent">
+                <div class="stat-card-icon">
+                  <i class="fas fa-arrow-up"></i>
+                </div>
+                <div class="stat-card-value">$1,850</div>
+                <div class="stat-card-label">Spent</div>
               </div>
-              <div class="stat-item">
-                <div class="stat-value">12</div>
-                <div class="stat-label">Transactions</div>
+              <div class="stat-card saved">
+                <div class="stat-card-icon">
+                  <i class="fas fa-piggy-bank"></i>
+                </div>
+                <div class="stat-card-value">$1,390</div>
+                <div class="stat-card-label">Saved</div>
               </div>
             </div>
             <div class="dashboard-actions">
-              <a href="#" class="action-btn">
-                <div class="action-icon">💸</div>
+              <a href="#" class="action-btn transfer">
+                <div class="action-icon">
+                  <i class="fas fa-exchange-alt"></i>
+                </div>
                 <span>Transfer</span>
               </a>
-              <a href="#" class="action-btn">
-                <div class="action-icon">📊</div>
-                <span>Analytics</span>
+              <a href="#" class="action-btn pay">
+                <div class="action-icon">
+                  <i class="fas fa-credit-card"></i>
+                </div>
+                <span>Pay Bills</span>
               </a>
-              <a href="#" class="action-btn">
-                <div class="action-icon">🧾</div>
-                <span>Statements</span>
+              <a href="#" class="action-btn invest">
+                <div class="action-icon">
+                  <i class="fas fa-chart-line"></i>
+                </div>
+                <span>Invest</span>
               </a>
-              <a href="#" class="action-btn">
-                <div class="action-icon">⚙️</div>
-                <span>Settings</span>
+              <a href="#" class="action-btn more">
+                <div class="action-icon">
+                  <i class="fas fa-ellipsis-h"></i>
+                </div>
+                <span>More</span>
               </a>
             </div>
           </div>
@@ -991,76 +1857,92 @@
   </section>
 
   <!-- Banking Cards Section -->
-  <section class="banking-cards">
+  <section class="banking-cards" id="features">
     <div class="container">
-      <div class="section-title">
-        <h2>Powerful Banking Tools</h2>
-        <p>Everything you need to manage your finances with confidence and ease</p>
+      <div class="section-header" data-aos="fade-up">
+        <div class="section-badge">
+          <i class="fas fa-star"></i>
+          <span>Premium Features</span>
+        </div>
+        <h2 class="section-title">Powerful Banking Tools</h2>
+        <p class="section-subtitle">Everything you need to manage your finances with confidence, intelligence, and ease</p>
       </div>
       
       <div class="row">
-        <div class="col-md-4 animate-fade-in">
-          <div class="card-bank">
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+          <div class="card-bank hover-lift">
             <div class="card-bank-header">
-              <div class="card-bank-icon">💳</div>
+              <div class="card-bank-icon">
+                <i class="fas fa-credit-card"></i>
+              </div>
               <h3 class="card-bank-title">Smart Cards</h3>
             </div>
             <div class="card-bank-body">
-              <p class="card-bank-text">Virtual and physical cards with real-time controls, spending limits, and instant freeze/unfreeze capabilities.</p>
-              <ul class="list-unstyled mb-3">
-                <li>✓ Instant card issuance</li>
-                <li>✓ Custom spending categories</li>
-                <li>✓ Travel notifications</li>
+              <p class="card-bank-text">Virtual and physical cards with real-time controls, spending limits, and instant freeze/unfreeze capabilities powered by AI fraud detection.</p>
+              <ul class="feature-list">
+                <li><i class="fas fa-check-circle"></i> Instant card issuance & activation</li>
+                <li><i class="fas fa-check-circle"></i> Custom spending categories & limits</li>
+                <li><i class="fas fa-check-circle"></i> Travel mode with geo-fencing</li>
+                <li><i class="fas fa-check-circle"></i> Real-time transaction alerts</li>
               </ul>
             </div>
             <div class="card-bank-footer">
-              <button class="btn-card">
-                <span>→</span> Manage Cards
-              </button>
+              <a href="#" class="btn-card">
+                <span>Manage Cards</span>
+                <i class="fas fa-arrow-right"></i>
+              </a>
             </div>
           </div>
         </div>
         
-        <div class="col-md-4 animate-fade-in animate-delay-1">
-          <div class="card-bank">
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+          <div class="card-bank hover-lift">
             <div class="card-bank-header">
-              <div class="card-bank-icon">🔄</div>
-              <h3 class="card-bank-title">Instant Transfers</h3>
+              <div class="card-bank-icon">
+                <i class="fas fa-globe-americas"></i>
+              </div>
+              <h3 class="card-bank-title">Global Transfers</h3>
             </div>
             <div class="card-bank-body">
-              <p class="card-bank-text">Send money globally in seconds with competitive exchange rates and transparent fee structure.</p>
-              <ul class="list-unstyled mb-3">
-                <li>✓ 150+ currencies supported</li>
-                <li>✓ Zero hidden fees</li>
-                <li>✓ Recurring payment scheduling</li>
+              <p class="card-bank-text">Send money to 150+ countries in seconds with real-time exchange rates, transparent fees, and blockchain-secured transactions.</p>
+              <ul class="feature-list">
+                <li><i class="fas fa-check-circle"></i> Real-time mid-market exchange rates</li>
+                <li><i class="fas fa-check-circle"></i> Zero hidden fees & transparent pricing</li>
+                <li><i class="fas fa-check-circle"></i> Recurring & scheduled transfers</li>
+                <li><i class="fas fa-check-circle"></i> Multi-currency account support</li>
               </ul>
             </div>
             <div class="card-bank-footer">
-              <button class="btn-card">
-                <span>→</span> Send Money
-              </button>
+              <a href="#" class="btn-card">
+                <span>Send Money</span>
+                <i class="fas fa-arrow-right"></i>
+              </a>
             </div>
           </div>
         </div>
         
-        <div class="col-md-4 animate-fade-in animate-delay-2">
-          <div class="card-bank">
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+          <div class="card-bank hover-lift">
             <div class="card-bank-header">
-              <div class="card-bank-icon">📈</div>
-              <h3 class="card-bank-title">Financial Insights</h3>
+              <div class="card-bank-icon">
+                <i class="fas fa-brain"></i>
+              </div>
+              <h3 class="card-bank-title">AI Financial Coach</h3>
             </div>
             <div class="card-bank-body">
-              <p class="card-bank-text">AI-powered analytics to understand your spending patterns and achieve your financial goals faster.</p>
-              <ul class="list-unstyled mb-3">
-                <li>✓ Personalized budgeting</li>
-                <li>✓ Savings goal tracking</li>
-                <li>✓ Investment recommendations</li>
+              <p class="card-bank-text">Personalized financial insights powered by machine learning to help you save more, invest smarter, and achieve your goals faster.</p>
+              <ul class="feature-list">
+                <li><i class="fas fa-check-circle"></i> Personalized budgeting & savings plans</li>
+                <li><i class="fas fa-check-circle"></i> Investment recommendations & risk analysis</li>
+                <li><i class="fas fa-check-circle"></i> Spending pattern analysis & alerts</li>
+                <li><i class="fas fa-check-circle"></i> Goal tracking with milestone celebrations</li>
               </ul>
             </div>
             <div class="card-bank-footer">
-              <button class="btn-card">
-                <span>→</span> View Insights
-              </button>
+              <a href="#" class="btn-card">
+                <span>Get Insights</span>
+                <i class="fas fa-arrow-right"></i>
+              </a>
             </div>
           </div>
         </div>
@@ -1071,27 +1953,33 @@
   <!-- Login Section -->
   <section id="login" class="login-section">
     <div class="container">
-      <div class="login-card">
+      <div class="login-card" data-aos="zoom-in" data-aos-duration="600">
         <div class="login-header">
           <h2 class="login-title">Welcome Back</h2>
           <p class="login-subtitle">Sign in to access your secure banking dashboard</p>
         </div>
         <div class="login-body">
-          <form id="loginForm">
+          <form id="loginForm" novalidate>
             <div class="form-floating">
               <label class="form-label" for="username">Username or Email</label>
               <div class="input-group">
-                <span class="input-icon">👤</span>
-                <input type="text" class="form-control form-control-bank" id="username" placeholder="Enter your username" required>
+                <span class="input-icon">
+                  <i class="fas fa-user"></i>
+                </span>
+                <input type="text" class="form-control form-control-bank" id="username" placeholder="Enter your username" required autocomplete="username">
               </div>
             </div>
             
             <div class="form-floating">
               <label class="form-label" for="password">Password</label>
               <div class="input-group">
-                <span class="input-icon">🔒</span>
-                <input type="password" class="form-control form-control-bank" id="password" placeholder="Enter your password" required>
-                <button type="button" class="btn btn-link text-bank-accent" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);padding:0;z-index:3;" id="togglePassword">Show</button>
+                <span class="input-icon">
+                  <i class="fas fa-lock"></i>
+                </span>
+                <input type="password" class="form-control form-control-bank" id="password" placeholder="Enter your password" required autocomplete="current-password">
+                <button type="button" class="btn-toggle-password" id="togglePassword" aria-label="Toggle password visibility">
+                  <i class="fas fa-eye"></i>
+                </button>
               </div>
             </div>
             
@@ -1101,21 +1989,33 @@
             </div>
             
             <button type="submit" class="btn-login" id="loginBtn">
-              <span id="loginText">Sign In Securely</span>
-              <span id="loginLoader" class="loading" style="display:none;"></span>
+              <span class="btn-text">Sign In Securely</span>
+              <span class="loading"></span>
             </button>
             
             <div class="login-options">
-              <a href="#">Forgot password?</a>
-              <a href="#">Create account</a>
+              <a href="#">
+                <i class="fas fa-key"></i>
+                <span>Forgot password?</span>
+              </a>
+              <a href="#">
+                <span>Create account</span>
+                <i class="fas fa-arrow-right"></i>
+              </a>
             </div>
             
             <div class="divider">or continue with</div>
             
             <div class="social-login">
-              <a href="#" class="btn-social" title="Sign in with Google">G</a>
-              <a href="#" class="btn-social" title="Sign in with Apple">A</a>
-              <a href="#" class="btn-social" title="Sign in with Microsoft">M</a>
+              <a href="#" class="btn-social google" aria-label="Sign in with Google">
+                <i class="fab fa-google"></i>
+              </a>
+              <a href="#" class="btn-social apple" aria-label="Sign in with Apple">
+                <i class="fab fa-apple"></i>
+              </a>
+              <a href="#" class="btn-social microsoft" aria-label="Sign in with Microsoft">
+                <i class="fab fa-microsoft"></i>
+              </a>
             </div>
           </form>
         </div>
@@ -1123,149 +2023,252 @@
       
       <!-- Security Badges -->
       <div class="security-badges" id="security">
-        <div class="badge-item">
-          <div class="badge-icon">🔒</div>
-          <div class="badge-text">256-bit Encryption</div>
+        <div class="badge-item" data-aos="fade-up" data-aos-delay="100">
+          <div class="badge-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <div class="badge-text">256-bit AES Encryption</div>
         </div>
-        <div class="badge-item">
-          <div class="badge-icon">🛡️</div>
-          <div class="badge-text">Fraud Protection</div>
+        <div class="badge-item" data-aos="fade-up" data-aos-delay="200">
+          <div class="badge-icon">
+            <i class="fas fa-fingerprint"></i>
+          </div>
+          <div class="badge-text">Biometric Authentication</div>
         </div>
-        <div class="badge-item">
-          <div class="badge-icon">✅</div>
-          <div class="badge-text">Biometric Login</div>
+        <div class="badge-item" data-aos="fade-up" data-aos-delay="300">
+          <div class="badge-icon">
+            <i class="fas fa-user-shield"></i>
+          </div>
+          <div class="badge-text">Fraud Protection AI</div>
         </div>
-        <div class="badge-item">
-          <div class="badge-icon">🌐</div>
-          <div class="badge-text">GDPR Compliant</div>
+        <div class="badge-item" data-aos="fade-up" data-aos-delay="400">
+          <div class="badge-icon">
+            <i class="fas fa-globe-europe"></i>
+          </div>
+          <div class="badge-text">GDPR & SOC 2 Compliant</div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Features Section -->
-  <section id="features" class="features-section">
+  <section class="features-section" id="support">
     <div class="container">
-      <div class="section-title">
-        <h2>Why Choose SecureBank?</h2>
-        <p>Industry-leading security combined with intuitive design for the best banking experience</p>
+      <div class="section-header" data-aos="fade-up">
+        <div class="section-badge">
+          <i class="fas fa-award"></i>
+          <span>Why Choose Us</span>
+        </div>
+        <h2 class="section-title">Industry-Leading Security & Innovation</h2>
+        <p class="section-subtitle">We combine cutting-edge technology with uncompromising security to deliver the best banking experience</p>
       </div>
       
       <div class="feature-grid">
-        <div class="feature-card animate-fade-in">
-          <div class="feature-icon">🔐</div>
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+          <div class="feature-icon">
+            <i class="fas fa-lock"></i>
+          </div>
           <h3 class="feature-title">Military-Grade Security</h3>
-          <p class="feature-text">End-to-end encryption, multi-factor authentication, and continuous monitoring to protect your assets.</p>
+          <p class="feature-text">End-to-end encryption, multi-factor authentication, and continuous AI-powered monitoring to protect your assets 24/7.</p>
         </div>
         
-        <div class="feature-card animate-fade-in animate-delay-1">
-          <div class="feature-icon">⚡</div>
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+          <div class="feature-icon">
+            <i class="fas fa-bolt"></i>
+          </div>
           <h3 class="feature-title">Lightning Fast</h3>
-          <p class="feature-text">Instant transactions, real-time notifications, and sub-second page loads for seamless banking.</p>
+          <p class="feature-text">Instant transactions, real-time notifications, and sub-second page loads powered by our global edge network.</p>
         </div>
         
-        <div class="feature-card animate-fade-in animate-delay-2">
-          <div class="feature-icon">🌍</div>
-          <h3 class="feature-title">Global Access</h3>
-          <p class="feature-text">Bank from anywhere in the world with support for 150+ currencies and 24/7 multilingual support.</p>
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+          <div class="feature-icon">
+            <i class="fas fa-headset"></i>
+          </div>
+          <h3 class="feature-title">24/7 Expert Support</h3>
+          <p class="feature-text">Dedicated human support available anytime via chat, call, or video—no bots, no wait times, just solutions.</p>
         </div>
         
-        <div class="feature-card animate-fade-in animate-delay-3">
-          <div class="feature-icon">🤖</div>
-          <h3 class="feature-title">AI Assistant</h3>
-          <p class="feature-text">Smart financial insights, automated savings, and personalized recommendations powered by AI.</p>
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+          <div class="feature-icon">
+            <i class="fas fa-leaf"></i>
+          </div>
+          <h3 class="feature-title">Carbon Neutral</h3>
+          <p class="feature-text">We offset 100% of our carbon footprint and plant a tree for every new account—banking that cares for the planet.</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Footer -->
-  <footer class="bank-footer" id="support">
+  <footer class="bank-footer" id="footer">
     <div class="container">
       <div class="footer-grid">
         <div class="footer-col">
-          <h4>SecureBank</h4>
-          <p style="color:rgba(255,255,255,0.7);margin-top:1rem;line-height:1.5;">
-            Redefining digital banking with security, simplicity, and innovation at our core.
+          <h4>SecureBank Pro</h4>
+          <p style="color:rgba(255,255,255,0.75);margin-top:1.25rem;line-height:1.7;font-size:0.95rem;">
+            Redefining digital banking with security, simplicity, and innovation at our core. Trusted by millions worldwide.
           </p>
           <div class="footer-social">
-            <a href="#" aria-label="Facebook">f</a>
-            <a href="#" aria-label="Twitter">t</a>
-            <a href="#" aria-label="LinkedIn">in</a>
-            <a href="#" aria-label="Instagram">ig</a>
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
           </div>
         </div>
         
         <div class="footer-col">
           <h4>Products</h4>
           <ul class="footer-links">
-            <li><a href="#">Personal Banking</a></li>
-            <li><a href="#">Business Accounts</a></li>
-            <li><a href="#">Investment Services</a></li>
-            <li><a href="#">Credit Cards</a></li>
-            <li><a href="#">Loans & Mortgages</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Personal Banking</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Business Accounts</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Investment Services</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Credit Cards</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Loans & Mortgages</a></li>
           </ul>
         </div>
         
         <div class="footer-col">
           <h4>Support</h4>
           <ul class="footer-links">
-            <li><a href="#">Help Center</a></li>
-            <li><a href="#">Contact Us</a></li>
-            <li><a href="#">Security Center</a></li>
-            <li><a href="#">Status Page</a></li>
-            <li><a href="#">Community Forum</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Help Center</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Contact Us</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Security Center</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Status Page</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Community Forum</a></li>
           </ul>
         </div>
         
         <div class="footer-col">
           <h4>Legal</h4>
           <ul class="footer-links">
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Terms of Service</a></li>
-            <li><a href="#">Cookie Policy</a></li>
-            <li><a href="#">Compliance</a></li>
-            <li><a href="#">Accessibility</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Privacy Policy</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Terms of Service</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Cookie Policy</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Compliance</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Accessibility</a></li>
           </ul>
         </div>
       </div>
       
       <div class="footer-bottom">
-        <p class="copyright">© 2024 SecureBank. All rights reserved. Member FDIC.</p>
-        <p>SecureBank is a fictional demonstration portal. No real financial services are provided.</p>
+        <p class="copyright">© 2024 SecureBank Pro. All rights reserved. Member FDIC. NMLS #123456</p>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Cookie Settings</a>
+          <a href="#">Accessibility</a>
+        </div>
+        <p style="font-size:0.85rem;opacity:0.8;margin-top:0.5rem;">
+          SecureBank is a demonstration portal. No real financial services are provided.
+        </p>
       </div>
     </div>
   </footer>
 
   <!-- JavaScript Functionality -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
   <script>
-    // DOM Content Loaded
+    // ===== DOM CONTENT LOADED =====
     document.addEventListener('DOMContentLoaded', function() {
-      // Initialize animations on scroll
-      const animateOnScroll = () => {
-        const elements = document.querySelectorAll('.animate-fade-in');
-        elements.forEach(el => {
-          const elementTop = el.getBoundingClientRect().top;
-          const elementVisible = 150;
-          if (elementTop < window.innerHeight - elementVisible) {
-            el.style.opacity = 1;
-            el.style.transform = 'translateY(0)';
-          }
-        });
-      };
+      console.log('✅ SecureBank Pro Portal initialized');
+      console.log('🔒 Security protocols: ACTIVE');
+      console.log('✨ UI enhancements: LOADED');
       
-      // Set initial state for animations
-      document.querySelectorAll('.animate-fade-in').forEach(el => {
-        el.style.opacity = 0;
-        el.style.transform = 'translateY(20px)';
-        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      // Initialize AOS animations
+      AOS.init({
+        duration: 700,
+        easing: 'ease-out-cubic',
+        once: true,
+        offset: 50
       });
       
-      // Run animation check on load and scroll
-      animateOnScroll();
-      window.addEventListener('scroll', animateOnScroll);
+      // Initialize GLightbox for image galleries (if needed)
+      const lightbox = GLightbox({
+        selector: '.glightbox',
+        touchNavigation: true,
+        loop: false,
+        autoplayVideos: true
+      });
       
-      // Password visibility toggle
+      // ===== HEADER SCROLL EFFECT =====
+      const header = document.getElementById('header');
+      let lastScroll = 0;
+      
+      window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset;
+        
+        // Add scrolled class when scrolled down
+        if (currentScroll > 50) {
+          header.classList.add('scrolled');
+        } else {
+          header.classList.remove('scrolled');
+        }
+        
+        // Hide/show header on scroll direction (optional enhancement)
+        if (currentScroll <= 0) {
+          header.classList.remove('scrolled');
+          return;
+        }
+        
+        lastScroll = currentScroll;
+      }, { passive: true });
+      
+      // ===== NAVIGATION ACTIVE STATE =====
+      const sections = document.querySelectorAll('section[id]');
+      const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+      
+      function updateActiveNav() {
+        let current = '';
+        
+        sections.forEach(section => {
+          const sectionTop = section.offsetTop - 100;
+          if (pageYOffset >= sectionTop) {
+            current = section.getAttribute('id');
+          }
+        });
+        
+        navLinks.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href')?.substring(1) === current) {
+            link.classList.add('active');
+          }
+        });
+      }
+      
+      window.addEventListener('scroll', updateActiveNav, { passive: true });
+      updateActiveNav(); // Initial call
+      
+      // ===== SMOOTH SCROLLING FOR ANCHOR LINKS =====
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+          const targetId = this.getAttribute('href');
+          
+          if (targetId === '#') return;
+          
+          const targetElement = document.querySelector(targetId);
+          if (targetElement) {
+            // Close mobile menu if open
+            const navbarCollapse = document.querySelector('.navbar-collapse');
+            if (navbarCollapse?.classList.contains('show')) {
+              const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse);
+              bsCollapse?.hide();
+            }
+            
+            // Smooth scroll to target
+            targetElement.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+            
+            // Update URL hash without jumping
+            history.pushState(null, null, targetId);
+          }
+        });
+      });
+      
+      // ===== PASSWORD VISIBILITY TOGGLE =====
       const togglePassword = document.getElementById('togglePassword');
       const passwordField = document.getElementById('password');
       
@@ -1273,182 +2276,593 @@
         togglePassword.addEventListener('click', function() {
           const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
           passwordField.setAttribute('type', type);
-          this.textContent = type === 'password' ? 'Show' : 'Hide';
+          
+          // Toggle icon
+          const icon = this.querySelector('i');
+          if (icon) {
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+          }
+          
+          // Update aria-label
+          this.setAttribute('aria-label', 
+            type === 'password' ? 'Show password' : 'Hide password'
+          );
         });
       }
       
-      // Login form handling
+      // ===== LOGIN FORM HANDLING =====
       const loginForm = document.getElementById('loginForm');
       const loginBtn = document.getElementById('loginBtn');
-      const loginText = document.getElementById('loginText');
-      const loginLoader = document.getElementById('loginLoader');
       
       if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
+        loginForm.addEventListener('submit', async function(e) {
           e.preventDefault();
           
+          // Get form values
+          const username = document.getElementById('username').value.trim();
+          const password = document.getElementById('password').value;
+          const rememberMe = document.getElementById('rememberMe').checked;
+          
+          // Basic validation
+          if (!username || !password) {
+            showNotification('Please fill in all fields', 'error');
+            return;
+          }
+          
+          if (password.length < 8) {
+            showNotification('Password must be at least 8 characters', 'error');
+            return;
+          }
+          
           // Show loading state
-          loginText.style.display = 'none';
-          loginLoader.style.display = 'inline-block';
+          loginBtn.classList.add('loading');
           loginBtn.disabled = true;
           
-          // Simulate API call
-          setTimeout(() => {
-            // Reset button state
-            loginText.style.display = 'inline';
-            loginLoader.style.display = 'none';
-            loginBtn.disabled = false;
+          try {
+            // Simulate API call with realistic delay
+            await new Promise(resolve => setTimeout(resolve, 1800));
             
-            // Show success message (in real app, redirect to dashboard)
-            alert('✅ Login successful! Redirecting to your secure dashboard...');
-            
-            // In a real application, you would:
-            // 1. Send credentials securely to backend
+            // In a real app, you would:
+            // 1. Send credentials securely to backend via HTTPS POST
             // 2. Handle authentication response
-            // 3. Store auth token securely (httpOnly cookie)
+            // 3. Store auth token securely (httpOnly cookie preferred)
             // 4. Redirect to dashboard
-          }, 1500);
+            
+            // Demo success flow
+            showNotification('Authentication successful! Redirecting...', 'success');
+            
+            // Simulate redirect delay
+            setTimeout(() => {
+              // Reset form state
+              loginBtn.classList.remove('loading');
+              loginBtn.disabled = false;
+              
+              // Show dashboard preview animation
+              const dashboardPreview = document.querySelector('.dashboard-preview');
+              if (dashboardPreview) {
+                dashboardPreview.style.animation = 'none';
+                setTimeout(() => {
+                  dashboardPreview.style.animation = 'float 6s ease-in-out infinite';
+                }, 10);
+              }
+              
+              // In production: window.location.href = '/dashboard';
+              alert('✅ Login successful!\n\nIn a production environment, you would be redirected to your secure dashboard now.');
+              
+            }, 1200);
+            
+          } catch (error) {
+            console.error('Login error:', error);
+            showNotification('Authentication failed. Please try again.', 'error');
+            
+            // Reset button state on error
+            loginBtn.classList.remove('loading');
+            loginBtn.disabled = false;
+          }
         });
       }
       
-      // Smooth scrolling for anchor links
-      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-          e.preventDefault();
-          const target = document.querySelector(this.getAttribute('href'));
-          if (target) {
-            target.scrollIntoView({
-              behavior: 'smooth',
-              block: 'start'
-            });
-          }
-        });
-      });
-      
-      // Navbar active state on scroll
-      const sections = document.querySelectorAll('section');
-      const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
-      
-      window.addEventListener('scroll', () => {
-        let current = '';
-        sections.forEach(section => {
-          const sectionTop = section.offsetTop;
-          if (pageYOffset >= (sectionTop - 200)) {
-            current = section.getAttribute('id');
-          }
-        });
+      // ===== NOTIFICATION SYSTEM =====
+      function showNotification(message, type = 'success') {
+        const notification = document.getElementById('notification');
+        if (!notification) return;
         
-        navLinks.forEach(link => {
-          link.classList.remove('active');
-          if (link.getAttribute('href').substring(1) === current) {
-            link.classList.add('active');
-          }
-        });
-      });
-      
-      // Form validation enhancements
-      const inputs = document.querySelectorAll('.form-control-bank');
-      inputs.forEach(input => {
-        input.addEventListener('blur', function() {
-          if (this.value.trim() !== '') {
-            this.style.borderColor = '#00b894';
-          }
-        });
+        // Set content and type
+        const titleEl = notification.querySelector('.notification-title');
+        const messageEl = notification.querySelector('.notification-message');
+        const iconEl = notification.querySelector('.notification-icon i');
         
+        // Update based on type
+        switch(type) {
+          case 'success':
+            if (titleEl) titleEl.textContent = 'Success';
+            if (iconEl) {
+              iconEl.className = 'fas fa-check';
+              notification.className = 'notification success';
+            }
+            break;
+          case 'error':
+            if (titleEl) titleEl.textContent = 'Error';
+            if (iconEl) {
+              iconEl.className = 'fas fa-exclamation-triangle';
+              notification.className = 'notification error';
+            }
+            break;
+          case 'warning':
+            if (titleEl) titleEl.textContent = 'Warning';
+            if (iconEl) {
+              iconEl.className = 'fas fa-exclamation-circle';
+              notification.className = 'notification warning';
+            }
+            break;
+        }
+        
+        if (messageEl) messageEl.textContent = message;
+        
+        // Show notification
+        notification.classList.add('show');
+        
+        // Auto-hide after 5 seconds
+        const timeoutId = setTimeout(() => {
+          notification.classList.remove('show');
+        }, 5000);
+        
+        // Close button handler
+        const closeBtn = notification.querySelector('.notification-close');
+        if (closeBtn) {
+          const closeHandler = () => {
+            notification.classList.remove('show');
+            clearTimeout(timeoutId);
+            closeBtn.removeEventListener('click', closeHandler);
+          };
+          closeBtn.addEventListener('click', closeHandler);
+        }
+      }
+      
+      // ===== FORM INPUT ENHANCEMENTS =====
+      const formInputs = document.querySelectorAll('.form-control-bank');
+      formInputs.forEach(input => {
+        // Add focus/blur effects
         input.addEventListener('focus', function() {
-          this.style.borderColor = '#00b894';
+          this.parentElement?.classList.add('focused');
         });
+        
+        input.addEventListener('blur', function() {
+          this.parentElement?.classList.remove('focused');
+          
+          // Real-time validation (basic)
+          if (this.validity.valid && this.value.trim() !== '') {
+            this.style.borderColor = '#00c9a7';
+          }
+        });
+        
+        // Handle paste for password field (security enhancement)
+        if (input.type === 'password') {
+          input.addEventListener('paste', function(e) {
+            e.preventDefault();
+            showNotification('Pasting into password field is disabled for security', 'warning');
+          });
+        }
       });
       
-      // Simulate dashboard interactivity (demo only)
+      // ===== INTERACTIVE ELEMENTS =====
+      // Action buttons in dashboard preview
       const actionBtns = document.querySelectorAll('.action-btn');
       actionBtns.forEach(btn => {
         btn.addEventListener('click', function(e) {
           e.preventDefault();
-          const action = this.querySelector('span:last-child').textContent;
-          alert(`🚀 ${action} feature would open here in the live application.`);
+          const action = this.querySelector('span:last-child')?.textContent || 'Action';
+          showNotification(`${action} feature would open here in the live application`, 'success');
         });
       });
       
-      // Security badge hover effects
-      const badgeItems = document.querySelectorAll('.badge-item');
-      badgeItems.forEach(item => {
-        item.addEventListener('mouseenter', function() {
-          this.querySelector('.badge-icon').style.transform = 'scale(1.1)';
-          this.querySelector('.badge-icon').style.transition = 'transform 0.3s ease';
-        });
-        
-        item.addEventListener('mouseleave', function() {
-          this.querySelector('.badge-icon').style.transform = 'scale(1)';
+      // Card buttons
+      const cardBtns = document.querySelectorAll('.btn-card');
+      cardBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          const cardTitle = this.closest('.card-bank')?.querySelector('.card-bank-title')?.textContent || 'Feature';
+          showNotification(`${cardTitle} management interface would open here`, 'success');
         });
       });
       
-      console.log('✅ SecureBank Portal loaded successfully');
-      console.log('🔒 All security protocols initialized');
-      console.log('✨ Ready for user interaction');
-    });
-    
-    // Global error handling for demo
-    window.addEventListener('error', function(e) {
-      console.warn('⚠️ Demo mode: Error caught and handled gracefully', e.message);
-      return true; // Prevent default error handling
-    });
-    
-    // Service Worker registration placeholder (for PWA capabilities)
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        // navigator.serviceWorker.register('/sw.js')
-        //   .then(reg => console.log('✅ Service Worker registered', reg))
-        //   .catch(err => console.warn('⚠️ Service Worker registration failed', err));
-      });
-    }
-  </script>
-  
-  <!-- Bootstrap JS (Embedded minimal version for dropdowns) -->
-  <script>
-    // Minimal Bootstrap JS for navbar toggle
-    document.addEventListener('DOMContentLoaded', function() {
-      const navbarToggler = document.querySelector('.navbar-toggler');
-      const navbarCollapse = document.querySelector('.navbar-collapse');
-      
-      if (navbarToggler && navbarCollapse) {
-        navbarToggler.addEventListener('click', function() {
-          const expanded = this.getAttribute('aria-expanded') === 'true' || false;
-          this.setAttribute('aria-expanded', !expanded);
-          navbarCollapse.classList.toggle('show');
+      // Social login buttons
+      const socialBtns = document.querySelectorAll('.btn-social');
+      socialBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          const provider = this.classList.contains('google') ? 'Google' : 
+                          this.classList.contains('apple') ? 'Apple' : 'Microsoft';
+          showNotification(`${provider} authentication would initialize here`, 'success');
         });
-        
-        // Close menu when clicking a link on mobile
-        document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
-          link.addEventListener('click', () => {
-            if (window.innerWidth < 992) {
-              navbarCollapse.classList.remove('show');
-              navbarToggler.setAttribute('aria-expanded', 'false');
-            }
+      });
+      
+      // ===== SCROLL ANIMATIONS (Fallback for AOS) =====
+      const animateOnScrollElements = document.querySelectorAll('.animate-on-scroll');
+      
+      function checkScrollAnimations() {
+        animateOnScrollElements.forEach(el => {
+          const elementTop = el.getBoundingClientRect().top;
+          const elementVisible = 150;
+          
+          if (elementTop < window.innerHeight - elementVisible) {
+            el.classList.add('visible');
+          }
+        });
+      }
+      
+      // Initial check and scroll listener
+      checkScrollAnimations();
+      window.addEventListener('scroll', checkScrollAnimations, { passive: true });
+      
+      // ===== KEYBOARD NAVIGATION ENHANCEMENTS =====
+      // Improve focus visibility for accessibility
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Tab') {
+          document.body.classList.add('keyboard-nav');
+        }
+      });
+      
+      document.addEventListener('mousedown', () => {
+        document.body.classList.remove('keyboard-nav');
+      });
+      
+      // Add CSS for keyboard navigation focus
+      const style = document.createElement('style');
+      style.textContent = `
+        .keyboard-nav a:focus,
+        .keyboard-nav button:focus,
+        .keyboard-nav input:focus,
+        .keyboard-nav .form-check-input:focus {
+          outline: 3px solid #00c9a7 !important;
+          outline-offset: 2px !important;
+        }
+      `;
+      document.head.appendChild(style);
+      
+      // ===== PERFORMANCE: LAZY LOAD IMAGES (if any) =====
+      // Placeholder for future image lazy loading implementation
+      if ('loading' in HTMLImageElement.prototype) {
+        // Native lazy loading supported
+        document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+          img.addEventListener('error', function() {
+            // Fallback for failed lazy loads
+            this.src = this.dataset.fallback || this.src;
           });
         });
       }
       
-      // Handle dropdowns manually for demo
-      document.querySelectorAll('.dropdown-toggle').forEach(toggle => {
-        toggle.addEventListener('click', function(e) {
-          e.preventDefault();
-          const dropdown = this.nextElementSibling;
-          if (dropdown && dropdown.classList.contains('dropdown-menu')) {
-            dropdown.classList.toggle('show');
+      // ===== SERVICE WORKER REGISTRATION (PWA) =====
+      if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
+        window.addEventListener('load', () => {
+          // navigator.serviceWorker.register('/sw.js')
+          //   .then(reg => console.log('✅ Service Worker registered', reg.scope))
+          //   .catch(err => console.warn('⚠️ Service Worker registration failed', err));
+          console.log('📱 PWA capabilities ready (service worker registration commented for demo)');
+        });
+      }
+      
+      // ===== ERROR HANDLING =====
+      window.addEventListener('error', function(e) {
+        console.warn('⚠️ Demo mode: Error caught and handled gracefully', {
+          message: e.message,
+          filename: e.filename,
+          lineno: e.lineno
+        });
+        // In production: send to error tracking service
+        return true; // Prevent default error handling
+      });
+      
+      // ===== UNHANDLED PROMISE REJECTIONS =====
+      window.addEventListener('unhandledrejection', function(e) {
+        console.warn('⚠️ Unhandled promise rejection:', e.reason);
+        e.preventDefault(); // Prevent console spam in production
+      });
+      
+      // ===== INITIALIZE TOOLTIPS (if using Bootstrap JS) =====
+      // Note: Bootstrap JS not included to keep single-file, but structure ready
+      // const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+      // tooltipTriggerList.map(function (tooltipTriggerEl) {
+      //   return new bootstrap.Tooltip(tooltipTriggerEl)
+      // })
+      
+      console.log('✨ All interactive features initialized successfully');
+    });
+    
+    // ===== GLOBAL UTILITY FUNCTIONS =====
+    
+    // Debounce function for performance optimization
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+    
+    // Throttle function for scroll/resize events
+    function throttle(func, limit) {
+      let inThrottle;
+      return function(...args) {
+        if (!inThrottle) {
+          func.apply(this, args);
+          inThrottle = true;
+          setTimeout(() => inThrottle = false, limit);
+        }
+      };
+    }
+    
+    // Format currency for display
+    function formatCurrency(amount, currency = 'USD') {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: currency,
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(amount);
+    }
+    
+    // Validate email format
+    function isValidEmail(email) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(String(email).toLowerCase());
+    }
+    
+    // Generate secure random string (for demo tokens)
+    function generateSecureToken(length = 32) {
+      const array = new Uint8Array(length);
+      crypto.getRandomValues(array);
+      return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+    }
+    
+    // Expose utilities globally for debugging/extension
+    window.SecureBankUtils = {
+      debounce,
+      throttle,
+      formatCurrency,
+      isValidEmail,
+      generateSecureToken,
+      showNotification: function(msg, type) {
+        // Wrapper for notification system
+        if (typeof showNotification === 'function') {
+          showNotification(msg, type);
+        }
+      }
+    };
+    
+    console.log('🔧 SecureBank utilities loaded');
+  </script>
+  
+  <!-- SmartMenus jQuery Plugin Bootstrap 4 Addon (from your file) -->
+  <script>
+/*!
+ * SmartMenus jQuery Plugin Bootstrap 4 Addon - v0.1.1 - November 3, 2022
+ * http://www.smartmenus.org/
+ *
+ * Copyright Vasil Dinkov, Vadikom Web Ltd.
+ * http://vadikom.com
+ *
+ * Licensed MIT
+ */
+
+(function (factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD
+    define(['jquery', 'smartmenus'], factory);
+  } else if (typeof module === 'object' && typeof module.exports === 'object') {
+    // CommonJS
+    module.exports = factory(require('jquery'));
+  } else {
+    // Global jQuery
+    factory(jQuery);
+  }
+}(function ($) {
+
+  $.extend($.SmartMenus.Bootstrap = {}, {
+    keydownFix: false,
+    init: function () {
+      // init all navbars that don't have the "data-sm-skip" attribute set
+      var $navbars = $('ul.navbar-nav:not([data-sm-skip])');
+      $navbars.each(function () {
+        var $this = $(this),
+          obj = $this.data('smartmenus');
+        // if this navbar is not initialized
+        if (!obj) {
+          var skipBehavior = $this.is('[data-sm-skip-collapsible-behavior]'),
+            rightAligned = $this.hasClass('ml-auto') || $this.prevAll('.mr-auto').length > 0;
+
+          $this.smartmenus({
+            // these are some good default options that should work for all
+            subMenusSubOffsetX: 2,
+            subMenusSubOffsetY: -9,
+            subIndicators: !skipBehavior,
+            collapsibleShowFunction: null,
+            collapsibleHideFunction: null,
+            rightToLeftSubMenus: rightAligned,
+            bottomToTopSubMenus: $this.closest('.fixed-bottom').length > 0,
+            // custom option(s) for the Bootstrap 4 addon
+            bootstrapHighlightClasses: 'text-dark bg-light'
+          })
+            .on({
+              // set/unset proper Bootstrap classes for some menu elements
+              'show.smapi': function (e, menu) {
+                var $menu = $(menu),
+                  $scrollArrows = $menu.dataSM('scroll-arrows');
+                if ($scrollArrows) {
+                  $scrollArrows.css('background-color', $menu.css('background-color'));
+                }
+                $menu.parent().addClass('show');
+                if (obj.opts.keepHighlighted && $menu.dataSM('level') > 2) {
+                  $menu.prevAll('a').addClass(obj.opts.bootstrapHighlightClasses);
+                }
+              },
+              'hide.smapi': function (e, menu) {
+                var $menu = $(menu);
+                $menu.parent().removeClass('show');
+                if (obj.opts.keepHighlighted && $menu.dataSM('level') > 2) {
+                  $menu.prevAll('a').removeClass(obj.opts.bootstrapHighlightClasses);
+                }
+              }
+            });
+
+          obj = $this.data('smartmenus');
+
+          function onInit() {
+            // set Bootstrap's "active" class to SmartMenus "current" items (should someone decide to enable markCurrentItem: true)
+            $this.find('a.current').each(function () {
+              var $this = $(this);
+              // dropdown items require the class to be set to the A's while for nav items it should be set to the parent LI's
+              ($this.hasClass('dropdown-item') ? $this : $this.parent()).addClass('active');
+            });
+            // parent items fixes
+            $this.find('a.has-submenu').each(function () {
+              var $this = $(this);
+              // remove Bootstrap required attributes that might cause conflicting issues with the SmartMenus script
+              if ($this.is('[data-toggle="dropdown"]')) {
+                $this.dataSM('bs-data-toggle-dropdown', true).removeAttr('data-toggle');
+              }
+              // remove Bootstrap's carets generating class
+              if (!skipBehavior && $this.hasClass('dropdown-toggle')) {
+                $this.dataSM('bs-dropdown-toggle', true).removeClass('dropdown-toggle');
+              }
+            });
+          }
+
+          onInit();
+
+          function onBeforeDestroy() {
+            $this.find('a.current').each(function () {
+              var $this = $(this);
+              ($this.hasClass('active') ? $this : $this.parent()).removeClass('active');
+            });
+            $this.find('a.has-submenu').each(function () {
+              var $this = $(this);
+              if ($this.dataSM('bs-dropdown-toggle')) {
+                $this.addClass('dropdown-toggle').removeDataSM('bs-dropdown-toggle');
+              }
+              if ($this.dataSM('bs-data-toggle-dropdown')) {
+                $this.attr('data-toggle', 'dropdown').removeDataSM('bs-data-toggle-dropdown');
+              }
+            });
+          }
+
+          // custom "refresh" method for Bootstrap
+          obj.refresh = function () {
+            $.SmartMenus.prototype.refresh.call(this);
+            onInit();
+            // update collapsible detection
+            detectCollapsible(true);
+          };
+
+          // custom "destroy" method for Bootstrap
+          obj.destroy = function (refresh) {
+            onBeforeDestroy();
+            $.SmartMenus.prototype.destroy.call(this, refresh);
+          };
+
+          // keep Bootstrap's default behavior (i.e. use the whole item area just as a sub menu toggle)
+          if (skipBehavior) {
+            obj.opts.collapsibleBehavior = 'toggle';
+          }
+
+          // onresize detect when the navbar becomes collapsible and add it the "sm-collapsible" class
+          var winW;
+          function detectCollapsible(force) {
+            //var portwidth = '992px';
+            var newW = obj.getViewportWidth();
+            if (newW != winW || force) {
+              if (obj.isCollapsible()) {
+                $this.addClass('sm-collapsible');
+              } else {
+                $this.removeClass('sm-collapsible');
+              }
+              winW = newW;
+            }
+          }
+          detectCollapsible();
+          $(window).on('resize.smartmenus' + obj.rootId, detectCollapsible);
+        }
+      });
+      // keydown fix for Bootstrap 4 conflict
+      if ($navbars.length && !$.SmartMenus.Bootstrap.keydownFix) {
+        // unhook BS keydown handler for all dropdowns
+        $(document).off('keydown.bs.dropdown.data-api', '.dropdown-menu');
+        if ($.fn.dropdown && $.fn.dropdown.Constructor && typeof $.fn.dropdown.Constructor._dataApiKeydownHandler == 'function') {
+          $(document).on('keydown.bs.dropdown.data-api', '.dropdown-menu.show', $.fn.dropdown.Constructor._dataApiKeydownHandler);
+        }
+        $.SmartMenus.Bootstrap.keydownFix = true;
+      }
+    }
+  });
+
+
+  $($.SmartMenus.Bootstrap.init);
+
+  return $;
+}));
+  </script>
+  
+  <script>
+/*! SmartMenus jQuery Plugin - v1.2.1 - November 3, 2022
+ * http://www.smartmenus.org/
+ * Copyright Vasil Dinkov, Vadikom Web Ltd. http://vadikom.com; Licensed MIT */!function(a){"function"==typeof define&&define.amd?define(["jquery"],a):"object"==typeof module&&"object"==typeof module.exports?module.exports=a(require("jquery")):a(jQuery)}(function(a){function b(b){var i=".smartmenus_mouse";if(h||b)h&&b&&(a(document).off(i),h=!1);else{var j=!0,k=null,l={mousemove:function(b){var c={x:b.pageX,y:b.pageY,timeStamp:(new Date).getTime()};if(k){var d=Math.abs(k.x-c.x),g=Math.abs(k.y-c.y);if((d>0||g>0)&&d<=4&&g<=4&&c.timeStamp-k.timeStamp<=300&&(f=!0,j)){var h=a(b.target).closest("a");h.is("a")&&a.each(e,function(){if(a.contains(this.$root[0],h[0]))return this.itemEnter({currentTarget:h[0]}),!1}),j=!1}}k=c}};l[g?"touchstart":"pointerover pointermove pointerout MSPointerOver MSPointerMove MSPointerOut"]=function(a){c(a.originalEvent)&&(f=!1)},a(document).on(d(l,i)),h=!0}}function c(a){return!/^(4|mouse)$/.test(a.pointerType)}function d(a,b){b||(b="");var c={};for(var d in a)c[d.split(" ").join(b+" ")+b]=a[d];return c}var e=[],f=!1,g="ontouchstart"in window,h=!1,i=window.requestAnimationFrame||function(a){return setTimeout(a,1e3/60)},j=window.cancelAnimationFrame||function(a){clearTimeout(a)},k=!!a.fn.animate;return a.SmartMenus=function(b,c){this.$root=a(b),this.opts=c,this.rootId="",this.accessIdPrefix="",this.$subArrow=null,this.activatedItems=[],this.visibleSubMenus=[],this.showTimeout=0,this.hideTimeout=0,this.scrollTimeout=0,this.clickActivated=!1,this.focusActivated=!1,this.zIndexInc=0,this.idInc=0,this.$firstLink=null,this.$firstSub=null,this.disabled=!1,this.$disableOverlay=null,this.$touchScrollingSub=null,this.cssTransforms3d="perspective"in b.style||"webkitPerspective"in b.style,this.wasCollapsible=!1,this.init()},a.extend(a.SmartMenus,{hideAll:function(){a.each(e,function(){this.menuHideAll()})},destroy:function(){for(;e.length;)e[0].destroy();b(!0)},prototype:{init:function(c){var f=this;if(!c){e.push(this),this.rootId=((new Date).getTime()+Math.random()+"").replace(/\D/g,""),this.accessIdPrefix="sm-"+this.rootId+"-",this.$root.hasClass("sm-rtl")&&(this.opts.rightToLeftSubMenus=!0);var g=".smartmenus";this.$root.data("smartmenus",this).attr("data-smartmenus-id",this.rootId).dataSM("level",1).on(d({"mouseover focusin":a.proxy(this.rootOver,this),"mouseout focusout":a.proxy(this.rootOut,this),keydown:a.proxy(this.rootKeyDown,this)},g)).on(d({mouseenter:a.proxy(this.itemEnter,this),mouseleave:a.proxy(this.itemLeave,this),mousedown:a.proxy(this.itemDown,this),focus:a.proxy(this.itemFocus,this),blur:a.proxy(this.itemBlur,this),click:a.proxy(this.itemClick,this)},g),"a"),g+=this.rootId,this.opts.hideOnClick&&a(document).on(d({touchstart:a.proxy(this.docTouchStart,this),touchmove:a.proxy(this.docTouchMove,this),touchend:a.proxy(this.docTouchEnd,this),click:a.proxy(this.docClick,this)},g)),a(window).on(d({"resize orientationchange":a.proxy(this.winResize,this)},g)),this.opts.subIndicators&&(this.$subArrow=a("<span/>").addClass("sub-arrow"),this.opts.subIndicatorsText&&this.$subArrow.html(this.opts.subIndicatorsText)),b()}if(this.$firstSub=this.$root.find("ul").each(function(){f.menuInit(a(this))}).eq(0),this.$firstLink=this.$root.find("a").eq(0),this.opts.markCurrentItem){var h=/(index|default)\.[^#\?\/]*/i,i=/#.*/,j=window.location.href.replace(h,""),k=j.replace(i,"");this.$root.find("a:not(.mega-menu a)").each(function(){var b=this.href.replace(h,""),c=a(this);b!=j&&b!=k||(c.addClass("current"),f.opts.markCurrentTree&&c.parentsUntil("[data-smartmenus-id]","ul").each(function(){a(this).dataSM("parent-a").addClass("current")}))})}this.wasCollapsible=this.isCollapsible()},destroy:function(b){if(!b){var c=".smartmenus";this.$root.removeData("smartmenus").removeAttr("data-smartmenus-id").removeDataSM("level").off(c),c+=this.rootId,a(document).off(c),a(window).off(c),this.opts.subIndicators&&(this.$subArrow=null)}this.menuHideAll();var d=this;this.$root.find("ul").each(function(){var b=a(this);b.dataSM("scroll-arrows")&&b.dataSM("scroll-arrows").remove(),b.dataSM("shown-before")&&((d.opts.subMenusMinWidth||d.opts.subMenusMaxWidth)&&b.css({width:"",minWidth:"",maxWidth:""}).removeClass("sm-nowrap"),b.dataSM("scroll-arrows")&&b.dataSM("scroll-arrows").remove(),b.css({zIndex:"",top:"",left:"",marginLeft:"",marginTop:"",display:""})),0==(b.attr("id")||"").indexOf(d.accessIdPrefix)&&b.removeAttr("id")}).removeDataSM("in-mega").removeDataSM("shown-before").removeDataSM("scroll-arrows").removeDataSM("parent-a").removeDataSM("level").removeDataSM("beforefirstshowfired").removeAttr("role").removeAttr("aria-hidden").removeAttr("aria-labelledby").removeAttr("aria-expanded"),this.$root.find("a.has-submenu").each(function(){var b=a(this);0==b.attr("id").indexOf(d.accessIdPrefix)&&b.removeAttr("id")}).removeClass("has-submenu").removeDataSM("sub").removeAttr("aria-haspopup").removeAttr("aria-controls").removeAttr("aria-expanded").closest("li").removeDataSM("sub"),this.opts.subIndicators&&this.$root.find("span.sub-arrow").remove(),this.opts.markCurrentItem&&this.$root.find("a.current").removeClass("current"),b||(this.$root=null,this.$firstLink=null,this.$firstSub=null,this.$disableOverlay&&(this.$disableOverlay.remove(),this.$disableOverlay=null),e.splice(a.inArray(this,e),1))},disable:function(b){if(!this.disabled){if(this.menuHideAll(),!b&&!this.opts.isPopup&&this.$root.is(":visible")){var c=this.$root.offset();this.$disableOverlay=a('<div class="sm-jquery-disable-overlay"/>').css({position:"absolute",top:c.top,left:c.left,width:this.$root.outerWidth(),height:this.$root.outerHeight(),zIndex:this.getStartZIndex(!0),opacity:0}).appendTo(document.body)}this.disabled=!0}},docClick:function(b){return this.$touchScrollingSub?void(this.$touchScrollingSub=null):void((this.visibleSubMenus.length&&!a.contains(this.$root[0],b.target)||a(b.target).closest("a").length)&&this.menuHideAll())},docTouchEnd:function(b){if(this.lastTouch){if(this.visibleSubMenus.length&&(void 0===this.lastTouch.x2||this.lastTouch.x1==this.lastTouch.x2)&&(void 0===this.lastTouch.y2||this.lastTouch.y1==this.lastTouch.y2)&&(!this.lastTouch.target||!a.contains(this.$root[0],this.lastTouch.target))){this.hideTimeout&&(clearTimeout(this.hideTimeout),this.hideTimeout=0);var c=this;this.hideTimeout=setTimeout(function(){c.menuHideAll()},350)}this.lastTouch=null}},docTouchMove:function(a){if(this.lastTouch){var b=a.originalEvent.touches[0];this.lastTouch.x2=b.pageX,this.lastTouch.y2=b.pageY}},docTouchStart:function(a){var b=a.originalEvent.touches[0];this.lastTouch={x1:b.pageX,y1:b.pageY,target:b.target}},enable:function(){this.disabled&&(this.$disableOverlay&&(this.$disableOverlay.remove(),this.$disableOverlay=null),this.disabled=!1)},getClosestMenu:function(b){for(var c=a(b).closest("ul");c.dataSM("in-mega");)c=c.parent().closest("ul");return c[0]||null},getHeight:function(a){return this.getOffset(a,!0)},getOffset:function(a,b){var c;"none"==a.css("display")&&(c={position:a[0].style.position,visibility:a[0].style.visibility},a.css({position:"absolute",visibility:"hidden"}).show());var d=a[0].getBoundingClientRect&&a[0].getBoundingClientRect(),e=d&&(b?d.height||d.bottom-d.top:d.width||d.right-d.left);return e||0===e||(e=b?a[0].offsetHeight:a[0].offsetWidth),c&&a.hide().css(c),e},getStartZIndex:function(a){var b=parseInt(this[a?"$root":"$firstSub"].css("z-index"));return!a&&isNaN(b)&&(b=parseInt(this.$root.css("z-index"))),isNaN(b)?1:b},getTouchPoint:function(a){return a.touches&&a.touches[0]||a.changedTouches&&a.changedTouches[0]||a},getViewport:function(a){var b=a?"Height":"Width",c=document.documentElement["client"+b],d=window["inner"+b];return d&&(c=Math.min(c,d)),c},getViewportHeight:function(){return this.getViewport(!0)},getViewportWidth:function(){return this.getViewport()},getWidth:function(a){return this.getOffset(a)},handleEvents:function(){return!this.disabled&&this.isCSSOn()},handleItemEvents:function(a){return this.handleEvents()&&!this.isLinkInMegaMenu(a)},isCollapsible:function(){return"static"==this.$firstSub.css("position")},isCSSOn:function(){return"inline"!=this.$firstLink.css("display")},isFixed:function(){var b="fixed"==this.$root.css("position");return b||this.$root.parentsUntil("body").each(function(){if("fixed"==a(this).css("position"))return b=!0,!1}),b},isLinkInMegaMenu:function(b){return a(this.getClosestMenu(b[0])).hasClass("mega-menu")},isTouchMode:function(){return!f||this.opts.noMouseOver||this.isCollapsible()},itemActivate:function(b,c){var d=b.closest("ul"),e=d.dataSM("level");if(e>1&&(!this.activatedItems[e-2]||this.activatedItems[e-2][0]!=d.dataSM("parent-a")[0])){var f=this;a(d.parentsUntil("[data-smartmenus-id]","ul").get().reverse()).add(d).each(function(){f.itemActivate(a(this).dataSM("parent-a"))})}if(this.isCollapsible()&&!c||this.menuHideSubMenus(this.activatedItems[e-1]&&this.activatedItems[e-1][0]==b[0]?e:e-1),this.activatedItems[e-1]=b,this.$root.triggerHandler("activate.smapi",b[0])!==!1){var g=b.dataSM("sub");g&&(this.isTouchMode()||!this.opts.showOnClick||this.clickActivated)&&this.menuShow(g)}},itemBlur:function(b){var c=a(b.currentTarget);this.handleItemEvents(c)&&this.$root.triggerHandler("blur.smapi",c[0])},itemClick:function(b){var c=a(b.currentTarget);if(this.handleItemEvents(c)){if(this.$touchScrollingSub&&this.$touchScrollingSub[0]==c.closest("ul")[0])return this.$touchScrollingSub=null,b.stopPropagation(),!1;if(this.$root.triggerHandler("click.smapi",c[0])===!1)return!1;var d=c.dataSM("sub"),e=!!d&&2==d.dataSM("level");if(d){var f=a(b.target).is(".sub-arrow"),g=this.isCollapsible(),h=/toggle$/.test(this.opts.collapsibleBehavior),i=/link$/.test(this.opts.collapsibleBehavior),j=/^accordion/.test(this.opts.collapsibleBehavior);if(d.is(":visible")){if(!g&&this.opts.showOnClick&&e)return this.menuHide(d),this.clickActivated=!1,this.focusActivated=!1,!1;if(g&&(h||f))return this.itemActivate(c,j),this.menuHide(d),!1}else if((!i||!g||f)&&(!g&&this.opts.showOnClick&&e&&(this.clickActivated=!0),this.itemActivate(c,j),d.is(":visible")))return this.focusActivated=!0,!1}return!(!g&&this.opts.showOnClick&&e||c.hasClass("disabled")||this.$root.triggerHandler("select.smapi",c[0])===!1)&&void 0}},itemDown:function(b){var c=a(b.currentTarget);this.handleItemEvents(c)&&c.dataSM("mousedown",!0)},itemEnter:function(b){var c=a(b.currentTarget);if(this.handleItemEvents(c)){if(!this.isTouchMode()){this.showTimeout&&(clearTimeout(this.showTimeout),this.showTimeout=0);var d=this;this.showTimeout=setTimeout(function(){d.itemActivate(c)},this.opts.showOnClick&&1==c.closest("ul").dataSM("level")?1:this.opts.showTimeout)}this.$root.triggerHandler("mouseenter.smapi",c[0])}},itemFocus:function(b){var c=a(b.currentTarget);this.handleItemEvents(c)&&(!this.focusActivated||this.isTouchMode()&&c.dataSM("mousedown")||this.activatedItems.length&&this.activatedItems[this.activatedItems.length-1][0]==c[0]||this.itemActivate(c,!0),this.$root.triggerHandler("focus.smapi",c[0]))},itemLeave:function(b){var c=a(b.currentTarget);this.handleItemEvents(c)&&(this.isTouchMode()||(c[0].blur(),this.showTimeout&&(clearTimeout(this.showTimeout),this.showTimeout=0)),c.removeDataSM("mousedown"),this.$root.triggerHandler("mouseleave.smapi",c[0]))},menuHide:function(b){if(this.$root.triggerHandler("beforehide.smapi",b[0])!==!1&&(k&&b.stop(!0,!0),"none"!=b.css("display"))){var c=function(){b.css("z-index","")};this.isCollapsible()?k&&this.opts.collapsibleHideFunction?this.opts.collapsibleHideFunction.call(this,b,c):b.hide(this.opts.collapsibleHideDuration,c):k&&this.opts.hideFunction?this.opts.hideFunction.call(this,b,c):b.hide(this.opts.hideDuration,c),b.dataSM("scroll")&&(this.menuScrollStop(b),b.css({"touch-action":"","-ms-touch-action":"","-webkit-transform":"",transform:""}).off(".smartmenus_scroll").removeDataSM("scroll").dataSM("scroll-arrows").hide()),b.dataSM("parent-a").removeClass("highlighted").attr("aria-expanded","false"),b.attr({"aria-expanded":"false","aria-hidden":"true"});var d=b.dataSM("level");this.activatedItems.splice(d-1,1),this.visibleSubMenus.splice(a.inArray(b,this.visibleSubMenus),1),this.$root.triggerHandler("hide.smapi",b[0])}},menuHideAll:function(){this.showTimeout&&(clearTimeout(this.showTimeout),this.showTimeout=0);for(var a=this.opts.isPopup?1:0,b=this.visibleSubMenus.length-1;b>=a;b--)this.menuHide(this.visibleSubMenus[b]);this.opts.isPopup&&(k&&this.$root.stop(!0,!0),this.$root.is(":visible")&&(k&&this.opts.hideFunction?this.opts.hideFunction.call(this,this.$root):this.$root.hide(this.opts.hideDuration))),this.activatedItems=[],this.visibleSubMenus=[],this.clickActivated=!1,this.focusActivated=!1,this.zIndexInc=0,this.$root.triggerHandler("hideAll.smapi")},menuHideSubMenus:function(a){for(var b=this.activatedItems.length-1;b>=a;b--){var c=this.activatedItems[b].dataSM("sub");c&&this.menuHide(c)}},menuInit:function(a){if(!a.dataSM("in-mega")){a.hasClass("mega-menu")&&a.find("ul").dataSM("in-mega",!0);for(var b=2,c=a[0];(c=c.parentNode.parentNode)!=this.$root[0];)b++;var d=a.prevAll("a").eq(-1);d.length||(d=a.prevAll().find("a").eq(-1)),d.addClass("has-submenu").dataSM("sub",a),a.dataSM("parent-a",d).dataSM("level",b).parent().dataSM("sub",a);var e=d.attr("id")||this.accessIdPrefix+ ++this.idInc,f=a.attr("id")||this.accessIdPrefix+ ++this.idInc;d.attr({id:e,"aria-haspopup":"true","aria-controls":f,"aria-expanded":"false"}),a.attr({id:f,role:"group","aria-hidden":"true","aria-labelledby":e,"aria-expanded":"false"}),this.opts.subIndicators&&d[this.opts.subIndicatorsPos](this.$subArrow.clone())}},menuPosition:function(b){var c,e,f=b.dataSM("parent-a"),h=f.closest("li"),i=h.parent(),j=b.dataSM("level"),k=this.getWidth(b),l=this.getHeight(b),m=f.offset(),n=m.left,o=m.top,p=this.getWidth(f),q=this.getHeight(f),r=a(window),s=r.scrollLeft(),t=r.scrollTop(),u=this.getViewportWidth(),v=this.getViewportHeight(),w=i.parent().is("[data-sm-horizontal-sub]")||2==j&&!i.hasClass("sm-vertical"),x=this.opts.rightToLeftSubMenus&&!h.is("[data-sm-reverse]")||!this.opts.rightToLeftSubMenus&&h.is("[data-sm-reverse]"),y=2==j?this.opts.mainMenuSubOffsetX:this.opts.subMenusSubOffsetX,z=2==j?this.opts.mainMenuSubOffsetY:this.opts.subMenusSubOffsetY;if(w?(c=x?p-k-y:y,e=this.opts.bottomToTopSubMenus?-l-z:q+z):(c=x?y-k:p-y,e=this.opts.bottomToTopSubMenus?q-z-l:z),this.opts.keepInViewport){var A=n+c,B=o+e;if(x&&A<s?c=w?s-A+c:p-y:!x&&A+k>s+u&&(c=w?s+u-k-A+c:y-k),w||(l<v&&B+l>t+v?e+=t+v-l-B:(l>=v||B<t)&&(e+=t-B)),w&&(B+l>t+v+.49||B<t)||!w&&l>v+.49){var C=this;b.dataSM("scroll-arrows")||b.dataSM("scroll-arrows",a([a('<span class="scroll-up"><span class="scroll-up-arrow"></span></span>')[0],a('<span class="scroll-down"><span class="scroll-down-arrow"></span></span>')[0]]).on({mouseenter:function(){b.dataSM("scroll").up=a(this).hasClass("scroll-up"),C.menuScroll(b)},mouseleave:function(a){C.menuScrollStop(b),C.menuScrollOut(b,a)},"mousewheel DOMMouseScroll":function(a){a.preventDefault()}}).insertAfter(b));var D=".smartmenus_scroll";if(b.dataSM("scroll",{y:this.cssTransforms3d?0:e-q,step:1,itemH:q,subH:l,arrowDownH:this.getHeight(b.dataSM("scroll-arrows").eq(1))}).on(d({mouseover:function(a){C.menuScrollOver(b,a)},mouseout:function(a){C.menuScrollOut(b,a)},"mousewheel DOMMouseScroll":function(a){C.menuScrollMousewheel(b,a)}},D)).dataSM("scroll-arrows").css({top:"auto",left:"0",marginLeft:c+(parseInt(b.css("border-left-width"))||0),width:k-(parseInt(b.css("border-left-width"))||0)-(parseInt(b.css("border-right-width"))||0),zIndex:b.css("z-index")}).eq(w&&this.opts.bottomToTopSubMenus?0:1).show(),this.isFixed()){var E={};E[g?"touchstart touchmove touchend":"pointerdown pointermove pointerup MSPointerDown MSPointerMove MSPointerUp"]=function(a){C.menuScrollTouch(b,a)},b.css({"touch-action":"none","-ms-touch-action":"none"}).on(d(E,D))}}}b.css({top:"auto",left:"0",marginLeft:c,marginTop:e-q})},menuScroll:function(a,b,c){var d,e=a.dataSM("scroll"),g=a.dataSM("scroll-arrows"),h=e.up?e.upEnd:e.downEnd;if(!b&&e.momentum){if(e.momentum*=.92,d=e.momentum,d<.5)return void this.menuScrollStop(a)}else d=c||(b||!this.opts.scrollAccelerate?this.opts.scrollStep:Math.floor(e.step));var j=a.dataSM("level");if(this.activatedItems[j-1]&&this.activatedItems[j-1].dataSM("sub")&&this.activatedItems[j-1].dataSM("sub").is(":visible")&&this.menuHideSubMenus(j-1),e.y=e.up&&h<=e.y||!e.up&&h>=e.y?e.y:Math.abs(h-e.y)>d?e.y+(e.up?d:-d):h,a.css(this.cssTransforms3d?{"-webkit-transform":"translate3d(0, "+e.y+"px, 0)",transform:"translate3d(0, "+e.y+"px, 0)"}:{marginTop:e.y}),f&&(e.up&&e.y>e.downEnd||!e.up&&e.y<e.upEnd)&&g.eq(e.up?1:0).show(),e.y==h)f&&g.eq(e.up?0:1).hide(),this.menuScrollStop(a);else if(!b){this.opts.scrollAccelerate&&e.step<this.opts.scrollStep&&(e.step+=.2);var k=this;this.scrollTimeout=i(function(){k.menuScroll(a)})}},menuScrollMousewheel:function(a,b){if(this.getClosestMenu(b.target)==a[0]){b=b.originalEvent;var c=(b.wheelDelta||-b.detail)>0;a.dataSM("scroll-arrows").eq(c?0:1).is(":visible")&&(a.dataSM("scroll").up=c,this.menuScroll(a,!0))}b.preventDefault()},menuScrollOut:function(b,c){f&&(/^scroll-(up|down)/.test((c.relatedTarget||"").className)||(b[0]==c.relatedTarget||a.contains(b[0],c.relatedTarget))&&this.getClosestMenu(c.relatedTarget)==b[0]||b.dataSM("scroll-arrows").css("visibility","hidden"))},menuScrollOver:function(b,c){if(f&&!/^scroll-(up|down)/.test(c.target.className)&&this.getClosestMenu(c.target)==b[0]){this.menuScrollRefreshData(b);var d=b.dataSM("scroll"),e=a(window).scrollTop()-b.dataSM("parent-a").offset().top-d.itemH;b.dataSM("scroll-arrows").eq(0).css("margin-top",e).end().eq(1).css("margin-top",e+this.getViewportHeight()-d.arrowDownH).end().css("visibility","visible")}},menuScrollRefreshData:function(b){var c=b.dataSM("scroll"),d=a(window).scrollTop()-b.dataSM("parent-a").offset().top-c.itemH;this.cssTransforms3d&&(d=-(parseFloat(b.css("margin-top"))-d)),a.extend(c,{upEnd:d,downEnd:d+this.getViewportHeight()-c.subH})},menuScrollStop:function(a){if(this.scrollTimeout)return j(this.scrollTimeout),this.scrollTimeout=0,a.dataSM("scroll").step=1,!0},menuScrollTouch:function(b,d){if(d=d.originalEvent,c(d)){var e=this.getTouchPoint(d);if(this.getClosestMenu(e.target)==b[0]){var f=b.dataSM("scroll");if(/(start|down)$/i.test(d.type))this.menuScrollStop(b)?(d.preventDefault(),this.$touchScrollingSub=b):this.$touchScrollingSub=null,this.menuScrollRefreshData(b),a.extend(f,{touchStartY:e.pageY,touchStartTime:d.timeStamp});else if(/move$/i.test(d.type)){var g=void 0!==f.touchY?f.touchY:f.touchStartY;if(void 0!==g&&g!=e.pageY){this.$touchScrollingSub=b;var h=g<e.pageY;void 0!==f.up&&f.up!=h&&a.extend(f,{touchStartY:e.pageY,touchStartTime:d.timeStamp}),a.extend(f,{up:h,touchY:e.pageY}),this.menuScroll(b,!0,Math.abs(e.pageY-g))}d.preventDefault()}else void 0!==f.touchY&&((f.momentum=15*Math.pow(Math.abs(e.pageY-f.touchStartY)/(d.timeStamp-f.touchStartTime),2))&&(this.menuScrollStop(b),this.menuScroll(b),d.preventDefault()),delete f.touchY)}}},menuShow:function(a){if((a.dataSM("beforefirstshowfired")||(a.dataSM("beforefirstshowfired",!0),this.$root.triggerHandler("beforefirstshow.smapi",a[0])!==!1))&&this.$root.triggerHandler("beforeshow.smapi",a[0])!==!1&&(a.dataSM("shown-before",!0),k&&a.stop(!0,!0),!a.is(":visible"))){var b=a.dataSM("parent-a"),c=this.isCollapsible();if((this.opts.keepHighlighted||c)&&b.addClass("highlighted"),c)a.removeClass("sm-nowrap").css({zIndex:"",width:"auto",minWidth:"",maxWidth:"",top:"",left:"",marginLeft:"",marginTop:""});else{if(a.css("z-index",this.zIndexInc=(this.zIndexInc||this.getStartZIndex())+1),(this.opts.subMenusMinWidth||this.opts.subMenusMaxWidth)&&(a.css({width:"auto",minWidth:"",maxWidth:""}).addClass("sm-nowrap"),this.opts.subMenusMinWidth&&a.css("min-width",this.opts.subMenusMinWidth),this.opts.subMenusMaxWidth)){var d=this.getWidth(a);a.css("max-width",this.opts.subMenusMaxWidth),d>this.getWidth(a)&&a.removeClass("sm-nowrap").css("width",this.opts.subMenusMaxWidth)}this.menuPosition(a)}var e=function(){a.css("overflow","")};c?k&&this.opts.collapsibleShowFunction?this.opts.collapsibleShowFunction.call(this,a,e):a.show(this.opts.collapsibleShowDuration,e):k&&this.opts.showFunction?this.opts.showFunction.call(this,a,e):a.show(this.opts.showDuration,e),b.attr("aria-expanded","true"),a.attr({"aria-expanded":"true","aria-hidden":"false"}),this.visibleSubMenus.push(a),this.$root.triggerHandler("show.smapi",a[0])}},popupHide:function(a){this.hideTimeout&&(clearTimeout(this.hideTimeout),this.hideTimeout=0);var b=this;this.hideTimeout=setTimeout(function(){b.menuHideAll()},a?1:this.opts.hideTimeout)},popupShow:function(a,b){if(!this.opts.isPopup)return void alert('SmartMenus jQuery Error:\n\nIf you want to show this menu via the "popupShow" method, set the isPopup:true option.');if(this.hideTimeout&&(clearTimeout(this.hideTimeout),this.hideTimeout=0),this.$root.dataSM("shown-before",!0),k&&this.$root.stop(!0,!0),!this.$root.is(":visible")){this.$root.css({left:a,top:b});var c=this,d=function(){c.$root.css("overflow","")};k&&this.opts.showFunction?this.opts.showFunction.call(this,this.$root,d):this.$root.show(this.opts.showDuration,d),this.visibleSubMenus[0]=this.$root}},refresh:function(){this.destroy(!0),this.init(!0)},rootKeyDown:function(b){if(this.handleEvents())switch(b.keyCode){case 27:var c=this.activatedItems[0];if(c){this.menuHideAll(),c[0].focus();var d=c.dataSM("sub");d&&this.menuHide(d)}break;case 32:var e=a(b.target);if(e.is("a")&&this.handleItemEvents(e)){var d=e.dataSM("sub");d&&!d.is(":visible")&&(this.itemClick({currentTarget:b.target}),b.preventDefault())}}},rootOut:function(a){if(this.handleEvents()&&!this.isTouchMode()&&a.target!=this.$root[0]&&(this.hideTimeout&&(clearTimeout(this.hideTimeout),this.hideTimeout=0),!this.opts.showOnClick||!this.opts.hideOnClick)){var b=this;this.hideTimeout=setTimeout(function(){b.menuHideAll()},this.opts.hideTimeout)}},rootOver:function(a){this.handleEvents()&&!this.isTouchMode()&&a.target!=this.$root[0]&&this.hideTimeout&&(clearTimeout(this.hideTimeout),this.hideTimeout=0)},winResize:function(a){if(this.handleEvents()){if(!("onorientationchange"in window)||"orientationchange"==a.type){var b=this.isCollapsible();this.wasCollapsible&&b||(this.activatedItems.length&&this.activatedItems[this.activatedItems.length-1][0].blur(),this.menuHideAll()),this.wasCollapsible=b}}else if(this.$disableOverlay){var c=this.$root.offset();this.$disableOverlay.css({top:c.top,left:c.left,width:this.$root.outerWidth(),height:this.$root.outerHeight()})}}}}),a.fn.dataSM=function(a,b){return b?this.data(a+"_smartmenus",b):this.data(a+"_smartmenus")},a.fn.removeDataSM=function(a){return this.removeData(a+"_smartmenus")},a.fn.smartmenus=function(b){if("string"==typeof b){var c=arguments,d=b;return Array.prototype.shift.call(c),this.each(function(){var b=a(this).data("smartmenus");b&&b[d]&&b[d].apply(b,c)})}return this.each(function(){var c=a(this).data("sm-options")||null;c&&"object"!=typeof c&&(c=null,alert('ERROR\n\nSmartMenus jQuery init:\nThe value of the "data-sm-options" attribute must be valid JSON.')),c&&a.each(["showFunction","hideFunction","collapsibleShowFunction","collapsibleHideFunction"],function(){this in c&&delete c[this]}),new a.SmartMenus(this,a.extend({},a.fn.smartmenus.defaults,b,c))})},a.fn.smartmenus.defaults={isPopup:!1,mainMenuSubOffsetX:0,mainMenuSubOffsetY:0,subMenusSubOffsetX:0,subMenusSubOffsetY:0,subMenusMinWidth:"10em",subMenusMaxWidth:"20em",subIndicators:!0,subIndicatorsPos:"append",subIndicatorsText:"",scrollStep:30,scrollAccelerate:!0,showTimeout:250,hideTimeout:500,showDuration:0,showFunction:null,hideDuration:0,hideFunction:function(a,b){a.fadeOut(200,b)},collapsibleShowDuration:0,collapsibleShowFunction:function(a,b){a.slideDown(200,b)},collapsibleHideDuration:0,collapsibleHideFunction:function(a,b){a.slideUp(200,b)},showOnClick:!1,hideOnClick:!0,noMouseOver:!1,keepInViewport:!0,keepHighlighted:!0,markCurrentItem:!1,markCurrentTree:!0,rightToLeftSubMenus:!1,bottomToTopSubMenus:!1,collapsibleBehavior:"default"},a});
+  </script>
+
+  <script>
+    (function() {
+      'use strict';
+      document.addEventListener('DOMContentLoaded', function() {
+        const toggler = document.querySelector('.navbar-toggler');
+        const collapse = document.querySelector('.navbar-collapse');
+        
+        if (toggler && collapse) {
+          toggler.addEventListener('click', function() {
+            const isExpanded = this.getAttribute('aria-expanded') === 'true';
+            this.setAttribute('aria-expanded', !isExpanded);
+            collapse.classList.toggle('show');
+          });
+          
+          // Close menu when clicking a link on mobile
+          collapse.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function() {
+              if (window.innerWidth < 992 && collapse.classList.contains('show')) {
+                toggler.setAttribute('aria-expanded', 'false');
+                collapse.classList.remove('show');
+              }
+            });
+          });
+        }
+        
+        // Handle dropdowns manually for demo (since full Bootstrap JS not included)
+        document.querySelectorAll('.dropdown-toggle').forEach(toggle => {
+          toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            const dropdown = this.nextElementSibling;
+            if (dropdown && dropdown.classList.contains('dropdown-menu')) {
+              // Close other dropdowns
+              document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                if (menu !== dropdown) menu.classList.remove('show');
+              });
+              dropdown.classList.toggle('show');
+            }
+          });
+        });
+        
+  
+        document.addEventListener('click', function(e) {
+          if (!e.target.closest('.dropdown')) {
+            document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+              menu.classList.remove('show');
+            });
           }
         });
       });
-      
-      // Close dropdowns when clicking outside
-      document.addEventListener('click', function(e) {
-        if (!e.target.closest('.dropdown')) {
-          document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
-            menu.classList.remove('show');
-          });
-        }
-      });
-    });
+    })();
   </script>
 </body>
 </html>
