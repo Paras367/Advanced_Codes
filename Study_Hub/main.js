@@ -3260,9 +3260,9 @@ setTimeout(() => {
     }, 500);
     document.body.style.overflow = 'auto';
   }
-}, 5000); 
+}, 5000);
 
-}
+
 
 window.addEventListener('load', hidePreloader);
 document.addEventListener('DOMContentLoaded', hidePreloader);
