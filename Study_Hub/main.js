@@ -2319,15 +2319,12 @@ function initFormValidation() {
   });
 }
 
-// =============================================
-// AUTH PAGES
-// =============================================
 function initAuthPages() {
   const loginForm = document.querySelector('.login-form');
   const signupForm = document.querySelector('.signup-form');
   const authSocialBtns = document.querySelectorAll('.auth-social-btn');
 
-  // Social login buttons
+
   authSocialBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
@@ -2335,7 +2332,7 @@ function initAuthPages() {
                      btn.classList.contains('facebook') ? 'Facebook' :
                      btn.classList.contains('github') ? 'GitHub' : 'Unknown';
 
-      // In a real app, you would implement OAuth here
+
       showToast(`Logging in with ${provider}...`, 'info');
 
       // Simulate login after 2 seconds
@@ -2345,13 +2342,13 @@ function initAuthPages() {
         localStorage.setItem('userName', `${provider} User`);
         localStorage.setItem('userAvatar', `assets/images/${provider.toLowerCase()}-avatar.jpg`);
 
-        // Redirect to home
+ 
         window.location.href = 'index.html';
       }, 2000);
     });
   });
 
-  // Login form
+
   loginForm?.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -2359,19 +2356,15 @@ function initAuthPages() {
     const password = loginForm.querySelector('input[type="password"]').value;
     const rememberMe = loginForm.querySelector('input[type="checkbox"]').checked;
 
-    // Simple validation
+
     if (!email || !password) {
       showToast('Please fill in all fields', 'error');
       return;
     }
 
-    // In a real app, you would validate credentials with a backend
-    // For demo, we'll just check if email and password are not empty
     showToast('Logging in...', 'info');
 
-    // Simulate login
     setTimeout(() => {
-      // Save user data
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('userName', 'Paras Dhiman');
       localStorage.setItem('userEmail', email);
@@ -2381,7 +2374,7 @@ function initAuthPages() {
         localStorage.setItem('rememberMe', 'true');
       }
 
-      // Redirect to home
+    
       window.location.href = 'index.html';
     }, 1500);
   });
@@ -2396,7 +2389,7 @@ function initAuthPages() {
     const confirmPassword = signupForm.querySelector('input[name="confirmPassword"]').value;
     const terms = signupForm.querySelector('input[type="checkbox"]').checked;
 
-    // Validation
+
     if (!name || !email || !password || !confirmPassword) {
       showToast('Please fill in all fields', 'error');
       return;
@@ -2412,12 +2405,9 @@ function initAuthPages() {
       return;
     }
 
-    // In a real app, you would send this data to your backend
     showToast('Creating your account...', 'info');
 
-    // Simulate signup
     setTimeout(() => {
-      // Save user data
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('userName', name);
       localStorage.setItem('userEmail', email);
@@ -2425,24 +2415,20 @@ function initAuthPages() {
       localStorage.setItem('userXP', '0');
       localStorage.setItem('challengeStreak', '0');
 
-      // Redirect to home
       window.location.href = 'index.html';
     }, 1500);
   });
 
-  // Check if user is already logged in
   if (localStorage.getItem('isLoggedIn') === 'true') {
-    // Redirect to home if on login/signup page
     if (window.location.pathname.includes('login.html') || window.location.pathname.includes('signup.html')) {
       window.location.href = 'index.html';
     }
 
-    // Update UI for logged-in user
     updateAuthUI();
   }
 }
 
-// Update UI for logged-in user
+
 function updateAuthUI() {
   const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
   const userName = localStorage.getItem('userName') || 'User';
@@ -2678,15 +2664,9 @@ function initStreakSystem() {
   }
 }
 
-// =============================================
-// GAMIFICATION
-// =============================================
 function initGamification() {
-  // Load user XP and level
   let xp = parseInt(localStorage.getItem('userXP')) || 0;
   let level = Math.floor(xp / 100) + 1;
-
-  // Update XP and level displays
   const xpElements = document.querySelectorAll('.xp-display');
   xpElements.forEach(el => {
     el.textContent = `${xp} XP`;
@@ -2697,7 +2677,7 @@ function initGamification() {
     el.textContent = `Level ${level}`;
   });
 
-  // Update XP bar
+
   const xpBars = document.querySelectorAll('.xp-bar');
   xpBars.forEach(bar => {
     const xpFill = bar.querySelector('.progress');
@@ -2713,16 +2693,13 @@ function initGamification() {
     }
   });
 
-  // Award badges (demo)
   awardBadges(xp, level);
 }
 
-// Award badges based on XP and level
 function awardBadges(xp, level) {
   const badgesContainer = document.querySelector('.badges-container');
   if (!badgesContainer) return;
 
-  // Sample badges
   const badges = [
     { name: 'Beginner', xp: 0, icon: 'fa-medal', color: '#cd7f32', earned: xp >= 0 },
     { name: 'Math Master', xp: 500, icon: 'fa-square-root-alt', color: '#6c5ce7', earned: xp >= 500 },
@@ -2732,7 +2709,7 @@ function awardBadges(xp, level) {
     { name: 'Study Legend', xp: 5000, icon: 'fa-crown', color: '#ffd700', earned: xp >= 5000 }
   ];
 
-  // Render badges
+
   badgesContainer.innerHTML = badges.map(badge => `
     <div class="badge-item ${badge.earned ? 'earned' : 'locked'}" style="--badge-color: ${badge.color}">
       <div class="badge-icon">
@@ -2747,9 +2724,6 @@ function awardBadges(xp, level) {
   `).join('');
 }
 
-// =============================================
-// AI FEATURES
-// =============================================
 function initAIFeatures() {
   // Study Planner
   const studyPlannerForm = document.querySelector('.study-planner-form');
@@ -3261,6 +3235,32 @@ function showNotification(title, body) {
     setTimeout(() => showNotification(title, body), 1000);
   }
 }
+
+window.addEventListener('load', function() {
+  const preloader = document.querySelector('.preloader');
+
+  if (preloader) {
+    setTimeout(() => {
+      preloader.classList.add('hidden');
+      setTimeout(() => {
+        preloader.style.display = 'none';
+      }, 500); 
+    }, 500); 
+  }
+
+  document.body.style.overflow = 'auto';
+});
+
+setTimeout(() => {
+  const preloader = document.querySelector('.preloader');
+  if (preloader && !preloader.classList.contains('hidden')) {
+    preloader.classList.add('hidden');
+    setTimeout(() => {
+      preloader.style.display = 'none';
+    }, 500);
+    document.body.style.overflow = 'auto';
+  }
+}, 5000); 
 
 window.showToast = showToast;
 window.saveStudyPlan = saveStudyPlan;
