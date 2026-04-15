@@ -1476,12 +1476,12 @@ function initDoubtSystem() {
               <label class="form-label">Formatting Help</label>
               <div class="formatting-help">
                 <p>You can use Markdown for formatting:</p>
-                <ul>
-                  <li><code>**bold**</code> or <code>__bold__</code> for <strong>bold</strong></li>
-                  <li><code>*italic*</code> or <code>_italic_</code> for <em>italic</em></li>
-                  <li><code>```code```</code> for code blocks</li>
-                  <li><code>- list item</code> for lists</li>
-                </ul>
+               <ul>
+  <li><code>**bold**</code> or <code>__bold__</code> for <strong>bold</strong></li>
+  <li><code>*italic*</code> or <code>_italic_</code> for <em>italic</em></li>
+  <li><code>- list item</code> for lists</li>
+  <li><code>\`\`\`code\`\`\`</code> for code blocks</li>
+</ul>
               </div>
             </div>
           </form>
