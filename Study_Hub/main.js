@@ -3262,17 +3262,6 @@ setTimeout(() => {
   }
 }, 5000); 
 
-
-function hidePreloader() {
-  const preloader = document.querySelector('.preloader');
-  if (!preloader) return;
-
-  preloader.classList.add('hidden');
-
-  setTimeout(() => {
-    preloader.style.display = 'none';
-    document.body.style.overflow = 'auto';
-  }, 500);
 }
 
 window.addEventListener('load', hidePreloader);
