@@ -30,139 +30,504 @@
 
   <title>Adaptive Study Hub | Learn. Test. Adapt.</title>
   <link rel="stylesheet" href="styles.css">
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+
 </head>
 <body>
 
-  <nav class="navbar">
-    <div class="nav-container">
-      <a href="#" class="logo"><i class="fa-solid fa-brain"></i> Adaptive<span>Hub</span></a>
-      <ul class="nav-links">
-        <li><a href="#features">Features</a></li>
-        <li><a href="#dashboard">Dashboard</a></li>
-        <li><a href="#gamification">Streaks & XP</a></li>
-        <li><a href="#pricing">Plans</a></li>
-      </ul>
-      <div class="nav-actions">
-        <button id="theme-toggle" aria-label="Toggle theme"><i class="fa-solid fa-moon"></i></button>
-        <a href="#" class="btn btn-primary">Start Free</a>
-        <button class="mobile-menu-btn" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
-      </div>
-    </div>
-  </nav>
-
-
-  <div class="mobile-nav">
-    <ul class="mobile-links">
-      <li><a href="#features">Features</a></li>
-      <li><a href="#dashboard">Dashboard</a></li>
-      <li><a href="#gamification">Streaks & XP</a></li>
-      <li><a href="#pricing">Plans</a></li>
-      <li><a href="#" class="btn btn-primary mobile">Start Free</a></li>
-    </ul>
-  </div>
-
-
-  <header class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-content">
-      <div class="badge-pill"><i class="fa-solid fa-sparkles"></i> AI-Powered Adaptive Learning</div>
-      <h1 class="hero-title">Stop Guessing. <span class="gradient-text" id="typing-text">Start Adapting.</span></h1>
-      <p class="hero-subtitle">Smart tracking. Timed mock tests. Gamified progress. Built for students who want to study smarter, not longer.</p>
-      <div class="hero-cta">
-        <a href="#" class="btn btn-glow">Launch Dashboard</a>
-        <a href="#features" class="btn btn-outline">Explore Features</a>
-      </div>
-      <div class="hero-stats">
-        <div class="stat"><span class="stat-number" data-target="12500">0</span>+ <span class="stat-label">Students Active</span></div>
-        <div class="stat"><span class="stat-number" data-target="89">0</span>% <span class="stat-label">Avg. Improvement</span></div>
-        <div class="stat"><span class="stat-number" data-target="3">0</span>x <span class="stat-label">Faster Revision</span></div>
-      </div>
-    </div>
-    <div class="hero-visual">
-      <div class="glass-card preview-dashboard">
-        <div class="preview-header">
-          <div class="preview-dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
-          <span class="preview-title">Live Weakness Tracker</span>
+    <div class="preloader">
+        <div class="loader">
+            <div class="book">
+                <div class="page"></div>
+                <div class="page"></div>
+                <div class="page"></div>
+            </div>
         </div>
-        <div class="preview-body">
-          <div class="progress-row weak"><span>Integration</span><div class="bar"><div class="fill" style="width: 42%">42%</div></div></div>
-          <div class="progress-row strong"><span>Matrices</span><div class="bar"><div class="fill" style="width: 91%">91%</div></div></div>
-          <div class="ai-suggestion"><i class="fa-solid fa-robot"></i><p>Revise Integration: 2 videos + 1 targeted test recommended.</p></div>
+        <p>Loading Knowledge...</p>
+    </div>
+
+
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>Adaptive<span>Study</span>Hub</span>
+            </div>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="index.html" class="active"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="courses.html"><i class="fas fa-book-open"></i> Courses</a></li>
+                    <li><a href="test.html"><i class="fas fa-file-alt"></i> Tests</a></li>
+                    <li><a href="challenge.html"><i class="fas fa-fire"></i> Daily Challenge</a></li>
+                    <li><a href="doubt.html"><i class="fas fa-question-circle"></i> Doubts</a></li>
+                    <li><a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <a href="login.html" class="btn login-btn"><i class="fas fa-sign-in-alt"></i> Login</a>
+                <a href="signup.html" class="btn signup-btn"><i class="fas fa-user-plus"></i> Sign Up</a>
+                <button class="theme-toggle"><i class="fas fa-moon"></i></button>
+            </div>
+            <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
         </div>
-      </div>
-    </div>
-  </header>
+    </header>
 
-  <section id="features" class="section features">
-    <div class="section-header">
-      <h2>Why Students Choose <span class="gradient-text">AdaptiveHub</span></h2>
-      <p>Every feature is engineered to close your knowledge gaps and boost retention.</p>
-    </div>
-    <div class="features-grid">
-      <div class="feature-card" data-anim><div class="icon-wrap"><i class="fa-solid fa-crosshairs"></i></div><h3>Smart Weakness Tracker</h3><p>Auto-detects weak chapters after every quiz. Gets personalized revision packs instantly.</p></div>
-      <div class="feature-card" data-anim><div class="icon-wrap"><i class="fa-solid fa-chart-line"></i></div><h3>Performance Analytics</h3><p>Track accuracy, time spent, and rank. Visual progress graphs show exactly how far you've come.</p></div>
-      <div class="feature-card" data-anim><div class="icon-wrap"><i class="fa-solid fa-terminal"></i></div><h3>Live Problem Solver</h3><p>MCQs, numericals, and Python coding. All in-browser with instant feedback.</p></div>
-      <div class="feature-card" data-anim><div class="icon-wrap"><i class="fa-solid fa-video"></i></div><h3>Sync Video & Notes</h3><p>Notes auto-scroll with the video. Key formulas highlight exactly when you need them.</p></div>
-      <div class="feature-card" data-anim><div class="icon-wrap"><i class="fa-solid fa-stopwatch"></i></div><h3>JEE/NEET Mock Engine</h3><p>Exam simulation, auto-submit, tab-switch alerts, and post-test deep analysis.</p></div>
-      <div class="feature-card" data-anim><div class="icon-wrap"><i class="fa-solid fa-users"></i></div><h3>Community Doubts</h3><p>Post doubts, get peer answers. No waiting for teachers. Learn faster together.</p></div>
-    </div>
-
-  <section id="gamification" class="section gamification">
-    <div class="glass-container" data-anim>
-      <div class="gamification-content">
-        <h2>Level Up Your <span class="gradient-text">Study Game</span></h2>
-        <p>Earn XP, unlock badges, and maintain daily streaks. Learning shouldn't feel like a chore.</p>
-        <div class="streak-counter">
-          <div class="streak-icon">🔥</div>
-          <div class="streak-info"><span class="streak-days" id="current-streak">0</span> Day Streak</div>
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Learn Smarter, Not Harder</h1>
+                    <p>Our AI-powered platform adapts to your learning style, tracks your progress, and helps you master every concept.</p>
+                    <div class="cta-buttons">
+                        <a href="courses.html" class="btn primary-btn"><i class="fas fa-rocket"></i> Start Learning</a>
+                        <a href="#features" class="btn secondary-btn"><i class="fas fa-chevron-down"></i> Explore Features</a>
+                    </div>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <i class="fas fa-users"></i>
+                            <div>
+                                <span class="number">10K+</span>
+                                <span class="label">Active Users</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-book"></i>
+                            <div>
+                                <span class="number">50+</span>
+                                <span class="label">Courses</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <span class="number">95%</span>
+                                <span class="label">Success Rate</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="floating-elements">
+                        <div class="element element-1">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>Smart Learning</span>
+                        </div>
+                        <div class="element element-2">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Track Progress</span>
+                        </div>
+                        <div class="element element-3">
+                            <i class="fas fa-trophy"></i>
+                            <span>Earn Rewards</span>
+                        </div>
+                        <div class="element element-4">
+                            <i class="fas fa-clock"></i>
+                            <span>Save Time</span>
+                        </div>
+                    </div>
+                    <img src="assets/images/student-studying.png" alt="Student studying with laptop">
+                </div>
+            </div>
         </div>
-        <div class="badges-preview">
-          <span class="badge unlocked"><i class="fa-solid fa-trophy"></i> Math Master</span>
-          <span class="badge locked"><i class="fa-solid fa-lock"></i> Physics Warrior</span>
-          <span class="badge locked"><i class="fa-solid fa-lock"></i> Code Ninja</span>
+    </section>
+
+
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why Choose Adaptive Study Hub?</h2>
+                <p>Our unique features make learning effective and engaging</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3>Smart Topic Tracker</h3>
+                    <p>Identifies your weak areas and suggests personalized revision plans with recommended videos and tests.</p>
+                    <div class="feature-preview">
+                        <div class="weakness-tracker">
+                            <div class="topic weak">
+                                <i class="fas fa-times-circle"></i>
+                                <span>Integration</span>
+                            </div>
+                            <div class="topic weak">
+                                <i class="fas fa-times-circle"></i>
+                                <span>Electrostatics</span>
+                            </div>
+                            <div class="topic strong">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Matrices</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3>Performance Dashboard</h3>
+                    <p>Visualize your progress with detailed analytics, accuracy trends, and time spent on each topic.</p>
+                    <div class="feature-preview">
+                        <div class="mini-chart">
+                            <div class="chart-bar" style="height: 60%;"></div>
+                            <div class="chart-bar" style="height: 78%;"></div>
+                            <div class="chart-bar" style="height: 85%;"></div>
+                            <div class="chart-bar" style="height: 92%;"></div>
+                        </div>
+                        <p class="chart-label">You improved from 62% → 78% in 5 days</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3>Live Coding</h3>
+                    <p>Practice coding with our built-in Python compiler. Solve MCQs and coding problems interactively.</p>
+                    <div class="feature-preview">
+                        <div class="code-snippet">
+                            <div class="code-header">
+                                <span class="file-name">problem.py</span>
+                                <div class="buttons">
+                                    <span class="minimize"><i class="fas fa-minus"></i></span>
+                                    <span class="maximize"><i class="fas fa-square"></i></span>
+                                    <span class="close"><i class="fas fa-times"></i></span>
+                                </div>
+                            </div>
+                            <div class="code-content">
+                                <pre><code><span class="keyword">def</span> <span class="function">solve_problem</span>():
+    <span class="comment"># Your code here</span>
+    <span class="keyword">return</span> <span class="string">"Solution"</span></code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <h3>Video + Notes Sync</h3>
+                    <p>Watch videos with synchronized notes that auto-scroll and highlight key formulas as you learn.</p>
+                    <div class="feature-preview">
+                        <div class="video-notes-preview">
+                            <div class="video-thumbnail">
+                                <i class="fas fa-play"></i>
+                                <span>Video Lesson</span>
+                            </div>
+                            <div class="notes-preview">
+                                <div class="note active">
+                                    <p><strong>Newton's First Law:</strong> An object at rest stays at rest...</p>
+                                </div>
+                                <div class="note">
+                                    <p><strong>Formula:</strong> F = ma</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h3>Mock Test Engine</h3>
+                    <p>Take timed tests with auto-submit and instant analysis. Get detailed insights on your performance.</p>
+                    <div class="feature-preview">
+                        <div class="mock-test-preview">
+                            <div class="test-timer">
+                                <i class="fas fa-clock"></i>
+                                <span>01:23:45</span>
+                            </div>
+                            <div class="test-question">
+                                <p>Q1. What is the derivative of x²?</p>
+                                <div class="options">
+                                    <span class="option">A. x</span>
+                                    <span class="option correct">B. 2x</span>
+                                    <span class="option">C. x²</span>
+                                    <span class="option">D. 1</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <h3>Daily Challenge</h3>
+                    <p>Answer 5 questions daily, maintain your streak, and climb the leaderboard to compete with others.</p>
+                    <div class="feature-preview">
+                        <div class="challenge-preview">
+                            <div class="streak">
+                                <i class="fas fa-fire"></i>
+                                <span>5-day streak!</span>
+                            </div>
+                            <div class="leaderboard-preview">
+                                <div class="leaderboard-item">
+                                    <span class="rank">1</span>
+                                    <span class="name">Paras</span>
+                                    <span class="score">1250 XP</span>
+                                </div>
+                                <div class="leaderboard-item">
+                                    <span class="rank">2</span>
+                                    <span class="name">Ananya</span>
+                                    <span class="score">1180 XP</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <h3>Doubt System</h3>
+                    <p>Post your doubts and get answers from the community. No need to wait for teachers!</p>
+                    <div class="feature-preview">
+                        <div class="doubt-preview">
+                            <div class="doubt-question">
+                                <span class="user">Paras:</span>
+                                <p>How do I solve this integration problem?</p>
+                            </div>
+                            <div class="doubt-answer">
+                                <span class="user">Ananya:</span>
+                                <p>Use substitution method. Let u = x²...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <h3>Gamification</h3>
+                    <p>Earn XP points, level up, and collect badges like "Math Master" or "Physics Warrior" as you learn.</p>
+                    <div class="feature-preview">
+                        <div class="gamification-preview">
+                            <div class="badge">
+                                <i class="fas fa-crown"></i>
+                                <span>Math Master</span>
+                            </div>
+                            <div class="xp-bar">
+                                <span>Level 5</span>
+                                <div class="bar">
+                                    <div class="progress" style="width: 75%;"></div>
+                                </div>
+                                <span>750/1000 XP</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="gamification-visual">
-        <div class="xp-bar-container">
-          <div class="xp-label">Level <span id="current-level">4</span> • <span id="current-xp">850</span>/1000 XP</div>
-          <div class="xp-track"><div class="xp-fill" id="xp-fill" style="width: 85%"></div></div>
+    </section>
+
+    <!-- AI Features Section -->
+    <section class="ai-features">
+        <div class="container">
+            <div class="section-header">
+                <h2>AI-Powered Learning</h2>
+                <p>Next-level features to enhance your study experience</p>
+            </div>
+            <div class="ai-grid">
+                <div class="ai-card">
+                    <div class="ai-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3>AI Study Planner</h3>
+                    <p>Input your exam date and subjects, get a personalized daily study plan optimized for your success.</p>
+                    <div class="ai-preview">
+                        <div class="study-plan">
+                            <div class="plan-day">
+                                <span class="day">Monday</span>
+                                <div class="tasks">
+                                    <span><i class="fas fa-book"></i> Math: 2 hours</span>
+                                    <span><i class="fas fa-flask"></i> Chemistry: 1.5 hours</span>
+                                </div>
+                            </div>
+                            <div class="plan-day">
+                                <span class="day">Tuesday</span>
+                                <div class="tasks">
+                                    <span><i class="fas fa-book"></i> Physics: 2 hours</span>
+                                    <span><i class="fas fa-code"></i> Coding: 1 hour</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ai-card">
+                    <div class="ai-icon">
+                        <i class="fas fa-microphone"></i>
+                    </div>
+                    <h3>Voice Notes</h3>
+                    <p>Speak your notes and have them automatically converted to text. Perfect for quick revision on the go.</p>
+                    <div class="ai-preview">
+                        <div class="voice-notes">
+                            <button class="record-btn"><i class="fas fa-microphone"></i></button>
+                            <div class="notes-output">
+                                <p>Sample note: "The derivative of x^n is n*x^(n-1)"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ai-card">
+                    <div class="ai-icon">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <h3>Live Classes</h3>
+                    <p>Join live classes with screen sharing and interactive chat. Basic version using WebRTC.</p>
+                    <div class="ai-preview">
+                        <div class="live-class-preview">
+                            <div class="video-feed">
+                                <img src="assets/images/live-class.jpg" alt="Live class">
+                                <span class="live-badge">LIVE</span>
+                            </div>
+                            <div class="class-info">
+                                <span class="subject">Physics: Electrostatics</span>
+                                <span class="teacher">by Prof. Sharma</span>
+                                <span class="time"><i class="fas fa-clock"></i> 10:00 AM - 11:30 AM</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="daily-challenge">
-          <i class="fa-solid fa-calendar-day"></i><span>Daily Challenge Ready</span>
-          <button class="btn btn-sm">Start 5 Qs</button>
+    </section>
+
+    <section class="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2>What Our Students Say</h2>
+                <p>Hear from those who have transformed their learning</p>
+            </div>
+            <div class="testimonial-slider">
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <img src="assets/images/user1.jpg" alt="Student 1">
+                        <div>
+                            <h4>Priya Sharma</h4>
+                            <span>JEE Aspirant</span>
+                        </div>
+                    </div>
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <p>"The smart topic tracker helped me identify my weak areas in Physics. My scores improved from 65% to 88% in just a month!"</p>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <img src="assets/images/user2.jpg" alt="Student 2">
+                        <div>
+                            <h4>Rahul Verma</h4>
+                            <span>NEET Aspirant</span>
+                        </div>
+                    </div>
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p>"The daily challenge mode keeps me consistent. I've maintained a 30-day streak and it's become a habit now. The gamification makes learning fun!"</p>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <img src="assets/images/user3.jpg" alt="Student 3">
+                        <div>
+                            <h4>Ananya Gupta</h4>
+                            <span>Class 12 Student</span>
+                        </div>
+                    </div>
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="far fa-star"></i>
+                    </div>
+                    <p>"The video + notes sync system is amazing! I can watch the video and have the notes automatically scroll to the relevant part. Saves so much time!"</p>
+                </div>
+            </div>
+            <div class="slider-controls">
+                <button class="prev-btn"><i class="fas fa-chevron-left"></i></button>
+                <div class="dots"></div>
+                <button class="next-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section cta">
-    <div class="cta-box" data-anim>
-      <h2>Ready to Study <span class="gradient-text">Adaptively</span>?</h2>
-      <p>Join thousands of students turning weak topics into strong scores. Free forever for core features.</p>
-      <div class="cta-buttons">
-        <a href="#" class="btn btn-glow">Create Free Account</a>
-        <a href="#" class="btn btn-outline">View Demo Test</a>
-      </div>
-    </div>
-  </section>
+    </section>
 
 
-  <footer class="footer">
-    <div class="footer-container">
-      <div class="footer-brand">
-        <a href="#" class="logo"><i class="fa-solid fa-brain"></i> Adaptive<span>Hub</span></a>
-        <p>AI-powered adaptive learning for serious students.</p>
-      </div>
-      <div class="footer-links">
-        <div class="link-col"><h4>Platform</h4><a href="#">Courses</a><a href="#">Mock Tests</a><a href="#">Dashboard</a></div>
-        <div class="link-col"><h4>Community</h4><a href="#">Doubts</a><a href="#">Leaderboard</a><a href="#">Discord</a></div>
-        <div class="link-col"><h4>Legal</h4><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact</a></div>
-      </div>
-    </div>
-    <div class="footer-bottom"><p>&copy; 2026 Adaptive Study Hub. Built for learners.</p></div>
-  </footer>
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Transform Your Learning?</h2>
+                <p>Join thousands of students who are already learning smarter with Adaptive Study Hub.</p>
+                <a href="signup.html" class="btn primary-btn"><i class="fas fa-user-plus"></i> Get Started Free</a>
+            </div>
+        </div>
+    </section>
 
-  <script src="main.js"></script>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <div class="logo">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Adaptive<span>Study</span>Hub</span>
+                    </div>
+                    <p>Smart learning platform that adapts to your needs and helps you achieve your academic goals.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="courses.html">Courses</a></li>
+                        <li><a href="test.html">Tests</a></li>
+                        <li><a href="challenge.html">Daily Challenge</a></li>
+                        <li><a href="doubt.html">Doubt Forum</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="dashboard.html">Dashboard</a></li>
+                        <li><a href="#">Study Planner</a></li>
+                        <li><a href="#">Voice Notes</a></li>
+                        <li><a href="#">Live Classes</a></li>
+                        <li><a href="#">Leaderboard</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Adaptive Study Hub. All rights reserved. | Made with <i class="fas fa-heart"></i> by SoftwareLabs</p>
+            </div>
+        </div>
+    </footer>
+
+
+    <button class="back-to-top"><i class="fas fa-arrow-up"></i></button>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" defer></script>
+    <script src="main.js" defer></script>
 </body>
 </html>
