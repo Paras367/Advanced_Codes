@@ -3262,6 +3262,23 @@ setTimeout(() => {
   }
 }, 5000); 
 
+
+function hidePreloader() {
+  const preloader = document.querySelector('.preloader');
+  if (!preloader) return;
+
+  preloader.classList.add('hidden');
+
+  setTimeout(() => {
+    preloader.style.display = 'none';
+    document.body.style.overflow = 'auto';
+  }, 500);
+}
+
+window.addEventListener('load', hidePreloader);
+document.addEventListener('DOMContentLoaded', hidePreloader);
+setTimeout(hidePreloader, 3000);
+
 window.showToast = showToast;
 window.saveStudyPlan = saveStudyPlan;
 window.printStudyPlan = printStudyPlan;
