@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Watch video lectures with synchronized notes on Adaptive Study Hub.">
+  <title>Watch — Adaptive Study Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+
+  
+  <meta name="keywords" content="adaptive learning, study platform, JEE prep, NEET prep, mock tests, AI study planner, gamified learning">
+  <meta name="author" content="Adaptive Study Hub">
+  <meta name="robots" content="index, follow">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://adaptivestudyhub.com/">
+  <meta property="og:title" content="Adaptive Study Hub | Learn. Test. Adapt.">
+  <meta property="og:description" content="AI-powered study tracking, mock tests, and gamified progress for serious students.">
+  <meta property="og:image" content="https://paras367.github.io/favicon.svg">
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Adaptive Study Hub | Learn. Test. Adapt.">
+  <meta name="twitter:description" content="AI-powered study tracking, mock tests, and gamified progress for serious students.">
+  <meta name="twitter:image" content="https://paras367.github.io/favicon.svg">
+
+  <style>
+    .watch-layout {
+      display: grid; grid-template-columns: 1fr 340px; gap: 20px;
+      padding: calc(var(--header-h) + 20px) 24px 60px;
+      max-width: 1400px; margin: 0 auto; position: relative; z-index: 1;
+    }
+    @media(max-width:1000px) { .watch-layout { grid-template-columns: 1fr; } }
+
+
+    .video-player {
+      background: #000; border-radius: var(--radius-xl); overflow: hidden;
+      position: relative; aspect-ratio: 16/9;
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .video-placeholder {
+      width: 100%; height: 100%;
+      background: linear-gradient(135deg, rgba(17,24,39,1), rgba(7,11,20,1));
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 16px; color: var(--text-secondary); position: relative;
+    }
+    .video-placeholder::before {
+      content:''; position:absolute; inset:0;
+      background:
+        radial-gradient(circle at 30% 40%, rgba(56,189,248,0.08), transparent 50%),
+        radial-gradient(circle at 70% 60%, rgba(167,139,250,0.06), transparent 50%);
+    }
+    .play-btn-big {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-indigo));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; cursor: pointer; transition: all var(--transition);
+      box-shadow: 0 0 40px rgba(56,189,248,0.4); position: relative; z-index: 1;
+      border: none;
+    }
+    .play-btn-big:hover { transform: scale(1.1); box-shadow: 0 0 60px rgba(56,189,248,0.6); }
+    .video-title-overlay { font-size: 1rem; font-weight: 600; text-align: center; max-width: 400px; position:relative;z-index:1; }
+    .video-chapter-badge { position:relative;z-index:1; }
+
+    /* Controls bar */
+    .video-controls {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 14px 20px;
+      display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .vc-play { width: 38px; height: 38px; border-radius: 50%; border: none; cursor: pointer; display:flex; align-items:center; justify-content:center; background: linear-gradient(135deg,var(--accent-cyan),var(--accent-indigo)); color:#fff; font-size:0.9rem; }
+    .vc-timeline { flex:1; min-width:100px; height:6px; background:rgba(255,255,255,0.08); border-radius:3px; cursor:pointer; position:relative; }
+    .vc-progress { height:100%; border-radius:3px; background:linear-gradient(90deg,var(--accent-cyan),var(--accent-violet)); transition:width 0.5s; }
+    .vc-time { font-family:var(--font-mono); font-size:0.8rem; color:var(--text-muted); white-space:nowrap; }
+    .vc-speed { padding: 4px 10px; border-radius:4px; background:rgba(255,255,255,0.06); border:1px solid var(--border); color:var(--text-secondary); font-family:var(--font-body); font-size:0.78rem; cursor:pointer; }
+    .vc-btn { width:32px; height:32px; border-radius:8px; border:1px solid var(--border); background:transparent; cursor:pointer; color:var(--text-muted); font-size:0.85rem; display:flex; align-items:center; justify-content:center; transition:all var(--transition); }
+    .vc-btn:hover { border-color:var(--accent-cyan); color:var(--accent-cyan); }
+
+
+    .notes-panel {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-xl); overflow: hidden;
+      display: flex; flex-direction: column; max-height: 500px;
+    }
+    .notes-header {
+      padding: 14px 18px; border-bottom: 1px solid var(--border);
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .notes-header-title { font-size:0.88rem; font-weight:700; display:flex; gap:8px; align-items:center; }
+    .notes-tabs { display:flex; gap:4px; }
+    .note-tab { padding:4px 10px; border-radius:4px; border:none; background:transparent; cursor:pointer; font-size:0.78rem; font-family:var(--font-body); color:var(--text-muted); transition:all var(--transition); }
+    .note-tab.active { background:rgba(56,189,248,0.1); color:var(--accent-cyan); }
+    .notes-body { flex:1; overflow-y:auto; padding:16px; }
+
+    .note-block {
+      padding: 12px 14px; border-radius:var(--radius-md);
+      border: 1px solid var(--border); margin-bottom: 10px;
+      background: rgba(255,255,255,0.02); transition: all var(--transition);
+      cursor: pointer;
+    }
+    .note-block:hover { border-color:var(--border-hover); }
+    .note-block.active-note { border-color:var(--accent-cyan); background:rgba(56,189,248,0.06); }
+    .note-timestamp { font-size:0.7rem; color:var(--accent-cyan); font-family:var(--font-mono); margin-bottom:4px; }
+    .note-text { font-size:0.84rem; color:var(--text-secondary); line-height:1.6; }
+    .note-formula {
+      font-family:var(--font-mono); font-size:0.85rem; color:var(--accent-amber);
+      background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.2);
+      padding: 8px 12px; border-radius:6px; margin-top:8px;
+    }
+
+ 
+    .chapter-sidebar {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-xl); overflow: hidden;
+      margin-top: 16px;
+    }
+    .cs-header { padding:14px 18px; border-bottom:1px solid var(--border); font-size:0.88rem; font-weight:700; }
+    .cs-item {
+      display:flex; align-items:center; gap:12px; padding:12px 18px;
+      cursor:pointer; transition:all var(--transition); border-bottom:1px solid rgba(255,255,255,0.03);
+      text-decoration:none; color:inherit;
+    }
+    .cs-item:hover { background:rgba(255,255,255,0.03); }
+    .cs-item.active { background:rgba(56,189,248,0.06); border-left:2px solid var(--accent-cyan); }
+    .cs-num { width:28px; height:28px; border-radius:8px; background:rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; flex-shrink:0; }
+    .cs-info { flex:1; }
+    .cs-title { font-size:0.85rem; font-weight:500; }
+    .cs-meta  { font-size:0.72rem; color:var(--text-muted); margin-top:2px; }
+    .cs-status { font-size:0.75rem; }
+
+    /* Main info below video */
+    .video-info { padding: 20px 0; }
+    .video-main-title { font-size:1.4rem; font-weight:700; margin-bottom:6px; }
+    .video-main-meta { display:flex; gap:16px; flex-wrap:wrap; font-size:0.82rem; color:var(--text-muted); margin-bottom:16px; }
+    .video-tags { display:flex; gap:8px; flex-wrap:wrap; }
+
+ 
+    .code-pad {
+      background: #0d1117; border:1px solid var(--border);
+      border-radius:var(--radius-lg); overflow:hidden; margin-top:16px;
+    }
+    .code-pad-header { padding:10px 16px; background:rgba(255,255,255,0.03); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .code-editor {
+      width:100%; min-height:120px; background:transparent; border:none; outline:none; resize:none;
+      color:#e2e8f0; font-family:var(--font-mono); font-size:0.85rem; padding:14px 16px; line-height:1.7;
+    }
+    .code-output { padding:12px 16px; background:rgba(0,0,0,0.3); border-top:1px solid var(--border); font-family:var(--font-mono); font-size:0.82rem; color:var(--accent-green); min-height:40px; }
+  </style>
+</head>
+<body>
+  <div class="page-bg"></div>
+  <div class="page-loader" id="page-loader"><div class="loader-logo">📚 StudyHub</div><div class="loader-bar"><div class="loader-progress"></div></div></div>
+
+  <header id="main-header">
+    <nav class="nav-inner">
+      <a href="index.html" class="nav-logo"><div class="logo-icon"><i class="fa-solid fa-graduation-cap"></i></div><span>StudyHub</span></a>
+      <div class="nav-links">
+        <a href="index.html"><i class="fa-solid fa-house fa-xs"></i> Home</a>
+        <a href="courses.html"><i class="fa-solid fa-book-open fa-xs"></i> Courses</a>
+        <a href="test.html"><i class="fa-solid fa-pen-to-square fa-xs"></i> Tests</a>
+        <a href="dashboard.html"><i class="fa-solid fa-chart-line fa-xs"></i> Dashboard</a>
+        <a href="doubt.html"><i class="fa-solid fa-comments fa-xs"></i> Doubts</a>
+        <a href="daily.html"><i class="fa-solid fa-fire fa-xs"></i> Daily</a>
+      </div>
+      <div class="nav-actions">
+        <div class="nav-xp" id="nav-xp">⚡ 340 XP</div>
+        <button id="dark-toggle" class="btn btn-outline btn-sm" style="padding:7px 10px;"><i class="fa-solid fa-moon"></i></button>
+        <div class="nav-avatar" id="nav-avatar" onclick="location.href='dashboard.html'">S</div>
+        <button class="nav-hamburger" id="nav-hamburger"><span></span><span></span><span></span></button>
+      </div>
+    </nav>
+  </header>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="index.html">Home</a><a href="courses.html">Courses</a>
+    <a href="test.html">Tests</a><a href="dashboard.html">Dashboard</a>
+    <a href="doubt.html">Doubts</a><a href="daily.html">Daily</a>
+  </div>
+
+  <div class="watch-layout">
+
+    <div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:0.8rem;color:var(--text-muted);margin-bottom:14px;">
+        <a href="courses.html" style="color:var(--accent-cyan)">Courses</a>
+        <i class="fa-solid fa-chevron-right fa-xs"></i>
+        <span>Physics</span>
+        <i class="fa-solid fa-chevron-right fa-xs"></i>
+        <span style="color:var(--text-primary)">Electrostatics — Ch 8</span>
+      </div>
+
+
+      <div class="video-player" id="video-player">
+        <div class="video-placeholder" id="video-placeholder">
+          <span class="video-chapter-badge"><span class="badge badge-rose">⚠ Weak Topic</span></span>
+          <button class="play-btn-big" onclick="playVideo()"><i class="fa-solid fa-play"></i></button>
+          <div class="video-title-overlay">Electrostatics — Coulomb's Law & Electric Field</div>
+          <div style="font-size:0.8rem;color:var(--text-muted);position:relative;z-index:1;">Duration: 42:18 · HD</div>
+        </div>
+        <video id="real-video" style="display:none;width:100%;height:100%;border-radius:var(--radius-xl);" controls></video>
+      </div>
+
+ 
+      <div class="video-controls">
+        <button class="vc-play" id="vc-play" onclick="togglePlay()"><i class="fa-solid fa-play" id="play-icon"></i></button>
+        <div class="vc-timeline" onclick="seekVideo(event)" id="vc-timeline">
+          <div class="vc-progress" id="vc-progress" style="width:0%"></div>
+        </div>
+        <div class="vc-time" id="vc-time">00:00 / 42:18</div>
+        <select class="vc-speed" onchange="setSpeed(this.value)">
+          <option value="0.75">0.75x</option>
+          <option value="1" selected>1x</option>
+          <option value="1.25">1.25x</option>
+          <option value="1.5">1.5x</option>
+          <option value="2">2x</option>
+        </select>
+        <button class="vc-btn" title="Bookmark" onclick="bookmarkTimestamp()"><i class="fa-solid fa-bookmark"></i></button>
+        <button class="vc-btn" title="Fullscreen"><i class="fa-solid fa-expand"></i></button>
+      </div>
+
+      <div class="video-info">
+        <div class="video-main-title">Electrostatics — Coulomb's Law & Electric Field</div>
+        <div class="video-main-meta">
+          <span><i class="fa-solid fa-eye fa-xs"></i> 1,284 views</span>
+          <span><i class="fa-solid fa-clock fa-xs"></i> 42 min</span>
+          <span><i class="fa-solid fa-star fa-xs" style="color:var(--accent-amber)"></i> 4.8</span>
+          <span><i class="fa-solid fa-layer-group fa-xs"></i> Chapter 8 / 32</span>
+        </div>
+        <div class="video-tags">
+          <span class="badge badge-rose">Weak Topic</span>
+          <span class="badge badge-cyan">JEE Imp.</span>
+          <span class="badge badge-amber">NEET 2023 PYQ</span>
+        </div>
+
+        <div style="margin-top:20px;" data-tabs>
+          <div class="tabs">
+            <button class="tab-btn active">📝 Notes</button>
+            <button class="tab-btn">💻 Practice</button>
+            <button class="tab-btn">❓ Quick Quiz</button>
+          </div>
+          <div class="tab-content active" style="margin-top:16px;">
+            <div class="card" style="padding:20px;">
+              <div style="font-size:0.82rem;font-weight:700;color:var(--text-muted);margin-bottom:12px;">CHAPTER NOTES — Auto-synced with video</div>
+              <div style="font-size:0.9rem;color:var(--text-secondary);line-height:1.9;">
+                <strong style="color:var(--text-primary)">Coulomb's Law:</strong><br>
+                The electrostatic force between two point charges is directly proportional to the product of charges and inversely proportional to the square of the distance.
+                <div class="note-formula">F = k · q₁q₂ / r² &nbsp;&nbsp;where k = 9 × 10⁹ N·m²/C²</div>
+                <div style="margin-top:14px;"><strong style="color:var(--text-primary)">Electric Field (E):</strong><br>
+                Force per unit positive test charge placed at a point.</div>
+                <div class="note-formula">E = F/q₀ = kq/r² &nbsp;&nbsp;(in N/C or V/m)</div>
+                <div style="margin-top:14px;"><strong style="color:var(--text-primary)">Key Points to Remember:</strong>
+                  <ul style="margin-top:8px;padding-left:18px;display:flex;flex-direction:column;gap:6px;">
+                    <li>Coulomb's constant k = 1/(4πε₀)</li>
+                    <li>ε₀ = 8.85 × 10⁻¹² C²/N·m²</li>
+                    <li>Force is along the line joining charges</li>
+                    <li>Like charges repel, unlike charges attract</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-content" style="margin-top:16px;">
+            <div class="code-pad">
+              <div class="code-pad-header">
+                <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;">
+                  <span style="color:var(--accent-amber);">🐍</span>
+                  <span style="color:var(--text-secondary);">Python — Coulomb's Law Calculator</span>
+                </div>
+                <button class="btn btn-green btn-sm" onclick="runCode()"><i class="fa-solid fa-play"></i> Run</button>
+              </div>
+              <textarea class="code-editor" id="code-input" spellcheck="false"># Coulomb's Law Calculator
+k = 9e9  # Coulomb's constant
+
+def coulombs_force(q1, q2, r):
+    return k * abs(q1 * q2) / r**2
+
+# Example: two charges of 2μC and 3μC, 0.1m apart
+q1 = 2e-6  # 2 microCoulombs
+q2 = 3e-6  # 3 microCoulombs
+r  = 0.1   # 0.1 meters
+
+F = coulombs_force(q1, q2, r)
+print(f"Force = {F:.4f} N")
+print(f"Force = {F:.2e} N (scientific notation)")</textarea>
+              <div class="code-output" id="code-output">▶ Click Run to execute…</div>
+            </div>
+          </div>
+          <div class="tab-content" style="margin-top:16px;" id="quick-quiz-tab">
+            <div class="card" style="padding:20px;" id="qq-container">
+              <div style="font-weight:700;margin-bottom:16px;">Quick Quiz — Electrostatics</div>
+              <div id="qq-question" style="font-size:0.92rem;line-height:1.7;margin-bottom:20px;color:var(--text-primary);">
+                Two charges of 3μC and 5μC are placed 0.2m apart. What is the force between them?
+              </div>
+              <div id="qq-options" style="display:flex;flex-direction:column;gap:10px;">
+                <button class="option-btn" onclick="checkQQ(this,0)"><div class="option-letter">A</div><span>3.37 N</span></button>
+                <button class="option-btn" onclick="checkQQ(this,1)"><div class="option-letter">B</div><span>2.25 N</span></button>
+                <button class="option-btn" onclick="checkQQ(this,2)"><div class="option-letter">C</div><span>5.06 N</span></button>
+                <button class="option-btn" onclick="checkQQ(this,3)"><div class="option-letter">D</div><span>1.12 N</span></button>
+              </div>
+              <div id="qq-feedback" style="margin-top:14px;font-size:0.85rem;display:none;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div>
+      <div class="notes-panel">
+        <div class="notes-header">
+          <div class="notes-header-title"><i class="fa-solid fa-file-lines" style="color:var(--accent-cyan)"></i> Synced Notes</div>
+          <div class="notes-tabs">
+            <button class="note-tab active" onclick="switchNoteTab(this,'timeline')">Timeline</button>
+            <button class="note-tab" onclick="switchNoteTab(this,'bookmarks')">Bookmarks</button>
+          </div>
+        </div>
+        <div class="notes-body" id="notes-body">
+          <div class="note-block active-note">
+            <div class="note-timestamp">00:00 — Introduction</div>
+            <div class="note-text">Chapter overview: Electrostatics covers static charges and their interactions.</div>
+          </div>
+          <div class="note-block">
+            <div class="note-timestamp">03:45 — Coulomb's Law</div>
+            <div class="note-text">Statement and derivation of Coulomb's Law for electrostatic force.</div>
+            <div class="note-formula">F = kq₁q₂/r²</div>
+          </div>
+          <div class="note-block">
+            <div class="note-timestamp">12:20 — Electric Field</div>
+            <div class="note-text">Definition of Electric Field — force per unit positive test charge.</div>
+            <div class="note-formula">E = F/q₀ = kq/r²</div>
+          </div>
+          <div class="note-block">
+            <div class="note-timestamp">22:00 — Superposition</div>
+            <div class="note-text">Principle of superposition: net force/field is vector sum of individual effects.</div>
+          </div>
+          <div class="note-block">
+            <div class="note-timestamp">31:15 — Gauss's Law</div>
+            <div class="note-text">Introduction to Gauss's Law and electric flux through closed surfaces.</div>
+            <div class="note-formula">∮E·dA = Q/ε₀</div>
+          </div>
+          <div class="note-block">
+            <div class="note-timestamp">38:00 — Solved Problems</div>
+            <div class="note-text">3 JEE-level problems solved step by step. Important for exam.</div>
+          </div>
+        </div>
+      </div>
+
+  
+      <div class="chapter-sidebar">
+        <div class="cs-header">📚 Physics Chapters</div>
+        <div style="overflow-y:auto;max-height:400px;">
+          <div class="cs-item" onclick="location.href='watch.html'">
+            <div class="cs-num" style="background:rgba(52,211,153,0.1);color:var(--accent-green)">1</div>
+            <div class="cs-info"><div class="cs-title">Kinematics</div><div class="cs-meta">38 min · 12 questions</div></div>
+            <div class="cs-status text-green">✓</div>
+          </div>
+          <div class="cs-item" onclick="location.href='watch.html'">
+            <div class="cs-num" style="background:rgba(52,211,153,0.1);color:var(--accent-green)">2</div>
+            <div class="cs-info"><div class="cs-title">Laws of Motion</div><div class="cs-meta">45 min · 15 questions</div></div>
+            <div class="cs-status text-green">✓</div>
+          </div>
+          <div class="cs-item active" onclick="location.href='watch.html'">
+            <div class="cs-num" style="background:rgba(251,113,133,0.1);color:var(--accent-rose)">8</div>
+            <div class="cs-info"><div class="cs-title">Electrostatics</div><div class="cs-meta">42 min · 18 questions</div></div>
+            <div class="cs-status text-rose">▶</div>
+          </div>
+          <div class="cs-item" onclick="location.href='watch.html'">
+            <div class="cs-num" style="background:rgba(251,191,36,0.1);color:var(--accent-amber)">9</div>
+            <div class="cs-info"><div class="cs-title">Current Electricity</div><div class="cs-meta">52 min · 20 questions</div></div>
+            <div class="cs-status text-amber">~</div>
+          </div>
+          <div class="cs-item" onclick="location.href='watch.html'">
+            <div class="cs-num" style="background:rgba(255,255,255,0.04)">10</div>
+            <div class="cs-info"><div class="cs-title">Magnetic Effects</div><div class="cs-meta">48 min · 16 questions</div></div>
+            <div class="cs-status text-muted">○</div>
+          </div>
+          <div class="cs-item" onclick="location.href='watch.html'">
+            <div class="cs-num" style="background:rgba(255,255,255,0.04)">11</div>
+            <div class="cs-info"><div class="cs-title">Optics</div><div class="cs-meta">55 min · 22 questions</div></div>
+            <div class="cs-status text-muted">○</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer id="main-footer">
+    <div class="container">
+      <div class="footer-bottom" style="justify-content:center;">
+        <span>© 2026 Adaptive Study Hub.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+  <script>
+  let isPlaying = false, videoProgress = 0, progressInterval;
+
+  function playVideo() {
+    isPlaying = true;
+    document.getElementById('play-icon').className = 'fa-solid fa-pause';
+    Toast.show('Video started — notes will sync automatically 📝', 'info', 2500);
+    UserState.addXP(5, 'Started a lecture');
+    simulateProgress();
+    syncNotes();
+  }
+
+  function togglePlay() {
+    isPlaying = !isPlaying;
+    document.getElementById('play-icon').className = isPlaying ? 'fa-solid fa-pause' : 'fa-solid fa-play';
+    if (isPlaying) simulateProgress(); else clearInterval(progressInterval);
+  }
+
+  function simulateProgress() {
+    clearInterval(progressInterval);
+    const totalSecs = 2538; // 42:18
+    progressInterval = setInterval(() => {
+      if (!isPlaying) return;
+      videoProgress = Math.min(videoProgress + (100/(totalSecs*2)), 100);
+      document.getElementById('vc-progress').style.width = videoProgress + '%';
+      const cur = Math.floor(videoProgress / 100 * totalSecs);
+      document.getElementById('vc-time').textContent = formatT(cur) + ' / 42:18';
+      syncNotes(cur);
+      if (videoProgress >= 100) { clearInterval(progressInterval); UserState.addXP(30, 'Completed lecture'); }
+    }, 500);
+  }
+
+  function formatT(s) { return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0'); }
+
+  function seekVideo(e) {
+    const tl = document.getElementById('vc-timeline');
+    const rect = tl.getBoundingClientRect();
+    videoProgress = ((e.clientX - rect.left) / rect.width) * 100;
+    document.getElementById('vc-progress').style.width = videoProgress + '%';
+  }
+
+  function setSpeed(v) { Toast.show(`Playback speed: ${v}x`, 'info', 1500); }
+
+  function bookmarkTimestamp() {
+    const cur = Math.floor(videoProgress / 100 * 2538);
+    Toast.show(`Bookmarked at ${formatT(cur)} ⭐`, 'success');
+  }
+
+  const noteTimestamps = [0, 225, 740, 1320, 1875, 2280];
+  function syncNotes(cur = 0) {
+    const notes = document.querySelectorAll('.note-block');
+    let activeIdx = 0;
+    noteTimestamps.forEach((t, i) => { if (cur >= t) activeIdx = i; });
+    notes.forEach((n,i) => n.classList.toggle('active-note', i === activeIdx));
+    const activeNote = notes[activeIdx];
+    if (activeNote) activeNote.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  }
+
+  function switchNoteTab(btn, type) {
+    document.querySelectorAll('.note-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+
+  function runCode() {
+    const code = document.getElementById('code-input').value;
+    const output = document.getElementById('code-output');
+    output.textContent = '⟳ Running…';
+    setTimeout(() => {
+      if (code.includes('coulombs_force') || code.includes('F =')) {
+        output.innerHTML = `<span style="color:var(--accent-cyan)">Force = 5.0625 N\nForce = 5.06e+00 N (scientific notation)</span>`;
+        Toast.show('Code executed successfully ✅', 'success');
+        UserState.addXP(10, 'Ran code in editor');
+      } else {
+        output.textContent = 'Output: (Run your code to see results)';
+      }
+    }, 800);
+  }
+
+
+  const QQ_ANS = 0;
+  function checkQQ(btn, idx) {
+    const opts = document.querySelectorAll('#qq-options .option-btn');
+    opts.forEach(o => o.disabled = true);
+    if (idx === QQ_ANS) {
+      btn.classList.add('correct');
+      document.getElementById('qq-feedback').style.display = 'block';
+      document.getElementById('qq-feedback').innerHTML = '<span style="color:var(--accent-green)">✅ Correct! F = k·q₁q₂/r² = 9×10⁹ × 3×10⁻⁶ × 5×10⁻⁶ / 0.04 = 3.375 N ≈ 3.37 N</span>';
+      UserState.addXP(15, 'Correct quick quiz answer');
+    } else {
+      btn.classList.add('wrong');
+      opts[QQ_ANS].classList.add('correct');
+      document.getElementById('qq-feedback').style.display = 'block';
+      document.getElementById('qq-feedback').innerHTML = '<span style="color:var(--accent-rose)">❌ Incorrect. The correct answer is A. Remember: F = kq₁q₂/r²</span>';
+    }
+  }
+  </script>
+</body>
+</html>
