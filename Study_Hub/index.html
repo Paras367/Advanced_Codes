@@ -1,11 +1,18 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Adaptive Study Hub - AI-powered learning platform with smart tracking, gamified progress, and timed mock tests. Study smarter, not harder.">
+  <meta name="description" content="Adaptive Study Hub — AI-powered learning platform with smart quizzes, mock tests, analytics and gamification for JEE, NEET and beyond.">
+  <meta name="theme-color" content="#070b14">
+  <title>Adaptive Study Hub — Learn. Test. Adapt.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+
   <meta name="keywords" content="adaptive learning, study platform, JEE prep, NEET prep, mock tests, AI study planner, gamified learning">
-  <meta name="theme-color" content="#0f172a">
   <meta name="author" content="Adaptive Study Hub">
   <meta name="robots" content="index, follow">
 
@@ -21,521 +28,588 @@
   <meta name="twitter:description" content="AI-powered study tracking, mock tests, and gamified progress for serious students.">
   <meta name="twitter:image" content="https://paras367.github.io/favicon.svg">
 
+  <style>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    .hero {
+      min-height: 100vh; display: flex; align-items: center;
+      padding: calc(var(--header-h) + 60px) 0 80px;
+      position: relative; overflow: hidden;
+    }
+    .hero-orb {
+      position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none;
+    }
+    .orb-1 { width: 500px; height: 500px; top: -100px; right: -100px; background: radial-gradient(circle, rgba(56,189,248,0.15), transparent 70%); }
+    .orb-2 { width: 400px; height: 400px; bottom: 0; left: -80px; background: radial-gradient(circle, rgba(167,139,250,0.12), transparent 70%); }
+    .orb-3 { width: 300px; height: 300px; top: 40%; right: 30%; background: radial-gradient(circle, rgba(99,102,241,0.08), transparent 70%); }
 
-  <title>Adaptive Study Hub | Learn. Test. Adapt.</title>
-  <link rel="stylesheet" href="styles.css">
+    .hero-content { position: relative; z-index: 1; max-width: 700px; }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px; border-radius: 20px;
+      background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.2);
+      font-size: 0.8rem; font-weight: 600; color: var(--accent-cyan);
+      letter-spacing: 0.05em; margin-bottom: 24px;
+    }
+    .hero-title { margin-bottom: 20px; }
+    .hero-title .line2 { display: block; color: var(--text-secondary); font-weight: 400; }
+    .hero-sub {
+      font-size: 1.1rem; color: var(--text-secondary); max-width: 560px;
+      margin-bottom: 36px; line-height: 1.7;
+    }
+    .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-bottom: 48px; }
+    .hero-stats {
+      display: flex; gap: 32px; flex-wrap: wrap;
+      padding-top: 36px; border-top: 1px solid var(--border);
+    }
+    .hero-stat-item { }
+    .hero-stat-num { font-family: var(--font-display); font-size: 1.8rem; font-weight: 800; color: var(--text-primary); }
+    .hero-stat-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
 
+    .hero-visual {
+      position: relative; z-index: 1;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hero-card-stack {
+      position: relative; width: 340px; height: 420px;
+    }
+    .hcard {
+      position: absolute; border-radius: var(--radius-xl);
+      padding: 24px; backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+    }
+    .hcard-main {
+      background: rgba(17,24,39,0.9);
+      width: 300px; top: 20px; left: 20px; z-index: 3;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5), var(--shadow-glow-cyan);
+      animation: float 5s ease-in-out infinite;
+    }
+    .hcard-back1 {
+      background: rgba(99,102,241,0.15);
+      width: 280px; top: 10px; left: 35px; z-index: 2;
+      transform: rotate(3deg);
+    }
+    .hcard-back2 {
+      background: rgba(167,139,250,0.08);
+      width: 260px; top: 0; left: 50px; z-index: 1;
+      transform: rotate(6deg);
+    }
+    .hcard-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 12px; }
+    .hcard-subject { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; }
+    .hcard-progress-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.8rem; }
+    .hcard-topics { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+    .topic-row { display: flex; align-items: center; gap: 10px; font-size: 0.82rem; }
+    .topic-row .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .dot-green { background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); }
+    .dot-red   { background: var(--accent-rose); box-shadow: 0 0 6px var(--accent-rose); }
+    .dot-amber { background: var(--accent-amber); box-shadow: 0 0 6px var(--accent-amber); }
+
+ 
+    .float-chip {
+      position: absolute; z-index: 10;
+      padding: 8px 14px; border-radius: 20px;
+      backdrop-filter: blur(12px); border: 1px solid var(--border);
+      font-size: 0.8rem; font-weight: 600; white-space: nowrap;
+    }
+    .chip-streak { background: rgba(251,191,36,0.15); color: var(--accent-amber); top: -20px; right: 0; animation: float 4s ease-in-out infinite 0.5s; }
+    .chip-rank   { background: rgba(52,211,153,0.15); color: var(--accent-green); bottom: 10px; right: -20px; animation: float 4.5s ease-in-out infinite 1s; }
+    .chip-xp     { background: rgba(99,102,241,0.15); color: var(--accent-violet); bottom: 60px; left: -30px; animation: float 3.8s ease-in-out infinite 0.2s; }
+
+
+    .features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+    @media(max-width:900px) { .features-grid { grid-template-columns: repeat(2,1fr); } }
+    @media(max-width:580px) { .features-grid { grid-template-columns: 1fr; } }
+
+    .feat-card {
+      padding: 28px; border-radius: var(--radius-lg);
+      background: var(--bg-card); border: 1px solid var(--border);
+      transition: all var(--transition); position: relative; overflow: hidden;
+    }
+    .feat-card::after {
+      content:''; position:absolute; inset:0;
+      background: linear-gradient(135deg, var(--feat-color, rgba(56,189,248,0.05)), transparent);
+      opacity:0; transition: opacity var(--transition);
+    }
+    .feat-card:hover { transform: translateY(-4px); border-color: var(--feat-color, var(--border-hover)); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+    .feat-card:hover::after { opacity: 1; }
+    .feat-icon { width: 52px; height: 52px; border-radius: 14px; display:flex; align-items:center; justify-content:center; font-size: 1.4rem; margin-bottom: 20px; }
+    .feat-title { font-size: 1.05rem; margin-bottom: 8px; }
+    .feat-desc { font-size: 0.86rem; color: var(--text-muted); line-height: 1.6; }
+
+
+    .steps-row { display: flex; gap: 0; position: relative; }
+    .steps-row::before {
+      content:''; position:absolute; top: 32px; left: calc(16.6% + 32px); right: calc(16.6% + 32px);
+      height: 2px; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-violet));
+      z-index: 0;
+    }
+    @media(max-width:768px) { .steps-row { flex-direction:column; } .steps-row::before { display:none; } }
+    .step-item { flex: 1; text-align: center; padding: 0 16px; position: relative; z-index: 1; }
+    .step-num {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: var(--bg-card); border: 2px solid var(--accent-cyan);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: var(--accent-cyan);
+      margin: 0 auto 16px; box-shadow: 0 0 20px rgba(56,189,248,0.2);
+    }
+    .step-title { font-size: 1rem; margin-bottom: 8px; }
+    .step-desc { font-size: 0.82rem; color: var(--text-muted); }
+
+
+    .subject-card {
+      padding: 24px; border-radius: var(--radius-lg);
+      background: var(--bg-card); border: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 16px;
+      transition: all var(--transition); cursor: pointer;
+      text-decoration: none; color: inherit;
+    }
+    .subject-card:hover { transform: translateY(-3px); border-color: var(--border-hover); box-shadow: var(--shadow-card); }
+    .subject-top { display: flex; align-items: center; justify-content: space-between; }
+    .subject-icon { width: 44px; height: 44px; border-radius: 12px; display:flex; align-items:center; justify-content:center; font-size: 1.2rem; }
+    .subject-chapters { font-size: 0.8rem; color: var(--text-muted); }
+    .subject-name { font-size: 1.1rem; font-weight: 700; }
+    .subject-progress-text { display:flex; justify-content:space-between; font-size:0.78rem; color:var(--text-muted); margin-bottom:4px; }
+
+    .testi-card {
+      padding: 28px; border-radius: var(--radius-lg);
+      background: var(--bg-card); border: 1px solid var(--border);
+    }
+    .testi-stars { color: var(--accent-amber); font-size: 0.9rem; margin-bottom: 14px; }
+    .testi-text { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+    .testi-user { display: flex; align-items: center; gap: 12px; }
+    .testi-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.9rem;
+    }
+    .testi-info .name { font-size: 0.9rem; font-weight: 600; }
+    .testi-info .tag  { font-size: 0.75rem; color: var(--text-muted); }
+
+
+    .cta-banner {
+      background: linear-gradient(135deg, rgba(56,189,248,0.1), rgba(167,139,250,0.1));
+      border: 1px solid rgba(56,189,248,0.2);
+      border-radius: var(--radius-xl); padding: 64px;
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .cta-banner::before {
+      content:''; position:absolute; inset:0;
+      background: radial-gradient(circle at 50% 50%, rgba(56,189,248,0.08), transparent 60%);
+    }
+    @media(max-width:600px) { .cta-banner { padding: 40px 24px; } }
+
+
+    .marquee-wrap { overflow: hidden; padding: 20px 0; }
+    .marquee-track {
+      display: flex; gap: 24px; width: max-content;
+      animation: marquee 25s linear infinite;
+    }
+    .marquee-wrap:hover .marquee-track { animation-play-state: paused; }
+    @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    .marquee-item {
+      padding: 10px 20px; border-radius: 20px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      font-size: 0.85rem; color: var(--text-secondary); white-space: nowrap;
+      display: flex; align-items: center; gap: 8px;
+    }
+  </style>
 </head>
 <body>
+  <div class="page-bg"></div>
 
-    <div class="preloader">
-        <div class="loader">
-            <div class="book">
-                <div class="page"></div>
-                <div class="page"></div>
-                <div class="page"></div>
+
+  <div class="page-loader" id="page-loader">
+    <div class="loader-logo">📚 StudyHub</div>
+    <div class="loader-bar"><div class="loader-progress"></div></div>
+    <div style="font-size:0.8rem;color:var(--text-muted)">Initializing your learning environment…</div>
+  </div>
+
+  <header id="main-header">
+    <nav class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="logo-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+        <span>StudyHub</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html"><i class="fa-solid fa-house fa-xs"></i> Home</a>
+        <a href="courses.html"><i class="fa-solid fa-book-open fa-xs"></i> Courses</a>
+        <a href="test.html"><i class="fa-solid fa-pen-to-square fa-xs"></i> Tests</a>
+        <a href="dashboard.html"><i class="fa-solid fa-chart-line fa-xs"></i> Dashboard</a>
+        <a href="doubt.html"><i class="fa-solid fa-comments fa-xs"></i> Doubts</a>
+        <a href="daily.html"><i class="fa-solid fa-fire fa-xs"></i> Daily</a>
+      </div>
+      <div class="nav-actions">
+        <div class="nav-xp" id="nav-xp">⚡ 340 XP</div>
+        <button id="dark-toggle" class="btn btn-outline btn-sm" style="padding:7px 10px;" title="Toggle theme">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+        <div class="nav-avatar" id="nav-avatar" onclick="location.href='dashboard.html'">S</div>
+        <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="index.html"><i class="fa-solid fa-house"></i> Home</a>
+    <a href="courses.html"><i class="fa-solid fa-book-open"></i> Courses</a>
+    <a href="test.html"><i class="fa-solid fa-pen-to-square"></i> Tests</a>
+    <a href="dashboard.html"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+    <a href="doubt.html"><i class="fa-solid fa-comments"></i> Doubts</a>
+    <a href="daily.html"><i class="fa-solid fa-fire"></i> Daily Challenge</a>
+  </div>
+
+  <main>
+    <section class="hero">
+      <div class="hero-orb orb-1"></div>
+      <div class="hero-orb orb-2"></div>
+      <div class="hero-orb orb-3"></div>
+      <div class="container" style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;">
+        <div class="hero-content anim-fade-up">
+          <div class="hero-eyebrow">
+            <i class="fa-solid fa-bolt"></i> AI-Powered Learning Platform
+          </div>
+          <h1 class="hero-title">
+            Learn.<br>
+            <span class="text-gradient">Test. Adapt.</span>
+            <span class="line2">Master everything.</span>
+          </h1>
+          <p class="hero-sub">
+            Your adaptive study companion that tracks weaknesses, delivers personalized tests, gamifies progress, and gets smarter with every session.
+          </p>
+          <div class="hero-cta">
+            <a href="courses.html" class="btn btn-primary btn-lg">
+              <i class="fa-solid fa-rocket"></i> Start Learning Free
+            </a>
+            <a href="test.html" class="btn btn-secondary btn-lg">
+              <i class="fa-solid fa-play"></i> Take a Test
+            </a>
+          </div>
+          <div class="hero-stats">
+            <div class="hero-stat-item">
+              <div class="hero-stat-num text-cyan" data-counter="12400" data-suffix="+">0</div>
+              <div class="hero-stat-label">Active Students</div>
             </div>
+            <div class="hero-stat-item">
+              <div class="hero-stat-num text-violet" data-counter="850" data-suffix="+">0</div>
+              <div class="hero-stat-label">Practice Tests</div>
+            </div>
+            <div class="hero-stat-item">
+              <div class="hero-stat-num text-green" data-counter="96" data-suffix="%">0</div>
+              <div class="hero-stat-label">Score Improvement</div>
+            </div>
+          </div>
         </div>
-        <p>Loading Knowledge...</p>
+
+
+        <div class="hero-visual anim-fade-up delay-3" style="display:flex;justify-content:center;">
+          <div class="hero-card-stack">
+            <div class="hcard hcard-back2"></div>
+            <div class="hcard hcard-back1"></div>
+            <div class="hcard hcard-main">
+              <div class="hcard-label">📊 Performance Overview</div>
+              <div class="hcard-subject">Physics — Chapter 8</div>
+              <div style="margin-bottom:8px;">
+                <div class="hcard-progress-row"><span>Overall Progress</span><span class="text-cyan">74%</span></div>
+                <div class="progress-track"><div class="progress-fill" data-width="74" style="width:0"></div></div>
+              </div>
+              <div class="hcard-topics">
+                <div class="topic-row"><div class="dot dot-green"></div><span style="flex:1">Mechanics</span><span class="text-green" style="font-size:0.75rem">✓ Strong</span></div>
+                <div class="topic-row"><div class="dot dot-red"></div><span style="flex:1">Electrostatics</span><span class="text-rose" style="font-size:0.75rem">⚠ Weak</span></div>
+                <div class="topic-row"><div class="dot dot-amber"></div><span style="flex:1">Thermodynamics</span><span class="text-amber" style="font-size:0.75rem">~ Review</span></div>
+                <div class="topic-row"><div class="dot dot-green"></div><span style="flex:1">Optics</span><span class="text-green" style="font-size:0.75rem">✓ Strong</span></div>
+              </div>
+              <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border);">
+                <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:6px;">🤖 AI Recommendation</div>
+                <div style="font-size:0.8rem;color:var(--accent-amber);">Revise Electrostatics — 2 videos + 1 test</div>
+              </div>
+            </div>
+
+            <div class="float-chip chip-streak">🔥 7-Day Streak!</div>
+            <div class="float-chip chip-rank">🏆 Rank #142</div>
+            <div class="float-chip chip-xp">⚡ +50 XP Earned</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <div style="position:relative;z-index:1;padding:20px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:rgba(13,20,34,0.6);">
+      <div class="marquee-wrap">
+        <div class="marquee-track">
+          <div class="marquee-item"><i class="fa-solid fa-atom" style="color:var(--accent-cyan)"></i> Physics</div>
+          <div class="marquee-item"><i class="fa-solid fa-flask" style="color:var(--accent-violet)"></i> Chemistry</div>
+          <div class="marquee-item"><i class="fa-solid fa-square-root-variable" style="color:var(--accent-green)"></i> Mathematics</div>
+          <div class="marquee-item"><i class="fa-solid fa-dna" style="color:var(--accent-rose)"></i> Biology</div>
+          <div class="marquee-item"><i class="fa-solid fa-code" style="color:var(--accent-amber)"></i> Coding</div>
+          <div class="marquee-item"><i class="fa-solid fa-earth-americas" style="color:var(--accent-indigo)"></i> Geography</div>
+          <div class="marquee-item"><i class="fa-solid fa-landmark" style="color:var(--accent-cyan)"></i> History</div>
+          <div class="marquee-item"><i class="fa-solid fa-chart-bar" style="color:var(--accent-violet)"></i> Economics</div>
+          <div class="marquee-item"><i class="fa-solid fa-atom" style="color:var(--accent-cyan)"></i> Physics</div>
+          <div class="marquee-item"><i class="fa-solid fa-flask" style="color:var(--accent-violet)"></i> Chemistry</div>
+          <div class="marquee-item"><i class="fa-solid fa-square-root-variable" style="color:var(--accent-green)"></i> Mathematics</div>
+          <div class="marquee-item"><i class="fa-solid fa-dna" style="color:var(--accent-rose)"></i> Biology</div>
+          <div class="marquee-item"><i class="fa-solid fa-code" style="color:var(--accent-amber)"></i> Coding</div>
+          <div class="marquee-item"><i class="fa-solid fa-earth-americas" style="color:var(--accent-indigo)"></i> Geography</div>
+          <div class="marquee-item"><i class="fa-solid fa-landmark" style="color:var(--accent-cyan)"></i> History</div>
+          <div class="marquee-item"><i class="fa-solid fa-chart-bar" style="color:var(--accent-violet)"></i> Economics</div>
+        </div>
+      </div>
     </div>
 
-
-    <header class="header">
-        <div class="container">
-            <div class="logo">
-                <i class="fas fa-graduation-cap"></i>
-                <span>Adaptive<span>Study</span>Hub</span>
-            </div>
-            <nav class="navbar">
-                <ul>
-                    <li><a href="index.html" class="active"><i class="fas fa-home"></i> Home</a></li>
-                    <li><a href="courses.html"><i class="fas fa-book-open"></i> Courses</a></li>
-                    <li><a href="test.html"><i class="fas fa-file-alt"></i> Tests</a></li>
-                    <li><a href="challenge.html"><i class="fas fa-fire"></i> Daily Challenge</a></li>
-                    <li><a href="doubt.html"><i class="fas fa-question-circle"></i> Doubts</a></li>
-                    <li><a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a></li>
-                </ul>
-            </nav>
-            <div class="auth-buttons">
-                <a href="login.html" class="btn login-btn"><i class="fas fa-sign-in-alt"></i> Login</a>
-                <a href="signup.html" class="btn signup-btn"><i class="fas fa-user-plus"></i> Sign Up</a>
-                <button class="theme-toggle"><i class="fas fa-moon"></i></button>
-            </div>
-            <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+    <section class="section" id="features">
+      <div class="container">
+        <div class="text-center reveal" style="max-width:600px;margin:0 auto 56px;">
+          <div class="section-label">Why StudyHub?</div>
+          <h2>Every feature built for <span class="text-gradient">serious learners</span></h2>
+          <p class="mt-2">Not just another platform — an intelligent study partner that adapts with you.</p>
         </div>
-    </header>
-
-    <section class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-text">
-                    <h1>Learn Smarter, Not Harder</h1>
-                    <p>Our AI-powered platform adapts to your learning style, tracks your progress, and helps you master every concept.</p>
-                    <div class="cta-buttons">
-                        <a href="courses.html" class="btn primary-btn"><i class="fas fa-rocket"></i> Start Learning</a>
-                        <a href="#features" class="btn secondary-btn"><i class="fas fa-chevron-down"></i> Explore Features</a>
-                    </div>
-                    <div class="stats">
-                        <div class="stat-item">
-                            <i class="fas fa-users"></i>
-                            <div>
-                                <span class="number">10K+</span>
-                                <span class="label">Active Users</span>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <i class="fas fa-book"></i>
-                            <div>
-                                <span class="number">50+</span>
-                                <span class="label">Courses</span>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <i class="fas fa-check-circle"></i>
-                            <div>
-                                <span class="number">95%</span>
-                                <span class="label">Success Rate</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="hero-image">
-                    <div class="floating-elements">
-                        <div class="element element-1">
-                            <i class="fas fa-lightbulb"></i>
-                            <span>Smart Learning</span>
-                        </div>
-                        <div class="element element-2">
-                            <i class="fas fa-chart-line"></i>
-                            <span>Track Progress</span>
-                        </div>
-                        <div class="element element-3">
-                            <i class="fas fa-trophy"></i>
-                            <span>Earn Rewards</span>
-                        </div>
-                        <div class="element element-4">
-                            <i class="fas fa-clock"></i>
-                            <span>Save Time</span>
-                        </div>
-                    </div>
-                    <img src="assets/images/student-studying.png" alt="Student studying with laptop">
-                </div>
-            </div>
+        <div class="features-grid">
+          <div class="feat-card reveal" style="--feat-color:rgba(56,189,248,0.3)">
+            <div class="feat-icon ib-cyan"><i class="fa-solid fa-brain"></i></div>
+            <div class="feat-title">Smart Weakness Tracker</div>
+            <p class="feat-desc">AI identifies your weak topics after every quiz and suggests precise revision plans with targeted content.</p>
+          </div>
+          <div class="feat-card reveal delay-1" style="--feat-color:rgba(167,139,250,0.3)">
+            <div class="feat-icon ib-violet"><i class="fa-solid fa-chart-pie"></i></div>
+            <div class="feat-title">Performance Analytics</div>
+            <p class="feat-desc">Visual dashboards showing accuracy %, time analysis, rank trajectory and improvement graphs over time.</p>
+          </div>
+          <div class="feat-card reveal delay-2" style="--feat-color:rgba(52,211,153,0.3)">
+            <div class="feat-icon ib-green"><i class="fa-solid fa-stopwatch"></i></div>
+            <div class="feat-title">Mock Test Engine</div>
+            <p class="feat-desc">JEE/NEET-pattern timed tests with auto-submit, instant analysis and question-level time tracking.</p>
+          </div>
+          <div class="feat-card reveal delay-3" style="--feat-color:rgba(251,191,36,0.3)">
+            <div class="feat-icon ib-amber"><i class="fa-solid fa-fire"></i></div>
+            <div class="feat-title">Daily Challenge Mode</div>
+            <p class="feat-desc">5 questions daily, streak system, and competitive leaderboard to build consistency and motivation.</p>
+          </div>
+          <div class="feat-card reveal delay-4" style="--feat-color:rgba(251,113,133,0.3)">
+            <div class="feat-icon ib-rose"><i class="fa-solid fa-gamepad"></i></div>
+            <div class="feat-title">Gamification Engine</div>
+            <p class="feat-desc">XP points, level-up system, achievement badges like "Math Master" and "Physics Warrior" to keep you hooked.</p>
+          </div>
+          <div class="feat-card reveal delay-2" style="--feat-color:rgba(99,102,241,0.3)">
+            <div class="feat-icon ib-indigo"><i class="fa-solid fa-comments"></i></div>
+            <div class="feat-title">Community Doubts</div>
+            <p class="feat-desc">Post doubts, get answers from peers, upvote solutions — a mini Stack Overflow for students.</p>
+          </div>
         </div>
+      </div>
     </section>
 
-
-    <section id="features" class="features">
-        <div class="container">
-            <div class="section-header">
-                <h2>Why Choose Adaptive Study Hub?</h2>
-                <p>Our unique features make learning effective and engaging</p>
-            </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-bullseye"></i>
-                    </div>
-                    <h3>Smart Topic Tracker</h3>
-                    <p>Identifies your weak areas and suggests personalized revision plans with recommended videos and tests.</p>
-                    <div class="feature-preview">
-                        <div class="weakness-tracker">
-                            <div class="topic weak">
-                                <i class="fas fa-times-circle"></i>
-                                <span>Integration</span>
-                            </div>
-                            <div class="topic weak">
-                                <i class="fas fa-times-circle"></i>
-                                <span>Electrostatics</span>
-                            </div>
-                            <div class="topic strong">
-                                <i class="fas fa-check-circle"></i>
-                                <span>Matrices</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-bar"></i>
-                    </div>
-                    <h3>Performance Dashboard</h3>
-                    <p>Visualize your progress with detailed analytics, accuracy trends, and time spent on each topic.</p>
-                    <div class="feature-preview">
-                        <div class="mini-chart">
-                            <div class="chart-bar" style="height: 60%;"></div>
-                            <div class="chart-bar" style="height: 78%;"></div>
-                            <div class="chart-bar" style="height: 85%;"></div>
-                            <div class="chart-bar" style="height: 92%;"></div>
-                        </div>
-                        <p class="chart-label">You improved from 62% → 78% in 5 days</p>
-                    </div>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <h3>Live Coding</h3>
-                    <p>Practice coding with our built-in Python compiler. Solve MCQs and coding problems interactively.</p>
-                    <div class="feature-preview">
-                        <div class="code-snippet">
-                            <div class="code-header">
-                                <span class="file-name">problem.py</span>
-                                <div class="buttons">
-                                    <span class="minimize"><i class="fas fa-minus"></i></span>
-                                    <span class="maximize"><i class="fas fa-square"></i></span>
-                                    <span class="close"><i class="fas fa-times"></i></span>
-                                </div>
-                            </div>
-                            <div class="code-content">
-                                <pre><code><span class="keyword">def</span> <span class="function">solve_problem</span>():
-    <span class="comment"># Your code here</span>
-    <span class="keyword">return</span> <span class="string">"Solution"</span></code></pre>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-play-circle"></i>
-                    </div>
-                    <h3>Video + Notes Sync</h3>
-                    <p>Watch videos with synchronized notes that auto-scroll and highlight key formulas as you learn.</p>
-                    <div class="feature-preview">
-                        <div class="video-notes-preview">
-                            <div class="video-thumbnail">
-                                <i class="fas fa-play"></i>
-                                <span>Video Lesson</span>
-                            </div>
-                            <div class="notes-preview">
-                                <div class="note active">
-                                    <p><strong>Newton's First Law:</strong> An object at rest stays at rest...</p>
-                                </div>
-                                <div class="note">
-                                    <p><strong>Formula:</strong> F = ma</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-file-alt"></i>
-                    </div>
-                    <h3>Mock Test Engine</h3>
-                    <p>Take timed tests with auto-submit and instant analysis. Get detailed insights on your performance.</p>
-                    <div class="feature-preview">
-                        <div class="mock-test-preview">
-                            <div class="test-timer">
-                                <i class="fas fa-clock"></i>
-                                <span>01:23:45</span>
-                            </div>
-                            <div class="test-question">
-                                <p>Q1. What is the derivative of x²?</p>
-                                <div class="options">
-                                    <span class="option">A. x</span>
-                                    <span class="option correct">B. 2x</span>
-                                    <span class="option">C. x²</span>
-                                    <span class="option">D. 1</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-fire"></i>
-                    </div>
-                    <h3>Daily Challenge</h3>
-                    <p>Answer 5 questions daily, maintain your streak, and climb the leaderboard to compete with others.</p>
-                    <div class="feature-preview">
-                        <div class="challenge-preview">
-                            <div class="streak">
-                                <i class="fas fa-fire"></i>
-                                <span>5-day streak!</span>
-                            </div>
-                            <div class="leaderboard-preview">
-                                <div class="leaderboard-item">
-                                    <span class="rank">1</span>
-                                    <span class="name">Paras</span>
-                                    <span class="score">1250 XP</span>
-                                </div>
-                                <div class="leaderboard-item">
-                                    <span class="rank">2</span>
-                                    <span class="name">Ananya</span>
-                                    <span class="score">1180 XP</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-question-circle"></i>
-                    </div>
-                    <h3>Doubt System</h3>
-                    <p>Post your doubts and get answers from the community. No need to wait for teachers!</p>
-                    <div class="feature-preview">
-                        <div class="doubt-preview">
-                            <div class="doubt-question">
-                                <span class="user">Paras:</span>
-                                <p>How do I solve this integration problem?</p>
-                            </div>
-                            <div class="doubt-answer">
-                                <span class="user">Ananya:</span>
-                                <p>Use substitution method. Let u = x²...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-gamepad"></i>
-                    </div>
-                    <h3>Gamification</h3>
-                    <p>Earn XP points, level up, and collect badges like "Math Master" or "Physics Warrior" as you learn.</p>
-                    <div class="feature-preview">
-                        <div class="gamification-preview">
-                            <div class="badge">
-                                <i class="fas fa-crown"></i>
-                                <span>Math Master</span>
-                            </div>
-                            <div class="xp-bar">
-                                <span>Level 5</span>
-                                <div class="bar">
-                                    <div class="progress" style="width: 75%;"></div>
-                                </div>
-                                <span>750/1000 XP</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <section class="section" style="background:rgba(13,20,34,0.5);">
+      <div class="container">
+        <div class="flex" style="justify-content:space-between;align-items:flex-end;margin-bottom:40px;">
+          <div class="reveal">
+            <div class="section-label">Explore Courses</div>
+            <h2>Start with your <span class="text-gradient">subject</span></h2>
+          </div>
+          <a href="courses.html" class="btn btn-outline reveal">View All <i class="fa-solid fa-arrow-right"></i></a>
         </div>
+        <div class="grid-4">
+          <a href="watch.html" class="subject-card reveal">
+            <div class="subject-top">
+              <div class="subject-icon ib-cyan"><i class="fa-solid fa-atom"></i></div>
+              <span class="badge badge-cyan">JEE/NEET</span>
+            </div>
+            <div class="subject-name">Physics</div>
+            <div class="subject-progress-text"><span>32 chapters</span><span class="text-cyan">74%</span></div>
+            <div class="progress-track"><div class="progress-fill" data-width="74" style="width:0"></div></div>
+          </a>
+          <a href="watch.html" class="subject-card reveal delay-1">
+            <div class="subject-top">
+              <div class="subject-icon ib-violet"><i class="fa-solid fa-flask"></i></div>
+              <span class="badge badge-violet">JEE/NEET</span>
+            </div>
+            <div class="subject-name">Chemistry</div>
+            <div class="subject-progress-text"><span>28 chapters</span><span class="text-violet">58%</span></div>
+            <div class="progress-track"><div class="progress-fill" style="background:linear-gradient(90deg,var(--accent-violet),var(--accent-indigo));width:0" data-width="58"></div></div>
+          </a>
+          <a href="watch.html" class="subject-card reveal delay-2">
+            <div class="subject-top">
+              <div class="subject-icon ib-green"><i class="fa-solid fa-square-root-variable"></i></div>
+              <span class="badge badge-green">JEE</span>
+            </div>
+            <div class="subject-name">Mathematics</div>
+            <div class="subject-progress-text"><span>35 chapters</span><span class="text-green">88%</span></div>
+            <div class="progress-track"><div class="progress-fill green" data-width="88" style="width:0"></div></div>
+          </a>
+          <a href="watch.html" class="subject-card reveal delay-3">
+            <div class="subject-top">
+              <div class="subject-icon ib-rose"><i class="fa-solid fa-dna"></i></div>
+              <span class="badge badge-rose">NEET</span>
+            </div>
+            <div class="subject-name">Biology</div>
+            <div class="subject-progress-text"><span>40 chapters</span><span class="text-rose">42%</span></div>
+            <div class="progress-track"><div class="progress-fill rose" data-width="42" style="width:0"></div></div>
+          </a>
+        </div>
+      </div>
     </section>
 
-    <!-- AI Features Section -->
-    <section class="ai-features">
-        <div class="container">
-            <div class="section-header">
-                <h2>AI-Powered Learning</h2>
-                <p>Next-level features to enhance your study experience</p>
-            </div>
-            <div class="ai-grid">
-                <div class="ai-card">
-                    <div class="ai-icon">
-                        <i class="fas fa-calendar-alt"></i>
-                    </div>
-                    <h3>AI Study Planner</h3>
-                    <p>Input your exam date and subjects, get a personalized daily study plan optimized for your success.</p>
-                    <div class="ai-preview">
-                        <div class="study-plan">
-                            <div class="plan-day">
-                                <span class="day">Monday</span>
-                                <div class="tasks">
-                                    <span><i class="fas fa-book"></i> Math: 2 hours</span>
-                                    <span><i class="fas fa-flask"></i> Chemistry: 1.5 hours</span>
-                                </div>
-                            </div>
-                            <div class="plan-day">
-                                <span class="day">Tuesday</span>
-                                <div class="tasks">
-                                    <span><i class="fas fa-book"></i> Physics: 2 hours</span>
-                                    <span><i class="fas fa-code"></i> Coding: 1 hour</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="ai-card">
-                    <div class="ai-icon">
-                        <i class="fas fa-microphone"></i>
-                    </div>
-                    <h3>Voice Notes</h3>
-                    <p>Speak your notes and have them automatically converted to text. Perfect for quick revision on the go.</p>
-                    <div class="ai-preview">
-                        <div class="voice-notes">
-                            <button class="record-btn"><i class="fas fa-microphone"></i></button>
-                            <div class="notes-output">
-                                <p>Sample note: "The derivative of x^n is n*x^(n-1)"</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="ai-card">
-                    <div class="ai-icon">
-                        <i class="fas fa-video"></i>
-                    </div>
-                    <h3>Live Classes</h3>
-                    <p>Join live classes with screen sharing and interactive chat. Basic version using WebRTC.</p>
-                    <div class="ai-preview">
-                        <div class="live-class-preview">
-                            <div class="video-feed">
-                                <img src="assets/images/live-class.jpg" alt="Live class">
-                                <span class="live-badge">LIVE</span>
-                            </div>
-                            <div class="class-info">
-                                <span class="subject">Physics: Electrostatics</span>
-                                <span class="teacher">by Prof. Sharma</span>
-                                <span class="time"><i class="fas fa-clock"></i> 10:00 AM - 11:30 AM</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <section class="section">
+      <div class="container">
+        <div class="text-center reveal" style="max-width:500px;margin:0 auto 56px;">
+          <div class="section-label">How It Works</div>
+          <h2>Three steps to <span class="text-gradient">smarter scores</span></h2>
         </div>
+        <div class="steps-row">
+          <div class="step-item reveal">
+            <div class="step-num">1</div>
+            <div class="step-title">Choose a Subject</div>
+            <p class="step-desc">Pick your exam target — JEE, NEET or general. Access videos, notes and formulas.</p>
+          </div>
+          <div class="step-item reveal delay-2">
+            <div class="step-num">2</div>
+            <div class="step-title">Take Tests</div>
+            <p class="step-desc">Attempt quizzes and full mock tests. Our engine tracks every answer and time spent.</p>
+          </div>
+          <div class="step-item reveal delay-3">
+            <div class="step-num" style="border-color:var(--accent-violet);color:var(--accent-violet)">3</div>
+            <div class="step-title">Adapt & Improve</div>
+            <p class="step-desc">AI pinpoints weak topics and recommends targeted content. Watch your rank rise.</p>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <section class="testimonials">
-        <div class="container">
-            <div class="section-header">
-                <h2>What Our Students Say</h2>
-                <p>Hear from those who have transformed their learning</p>
-            </div>
-            <div class="testimonial-slider">
-                <div class="testimonial-card">
-                    <div class="testimonial-header">
-                        <img src="assets/images/user1.jpg" alt="Student 1">
-                        <div>
-                            <h4>Priya Sharma</h4>
-                            <span>JEE Aspirant</span>
-                        </div>
-                    </div>
-                    <div class="rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                    </div>
-                    <p>"The smart topic tracker helped me identify my weak areas in Physics. My scores improved from 65% to 88% in just a month!"</p>
-                </div>
-                <div class="testimonial-card">
-                    <div class="testimonial-header">
-                        <img src="assets/images/user2.jpg" alt="Student 2">
-                        <div>
-                            <h4>Rahul Verma</h4>
-                            <span>NEET Aspirant</span>
-                        </div>
-                    </div>
-                    <div class="rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <p>"The daily challenge mode keeps me consistent. I've maintained a 30-day streak and it's become a habit now. The gamification makes learning fun!"</p>
-                </div>
-                <div class="testimonial-card">
-                    <div class="testimonial-header">
-                        <img src="assets/images/user3.jpg" alt="Student 3">
-                        <div>
-                            <h4>Ananya Gupta</h4>
-                            <span>Class 12 Student</span>
-                        </div>
-                    </div>
-                    <div class="rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="far fa-star"></i>
-                    </div>
-                    <p>"The video + notes sync system is amazing! I can watch the video and have the notes automatically scroll to the relevant part. Saves so much time!"</p>
-                </div>
-            </div>
-            <div class="slider-controls">
-                <button class="prev-btn"><i class="fas fa-chevron-left"></i></button>
-                <div class="dots"></div>
-                <button class="next-btn"><i class="fas fa-chevron-right"></i></button>
-            </div>
+    <section class="section" style="background:rgba(13,20,34,0.5);">
+      <div class="container">
+        <div class="text-center reveal" style="max-width:500px;margin:0 auto 48px;">
+          <div class="section-label">Student Stories</div>
+          <h2>What toppers <span class="text-gradient">say about us</span></h2>
         </div>
+        <div class="grid-3">
+          <div class="testi-card reveal">
+            <div class="testi-stars">★★★★★</div>
+            <p class="testi-text">"The weakness tracker is incredible. It found I was weak in Integration and suggested exactly 2 videos. My score jumped from 62% to 84% in 2 weeks."</p>
+            <div class="testi-user">
+              <div class="testi-avatar" style="background:linear-gradient(135deg,var(--accent-cyan),var(--accent-indigo))">A</div>
+              <div class="testi-info">
+                <div class="name">Arjun Sharma</div>
+                <div class="tag">JEE Aspirant, Delhi</div>
+              </div>
+            </div>
+          </div>
+          <div class="testi-card reveal delay-1">
+            <div class="testi-stars">★★★★★</div>
+            <p class="testi-text">"Daily challenges and the streak system keep me consistent. I've had a 21-day streak and my rank went from 2800 to 640. Game-changing platform."</p>
+            <div class="testi-user">
+              <div class="testi-avatar" style="background:linear-gradient(135deg,var(--accent-violet),var(--accent-rose))">P</div>
+              <div class="testi-info">
+                <div class="name">Priya Nair</div>
+                <div class="tag">NEET Aspirant, Kerala</div>
+              </div>
+            </div>
+          </div>
+          <div class="testi-card reveal delay-2">
+            <div class="testi-stars">★★★★★</div>
+            <p class="testi-text">"The mock test engine is exactly like the real exam — timer, anti-cheat, instant analysis. Best free tool for JEE prep I've found anywhere online."</p>
+            <div class="testi-user">
+              <div class="testi-avatar" style="background:linear-gradient(135deg,var(--accent-green),var(--accent-cyan))">R</div>
+              <div class="testi-info">
+                <div class="name">Rohan Gupta</div>
+                <div class="tag">JEE Advanced Qualifier</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
-
-    <section class="cta-section">
-        <div class="container">
-            <div class="cta-content">
-                <h2>Ready to Transform Your Learning?</h2>
-                <p>Join thousands of students who are already learning smarter with Adaptive Study Hub.</p>
-                <a href="signup.html" class="btn primary-btn"><i class="fas fa-user-plus"></i> Get Started Free</a>
+    <section class="section-sm">
+      <div class="container">
+        <div class="cta-banner reveal">
+          <div style="position:relative;z-index:1;">
+            <div class="section-label" style="justify-content:center;margin-bottom:16px;">Ready to level up?</div>
+            <h2 style="margin-bottom:12px;">Start your <span class="text-gradient">free journey</span> today</h2>
+            <p style="max-width:480px;margin:0 auto 32px;">Join 12,000+ students. No credit card needed. Access all courses, tests and tools instantly.</p>
+            <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+              <a href="courses.html" class="btn btn-primary btn-lg"><i class="fa-solid fa-graduation-cap"></i> Explore Courses</a>
+              <a href="daily.html" class="btn btn-secondary btn-lg"><i class="fa-solid fa-fire"></i> Today's Challenge</a>
             </div>
+          </div>
         </div>
+      </div>
     </section>
+  </main>
 
-
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-about">
-                    <div class="logo">
-                        <i class="fas fa-graduation-cap"></i>
-                        <span>Adaptive<span>Study</span>Hub</span>
-                    </div>
-                    <p>Smart learning platform that adapts to your needs and helps you achieve your academic goals.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-                <div class="footer-links">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="courses.html">Courses</a></li>
-                        <li><a href="test.html">Tests</a></li>
-                        <li><a href="challenge.html">Daily Challenge</a></li>
-                        <li><a href="doubt.html">Doubt Forum</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Resources</h4>
-                    <ul>
-                        <li><a href="dashboard.html">Dashboard</a></li>
-                        <li><a href="#">Study Planner</a></li>
-                        <li><a href="#">Voice Notes</a></li>
-                        <li><a href="#">Live Classes</a></li>
-                        <li><a href="#">Leaderboard</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Support</h4>
-                    <ul>
-                        <li><a href="#">Help Center</a></li>
-                        <li><a href="#">Contact Us</a></li>
-                        <li><a href="#">FAQ</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Terms of Service</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 Adaptive Study Hub. All rights reserved. | Made with <i class="fas fa-heart"></i> by SoftwareLabs</p>
-            </div>
+  <footer id="main-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo" style="margin-bottom:0">
+            <div class="logo-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+            <span>StudyHub</span>
+          </a>
+          <p>Adaptive AI-powered study platform for JEE, NEET and beyond. Learn smarter, not harder.</p>
+          <div class="footer-socials">
+            <a href="#"><i class="fa-brands fa-twitter"></i></a>
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#"><i class="fa-brands fa-youtube"></i></a>
+            <a href="#"><i class="fa-brands fa-discord"></i></a>
+          </div>
         </div>
-    </footer>
+        <div class="footer-col">
+          <h5>Learn</h5>
+          <ul>
+            <li><a href="courses.html">All Courses</a></li>
+            <li><a href="watch.html">Video Lectures</a></li>
+            <li><a href="test.html">Practice Tests</a></li>
+            <li><a href="daily.html">Daily Challenge</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Tools</h5>
+          <ul>
+            <li><a href="dashboard.html">My Dashboard</a></li>
+            <li><a href="test.html">Mock Tests</a></li>
+            <li><a href="doubt.html">Doubt Forum</a></li>
+            <li><a href="dashboard.html#planner">AI Planner</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Community</h5>
+          <ul>
+            <li><a href="doubt.html">Forum</a></li>
+            <li><a href="daily.html#leaderboard">Leaderboard</a></li>
+            <li><a href="#">Discord</a></li>
+            <li><a href="#">About</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2025 Adaptive Study Hub. Made with ❤️ for students.</span>
+        <div style="display:flex;gap:20px;">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
 
-
-<button class="back-to-top"><i class="fas fa-arrow-up"></i></button>
-
-
-<script src="./main.js"></script>
-
-<script>
-  window.addEventListener('load', () => {
-    document.body.classList.add('loaded');
-  });
-</script>
-
+  <script src="main.js"></script>
+  <script>
+  
+    function heroLayout() {
+      const grid = document.querySelector('.hero .container');
+      if (!grid) return;
+      if (window.innerWidth < 900) {
+        grid.style.gridTemplateColumns = '1fr';
+        const vis = grid.querySelector('.hero-visual');
+        if (vis) vis.style.display = 'none';
+      } else {
+        grid.style.gridTemplateColumns = '1fr 1fr';
+        const vis = grid.querySelector('.hero-visual');
+        if (vis) vis.style.display = 'flex';
+      }
+    }
+    heroLayout();
+    window.addEventListener('resize', heroLayout);
+  </script>
 </body>
 </html>
