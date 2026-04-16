@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Browse all courses on Adaptive Study Hub — Physics, Chemistry, Maths, Biology and Coding.">
+  <meta name="theme-color" content="#070b14">
+  <title>Courses — Adaptive Study Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+
+   <meta name="keywords" content="adaptive learning, study platform, JEE prep, NEET prep, mock tests, AI study planner, gamified learning">
+  <meta name="author" content="Adaptive Study Hub">
+  <meta name="robots" content="index, follow">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://adaptivestudyhub.com/">
+  <meta property="og:title" content="Adaptive Study Hub | Learn. Test. Adapt.">
+  <meta property="og:description" content="AI-powered study tracking, mock tests, and gamified progress for serious students.">
+  <meta property="og:image" content="https://paras367.github.io/favicon.svg">
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Adaptive Study Hub | Learn. Test. Adapt.">
+  <meta name="twitter:description" content="AI-powered study tracking, mock tests, and gamified progress for serious students.">
+  <meta name="twitter:image" content="https://paras367.github.io/favicon.svg">
+
+  <style>
+    .page-hero {
+      padding: calc(var(--header-h) + 48px) 0 48px;
+      position: relative; overflow: hidden;
+    }
+    .page-hero::before {
+      content:''; position:absolute; top:-100px; right:-100px;
+      width: 500px; height: 500px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(167,139,250,0.12), transparent 70%);
+      pointer-events: none;
+    }
+
+  
+    .filter-bar {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      padding: 16px; background: var(--bg-secondary);
+      border: 1px solid var(--border); border-radius: var(--radius-lg);
+      margin-bottom: 32px;
+    }
+    .filter-btn {
+      padding: 7px 16px; border-radius: 20px; border: 1px solid var(--border);
+      background: transparent; color: var(--text-muted);
+      font-family: var(--font-body); font-size: 0.83rem; font-weight: 500;
+      cursor: pointer; transition: all var(--transition);
+    }
+    .filter-btn.active, .filter-btn:hover {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-indigo));
+      color: #fff; border-color: transparent;
+    }
+    .search-wrap {
+      margin-left: auto; position: relative;
+    }
+    .search-wrap i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.85rem; }
+    .search-input {
+      padding: 9px 16px 9px 36px;
+      background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+      border-radius: 20px; color: var(--text-primary);
+      font-family: var(--font-body); font-size: 0.85rem;
+      outline: none; transition: all var(--transition); width: 220px;
+    }
+    .search-input:focus { border-color: var(--accent-cyan); }
+    .search-input::placeholder { color: var(--text-muted); }
+
+    .course-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-xl); overflow: hidden;
+      transition: all var(--transition); position: relative;
+      display: flex; flex-direction: column;
+    }
+    .course-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-card), 0 0 30px rgba(56,189,248,0.1); border-color: var(--border-hover); }
+
+    .course-thumb {
+      height: 140px; position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .course-thumb-icon { font-size: 3.5rem; opacity: 0.9; }
+    .course-thumb-pattern {
+      position: absolute; inset: 0;
+      background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    .course-body { padding: 20px; flex: 1; display: flex; flex-direction: column; gap: 12px; }
+    .course-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .course-name { font-size: 1.1rem; font-weight: 700; }
+    .course-desc { font-size: 0.83rem; color: var(--text-muted); line-height: 1.6; flex: 1; }
+    .course-stats { display: flex; gap: 16px; padding: 12px 0; border-top: 1px solid var(--border); }
+    .course-stat { font-size: 0.78rem; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
+    .course-actions { display: flex; gap: 8px; }
+
+    .chapter-preview { display: flex; flex-direction: column; gap: 6px; }
+    .chapter-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 7px 10px; border-radius: 8px;
+      background: rgba(255,255,255,0.02); font-size: 0.8rem;
+      transition: background var(--transition); cursor: pointer;
+    }
+    .chapter-item:hover { background: rgba(255,255,255,0.05); }
+    .chapter-item .ci-num { width: 20px; height: 20px; border-radius: 50%; background: rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:center; font-size: 0.7rem; color: var(--text-muted); flex-shrink:0; }
+    .chapter-item .ci-name { flex: 1; color: var(--text-secondary); }
+    .chapter-item .ci-status { font-size: 0.75rem; }
+
+
+    .ai-box {
+      background: linear-gradient(135deg, rgba(56,189,248,0.06), rgba(167,139,250,0.06));
+      border: 1px solid rgba(56,189,248,0.2);
+      border-radius: var(--radius-md); padding: 16px;
+    }
+    .ai-box-title { font-size: 0.8rem; color: var(--accent-cyan); font-weight: 600; margin-bottom: 8px; }
+    .ai-suggestion-item { font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 6px; display: flex; gap: 8px; }
+
+    .courses-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 28px; }
+    @media(max-width:1000px) { .courses-grid { grid-template-columns: repeat(2,1fr); } }
+    @media(max-width:640px)  { .courses-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="page-bg"></div>
+  <div class="page-loader" id="page-loader">
+    <div class="loader-logo">📚 StudyHub</div>
+    <div class="loader-bar"><div class="loader-progress"></div></div>
+  </div>
+
+  <header id="main-header">
+    <nav class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="logo-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+        <span>StudyHub</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html"><i class="fa-solid fa-house fa-xs"></i> Home</a>
+        <a href="courses.html"><i class="fa-solid fa-book-open fa-xs"></i> Courses</a>
+        <a href="test.html"><i class="fa-solid fa-pen-to-square fa-xs"></i> Tests</a>
+        <a href="dashboard.html"><i class="fa-solid fa-chart-line fa-xs"></i> Dashboard</a>
+        <a href="doubt.html"><i class="fa-solid fa-comments fa-xs"></i> Doubts</a>
+        <a href="daily.html"><i class="fa-solid fa-fire fa-xs"></i> Daily</a>
+      </div>
+      <div class="nav-actions">
+        <div class="nav-xp" id="nav-xp">⚡ 340 XP</div>
+        <button id="dark-toggle" class="btn btn-outline btn-sm" style="padding:7px 10px;"><i class="fa-solid fa-moon"></i></button>
+        <div class="nav-avatar" id="nav-avatar" onclick="location.href='dashboard.html'">PD</div>
+        <button class="nav-hamburger" id="nav-hamburger"><span></span><span></span><span></span></button>
+      </div>
+    </nav>
+  </header>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="index.html"><i class="fa-solid fa-house"></i> Home</a>
+    <a href="courses.html"><i class="fa-solid fa-book-open"></i> Courses</a>
+    <a href="test.html"><i class="fa-solid fa-pen-to-square"></i> Tests</a>
+    <a href="dashboard.html"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+    <a href="doubt.html"><i class="fa-solid fa-comments"></i> Doubts</a>
+    <a href="daily.html"><i class="fa-solid fa-fire"></i> Daily Challenge</a>
+  </div>
+
+  <main style="padding-top:0;min-height:100vh;">
+    <div class="page-hero" style="position:relative;z-index:1;">
+      <div class="container">
+        <div class="flex" style="align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;">
+          <div>
+            <div class="section-label">All Subjects</div>
+            <h1 style="font-size:clamp(1.8rem,4vw,2.8rem);">Explore <span class="text-gradient">Courses</span></h1>
+            <p class="mt-2">96 chapters · 850+ practice questions · Adaptive learning for every student</p>
+          </div>
+          <div class="ai-box" style="max-width:300px;">
+            <div class="ai-box-title">🤖 AI Recommendation for you</div>
+            <div class="ai-suggestion-item"><span>⚠️</span><span>Revise <strong style="color:var(--accent-amber)">Integration</strong> — 2 videos pending</span></div>
+            <div class="ai-suggestion-item"><span>⚠️</span><span>Revise <strong style="color:var(--accent-rose)">Electrostatics</strong> — 1 test suggested</span></div>
+            <div class="ai-suggestion-item"><span>✅</span><span><strong style="color:var(--accent-green)">Matrices</strong> — Mastered!</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-sm" style="padding-top:0;position:relative;z-index:1;">
+      <div class="container">
+        <div class="filter-bar">
+          <button class="filter-btn active" onclick="filterCourses('all',this)">All</button>
+          <button class="filter-btn" onclick="filterCourses('jee',this)">JEE</button>
+          <button class="filter-btn" onclick="filterCourses('neet',this)">NEET</button>
+          <button class="filter-btn" onclick="filterCourses('coding',this)">Coding</button>
+          <button class="filter-btn" onclick="filterCourses('general',this)">General</button>
+          <div class="search-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" class="search-input" placeholder="Search courses…" id="course-search" oninput="searchCourses(this.value)">
+          </div>
+        </div>
+
+
+        <div class="courses-grid" id="courses-grid">
+          <div class="course-card reveal" data-tags="jee neet">
+            <div class="course-thumb" style="background:linear-gradient(135deg,rgba(56,189,248,0.15),rgba(99,102,241,0.1));">
+              <div class="course-thumb-pattern"></div>
+              <div class="course-thumb-icon">⚛️</div>
+            </div>
+            <div class="course-body">
+              <div class="course-meta">
+                <span class="badge badge-cyan">Physics</span>
+                <span class="badge badge-violet">JEE · NEET</span>
+              </div>
+              <div class="course-name">Physics — Complete</div>
+              <p class="course-desc">From Mechanics to Modern Physics. Covers all JEE and NEET topics with formulas, derivations and solved examples.</p>
+              <div class="chapter-preview">
+                <div class="chapter-item" onclick="location.href='watch.html'">
+                  <div class="ci-num">1</div><div class="ci-name">Kinematics</div><span class="ci-status text-green">✓</span>
+                </div>
+                <div class="chapter-item" onclick="location.href='watch.html'">
+                  <div class="ci-num">2</div><div class="ci-name">Laws of Motion</div><span class="ci-status text-green">✓</span>
+                </div>
+                <div class="chapter-item" onclick="location.href='watch.html'">
+                  <div class="ci-num">3</div><div class="ci-name">Electrostatics</div><span class="ci-status text-rose">⚠</span>
+                </div>
+              </div>
+              <div class="course-stats">
+                <div class="course-stat"><i class="fa-solid fa-video fa-xs"></i> 48 videos</div>
+                <div class="course-stat"><i class="fa-solid fa-pen fa-xs"></i> 240 questions</div>
+                <div class="course-stat"><i class="fa-solid fa-clock fa-xs"></i> 32h content</div>
+              </div>
+              <div style="margin-bottom:8px;">
+                <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--text-muted);margin-bottom:4px;"><span>Progress</span><span class="text-cyan">74%</span></div>
+                <div class="progress-track"><div class="progress-fill" data-width="74" style="width:0"></div></div>
+              </div>
+              <div class="course-actions">
+                <a href="watch.html" class="btn btn-primary btn-sm" style="flex:1"><i class="fa-solid fa-play"></i> Continue</a>
+                <a href="test.html" class="btn btn-outline btn-sm"><i class="fa-solid fa-pen"></i> Test</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="course-card reveal delay-1" data-tags="jee neet">
+            <div class="course-thumb" style="background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(251,113,133,0.08));">
+              <div class="course-thumb-pattern"></div>
+              <div class="course-thumb-icon">🧪</div>
+            </div>
+            <div class="course-body">
+              <div class="course-meta">
+                <span class="badge badge-violet">Chemistry</span>
+                <span class="badge badge-cyan">JEE · NEET</span>
+              </div>
+              <div class="course-name">Chemistry — Complete</div>
+              <p class="course-desc">Organic, Inorganic and Physical Chemistry. All reaction mechanisms, periodic trends and numerical problems covered.</p>
+              <div class="chapter-preview">
+                <div class="chapter-item" onclick="location.href='watch.html'">
+                  <div class="ci-num">1</div><div class="ci-name">Atomic Structure</div><span class="ci-status text-green">✓</span>
+                </div>
+                <div class="chapter-item" onclick="location.href='watch.html'">
+                  <div class="ci-num">2</div><div class="ci-name">Chemical Bonding</div><span class="ci-status text-amber">~</span>
+                </div>
+                <div class="chapter-item" onclick="location.href='watch.html'">
+                  <div class="ci-num">3</div><div class="ci-name">Organic Chemistry</div><span class="ci-status text-rose">⚠</span>
+                </div>
+              </div>
+              <div class="course-stats">
+                <div class="course-stat"><i class="fa-solid fa-video fa-xs"></i> 52 videos</div>
+                <div class="course-stat"><i class="fa-solid fa-pen fa-xs"></i> 310 questions</div>
+                <div class="course-stat"><i class="fa-solid fa-clock fa-xs"></i> 38h content</div>
+              </div>
+              <div style="margin-bottom:8px;">
+                <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--text-muted);margin-bottom:4px;"><span>Progress</span><span class="text-violet">58%</span></div>
+                <div class="progress-track"><div class="progress-fill" style="background:linear-gradient(90deg,var(--accent-violet),var(--accent-indigo));width:0" data-width="58"></div></div>
+              </div>
+              <div class="course-actions">
+                <a href="watch.html" class="btn btn-violet btn-sm" style="flex:1"><i class="fa-solid fa-play"></i> Continue</a>
+                <a href="test.html" class="btn btn-outline btn-sm"><i class="fa-solid fa-pen"></i> Test</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="course-card reveal delay-2" data-tags="jee">
+            <div class="course-thumb" style="background:linear-gradient(135deg,rgba(52,211,153,0.15),rgba(56,189,248,0.08));">
+              <div class="course-thumb-pattern"></div>
+              <div class="course-thumb-icon">📐</div>
+            </div>
+            <div class="course-body">
+              <div class="course-meta">
+                <span class="badge badge-green">Mathematics</span>
+                <span class="badge badge-cyan">JEE</span>
+              </div>
+              <div class="course-name">Mathematics — JEE</div>
+              <p class="course-desc">Calculus, Algebra, Coordinate Geometry, Trigonometry, Matrices, Probability. Deep conceptual coverage with tricky problems.</p>
+              <div class="chapter-preview">
+                <div class="chapter-item" onclick="location.href='watch.html'">
+                  <div class="ci-num">1</div><div class="ci-name">Matrices & Determinants</div><span class="ci-status text-green">✓</span>
+                </div>
+                <div class="chapter-item" onclick="location.href='watch.html'">
+                  <div class="ci-num">2</div><div class="ci-name">Differentiation</div><span class="ci-status text-green">✓</span>
+                </div>
+                <div class="chapter-item" onclick="location.href='watch.html'">
+                  <div class="ci-num">3</div><div class="ci-name">Integration</div><span class="ci-status text-rose">⚠</span>
+                </div>
+              </div>
+              <div class="course-stats">
+                <div class="course-stat"><i class="fa-solid fa-video fa-xs"></i> 60 videos</div>
+                <div class="course-stat"><i class="fa-solid fa-pen fa-xs"></i> 420 questions</div>
+                <div class="course-stat"><i class="fa-solid fa-clock fa-xs"></i> 44h content</div>
+              </div>
+              <div style="margin-bottom:8px;">
+                <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--text-muted);margin-bottom:4px;"><span>Progress</span><span class="text-green">88%</span></div>
+                <div class="progress-track"><div class="progress-fill green" data-width="88" style="width:0"></div></div>
+              </div>
+              <div class="course-actions">
+                <a href="watch.html" class="btn btn-green btn-sm" style="flex:1"><i class="fa-solid fa-play"></i> Continue</a>
+                <a href="test.html" class="btn btn-outline btn-sm"><i class="fa-solid fa-pen"></i> Test</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="course-card reveal" data-tags="neet">
+            <div class="course-thumb" style="background:linear-gradient(135deg,rgba(251,113,133,0.15),rgba(167,139,250,0.08));">
+              <div class="course-thumb-pattern"></div>
+              <div class="course-thumb-icon">🧬</div>
+            </div>
+            <div class="course-body">
+              <div class="course-meta">
+                <span class="badge badge-rose">Biology</span>
+                <span class="badge badge-green">NEET</span>
+              </div>
+              <div class="course-name">Biology — NEET</div>
+              <p class="course-desc">Botany, Zoology, Genetics, Ecology and Human Physiology. NCERT-aligned with previous year patterns.</p>
+              <div class="chapter-preview">
+                <div class="chapter-item" onclick="location.href='watch.html'">
+                  <div class="ci-num">1</div><div class="ci-name">Cell Biology</div><span class="ci-status text-green">✓</span>
+                </div>
+                <div class="chapter-item" onclick="location.href='watch.html'">
+                  <div class="ci-num">2</div><div class="ci-name">Genetics & Evolution</div><span class="ci-status text-amber">~</span>
+                </div>
+                <div class="chapter-item" onclick="location.href='watch.html'">
+                  <div class="ci-num">3</div><div class="ci-name">Plant Physiology</div><span class="ci-status text-rose">⚠</span>
+                </div>
+              </div>
+              <div class="course-stats">
+                <div class="course-stat"><i class="fa-solid fa-video fa-xs"></i> 55 videos</div>
+                <div class="course-stat"><i class="fa-solid fa-pen fa-xs"></i> 380 questions</div>
+                <div class="course-stat"><i class="fa-solid fa-clock fa-xs"></i> 40h content</div>
+              </div>
+              <div style="margin-bottom:8px;">
+                <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--text-muted);margin-bottom:4px;"><span>Progress</span><span class="text-rose">42%</span></div>
+                <div class="progress-track"><div class="progress-fill rose" data-width="42" style="width:0"></div></div>
+              </div>
+              <div class="course-actions">
+                <a href="watch.html" class="btn btn-sm" style="flex:1;background:linear-gradient(135deg,var(--accent-rose),#e11d48);color:#fff"><i class="fa-solid fa-play"></i> Continue</a>
+                <a href="test.html" class="btn btn-outline btn-sm"><i class="fa-solid fa-pen"></i> Test</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="course-card reveal delay-1" data-tags="coding">
+            <div class="course-thumb" style="background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(52,211,153,0.08));">
+              <div class="course-thumb-pattern"></div>
+              <div class="course-thumb-icon">🐍</div>
+            </div>
+            <div class="course-body">
+              <div class="course-meta">
+                <span class="badge badge-amber">Python</span>
+                <span class="badge badge-green">Coding</span>
+              </div>
+              <div class="course-name">Python Programming</div>
+              <p class="course-desc">From variables to data structures, algorithms and live problem solving. Includes an in-browser Python compiler for practice.</p>
+              <div class="chapter-preview">
+                <div class="chapter-item" onclick="location.href='watch.html'">
+                  <div class="ci-num">1</div><div class="ci-name">Basics & Variables</div><span class="ci-status text-green">✓</span>
+                </div>
+                <div class="chapter-item" onclick="location.href='watch.html'">
+                  <div class="ci-num">2</div><div class="ci-name">Functions & OOP</div><span class="ci-status text-green">✓</span>
+                </div>
+                <div class="chapter-item" onclick="location.href='watch.html'">
+                  <div class="ci-num">3</div><div class="ci-name">Data Structures</div><span class="ci-status text-amber">~</span>
+                </div>
+              </div>
+              <div class="course-stats">
+                <div class="course-stat"><i class="fa-solid fa-video fa-xs"></i> 38 videos</div>
+                <div class="course-stat"><i class="fa-solid fa-code fa-xs"></i> 120 problems</div>
+                <div class="course-stat"><i class="fa-solid fa-clock fa-xs"></i> 24h content</div>
+              </div>
+              <div style="margin-bottom:8px;">
+                <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--text-muted);margin-bottom:4px;"><span>Progress</span><span class="text-amber">65%</span></div>
+                <div class="progress-track"><div class="progress-fill amber" data-width="65" style="width:0"></div></div>
+              </div>
+              <div class="course-actions">
+                <a href="watch.html" class="btn btn-sm" style="flex:1;background:linear-gradient(135deg,var(--accent-amber),#d97706);color:#fff"><i class="fa-solid fa-play"></i> Continue</a>
+                <a href="test.html" class="btn btn-outline btn-sm"><i class="fa-solid fa-code"></i> Solve</a>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="course-card reveal delay-2" data-tags="general">
+            <div class="course-thumb" style="background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(56,189,248,0.08));">
+              <div class="course-thumb-pattern"></div>
+              <div class="course-thumb-icon">🧩</div>
+            </div>
+            <div class="course-body">
+              <div class="course-meta">
+                <span class="badge badge-violet">Aptitude</span>
+                <span class="badge badge-cyan">General</span>
+              </div>
+              <div class="course-name">Quantitative Aptitude</div>
+              <p class="course-desc">Number systems, ratio & proportion, time-work, data interpretation. Perfect for competitive exams.</p>
+              <div class="chapter-preview">
+                <div class="chapter-item" onclick="location.href='watch.html'">
+                  <div class="ci-num">1</div><div class="ci-name">Number Systems</div><span class="ci-status text-green">✓</span>
+                </div>
+                <div class="chapter-item" onclick="location.href='watch.html'">
+                  <div class="ci-num">2</div><div class="ci-name">Percentages</div><span class="ci-status text-amber">~</span>
+                </div>
+                <div class="chapter-item" onclick="location.href='watch.html'">
+                  <div class="ci-num">3</div><div class="ci-name">Data Interpretation</div><span class="ci-status text-rose">⚠</span>
+                </div>
+              </div>
+              <div class="course-stats">
+                <div class="course-stat"><i class="fa-solid fa-video fa-xs"></i> 30 videos</div>
+                <div class="course-stat"><i class="fa-solid fa-pen fa-xs"></i> 200 questions</div>
+                <div class="course-stat"><i class="fa-solid fa-clock fa-xs"></i> 20h content</div>
+              </div>
+              <div style="margin-bottom:8px;">
+                <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--text-muted);margin-bottom:4px;"><span>Progress</span><span class="text-violet">33%</span></div>
+                <div class="progress-track"><div class="progress-fill" style="background:linear-gradient(90deg,var(--accent-indigo),var(--accent-violet));width:0" data-width="33"></div></div>
+              </div>
+              <div class="course-actions">
+                <a href="watch.html" class="btn btn-primary btn-sm" style="flex:1"><i class="fa-solid fa-play"></i> Start</a>
+                <a href="test.html" class="btn btn-outline btn-sm"><i class="fa-solid fa-pen"></i> Test</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer id="main-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo"><div class="logo-icon"><i class="fa-solid fa-graduation-cap"></i></div><span>StudyHub</span></a>
+          <p>Adaptive AI-powered study platform for JEE, NEET and beyond.</p>
+          <div class="footer-socials">
+            <a href="#"><i class="fa-brands fa-twitter"></i></a>
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#"><i class="fa-brands fa-youtube"></i></a>
+            <a href="#"><i class="fa-brands fa-discord"></i></a>
+          </div>
+        </div>
+        <div class="footer-col"><h5>Learn</h5><ul><li><a href="courses.html">All Courses</a></li><li><a href="watch.html">Video Lectures</a></li><li><a href="test.html">Practice Tests</a></li><li><a href="daily.html">Daily Challenge</a></li></ul></div>
+        <div class="footer-col"><h5>Tools</h5><ul><li><a href="dashboard.html">My Dashboard</a></li><li><a href="test.html">Mock Tests</a></li><li><a href="doubt.html">Doubt Forum</a></li></ul></div>
+        <div class="footer-col"><h5>Community</h5><ul><li><a href="doubt.html">Forum</a></li><li><a href="daily.html#leaderboard">Leaderboard</a></li><li><a href="#">Discord</a></li></ul></div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Adaptive Study Hub. Made with ❤️ for students.</span>
+        <div style="display:flex;gap:20px;"><a href="#">Privacy</a><a href="#">Terms</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+  <script>
+    function filterCourses(tag, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const cards = document.querySelectorAll('#courses-grid .course-card');
+      cards.forEach(card => {
+        const tags = (card.dataset.tags || '').split(' ');
+        card.style.display = (tag === 'all' || tags.includes(tag)) ? '' : 'none';
+      });
+    }
+    function searchCourses(val) {
+      const q = val.toLowerCase();
+      document.querySelectorAll('#courses-grid .course-card').forEach(card => {
+        const name = card.querySelector('.course-name')?.textContent.toLowerCase() || '';
+        card.style.display = (!q || name.includes(q)) ? '' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>
