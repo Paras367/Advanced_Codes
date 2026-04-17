@@ -499,9 +499,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 <script>
 
 
-// ── CONFIG ──────────────────────────────────────
+let map, selfMarker, selfCircle, geofenceCircle, routePolyline, heatLayer;
+let markers = {};
+let tileLayers = {};
+
+
 const CONFIG = {
-  // Replace with your Cloudflare Worker URL after deployment
   API_URL: 'https://geotrackx.YOUR-SUBDOMAIN.workers.dev',
   POLL_INTERVAL: 4000,      
   SEND_INTERVAL: 3000,     
@@ -606,9 +609,7 @@ function genUID() {
          '-' + Date.now().toString(36).toUpperCase();
 }
 
-let map, selfMarker, selfCircle, geofenceCircle, routePolyline, heatLayer;
-let markers = {};
-let tileLayers = {};
+
 
 function initMap() {
   map = L.map('map', { zoomControl: false, attributionControl: true });
