@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="theme-color" content="#0a0e1a"/>
+<meta name="description" content="GeoTrackX – Real-Time GPS Tracking Platform"/>
+<title>GeoTrackX – Live GPS Tracker</title>
+<link rel="manifest" href="manifest.json"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+
+<style>
+:root {
+  --bg: #0a0e1a;
+  --bg2: #0f1422;
+  --surface: #141929;
+  --surface2: #1a2035;
+  --border: #1f2d4a;
+  --accent: #00e5ff;
+  --accent2: #7c3aed;
+  --accent3: #10b981;
+  --warn: #f59e0b;
+  --danger: #ef4444;
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --text3: #475569;
+  --glow: 0 0 20px rgba(0,229,255,0.3);
+  --glow2: 0 0 20px rgba(124,58,237,0.3);
+  --radius: 12px;
+  --sidebar-w: 300px;
+  --font-mono: 'Space Mono', monospace;
+  --font-sans: 'Syne', sans-serif;
+}
+.light {
+  --bg: #f0f4ff;
+  --bg2: #e8edf8;
+  --surface: #ffffff;
+  --surface2: #f8faff;
+  --border: #d1daf0;
+  --text: #0f172a;
+  --text2: #475569;
+  --text3: #94a3b8;
+  --glow: 0 0 20px rgba(0,100,200,0.15);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--font-sans);}
+
+#app{display:flex;height:100vh;position:relative;}
+#map-container{flex:1;position:relative;overflow:hidden;}
+#map{width:100%;height:100%;background:#0a0e1a;}
+
+#sidebar{
+  width:var(--sidebar-w);
+  background:var(--bg2);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+  z-index:1000;overflow:hidden;
+}
+#sidebar.collapsed{transform:translateX(calc(-1 * var(--sidebar-w)));}
+
+.brand{
+  padding:20px 20px 16px;
+  border-bottom:1px solid var(--border);
+  background:linear-gradient(135deg,var(--bg2),var(--surface));
+}
+.brand-logo{
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--font-sans);font-weight:800;font-size:18px;letter-spacing:-0.5px;
+}
+.brand-logo .dot{
+  width:28px;height:28px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  position:relative;flex-shrink:0;
+  box-shadow:0 0 16px rgba(0,229,255,0.5);
+  animation:pulse-ring 2s ease-in-out infinite;
+}
+.brand-logo .dot::after{
+  content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:10px;height:10px;background:#fff;border-radius:50%;
+}
+@keyframes pulse-ring{
+  0%,100%{box-shadow:0 0 16px rgba(0,229,255,0.5);}
+  50%{box-shadow:0 0 28px rgba(0,229,255,0.8),0 0 40px rgba(0,229,255,0.3);}
+}
+.brand-sub{font-family:var(--font-mono);font-size:10px;color:var(--accent);letter-spacing:2px;margin-top:2px;text-transform:uppercase;}
+
+
+.user-card{
+  padding:16px 20px;border-bottom:1px solid var(--border);
+  background:var(--surface);
+}
+.user-label{font-family:var(--font-mono);font-size:10px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;}
+.user-id-display{
+  font-family:var(--font-mono);font-size:12px;color:var(--accent);
+  background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.2);
+  padding:6px 10px;border-radius:6px;word-break:break-all;
+  cursor:pointer;transition:all .2s;
+}
+.user-id-display:hover{background:rgba(0,229,255,0.12);}
+
+.controls{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:10px;}
+
+.btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:11px 16px;border:none;border-radius:var(--radius);
+  font-family:var(--font-sans);font-weight:700;font-size:13px;
+  cursor:pointer;transition:all .2s;letter-spacing:0.3px;
+  position:relative;overflow:hidden;
+}
+.btn::after{content:'';position:absolute;inset:0;opacity:0;background:rgba(255,255,255,0.1);transition:opacity .2s;}
+.btn:hover::after{opacity:1;}
+.btn:active{transform:scale(.98);}
+
+.btn-track{
+  background:linear-gradient(135deg,var(--accent2),#9333ea);
+  color:#fff;box-shadow:0 4px 20px rgba(124,58,237,0.4);
+}
+.btn-track.active{
+  background:linear-gradient(135deg,var(--danger),#dc2626);
+  box-shadow:0 4px 20px rgba(239,68,68,0.4);
+}
+.btn-track .icon{font-size:16px;}
+
+.btn-secondary{background:var(--surface2);color:var(--text2);border:1px solid var(--border);}
+.btn-secondary:hover{color:var(--text);border-color:var(--accent);color:var(--accent);}
+
+.btn-row{display:flex;gap:8px;}
+.btn-row .btn{flex:1;font-size:11px;padding:9px 8px;}
+
+
+.status-bar{
+  margin:0 20px;padding:10px 12px;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  display:flex;align-items:center;gap:8px;
+  font-family:var(--font-mono);font-size:11px;color:var(--text2);
+}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--text3);flex-shrink:0;transition:all .3s;}
+.status-dot.live{background:var(--accent3);box-shadow:0 0 8px rgba(16,185,129,0.6);animation:blink 1.5s ease-in-out infinite;}
+.status-dot.error{background:var(--danger);}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:16px 20px;border-bottom:1px solid var(--border);}
+.stat-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:12px;position:relative;overflow:hidden;
+}
+.stat-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));opacity:0;transition:opacity .3s;
+}
+.stat-card:hover::before{opacity:1;}
+.stat-val{font-family:var(--font-mono);font-size:18px;font-weight:700;color:var(--accent);line-height:1;}
+.stat-lbl{font-family:var(--font-mono);font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-top:4px;}
+
+
+.section-header{
+  padding:16px 20px 10px;
+  font-family:var(--font-mono);font-size:10px;color:var(--text3);
+  letter-spacing:1.5px;text-transform:uppercase;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.badge{
+  background:rgba(0,229,255,0.12);color:var(--accent);
+  border:1px solid rgba(0,229,255,0.25);
+  font-family:var(--font-mono);font-size:10px;
+  padding:2px 7px;border-radius:20px;
+}
+
+.users-list{flex:1;overflow-y:auto;padding:0 20px 16px;}
+.users-list::-webkit-scrollbar{width:4px;}
+.users-list::-webkit-scrollbar-track{background:transparent;}
+.users-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+.user-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border-radius:10px;margin-bottom:6px;
+  background:var(--surface);border:1px solid var(--border);
+  cursor:pointer;transition:all .2s;
+}
+.user-item:hover{border-color:var(--accent);background:rgba(0,229,255,0.04);}
+.user-avatar{
+  width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:12px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--accent2),var(--accent));
+  color:#fff;
+}
+.user-info{flex:1;min-width:0;}
+.user-name{font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.user-meta{font-family:var(--font-mono);font-size:10px;color:var(--text3);margin-top:2px;}
+.user-online{width:8px;height:8px;border-radius:50%;background:var(--accent3);flex-shrink:0;box-shadow:0 0 6px rgba(16,185,129,0.6);}
+
+.sidebar-footer{
+  padding:14px 20px;border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.toggle-wrap{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--text3);}
+.toggle{width:40px;height:22px;background:var(--border);border-radius:11px;position:relative;cursor:pointer;transition:background .2s;border:none;}
+.toggle.on{background:var(--accent2);}
+.toggle::after{
+  content:'';position:absolute;top:3px;left:3px;
+  width:16px;height:16px;border-radius:50%;background:#fff;
+  transition:transform .2s;
+}
+.toggle.on::after{transform:translateX(18px);}
+
+/* ── MAP CONTROLS ── */
+.map-controls{
+  position:absolute;bottom:32px;right:16px;z-index:900;
+  display:flex;flex-direction:column;gap:8px;
+}
+.map-btn{
+  width:44px;height:44px;border-radius:12px;border:none;cursor:pointer;
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text2);font-size:18px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;backdrop-filter:blur(8px);
+}
+.map-btn:hover{background:var(--surface2);color:var(--accent);border-color:var(--accent);box-shadow:var(--glow);}
+.map-btn.active-btn{color:var(--accent);border-color:var(--accent);background:rgba(0,229,255,0.08);}
+
+
+.geo-panel{
+  position:absolute;top:16px;right:16px;z-index:900;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:14px;width:240px;backdrop-filter:blur(12px);
+  display:none;
+}
+.geo-panel.visible{display:block;}
+.geo-panel h3{font-family:var(--font-mono);font-size:11px;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin-bottom:10px;}
+.geo-input-row{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
+.geo-input-row label{font-family:var(--font-mono);font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;}
+.geo-input-row input{
+  background:var(--bg);border:1px solid var(--border);color:var(--text);
+  padding:7px 10px;border-radius:8px;font-family:var(--font-mono);font-size:12px;
+  outline:none;transition:border-color .2s;
+}
+.geo-input-row input:focus{border-color:var(--accent);}
+.geo-btn-row{display:flex;gap:6px;}
+.geo-btn{
+  flex:1;padding:8px;border:none;border-radius:8px;cursor:pointer;
+  font-family:var(--font-mono);font-size:11px;font-weight:700;transition:all .2s;
+}
+.geo-set{background:rgba(0,229,255,0.12);color:var(--accent);border:1px solid rgba(0,229,255,0.3);}
+.geo-set:hover{background:rgba(0,229,255,0.22);}
+.geo-clear{background:rgba(239,68,68,0.1);color:var(--danger);border:1px solid rgba(239,68,68,0.25);}
+.geo-clear:hover{background:rgba(239,68,68,0.2);}
+
+
+.alert-toast{
+  position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-100px);
+  z-index:9999;padding:12px 20px;border-radius:12px;
+  font-family:var(--font-mono);font-size:12px;font-weight:700;
+  display:flex;align-items:center;gap:10px;
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+  pointer-events:none;min-width:240px;max-width:400px;
+}
+.alert-toast.show{transform:translateX(-50%) translateY(0);}
+.alert-toast.danger{background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);color:var(--danger);}
+.alert-toast.success{background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.4);color:var(--accent3);}
+.alert-toast.info{background:rgba(0,229,255,0.12);border:1px solid rgba(0,229,255,0.3);color:var(--accent);}
+
+
+.hud{
+  position:absolute;bottom:16px;left:16px;z-index:900;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:10px 14px;backdrop-filter:blur(12px);
+  display:none;
+}
+.hud.visible{display:block;}
+.hud-row{display:flex;align-items:baseline;gap:6px;margin-bottom:4px;}
+.hud-val{font-family:var(--font-mono);font-size:20px;font-weight:700;color:var(--accent);}
+.hud-unit{font-family:var(--font-mono);font-size:11px;color:var(--text3);}
+.hud-coords{font-family:var(--font-mono);font-size:10px;color:var(--text3);margin-top:4px;}
+
+
+.sidebar-toggle{
+  position:absolute;top:16px;left:16px;z-index:1100;
+  display:none;width:44px;height:44px;border-radius:12px;border:none;cursor:pointer;
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text);font-size:20px;
+  align-items:center;justify-content:center;
+}
+
+.history-panel{
+  position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:900;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:12px 16px;backdrop-filter:blur(12px);min-width:200px;
+  display:none;
+}
+.history-panel.visible{display:block;}
+.history-panel h4{font-family:var(--font-mono);font-size:10px;letter-spacing:1.5px;color:var(--accent3);text-transform:uppercase;margin-bottom:8px;}
+.history-stat{font-family:var(--font-mono);font-size:12px;color:var(--text2);}
+.history-stat span{color:var(--text);font-weight:700;}
+
+
+.leaflet-container{background:#0a0e1a !important;}
+.leaflet-control-attribution{background:rgba(10,14,26,0.8)!important;color:#475569!important;font-size:9px!important;}
+.leaflet-control-attribution a{color:var(--accent)!important;}
+.leaflet-popup-content-wrapper{background:var(--surface)!important;border:1px solid var(--border)!important;border-radius:12px!important;color:var(--text)!important;box-shadow:var(--glow)!important;}
+.leaflet-popup-tip{background:var(--surface)!important;}
+.leaflet-popup-content{font-family:var(--font-mono)!important;font-size:12px!important;}
+
+
+.custom-marker{
+  width:20px;height:20px;border-radius:50%;
+  border:3px solid #fff;position:relative;cursor:pointer;
+}
+.custom-marker.self{border-color:var(--accent);box-shadow:0 0 12px rgba(0,229,255,0.6);}
+.custom-marker.other{border-color:var(--accent2);box-shadow:0 0 12px rgba(124,58,237,0.6);}
+.pulse-ring{
+  position:absolute;top:-5px;left:-5px;
+  width:30px;height:30px;border-radius:50%;
+  border:2px solid currentColor;
+  animation:spread 2s ease-out infinite;opacity:0;
+}
+@keyframes spread{0%{transform:scale(.8);opacity:.8;}100%{transform:scale(2);opacity:0;}}
+
+
+*::-webkit-scrollbar{width:5px;height:5px;}
+*::-webkit-scrollbar-track{background:transparent;}
+*::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+
+@media(max-width:768px){
+  #sidebar{position:absolute;left:0;top:0;bottom:0;transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  .sidebar-toggle{display:flex;}
+  .geo-panel{width:200px;right:8px;top:70px;}
+}
+
+
+#loading{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+  transition:opacity .5s,visibility .5s;
+}
+#loading.hidden{opacity:0;visibility:hidden;}
+.loading-logo{font-family:var(--font-sans);font-weight:800;font-size:36px;letter-spacing:-1px;}
+.loading-logo span{color:var(--accent);}
+.loading-bar{width:200px;height:2px;background:var(--border);border-radius:1px;overflow:hidden;margin-top:8px;}
+.loading-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .4s;}
+.loading-msg{font-family:var(--font-mono);font-size:11px;color:var(--text3);letter-spacing:1.5px;}
+
+
+.connect-cta{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:800;
+  text-align:center;pointer-events:none;
+  background:rgba(10,14,26,0.85);backdrop-filter:blur(12px);
+  border:1px solid var(--border);border-radius:20px;padding:32px 40px;
+  display:none;
+}
+.connect-cta.visible{display:block;}
+.connect-cta h2{font-family:var(--font-sans);font-weight:800;font-size:22px;margin-bottom:8px;}
+.connect-cta p{font-family:var(--font-mono);font-size:12px;color:var(--text2);}
+</style>
+</head>
+<body>
+
+
+<div id="loading">
+  <div class="loading-logo">Geo<span>Track</span>X</div>
+  <div class="loading-bar"><div class="loading-fill" id="loading-fill"></div></div>
+  <div class="loading-msg" id="loading-msg">INITIALIZING...</div>
+</div>
+
+
+<div class="alert-toast" id="toast">
+  <span id="toast-icon">⚠️</span>
+  <span id="toast-msg">Alert message</span>
+</div>
+
+<div id="app">
+  <div id="sidebar">
+    <div class="brand">
+      <div class="brand-logo">
+        <div class="dot"></div>
+        GeoTrackX
+      </div>
+      <div class="brand-sub">Real-Time GPS Platform</div>
+    </div>
+
+    <div class="user-card">
+      <div class="user-label">Your Session ID</div>
+      <div class="user-id-display" id="uid-display" title="Click to copy">···</div>
+    </div>
+
+    <div class="controls">
+      <button class="btn btn-track" id="track-btn">
+        <span class="icon">📡</span>
+        <span id="track-label">Start Tracking</span>
+      </button>
+      <div class="btn-row">
+        <button class="btn btn-secondary" id="btn-heatmap">🔥 Heatmap</button>
+        <button class="btn btn-secondary" id="btn-history">🛣 Route</button>
+        <button class="btn btn-secondary" id="btn-geo">🚨 GeoFence</button>
+      </div>
+    </div>
+
+    <div class="status-bar" id="status-bar">
+      <div class="status-dot" id="status-dot"></div>
+      <span id="status-text">Not tracking</span>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-val" id="stat-users">0</div>
+        <div class="stat-lbl">Active Users</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="stat-speed">—</div>
+        <div class="stat-lbl">km/h</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="stat-dist">0</div>
+        <div class="stat-lbl">km Today</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="stat-pts">0</div>
+        <div class="stat-lbl">Pts Logged</div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      Active Users
+      <span class="badge" id="users-badge">0</span>
+    </div>
+
+    <div class="users-list" id="users-list">
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="toggle-wrap">
+        <span>🌙</span>
+        <button class="toggle" id="theme-toggle"></button>
+        <span>☀️</span>
+      </div>
+      <button class="btn btn-secondary" id="btn-center" style="padding:7px 12px;font-size:11px;">⊕ Center</button>
+    </div>
+  </div>
+
+  <div id="map-container">
+    <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
+
+    <div id="map"></div>
+
+
+    <div class="hud" id="hud">
+      <div class="hud-row">
+        <div class="hud-val" id="hud-speed">0</div>
+        <div class="hud-unit">km/h</div>
+      </div>
+      <div class="hud-coords" id="hud-coords">Lat: — &nbsp; Lon: —</div>
+    </div>
+
+
+    <div class="geo-panel" id="geo-panel">
+      <h3>⭕ Geo-Fence Zone</h3>
+      <div class="geo-input-row">
+        <label>Radius (meters)</label>
+        <input type="number" id="geo-radius" value="500" min="50" max="50000"/>
+      </div>
+      <div class="geo-input-row" style="display:none" id="geo-coords-row">
+        <label>Center: <span id="geo-center-txt">–</span></label>
+      </div>
+      <div class="geo-btn-row">
+        <button class="geo-btn geo-set" id="geo-set-btn">📍 Use My Location</button>
+        <button class="geo-btn geo-clear" id="geo-clear-btn">✕ Clear</button>
+      </div>
+    </div>
+
+    <div class="history-panel" id="history-panel">
+      <h4>📍 Route Summary</h4>
+      <div class="history-stat">Distance: <span id="hist-dist">0 km</span></div>
+      <div class="history-stat">Points: <span id="hist-pts">0</span></div>
+      <div class="history-stat">Duration: <span id="hist-dur">—</span></div>
+    </div>
+
+
+    <div class="map-controls">
+      <button class="map-btn" id="btn-zoom-in" title="Zoom In">+</button>
+      <button class="map-btn" id="btn-zoom-out" title="Zoom Out">−</button>
+      <button class="map-btn" id="btn-locate" title="Go to my location">⊕</button>
+      <button class="map-btn" id="btn-layer" title="Toggle satellite">🛰</button>
+    </div>
+
+    <div class="connect-cta visible" id="connect-cta">
+      <h2>📡 GeoTrackX</h2>
+      <p>Press "Start Tracking" to begin sharing<br>your real-time location.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+
+
+// ── CONFIG ──────────────────────────────────────
+const CONFIG = {
+  // Replace with your Cloudflare Worker URL after deployment
+  API_URL: 'https://geotrackx.YOUR-SUBDOMAIN.workers.dev',
+  POLL_INTERVAL: 4000,      
+  SEND_INTERVAL: 3000,     
+  DEBOUNCE_SEND: 1500,    
+  INACTIVE_TIMEOUT: 30000, 
+  MAX_HISTORY_PTS: 500,
+  USE_DEMO_MODE: true,      
+};
+
+const state = {
+  userId: null,
+  tracking: false,
+  watchId: null,
+  sendTimer: null,
+  pollTimer: null,
+  currentPos: null,
+  lastPos: null,
+  routePoints: [],
+  allUsers: {},
+  totalDistance: 0,
+  currentSpeed: 0,
+  startTime: null,
+  geofence: null,
+  geofenceAlert: false,
+  heatmapActive: false,
+  routeActive: true,
+  darkMode: true,
+  mapLayer: 'dark',
+  heatData: [],
+  demoUsers: {},
+};
+
+
+const $ = id => document.getElementById(id);
+const trackBtn = $('track-btn');
+const trackLabel = $('track-label');
+const statusDot = $('status-dot');
+const statusText = $('status-text');
+const uidDisplay = $('uid-display');
+const usersList = $('users-list');
+const usersBadge = $('users-badge');
+const statUsers = $('stat-users');
+const statSpeed = $('stat-speed');
+const statDist = $('stat-dist');
+const statPts = $('stat-pts');
+const toast = $('toast');
+const hud = $('hud');
+const hudSpeed = $('hud-speed');
+const hudCoords = $('hud-coords');
+const geoPanel = $('geo-panel');
+const histPanel = $('history-panel');
+const connectCTA = $('connect-cta');
+
+
+const USER_COLORS = [
+  '#00e5ff','#7c3aed','#10b981','#f59e0b',
+  '#ef4444','#8b5cf6','#06b6d4','#f97316'
+];
+function userColor(uid) {
+  let hash = 0;
+  for (let c of uid) hash = ((hash << 5) - hash) + c.charCodeAt(0);
+  return USER_COLORS[Math.abs(hash) % USER_COLORS.length];
+}
+
+
+(function init() {
+  const msgs = ['INITIALIZING…','LOADING MAP ENGINE…','CONNECTING SERVICES…','READY'];
+  const fill = $('loading-fill');
+  const msg = $('loading-msg');
+  let step = 0;
+  function nextStep() {
+    if (step >= msgs.length) {
+      $('loading').classList.add('hidden');
+      return;
+    }
+    fill.style.width = ((step + 1) / msgs.length * 100) + '%';
+    msg.textContent = msgs[step];
+    step++;
+    setTimeout(nextStep, 500 + Math.random() * 300);
+  }
+  nextStep();
+
+
+  state.userId = localStorage.getItem('geotrackx_uid') || genUID();
+  localStorage.setItem('geotrackx_uid', state.userId);
+  uidDisplay.textContent = state.userId.substring(0, 22) + '…';
+
+
+  uidDisplay.addEventListener('click', () => {
+    navigator.clipboard?.writeText(state.userId);
+    showToast('info', '📋', 'User ID copied to clipboard');
+  });
+
+  initMap();
+  initControls();
+  startDemoUsers();
+})();
+
+
+function genUID() {
+  return 'user-' + Math.random().toString(36).substring(2,8).toUpperCase() +
+         '-' + Date.now().toString(36).toUpperCase();
+}
+
+let map, selfMarker, selfCircle, geofenceCircle, routePolyline, heatLayer;
+let markers = {};
+let tileLayers = {};
+
+function initMap() {
+  map = L.map('map', { zoomControl: false, attributionControl: true });
+
+  tileLayers.dark = L.tileLayer(
+    'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    { attribution: '© CartoDB', maxZoom: 19 }
+  );
+  tileLayers.light = L.tileLayer(
+    'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+    { attribution: '© CartoDB', maxZoom: 19 }
+  );
+  tileLayers.satellite = L.tileLayer(
+    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    { attribution: '© Esri', maxZoom: 19 }
+  );
+
+  tileLayers.dark.addTo(map);
+  map.setView([20.5937, 78.9629], 5); 
+
+
+  routePolyline = L.polyline([], {
+    color: '#00e5ff', weight: 3, opacity: 0.8,
+    dashArray: '6,4', lineCap: 'round'
+  }).addTo(map);
+
+
+  heatLayer = L.heatLayer([], { radius: 25, blur: 20, maxZoom: 17, gradient: {0.2:'#7c3aed',0.5:'#00e5ff',0.8:'#10b981',1:'#f59e0b'} });
+}
+
+
+function createMarkerIcon(color, isSelf) {
+  const size = isSelf ? 24 : 20;
+  const pulse = isSelf ? `<circle cx="12" cy="12" r="12" fill="${color}" opacity="0.15">
+    <animate attributeName="r" from="12" to="22" dur="2s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" from="0.3" to="0" dur="2s" repeatCount="indefinite"/>
+  </circle>` : '';
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44">
+    ${pulse}
+    <circle cx="22" cy="22" r="${size/2+2}" fill="${color}" opacity="0.25"/>
+    <circle cx="22" cy="22" r="${size/2}" fill="${color}"/>
+    <circle cx="22" cy="22" r="${size/4}" fill="#fff" opacity="0.9"/>
+    ${isSelf ? `<circle cx="22" cy="22" r="3" fill="#fff"/>` : ''}
+  </svg>`;
+  return L.divIcon({
+    html: svg,
+    className: '',
+    iconSize: [44, 44],
+    iconAnchor: [22, 22],
+    popupAnchor: [0, -22]
+  });
+}
+
+function startTracking() {
+  if (!navigator.geolocation) {
+    showToast('danger', '❌', 'Geolocation not supported by your browser');
+    return;
+  }
+  state.tracking = true;
+  state.startTime = Date.now();
+  state.routePoints = [];
+  state.totalDistance = 0;
+  trackBtn.classList.add('active');
+  trackLabel.textContent = 'Stop Tracking';
+  statusDot.className = 'status-dot live';
+  statusText.textContent = 'Live tracking…';
+  hud.classList.add('visible');
+  connectCTA.classList.remove('visible');
+
+  state.watchId = navigator.geolocation.watchPosition(onPosition, onGeoError, {
+    enableHighAccuracy: true,
+    timeout: 10000,
+    maximumAge: 0
+  });
+
+  state.pollTimer = setInterval(fetchLocations, CONFIG.POLL_INTERVAL);
+  fetchLocations();
+  showToast('success', '📡', 'GPS tracking started!');
+}
+
+function stopTracking() {
+  state.tracking = false;
+  if (state.watchId !== null) navigator.geolocation.clearWatch(state.watchId);
+  clearInterval(state.pollTimer);
+  clearTimeout(state.sendTimer);
+  trackBtn.classList.remove('active');
+  trackLabel.textContent = 'Start Tracking';
+  statusDot.className = 'status-dot';
+  statusText.textContent = 'Tracking stopped';
+  hud.classList.remove('visible');
+  showToast('info', '⏹', 'Tracking stopped');
+}
+
+function onPosition(pos) {
+  const { latitude: lat, longitude: lon, speed, accuracy } = pos.coords;
+  const ts = Date.now();
+
+  const prev = state.currentPos;
+  state.lastPos = prev;
+  state.currentPos = { lat, lon, ts };
+
+
+  if (prev) {
+    const d = haversine(prev.lat, prev.lon, lat, lon);
+    state.totalDistance += d;
+    statDist.textContent = state.totalDistance.toFixed(2);
+  }
+
+
+  const spd = speed !== null ? (speed * 3.6) : (prev ? calcSpeed(prev, {lat,lon,ts}) : 0);
+  state.currentSpeed = spd;
+  hudSpeed.textContent = Math.round(spd);
+  statSpeed.textContent = Math.round(spd);
+  hudCoords.textContent = `Lat: ${lat.toFixed(5)}  Lon: ${lon.toFixed(5)}`;
+
+  state.routePoints.push([lat, lon]);
+  if (state.routePoints.length > CONFIG.MAX_HISTORY_PTS) state.routePoints.shift();
+  if (state.routeActive) routePolyline.setLatLngs(state.routePoints);
+
+
+  state.heatData.push([lat, lon, 0.5]);
+  updateSelfMarker(lat, lon);
+  checkGeofence(lat, lon);
+  clearTimeout(state.sendTimer);
+  state.sendTimer = setTimeout(() => sendLocation(lat, lon, spd), CONFIG.DEBOUNCE_SEND);
+  statPts.textContent = state.routePoints.length;
+  updateHistPanel();
+}
+
+function onGeoError(err) {
+  statusDot.className = 'status-dot error';
+  statusText.textContent = 'GPS Error: ' + err.message;
+  showToast('danger', '❌', 'GPS Error: ' + err.message);
+}
+
+function updateSelfMarker(lat, lon) {
+  const latlng = L.latLng(lat, lon);
+  if (!selfMarker) {
+    selfMarker = L.marker(latlng, { icon: createMarkerIcon('#00e5ff', true), zIndexOffset: 1000 })
+      .bindPopup(`<b>📍 You</b><br><code>${state.userId.substring(0,18)}…</code>`)
+      .addTo(map);
+    map.setView(latlng, 16);
+  } else {
+    animateMarker(selfMarker, latlng);
+  }
+  if (selfCircle) map.removeLayer(selfCircle);
+}
+
+function animateMarker(marker, newLatLng) {
+  const startLL = marker.getLatLng();
+  const steps = 20;
+  let step = 0;
+  const timer = setInterval(() => {
+    step++;
+    const t = step / steps;
+    const lat = startLL.lat + (newLatLng.lat - startLL.lat) * t;
+    const lng = startLL.lng + (newLatLng.lng - startLL.lng) * t;
+    marker.setLatLng([lat, lng]);
+    if (step >= steps) clearInterval(timer);
+  }, 16);
+}
+
+function updateOtherMarkers(users) {
+  const now = Date.now();
+  const activeUIDs = new Set();
+
+  Object.entries(users).forEach(([uid, data]) => {
+    if (uid === state.userId) return;
+    if (now - data.ts > CONFIG.INACTIVE_TIMEOUT) return;
+    activeUIDs.add(uid);
+    const color = userColor(uid);
+    const ll = L.latLng(data.lat, data.lon);
+    if (markers[uid]) {
+      animateMarker(markers[uid], ll);
+    } else {
+      markers[uid] = L.marker(ll, { icon: createMarkerIcon(color, false) })
+        .bindPopup(`<b>👤 ${uid.substring(0,14)}…</b><br>Speed: ${Math.round(data.speed||0)} km/h`)
+        .addTo(map);
+    }
+  });
+
+
+  Object.keys(markers).forEach(uid => {
+    if (!activeUIDs.has(uid)) {
+      map.removeLayer(markers[uid]);
+      delete markers[uid];
+    }
+  });
+
+
+  updateUsersList(users);
+}
+
+function updateUsersList(users) {
+  const now = Date.now();
+  const active = Object.entries(users).filter(([uid,d]) =>
+    uid !== state.userId && (now - d.ts < CONFIG.INACTIVE_TIMEOUT)
+  );
+
+  usersBadge.textContent = active.length;
+  statUsers.textContent = active.length + (state.tracking ? 1 : 0);
+
+  usersList.innerHTML = '';
+
+
+  if (state.tracking && state.currentPos) {
+    const div = document.createElement('div');
+    div.className = 'user-item';
+    div.style.borderColor = 'rgba(0,229,255,0.4)';
+    div.innerHTML = `
+      <div class="user-avatar" style="background:linear-gradient(135deg,#00e5ff,#0891b2)">Y</div>
+      <div class="user-info">
+        <div class="user-name">You (${state.userId.substring(5,11)})</div>
+        <div class="user-meta">${Math.round(state.currentSpeed)} km/h · ${state.totalDistance.toFixed(2)} km</div>
+      </div>
+      <div class="user-online"></div>`;
+    usersList.appendChild(div);
+  }
+
+  active.forEach(([uid, data]) => {
+    const color = userColor(uid);
+    const initial = uid.charAt(5) || '?';
+    const div = document.createElement('div');
+    div.className = 'user-item';
+    div.innerHTML = `
+      <div class="user-avatar" style="background:${color}">${initial.toUpperCase()}</div>
+      <div class="user-info">
+        <div class="user-name">${uid.substring(0,16)}…</div>
+        <div class="user-meta">${Math.round(data.speed||0)} km/h · ${ago(data.ts)}</div>
+      </div>
+      <div class="user-online" style="background:${color};box-shadow:0 0 6px ${color}"></div>`;
+    div.addEventListener('click', () => {
+      map.setView([data.lat, data.lon], 16);
+      markers[uid]?.openPopup();
+    });
+    usersList.appendChild(div);
+  });
+
+  if (active.length === 0 && !state.tracking) {
+    usersList.innerHTML = `<div style="font-family:var(--font-mono);font-size:11px;color:var(--text3);text-align:center;padding:20px">No active users</div>`;
+  }
+}
+
+function ago(ts) {
+  const s = Math.floor((Date.now()-ts)/1000);
+  if (s < 60) return s+'s ago';
+  return Math.floor(s/60)+'m ago';
+}
+
+
+async function sendLocation(lat, lon, speed) {
+  if (CONFIG.USE_DEMO_MODE) return; 
+  try {
+    await fetch(`${CONFIG.API_URL}/location`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: state.userId, lat, lon, speed, ts: Date.now() })
+    });
+  } catch (e) { /* silently handle */ }
+}
+
+async function fetchLocations() {
+  if (CONFIG.USE_DEMO_MODE) {
+    updateOtherMarkers(state.demoUsers);
+    return;
+  }
+  try {
+    const res = await fetch(`${CONFIG.API_URL}/locations`);
+    if (!res.ok) return;
+    const data = await res.json();
+    updateOtherMarkers(data);
+  } catch (e) { /* silently handle */ }
+}
+
+
+function startDemoUsers() {
+  const demoIds = ['Satyam','Sapna','Anatyam'];
+  const centers = [
+    [28.6139,77.2090],  
+    [19.0760,72.8777], 
+    [12.9716,77.5946], 
+  ];
+  demoIds.forEach((uid,i) => {
+    state.demoUsers[uid] = { lat: centers[i][0], lon: centers[i][1], speed: 0, ts: Date.now() };
+  });
+
+
+  setInterval(() => {
+    demoIds.forEach((uid,i) => {
+      const u = state.demoUsers[uid];
+      u.lat += (Math.random()-0.5)*0.002;
+      u.lon += (Math.random()-0.5)*0.002;
+      u.speed = Math.random()*60;
+      u.ts = Date.now();
+    });
+    if (!state.tracking) {
+      updateOtherMarkers(state.demoUsers);
+    }
+  }, 3000);
+
+  setTimeout(() => updateOtherMarkers(state.demoUsers), 1200);
+}
+
+
+function setGeofence(lat, lon, radius) {
+  state.geofence = { lat, lon, radius };
+  if (geofenceCircle) map.removeLayer(geofenceCircle);
+  geofenceCircle = L.circle([lat, lon], {
+    radius,
+    color: '#f59e0b', fillColor: '#f59e0b', fillOpacity: 0.08,
+    weight: 2, dashArray: '6,4'
+  }).addTo(map);
+  map.fitBounds(geofenceCircle.getBounds());
+  $('geo-center-txt').textContent = `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+  $('geo-coords-row').style.display = 'flex';
+  showToast('info', '⭕', `Geofence set: ${radius}m radius`);
+}
+
+function clearGeofence() {
+  state.geofence = null;
+  state.geofenceAlert = false;
+  if (geofenceCircle) { map.removeLayer(geofenceCircle); geofenceCircle = null; }
+  $('geo-coords-row').style.display = 'none';
+}
+
+function checkGeofence(lat, lon) {
+  if (!state.geofence) return;
+  const d = haversine(lat, lon, state.geofence.lat, state.geofence.lon) * 1000; // meters
+  if (d > state.geofence.radius && !state.geofenceAlert) {
+    state.geofenceAlert = true;
+    showToast('danger', '🚨', `GEOFENCE BREACH! ${Math.round(d)}m from safe zone`);
+  } else if (d <= state.geofence.radius && state.geofenceAlert) {
+    state.geofenceAlert = false;
+    showToast('success', '✅', 'Back inside safe zone');
+  }
+}
+
+
+function updateHistPanel() {
+  $('hist-dist').textContent = state.totalDistance.toFixed(3) + ' km';
+  $('hist-pts').textContent = state.routePoints.length;
+  if (state.startTime) {
+    const sec = Math.floor((Date.now()-state.startTime)/1000);
+    const h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = sec%60;
+    $('hist-dur').textContent = [h,m,s].map(v=>String(v).padStart(2,'0')).join(':');
+  }
+}
+
+function toggleHeatmap() {
+  state.heatmapActive = !state.heatmapActive;
+  $('btn-heatmap').style.color = state.heatmapActive ? 'var(--warn)' : '';
+  if (state.heatmapActive) {
+    const data = state.heatData.length ? state.heatData : generateDemoHeatData();
+    heatLayer.setLatLngs(data);
+    heatLayer.addTo(map);
+  } else {
+    map.removeLayer(heatLayer);
+  }
+}
+
+function generateDemoHeatData() {
+  const centers = [[28.6139,77.2090],[19.0760,72.8777],[12.9716,77.5946]];
+  const pts = [];
+  centers.forEach(([lat,lon]) => {
+    for (let i=0;i<80;i++) pts.push([lat+(Math.random()-.5)*.2,lon+(Math.random()-.5)*.2,Math.random()]);
+  });
+  return pts;
+}
+
+
+function initControls() {
+  trackBtn.addEventListener('click', () => {
+    if (!state.tracking) startTracking(); else stopTracking();
+  });
+
+  $('btn-heatmap').addEventListener('click', toggleHeatmap);
+
+  $('btn-history').addEventListener('click', () => {
+    state.routeActive = !state.routeActive;
+    $('btn-history').style.color = state.routeActive ? 'var(--accent3)' : '';
+    histPanel.classList.toggle('visible', state.routeActive && state.routePoints.length > 0);
+    if (!state.routeActive) routePolyline.setLatLngs([]);
+    else routePolyline.setLatLngs(state.routePoints);
+  });
+
+  $('btn-geo').addEventListener('click', () => {
+    geoPanel.classList.toggle('visible');
+  });
+
+  $('geo-set-btn').addEventListener('click', () => {
+    if (state.currentPos) {
+      setGeofence(state.currentPos.lat, state.currentPos.lon, +$('geo-radius').value);
+    } else {
+      showToast('danger','⚠️','Start tracking first to get your location');
+    }
+  });
+
+  $('geo-clear-btn').addEventListener('click', () => { clearGeofence(); showToast('info','✕','Geofence cleared'); });
+
+  $('btn-center').addEventListener('click', () => {
+    if (selfMarker) map.setView(selfMarker.getLatLng(), 16);
+  });
+  $('btn-locate').addEventListener('click', () => {
+    if (selfMarker) map.setView(selfMarker.getLatLng(), 16);
+    else map.locate({ setView: true, maxZoom: 14 });
+  });
+
+  $('btn-zoom-in').addEventListener('click', () => map.zoomIn());
+  $('btn-zoom-out').addEventListener('click', () => map.zoomOut());
+
+  $('btn-layer').addEventListener('click', () => {
+    const layers = ['dark','light','satellite'];
+    const cur = layers.indexOf(state.mapLayer);
+    state.mapLayer = layers[(cur+1)%layers.length];
+    Object.values(tileLayers).forEach(l => map.removeLayer(l));
+    tileLayers[state.mapLayer].addTo(map);
+    $('btn-layer').title = 'Layer: ' + state.mapLayer;
+  });
+
+  const themeToggle = $('theme-toggle');
+  themeToggle.addEventListener('click', () => {
+    state.darkMode = !state.darkMode;
+    document.body.classList.toggle('light', !state.darkMode);
+    themeToggle.classList.toggle('on', !state.darkMode);
+    if (!state.darkMode) {
+      Object.values(tileLayers).forEach(l => map.removeLayer(l));
+      tileLayers.light.addTo(map);
+      state.mapLayer = 'light';
+    } else {
+      Object.values(tileLayers).forEach(l => map.removeLayer(l));
+      tileLayers.dark.addTo(map);
+      state.mapLayer = 'dark';
+    }
+  });
+
+
+  $('sidebar-toggle').addEventListener('click', () => {
+    $('sidebar').classList.toggle('open');
+  });
+
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'T' && !e.ctrlKey) {
+      if (!state.tracking) startTracking(); else stopTracking();
+    }
+  });
+
+
+  let deferredPrompt;
+  window.addEventListener('beforeinstallprompt', e => {
+    deferredPrompt = e;
+    e.preventDefault();
+    showToast('info', '📱', 'Tap to install GeoTrackX as an app!');
+  });
+}
+
+
+let toastTimer;
+function showToast(type, icon, msg) {
+  $('toast-icon').textContent = icon;
+  $('toast-msg').textContent = msg;
+  toast.className = `alert-toast ${type} show`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 4000);
+}
+
+function haversine(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const dLat = (lat2-lat1)*Math.PI/180;
+  const dLon = (lon2-lon1)*Math.PI/180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+function calcSpeed(p1, p2) {
+  const d = haversine(p1.lat, p1.lon, p2.lat, p2.lon) * 1000;
+  const t = (p2.ts - p1.ts) / 1000; 
+  return t > 0 ? (d / t) * 3.6 : 0;
+}
+</script>
+</body>
+</html>
