@@ -1,7 +1,12 @@
 /**
  * CYBER SCANNER PRO X - Frontend Controller
+ * By - Paras Dhiman
+ * SoftwareLabs
+ 
+ * All Content is Copyrighted by SoftwareLabs
  */
 const CyberScanner = (() => {
+  const API_BASE = 'https://cyber-scanner-api.dhimanparas605.workers.dev';
 
   const state = {
     history: JSON.parse(localStorage.getItem('csp_history') || '[]'),
@@ -9,7 +14,6 @@ const CyberScanner = (() => {
     currentFile: null,
     isScanning: false
   };
-
 
   const dom = {
     stats: { total: el('stat-total'), threats: el('stat-threats'), clean: el('stat-clean'), last: el('stat-last') },
@@ -23,7 +27,7 @@ const CyberScanner = (() => {
 
   function el(id) { return document.getElementById(id); }
 
-  
+
   function init() {
     updateClock();
     setInterval(updateClock, 1000);
@@ -45,15 +49,12 @@ const CyberScanner = (() => {
     if (ua.includes('Chrome')) browser = 'Chrome';
     else if (ua.includes('Firefox')) browser = 'Firefox';
     else if (ua.includes('Safari')) browser = 'Safari';
-    
     el('sys-browser').textContent = `Browser: ${browser}`;
     el('sys-platform').textContent = `Platform: ${navigator.platform}`;
-    
-    const info = `Browser: ${browser}\nPlatform: ${navigator.platform}\nCores: ${navigator.hardwareConcurrency}\nOnline: ${navigator.onLine}\nScreen: ${screen.width}x${screen.height}`;
-    el('sys-details').textContent = info;
+    el('sys-details').textContent = `Browser: ${browser}\nPlatform: ${navigator.platform}\nCores: ${navigator.hardwareConcurrency}\nOnline: ${navigator.onLine}\nScreen: ${screen.width}x${screen.height}`;
   }
 
-
+ 
   function setupTabs() {
     dom.tabs.forEach(btn => {
       btn.addEventListener('click', () => switchTab(btn.dataset.tab));
@@ -65,12 +66,12 @@ const CyberScanner = (() => {
     dom.tabContents.forEach(tc => tc.classList.toggle('active', tc.id === `tab-${tabId}`));
   }
 
+ 
   function log(msg, type = 'info') {
     const time = new Date().toLocaleTimeString('en-US', { hour12: false });
     const prefix = type === 'danger' ? `[ALERT]` : type === 'warn' ? `[WARN]` : `[INFO]`;
     const className = `log-${type}`;
-    const span = `<span class="${className}">[${time}] ${prefix} ${msg}</span>\n`;
-    dom.terminal.insertAdjacentHTML('beforeend', span);
+    dom.terminal.insertAdjacentHTML('beforeend', `<span class="${className}">[${time}] ${prefix} ${msg}</span>\n`);
     dom.terminal.scrollTop = dom.terminal.scrollHeight;
   }
 
@@ -88,7 +89,7 @@ const CyberScanner = (() => {
     });
   }
 
-
+ 
   function updateStats() {
     dom.stats.total.textContent = state.stats.total;
     dom.stats.threats.textContent = state.stats.threats;
@@ -99,10 +100,9 @@ const CyberScanner = (() => {
   function saveToHistory(type, input, verdict, details = {}) {
     const entry = { id: Date.now(), type, input, verdict, timestamp: new Date().toISOString(), details };
     state.history.unshift(entry);
-    if (state.history.length > 50) state.history.pop(); // Limit
+    if (state.history.length > 50) state.history.pop();
     localStorage.setItem('csp_history', JSON.stringify(state.history));
     renderHistory();
-    
     state.stats.total++;
     if (verdict === 'DANGEROUS' || verdict === 'SUSPICIOUS') state.stats.threats++;
     else state.stats.clean++;
@@ -123,54 +123,91 @@ const CyberScanner = (() => {
   }
 
   function loadResult(item) {
-    log(`Restoring scan history: ${item.type} -> ${item.input}`, 'info');
+    log(`Restoring scan: ${item.type} → ${item.input}`, 'info');
     switchTab(item.type);
     const inputEl = { url: 'url-input', file: 'file-input', hash: 'hash-input', ip: 'ip-input' }[item.type];
     if (inputEl) el(inputEl).value = item.input;
     showResult(item.type, item.verdict, item.details);
   }
 
-  function showResult(type, verdict, details) {
+
+  function calculateVerdict(result) {
+    const { malicious, suspicious, harmless } = result;
+    if (malicious > 0) return malicious >= 5 ? 'DANGEROUS' : 'SUSPICIOUS';
+    if (suspicious > 0) return 'CAUTION';
+    return 'SAFE';
+  }
+
+
+  function showResult(type, verdict, data) {
     const resEl = el(`${type}-result`);
     if (!resEl) return;
     resEl.classList.remove('hidden');
-    const scoreClass = `verdict-${verdict}`;
-    let html = `<span class="verdict-badge ${scoreClass}">VERDICT: ${verdict}</span>`;
-    if (details.flags?.length) html += `<p>🚩 Flags: ${details.flags.join(', ')}</p>`;
-    if (details.ssl) html += `<p>🔒 SSL/TLS: ${details.ssl ? 'VALID' : 'INVALID'}</p>`;
-    if (details.dns) html += `<p>🌐 DNS: ${details.dns}</p>`;
-    if (details.reputation) html += `<p>📊 Reputation: ${details.reputation}/100</p>`;
-    if (details.hashes) html += `<pre style="font-size:0.7rem; margin-top:10px; overflow-x:auto;">${JSON.stringify(details.hashes, null, 2)}</pre>`;
+    
+    let html = `<div class="result-header">
+      <span class="verdict-badge verdict-${verdict}">VERDICT: ${verdict}</span>
+      ${data.cached ? '<span class="cached-badge">🔄 Cached</span>' : ''}
+    </div>`;
+
+    const repClass = data.reputation >= 70 ? 'safe' : data.reputation >= 40 ? 'warn' : 'danger';
+    html += `<p>Reputation: <strong>${data.reputation}/100</strong></p>
+      <div class="reputation-bar"><div class="reputation-fill ${repClass}" style="width:${data.reputation}%"></div></div>`;
+
+
+    if (type === 'url') {
+      html += `<div class="result-grid">
+        <div class="result-item"><span class="label">SSL/TLS</span><span class="value ${data.ssl_valid ? 'safe' : 'danger'}">${data.ssl_valid ? '✅ Valid' : '❌ Invalid'}</span></div>
+        <div class="result-item"><span class="label">DNS</span><span class="value">${data.dns || 'N/A'}</span></div>
+        <div class="result-item"><span class="label">Malicious</span><span class="value danger">${data.malicious}</span></div>
+        <div class="result-item"><span class="label">Suspicious</span><span class="value warn">${data.suspicious}</span></div>
+        <div class="result-item"><span class="label">Harmless</span><span class="value safe">${data.harmless}</span></div>
+      </div>`;
+      if (data.categories?.length) {
+        html += `<p>Categories:</p><div class="chips">${data.categories.map(c => `<span class="chip cat">${c}</span>`).join('')}</div>`;
+      }
+      if (data.last_analysis) {
+        html += `<p>Last Analysis:</p><div class="result-grid">
+          <div class="result-item"><span class="label">Server</span><span class="value">${data.last_analysis.server || 'N/A'}</span></div>
+          <div class="result-item"><span class="label">IP</span><span class="value">${data.last_analysis.ip || 'N/A'}</span></div>
+          <div class="result-item"><span class="label">Country</span><span class="value">${data.last_analysis.country || 'N/A'}</span></div>
+        </div>`;
+      }
+    }
+
+    if (type === 'file' || type === 'hash') {
+      html += `<div class="result-grid">
+        <div class="result-item"><span class="label">Detection Ratio</span><span class="value">${data.detection_ratio || '0/0'}</span></div>
+        <div class="result-item"><span class="label">Malicious</span><span class="value danger">${data.malicious}</span></div>
+        <div class="result-item"><span class="label">Suspicious</span><span class="value warn">${data.suspicious}</span></div>
+        <div class="result-item"><span class="label">Harmless</span><span class="value safe">${data.harmless}</span></div>
+      </div>`;
+      if (data.file_type) html += `<p>File Type: <strong>${data.file_type}</strong></p>`;
+      if (data.names?.length) html += `<p>Known Names:</p><div class="chips">${data.names.map(n => `<span class="chip">${n}</span>`).join('')}</div>`;
+      if (data.tags?.length) html += `<p>Tags:</p><div class="chips">${data.tags.map(t => `<span class="chip tag">${t}</span>`).join('')}</div>`;
+      if (data.first_seen) html += `<p>First Seen: ${new Date(data.first_seen).toLocaleString()}</p>`;
+      if (data.last_seen) html += `<p>Last Analyzed: ${new Date(data.last_seen).toLocaleString()}</p>`;
+    }
+
+    if (type === 'ip') {
+      html += `<div class="result-grid">
+        <div class="result-item"><span class="label">Abuse Confidence</span><span class="value ${data.abuse_confidence >= 50 ? 'danger' : data.abuse_confidence >= 20 ? 'warn' : 'safe'}">${data.abuse_confidence}%</span></div>
+        <div class="result-item"><span class="label">Total Reports</span><span class="value">${data.total_reports}</span></div>
+        <div class="result-item"><span class="label">Country</span><span class="value">${data.country || 'N/A'}</span></div>
+        <div class="result-item"><span class="label">ISP</span><span class="value">${data.isp || 'N/A'}</span></div>
+        <div class="result-item"><span class="label">Usage Type</span><span class="value">${data.usage_type || 'N/A'}</span></div>
+      </div>`;
+      if (data.last_reported) html += `<p>Last Reported: ${new Date(data.last_reported).toLocaleString()}</p>`;
+      if (data.recent_categories?.length) {
+        html += `<p>Report Categories:</p><div class="chips">${data.recent_categories.map(c => `<span class="chip cat">${c}</span>`).join('')}</div>`;
+      }
+    }
+
     resEl.innerHTML = html;
   }
 
 
-  function analyzeHeuristics(target, type) {
-    let score = 0;
-    let flags = [];
-    if (type === 'url' || type === 'domain' || type === 'ip') {
-      if (!target.startsWith('http')) target = 'http://' + target;
-      if (!target.startsWith('https://')) { score += 5; flags.push('No HTTPS'); }
-      if (target.includes('xn--')) { score += 15; flags.push('Punycode domain'); }
-      if (target.length > 75) { score += 10; flags.push('Long URL'); }
-      const subCount = (target.match(/\./g) || []).length;
-      if (subCount > 3) { score += (subCount - 3) * 4; flags.push('Deep subdomain'); }
-      const phishKw = ['login', 'secure', 'verify', 'account', 'banking', 'update', 'wallet'];
-      if (phishKw.some(k => target.includes(k))) { score += 12; flags.push('Phishing keywords'); }
-    }
-    if (type === 'file' || type === 'content') {
-      const exts = ['.exe','.bat','.vbs','.ps1','.js','.hta','.scr','.dll','.reg'];
-      if (exts.some(e => target.toLowerCase().endsWith(e))) { score += 15; flags.push('Executable/Script'); }
-      const kw = ['eval(','base64_decode','exec(','cmd.exe','<script>','document.cookie','window.open('];
-      kw.forEach(k => { if (target.toLowerCase().includes(k)) { score += 18; flags.push(`Suspicious: ${k}`); } });
-    }
-    let verdict = score <= 10 ? 'SAFE' : score <= 25 ? 'CAUTION' : score <= 50 ? 'SUSPICIOUS' : 'DANGEROUS';
-    return { score, flags, verdict };
-  }
-
-
   async function apiFetch(endpoint, payload) {
-    log(`📡 Sending request to ${endpoint}...`, 'info');
+    log(`📡 POST ${API_BASE}${endpoint}`, 'info');
     dom.progress.container.classList.remove('hidden');
     
     let progress = 0;
@@ -179,27 +216,21 @@ const CyberScanner = (() => {
       if (progress >= 95) clearInterval(progInt);
       dom.progress.bar.style.width = progress + '%';
     }, 100);
-
-    dom.progress.text.textContent = 'Connecting to backend...';
+    dom.progress.text.textContent = 'Connecting to edge backend...';
 
     try {
-
-      const response = await fetch(endpoint, {
+      const response = await fetch(`${API_BASE}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      if (!response.ok) throw new Error('API unavailable');
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       return await response.json();
     } catch (e) {
-
-      dom.progress.text.textContent = 'Fallback simulation mode active...';
-      await new Promise(r => setTimeout(r, 800 + Math.random() * 600));
-      
-      let mock = { malicious: 0, suspicious: 0, harmless: 10, ssl_valid: true, dns: 'A: 93.184.216.34', reputation: 90 };
-
-      if (Math.random() > 0.8) { mock.malicious = Math.floor(Math.random() * 8); mock.suspicious = 2; mock.reputation = 30; }
-      return mock;
+      log(`⚠️ Backend unreachable. Local fallback active.`, 'warn');
+      await new Promise(r => setTimeout(r, 600));
+      // Fallback response structure (matches Worker return shape)
+      return { malicious: 0, suspicious: 0, harmless: 10, reputation: 80, cached: false };
     } finally {
       clearInterval(progInt);
       dom.progress.bar.style.width = '100%';
@@ -211,115 +242,81 @@ const CyberScanner = (() => {
   }
 
 
-  async function computeHashes(file) {
-    const buffer = await file.arrayBuffer();
-    const shaBuf = await crypto.subtle.digest('SHA-256', buffer);
-    const sha256 = Array.from(new Uint8Array(shaBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
-    
-
-    const md5 = [...new Uint8Array(shaBuf).slice(0, 16)].map(b => b.toString(16).padStart(2, '0')).join('');
-    const sha1 = [...new Uint8Array(shaBuf).slice(16, 36)].map(b => b.toString(16).padStart(2, '0')).join('');
-    return { sha256, md5, sha1 };
-  }
-
-
-  function deepExtract(text) {
-    const urls = [...new Set((text.match(/https?:\/\/[^\s<>"'()]+/g) || []))].slice(0, 5);
-    const ips = [...new Set((text.match(/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/g) || []))].slice(0, 5);
-    return { urls, ips };
-  }
-
-
   async function scanURL() {
     if (state.isScanning) return;
     const url = el('url-input').value.trim();
     if (!url) return log('Please enter a URL.', 'warn');
     
     state.isScanning = true;
-    log(`Initializing URL scan for: ${url}`);
-    await typeLog('Resolving DNS & checking certificates...');
+    log(`Scanning URL: ${url}`);
+    await typeLog('Resolving DNS, checking SSL, querying URLScan.io...');
     
-    const heuristic = analyzeHeuristics(url, 'url');
-    const apiRes = await apiFetch('/api/scan-url', { url, heuristic_score: heuristic.score });
+    const result = await apiFetch('/api/scan-url', { url });
+    const verdict = calculateVerdict(result);
     
-    const finalScore = heuristic.score + (apiRes.malicious * 15) + (apiRes.suspicious * 8);
-    const verdict = finalScore <= 10 ? 'SAFE' : finalScore <= 25 ? 'CAUTION' : finalScore <= 50 ? 'SUSPICIOUS' : 'DANGEROUS';
-    
-    await typeLog(`Heuristic Score: ${heuristic.score} | API Threat Count: ${apiRes.malicious}`);
-    await typeLog(`Final Verdict Calculation...`);
-    
-    showResult('url', verdict, {
-      flags: heuristic.flags,
-      ssl: apiRes.ssl_valid,
-      dns: apiRes.dns,
-      reputation: apiRes.reputation
-    });
-    saveToHistory('url', url, verdict, { ...heuristic, api: apiRes });
+    await typeLog(`Verdict: ${verdict} | Reputation: ${result.reputation}/100`);
+    showResult('url', verdict, result);
+    saveToHistory('url', url, verdict, result);
     state.isScanning = false;
   }
 
   async function scanFile() {
     if (state.isScanning || !state.currentFile) return;
     state.isScanning = true;
-    log(`Preparing file analysis: ${state.currentFile.name} (${formatBytes(state.currentFile.size)})`);
+    log(`Analyzing file: ${state.currentFile.name}`);
+    
+ 
+    const buffer = await state.currentFile.arrayBuffer();
+    const hashBuf = await crypto.subtle.digest('SHA-256', buffer);
+    const hash = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    
     el('fi-name').textContent = state.currentFile.name;
     el('fi-size').textContent = formatBytes(state.currentFile.size);
     el('file-info').classList.remove('hidden');
-
-    await typeLog('Extracting content stream...');
-    const content = await state.currentFile.text();
-    const hashes = await computeHashes(state.currentFile);
     
-    await apiFetch('/api/scan-file', { filename: state.currentFile.name, hash: hashes.sha256, size: state.currentFile.size });
-    await typeLog('Computing cryptographic hashes...');
-    await typeLog('Running local heuristic engine...');
-
-    const heur1 = analyzeHeuristics(state.currentFile.name, 'file');
-    const heur2 = analyzeHeuristics(content, 'content');
-    const deep = deepExtract(content);
+    await typeLog('Computing hash, querying VirusTotal...');
+    const result = await apiFetch('/api/scan-file', { hash, filename: state.currentFile.name });
+    const verdict = calculateVerdict(result);
     
-    const finalScore = Math.max(heur1.score, heur2.score);
-    const verdict = finalScore <= 10 ? 'SAFE' : finalScore <= 25 ? 'CAUTION' : finalScore <= 50 ? 'SUSPICIOUS' : 'DANGEROUS';
-    
-    await typeLog(`Deep Scan: Found ${deep.urls.length} URLs, ${deep.ips.length} IPs.`);
-    
-    showResult('file', verdict, { flags: [...new Set([...heur1.flags, ...heur2.flags])], hashes });
-    saveToHistory('file', state.currentFile.name, verdict, { hashes, deep, heuristic: finalScore });
+    await typeLog(`Verdict: ${verdict} | Detection: ${result.detection_ratio}`);
+    showResult('file', verdict, result);
+    saveToHistory('file', state.currentFile.name, verdict, { ...result, hash });
     state.isScanning = false;
   }
 
   async function scanHash() {
     if (state.isScanning) return;
     const hash = el('hash-input').value.trim();
-    if (!hash.match(/^[a-f0-9]{32,64}$/i)) return log('Invalid hash format.', 'warn');
+    if (!/^[a-f0-9]{32,64}$/i.test(hash)) return log('Invalid hash format.', 'warn');
     
     state.isScanning = true;
-    log(`Lookup requested for hash: ${hash}`);
-    const apiRes = await apiFetch('/api/hash', { hash });
+    log(`Looking up hash: ${hash}`);
+    await typeLog('Querying VirusTotal database...');
     
-    const heuristic = analyzeHeuristics(hash, 'file');
-    const verdict = (apiRes.malicious > 2) ? 'DANGEROUS' : heuristic.verdict === 'DANGEROUS' ? 'DANGEROUS' : apiRes.suspicious > 0 ? 'SUSPICIOUS' : 'CAUTION';
+    const result = await apiFetch('/api/hash', { hash });
+    const verdict = calculateVerdict(result);
     
-    showResult('hash', verdict, { flags: heuristic.flags, reputation: apiRes.reputation });
-    saveToHistory('hash', hash, verdict, apiRes);
+    await typeLog(`Verdict: ${verdict} | Reputation: ${result.reputation}/100`);
+    showResult('hash', verdict, result);
+    saveToHistory('hash', hash, verdict, result);
     state.isScanning = false;
   }
 
   async function scanIP() {
     if (state.isScanning) return;
     const ip = el('ip-input').value.trim();
-    if (!ip) return log('Please enter IP or Domain.', 'warn');
+    if (!ip) return log('Please enter IP or domain.', 'warn');
     
     state.isScanning = true;
-    log(`Scanning network target: ${ip}`);
-    const heuristic = analyzeHeuristics(ip, 'ip');
-    const apiRes = await apiFetch('/api/ip-scan', { ip, heuristic_score: heuristic.score });
+    log(`Scanning target: ${ip}`);
+    await typeLog('Querying AbuseIPDB, checking reputation...');
     
-    const finalScore = heuristic.score + (apiRes.reputation < 40 ? 20 : 0);
-    const verdict = finalScore <= 10 ? 'SAFE' : finalScore <= 25 ? 'CAUTION' : finalScore <= 50 ? 'SUSPICIOUS' : 'DANGEROUS';
+    const result = await apiFetch('/api/ip-scan', { ip });
+    const verdict = calculateVerdict(result);
     
-    showResult('ip', verdict, { dns: apiRes.dns, reputation: apiRes.reputation, flags: heuristic.flags });
-    saveToHistory('ip', ip, verdict, apiRes);
+    await typeLog(`Verdict: ${verdict} | Abuse Confidence: ${result.abuse_confidence}%`);
+    showResult('ip', verdict, result);
+    saveToHistory('ip', ip, verdict, result);
     state.isScanning = false;
   }
 
@@ -330,14 +327,8 @@ const CyberScanner = (() => {
   }
 
   function setupListeners() {
-
-    
- 
     el('btn-scan-url').addEventListener('click', scanURL);
-    el('url-input').addEventListener('input', e => {
-      if (e.target.value.includes('http')) switchTab('url');
-    });
-
+    el('url-input').addEventListener('input', e => { if (e.target.value.includes('http')) switchTab('url'); });
 
     const dz = el('drop-zone');
     dz.addEventListener('click', () => el('file-input').click());
@@ -350,19 +341,18 @@ const CyberScanner = (() => {
     el('file-input').addEventListener('change', e => { if (e.target.files[0]) handleFile(e.target.files[0]); });
     el('btn-scan-file').addEventListener('click', scanFile);
 
-
     el('btn-scan-hash').addEventListener('click', scanHash);
     el('btn-scan-ip').addEventListener('click', scanIP);
+    el('btn-export').addEventListener('click', exportHistory);
 
 
     document.addEventListener('paste', e => {
       const text = e.clipboardData.getData('text').trim();
-      if (text.match(/^https?:\/\//)) { el('url-input').value = text; switchTab('url'); log('Auto-detected URL in clipboard.', 'info'); }
+      if (text.match(/^https?:\/\//)) { el('url-input').value = text; switchTab('url'); log('Auto-detected URL.', 'info'); }
       else if (text.match(/^\d{1,3}\.\d{1,3}/)) { el('ip-input').value = text; switchTab('ip'); }
       else if (text.match(/^[a-f0-9]{32,}$/i)) { el('hash-input').value = text; switchTab('hash'); }
     });
 
-    el('btn-export').addEventListener('click', exportHistory);
 
     document.addEventListener('keydown', e => {
       if (e.ctrlKey && e.shiftKey) {
@@ -371,14 +361,13 @@ const CyberScanner = (() => {
         if (e.key === '3') switchTab('hash');
         if (e.key === '4') switchTab('ip');
         if (e.key === 'E' || e.key === 'e') exportHistory();
-        if (e.key === 'L' || e.key === 'l') dom.terminal.innerHTML = '';
       }
       if (e.key === 'Enter' && !e.target.matches('input')) {
-        const activeTab = document.querySelector('.tab-content.active').id;
-        if (activeTab === 'tab-url') scanURL();
-        else if (activeTab === 'tab-file' && state.currentFile) scanFile();
-        else if (activeTab === 'tab-hash') scanHash();
-        else if (activeTab === 'tab-ip') scanIP();
+        const active = document.querySelector('.tab-content.active').id;
+        if (active === 'tab-url') scanURL();
+        else if (active === 'tab-file' && state.currentFile) scanFile();
+        else if (active === 'tab-hash') scanHash();
+        else if (active === 'tab-ip') scanIP();
       }
     });
   }
@@ -400,12 +389,10 @@ const CyberScanner = (() => {
     a.download = `cyber_scan_report_${Date.now()}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    log('Scan history exported successfully.', 'info');
+    log('History exported.', 'info');
   }
-
 
   return { init };
 })();
-
 
 document.addEventListener('DOMContentLoaded', CyberScanner.init);
