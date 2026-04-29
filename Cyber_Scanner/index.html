@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CYBER SCANNER PRO X</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top-bar">
+    <div class="brand">
+      <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+      <h1>CYBER SCANNER PRO <span class="accent">X</span></h1>
+    </div>
+    <div class="system-info">
+      <span id="sys-platform">Platform: Detecting...</span>
+      <span class="divider">|</span>
+      <span id="sys-browser">Browser: Detecting...</span>
+      <span class="divider">|</span>
+      <span id="live-clock">00:00:00</span>
+      <div class="radar-container">
+        <div class="radar-ring"></div>
+        <div class="radar-sweep"></div>
+        <span class="status-dot"></span>
+      </div>
+    </div>
+  </header>
+
+  <main class="dashboard">
+    <section class="stats-row">
+      <div class="stat-card">
+        <h3>TOTAL SCANS</h3>
+        <p id="stat-total">0</p>
+      </div>
+      <div class="stat-card warning">
+        <h3>THREATS</h3>
+        <p id="stat-threats">0</p>
+      </div>
+      <div class="stat-card safe">
+        <h3>CLEAN</h3>
+        <p id="stat-clean">0</p>
+      </div>
+      <div class="stat-card info">
+        <h3>LAST VERDICT</h3>
+        <p id="stat-last">--</p>
+      </div>
+    </section>
+
+    <div class="content-grid">
+      <section class="main-panel">
+        <nav class="tabs">
+          <button class="tab-btn active" data-tab="url">🔍 URL Scanner</button>
+          <button class="tab-btn" data-tab="file">📁 File Scanner</button>
+          <button class="tab-btn" data-tab="hash"># Hash Lookup</button>
+          <button class="tab-btn" data-tab="ip">🌐 IP / Domain</button>
+          <button class="tab-btn" data-tab="info">💻 System Info</button>
+        </nav>
+
+        <div class="tab-content active" id="tab-url">
+          <div class="input-group">
+            <label>Target URL</label>
+            <input type="text" id="url-input" placeholder="https://example.com/path...">
+            <button id="btn-scan-url" class="neon-btn">SCAN URL</button>
+          </div>
+          <div id="url-result" class="result-container hidden"></div>
+        </div>
+
+        <div class="tab-content" id="tab-file">
+          <div id="drop-zone" class="drop-area">
+            <p>Drag & Drop File Here or Click to Upload</p>
+            <input type="file" id="file-input" hidden>
+          </div>
+          <div id="file-info" class="hidden">
+            <p>File: <span id="fi-name"></span> | Size: <span id="fi-size"></span></p>
+            <button id="btn-scan-file" class="neon-btn">ANALYZE FILE</button>
+          </div>
+          <div id="file-result" class="result-container hidden"></div>
+        </div>
+
+        <div class="tab-content" id="tab-hash">
+          <div class="input-group">
+            <label>SHA256 / MD5 / SHA1 Hash</label>
+            <input type="text" id="hash-input" placeholder="e.g., 5d41402abc4b2a76b9719d911017c592">
+            <button id="btn-scan-hash" class="neon-btn">LOOKUP HASH</button>
+          </div>
+          <div id="hash-result" class="result-container hidden"></div>
+        </div>
+
+        <div class="tab-content" id="tab-ip">
+          <div class="input-group">
+            <label>IP Address or Domain</label>
+            <input type="text" id="ip-input" placeholder="192.168.1.1 or evil-domain.com">
+            <button id="btn-scan-ip" class="neon-btn">SCAN TARGET</button>
+          </div>
+          <div id="ip-result" class="result-container hidden"></div>
+        </div>
+
+        <div class="tab-content" id="tab-info">
+          <pre id="sys-details" class="info-block"></pre>
+        </div>
+
+        <div class="progress-container hidden">
+          <div class="progress-bar">
+            <div class="progress-fill" id="scan-progress"></div>
+          </div>
+          <p id="progress-text">Initializing scan engine...</p>
+        </div>
+      </section>
+
+      <aside class="side-panel">
+        <div class="panel-header">
+          <h2>📜 SCAN HISTORY</h2>
+          <button id="btn-export" class="small-btn" title="Export JSON">📥 EXPORT</button>
+        </div>
+        <ul id="history-list" class="history-list"></ul>
+        <p id="no-history" class="muted">No scans recorded.</p>
+      </aside>
+    </div>
+  </main>
+
+  <section class="terminal-container">
+    <div class="terminal-header">
+      <span>🖥️ SYSTEM TERMINAL</span>
+      <div class="terminal-controls">
+        <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+      </div>
+    </div>
+    <pre id="terminal-output"><span class="log-info">[SYSTEM] Cyber Scanner Pro X v1.0.0 initialized.</span>
+<span class="log-info">[SYSTEM] Ready for input. Use keyboard shortcuts (Ctrl+Shift+1-4) to navigate.</span></pre>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
