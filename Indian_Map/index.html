@@ -1,0 +1,322 @@
+<!-- Made By Paras Dhiman -->
+<!-- SoftwareLabs -->
+
+<!-- All Rights Reserved -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bharat Darshan — Interactive India Map</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi&family=Sora:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body class="light-mode">
+
+
+  <header class="app-header">
+    <div class="header-left">
+      <div class="logo-mark">🗺️</div>
+      <div class="brand">
+        <h1 class="brand-title">Bharat Darshan</h1>
+        <p class="brand-sub">Interactive India Geography Explorer</p>
+      </div>
+    </div>
+    <div class="header-center">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Search state or city…" autocomplete="off"/>
+        <div id="searchDropdown" class="search-dropdown hidden"></div>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="mode-btn" id="darkModeBtn" title="Toggle Dark Mode">🌙</button>
+    </div>
+  </header>
+
+
+  <div class="app-body">
+
+    <aside class="sidebar left-sidebar">
+      <div class="panel-title">Modes</div>
+
+      <div class="mode-group">
+        <button class="mode-pill active" data-mode="explore" onclick="setMode('explore')">
+          <span>🧭</span> Explore
+        </button>
+        <button class="mode-pill" data-mode="quiz" onclick="setMode('quiz')">
+          <span>🎓</span> Quiz Mode
+        </button>
+        <button class="mode-pill" data-mode="highlight" onclick="setMode('highlight')">
+          <span>🎨</span> Highlight Mode
+        </button>
+      </div>
+
+      <div class="panel-title" style="margin-top:20px">Routes</div>
+      <div class="toggle-group">
+        <label class="toggle-item">
+          <input type="checkbox" id="toggleAir" checked onchange="toggleLayer('air')"/>
+          <span class="toggle-track"></span>
+          <span class="toggle-label"><span class="dot air-dot"></span>Air Routes</span>
+        </label>
+        <label class="toggle-item">
+          <input type="checkbox" id="toggleSea" checked onchange="toggleLayer('sea')"/>
+          <span class="toggle-track"></span>
+          <span class="toggle-label"><span class="dot sea-dot"></span>Sea Routes</span>
+        </label>
+        <label class="toggle-item">
+          <input type="checkbox" id="toggleLand" checked onchange="toggleLayer('land')"/>
+          <span class="toggle-track"></span>
+          <span class="toggle-label"><span class="dot land-dot"></span>Land Borders</span>
+        </label>
+      </div>
+
+      <div class="panel-title" style="margin-top:20px">Highlight By</div>
+      <div class="highlight-btns" id="highlightBtns">
+        <button class="hl-btn" onclick="highlightByRegion('north')">🔵 North India</button>
+        <button class="hl-btn" onclick="highlightByRegion('south')">🟠 South India</button>
+        <button class="hl-btn" onclick="highlightByRegion('east')">🟢 East India</button>
+        <button class="hl-btn" onclick="highlightByRegion('west')">🟡 West India</button>
+        <button class="hl-btn" onclick="highlightByRegion('central')">🟣 Central India</button>
+        <button class="hl-btn" onclick="highlightByRegion('northeast')">🔴 Northeast</button>
+        <button class="hl-btn" onclick="highlightByType('coastal')">🌊 Coastal States</button>
+        <button class="hl-btn" onclick="highlightByType('landlocked')">🏔️ Landlocked</button>
+        <button class="hl-btn clear-hl" onclick="clearHighlight()">✖ Clear</button>
+      </div>
+
+      <div class="panel-title" style="margin-top:20px">Map Controls</div>
+      <div class="zoom-controls">
+        <button class="zoom-btn" onclick="zoomIn()">＋</button>
+        <button class="zoom-btn" onclick="zoomReset()">⌂</button>
+        <button class="zoom-btn" onclick="zoomOut()">－</button>
+      </div>
+    </aside>
+
+    <main class="map-area" id="mapArea">
+      <div class="map-container" id="mapContainer">
+        <svg id="indiaMap" viewBox="68 6 30 38" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="0.15" result="coloredBlur"/>
+              <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="shadow">
+              <feDropShadow dx="0.05" dy="0.1" stdDeviation="0.15" flood-color="rgba(0,0,0,0.3)"/>
+            </filter>
+            <marker id="arrowAir" markerWidth="4" markerHeight="4" refX="2" refY="2" orient="auto">
+              <polygon points="0 0, 4 2, 0 4" fill="#38bdf8" opacity="0.8"/>
+            </marker>
+          </defs>
+
+
+          <rect x="60" y="0" width="50" height="55" fill="url(#oceanGrad)" id="oceanBg"/>
+          <defs>
+            <linearGradient id="oceanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="var(--ocean-1)"/>
+              <stop offset="100%" stop-color="var(--ocean-2)"/>
+            </linearGradient>
+          </defs>
+
+          <g id="statesGroup">
+            <path id="JK" class="state" d="M73.9,34.4 L74.5,34.0 L75.2,33.5 L76.1,33.2 L77.0,33.0 L77.8,32.5 L78.5,32.0 L79.0,31.5 L79.3,30.8 L79.0,30.2 L78.2,29.8 L77.5,29.5 L76.8,29.8 L76.2,30.2 L75.5,30.5 L74.8,30.8 L74.2,31.2 L73.8,31.8 L73.5,32.4 L73.2,33.0 L73.4,33.6 Z"/>
+            <path id="LA" class="state" d="M77.0,33.0 L77.8,32.5 L78.5,32.0 L79.0,31.5 L79.3,30.8 L79.8,30.5 L80.5,30.2 L81.2,30.0 L82.0,29.8 L82.5,29.5 L82.8,29.0 L82.5,28.5 L81.8,28.2 L81.0,28.0 L80.2,28.2 L79.5,28.5 L78.8,28.8 L78.0,29.2 L77.2,29.5 L76.8,29.8 L76.2,30.2 L75.5,30.5 L74.8,30.8 L74.2,31.2 L73.8,31.8 L73.5,32.4 L73.2,33.0 L74.0,33.3 L74.5,33.5 L75.2,33.5 L76.1,33.2 Z"/>
+            <path id="HP" class="state" d="M75.5,32.4 L76.2,32.0 L77.0,31.8 L77.6,31.5 L78.0,31.0 L77.8,30.5 L77.2,30.2 L76.5,30.0 L75.8,30.2 L75.2,30.5 L74.8,31.0 L74.5,31.5 L74.5,32.0 Z"/>
+            <path id="PB" class="state" d="M73.9,32.5 L74.5,32.0 L75.2,31.8 L75.8,31.5 L75.8,31.0 L75.5,30.5 L74.8,30.2 L74.2,30.5 L73.8,31.0 L73.5,31.5 L73.4,32.0 Z"/>
+            <path id="HR" class="state" d="M75.2,31.8 L76.0,31.5 L76.5,31.0 L76.5,30.5 L76.0,30.2 L75.5,30.0 L74.8,30.2 L74.5,30.5 L74.5,31.0 L74.8,31.5 Z"/>
+            <path id="UK" class="state" d="M77.8,31.5 L78.5,31.2 L79.0,30.8 L79.3,30.2 L79.0,29.8 L78.4,29.6 L77.8,29.8 L77.2,30.0 L76.8,30.5 L76.5,31.0 L77.0,31.4 Z"/>
+            <path id="DL" class="state ut" d="M76.8,29.0 L77.2,28.8 L77.5,28.5 L77.2,28.2 L76.8,28.2 L76.5,28.5 Z"/>
+            <path id="UP" class="state" d="M77.5,31.0 L78.2,30.8 L79.0,30.5 L79.5,30.0 L80.0,29.5 L80.2,29.0 L80.0,28.5 L79.5,28.2 L79.0,28.0 L78.2,28.0 L77.5,28.2 L76.8,28.5 L76.5,29.0 L76.5,29.5 L76.8,30.0 L77.0,30.5 Z"/>
+            <path id="RJ" class="state" d="M72.0,29.5 L72.5,29.0 L73.2,28.5 L74.0,28.2 L74.8,28.0 L75.5,27.8 L76.2,27.5 L76.5,27.0 L76.2,26.5 L75.8,26.0 L75.2,25.8 L74.5,25.8 L73.8,26.0 L73.2,26.5 L72.6,27.0 L72.0,27.5 L71.5,28.0 L71.2,28.8 L71.5,29.2 Z"/>
+            <path id="GJ" class="state" d="M69.1,24.5 L69.5,24.0 L70.0,23.5 L70.5,23.0 L71.0,22.5 L71.5,22.0 L72.0,21.8 L72.5,21.5 L72.8,21.0 L72.5,20.5 L72.0,20.2 L71.5,20.5 L70.8,20.8 L70.2,21.2 L69.5,21.8 L68.8,22.5 L68.5,23.2 L68.5,24.0 Z"/>
+            <path id="MH" class="state" d="M73.0,22.0 L73.8,21.5 L74.5,21.0 L75.5,20.8 L76.2,20.5 L76.8,20.0 L77.0,19.5 L77.2,19.0 L76.8,18.5 L76.2,18.2 L75.5,18.0 L74.8,18.2 L74.0,18.5 L73.2,19.0 L72.5,19.5 L72.0,20.0 L71.8,20.8 L72.0,21.5 Z"/>
+            <path id="MP" class="state" d="M76.5,27.0 L77.2,26.5 L78.0,26.0 L78.8,25.5 L79.5,25.0 L80.0,24.5 L80.2,24.0 L80.0,23.5 L79.5,23.2 L78.8,23.0 L78.0,23.2 L77.2,23.5 L76.5,24.0 L75.8,24.5 L75.2,25.0 L74.8,25.5 L74.5,26.0 L74.8,26.5 L75.5,27.0 Z"/>
+            <path id="CG" class="state" d="M80.5,24.0 L81.2,23.5 L82.0,23.0 L82.5,22.5 L82.8,22.0 L82.5,21.5 L82.0,21.2 L81.2,21.0 L80.5,21.2 L80.0,21.8 L79.5,22.5 L79.2,23.0 L79.5,23.5 L80.0,24.0 Z"/>
+            <path id="JH" class="state" d="M84.0,25.0 L84.8,24.5 L85.5,24.0 L86.0,23.5 L86.2,23.0 L86.0,22.5 L85.5,22.2 L84.8,22.0 L84.0,22.2 L83.5,22.8 L83.0,23.5 L83.0,24.2 L83.5,24.8 Z"/>
+            <path id="BR" class="state" d="M83.5,27.5 L84.2,27.0 L85.0,26.5 L85.8,26.0 L86.2,25.5 L86.0,25.0 L85.5,24.8 L84.8,25.0 L84.0,25.2 L83.2,25.5 L82.8,26.0 L82.5,26.5 L83.0,27.0 Z"/>
+            <path id="WB" class="state" d="M87.5,27.5 L88.2,27.0 L88.8,26.5 L89.2,26.0 L89.2,25.5 L88.8,25.0 L88.2,24.8 L87.5,25.0 L87.0,25.5 L86.5,26.0 L86.2,26.5 L86.5,27.0 L87.0,27.2 Z"/>
+            <path id="OD" class="state" d="M84.5,22.0 L85.2,21.5 L86.0,21.0 L86.5,20.5 L86.8,20.0 L86.5,19.5 L86.0,19.2 L85.2,19.0 L84.5,19.2 L84.0,19.8 L83.5,20.5 L83.2,21.2 L83.5,21.8 Z"/>
+            <path id="AP" class="state" d="M79.5,18.5 L80.2,18.0 L81.0,17.5 L81.8,17.0 L82.5,16.5 L83.0,16.0 L83.2,15.5 L83.0,15.0 L82.5,14.8 L81.8,15.0 L81.0,15.5 L80.2,16.0 L79.5,16.5 L79.0,17.2 L79.0,18.0 Z"/>
+            <path id="TS" class="state" d="M77.5,20.0 L78.2,19.5 L79.0,19.0 L79.8,18.5 L80.2,18.0 L79.8,17.5 L79.2,17.2 L78.5,17.5 L77.8,18.0 L77.2,18.5 L77.0,19.2 Z"/>
+            <path id="KA" class="state" d="M74.0,18.0 L74.8,17.5 L75.5,17.0 L76.2,16.5 L77.0,16.0 L77.5,15.5 L77.8,15.0 L77.5,14.5 L77.0,14.2 L76.2,14.5 L75.5,15.0 L74.8,15.5 L74.2,16.2 L73.8,17.0 L73.8,17.8 Z"/>
+            <path id="KL" class="state" d="M75.0,15.5 L75.5,15.0 L76.0,14.5 L76.2,14.0 L76.0,13.5 L75.5,13.2 L75.0,13.0 L74.5,13.2 L74.2,13.8 L74.0,14.5 L74.2,15.0 Z"/>
+            <path id="TN" class="state" d="M77.5,14.5 L78.2,14.0 L78.8,13.5 L79.2,13.0 L79.2,12.5 L78.8,12.0 L78.2,11.8 L77.5,12.0 L77.0,12.5 L76.5,13.2 L76.5,14.0 L77.0,14.5 Z"/>
+            <path id="AS" class="state" d="M91.0,27.5 L91.8,27.0 L92.5,26.5 L93.0,26.0 L93.2,25.5 L93.0,25.0 L92.5,24.8 L91.8,25.0 L91.0,25.5 L90.5,26.0 L90.2,26.5 L90.5,27.0 L91.0,27.2 Z"/>
+            <path id="AR" class="state" d="M93.0,29.0 L93.8,28.5 L94.5,28.0 L95.2,27.5 L95.8,27.0 L96.0,26.5 L95.8,26.0 L95.2,25.8 L94.5,26.0 L93.8,26.5 L93.0,27.0 L92.5,27.5 L92.2,28.0 L92.5,28.5 Z"/>
+            <path id="ML" class="state" d="M90.5,25.5 L91.2,25.0 L92.0,24.8 L92.5,24.5 L92.2,24.0 L91.5,23.8 L90.8,24.0 L90.2,24.5 L90.0,25.0 Z"/>
+            <path id="NL" class="state" d="M94.5,27.0 L95.0,26.5 L95.5,26.0 L95.5,25.5 L95.0,25.2 L94.2,25.5 L93.8,26.0 L93.8,26.5 Z"/>
+            <path id="MN" class="state" d="M94.2,25.0 L94.8,24.5 L95.2,24.0 L95.0,23.5 L94.5,23.2 L93.8,23.5 L93.5,24.0 L93.5,24.5 Z"/>
+            <path id="MZ" class="state" d="M92.8,24.0 L93.5,23.5 L93.8,23.0 L93.5,22.5 L93.0,22.2 L92.5,22.5 L92.2,23.0 L92.2,23.5 Z"/>
+            <path id="TR" class="state" d="M91.8,24.5 L92.2,24.0 L92.5,23.5 L92.2,23.0 L91.8,22.8 L91.2,23.0 L91.0,23.5 L91.2,24.0 Z"/>
+            <path id="SK" class="state" d="M88.5,28.0 L89.0,27.5 L89.5,27.2 L89.2,26.8 L88.8,27.0 L88.5,27.5 Z"/>
+            <path id="GA" class="state" d="M73.8,15.8 L74.2,15.5 L74.5,15.2 L74.2,15.0 L73.8,15.0 L73.5,15.2 Z"/>
+            <path id="CH" class="state ut" d="M76.8,30.9 L77.1,30.8 L77.1,30.5 L76.8,30.5 Z"/>
+            <path id="PY" class="state ut" d="M79.8,12.0 L80.1,11.8 L80.1,11.5 L79.8,11.5 Z"/>
+            <path id="AN" class="state ut" d="M92.5,13.5 L93.0,13.0 L93.0,12.0 L92.5,11.5 L92.0,12.0 L92.0,13.0 Z"/>
+            <path id="LD" class="state ut" d="M72.5,11.5 L73.0,11.2 L73.0,10.5 L72.5,10.2 L72.0,10.5 L72.0,11.2 Z"/>
+            <path id="DN" class="state ut" d="M72.8,20.2 L73.1,20.0 L73.0,19.8 L72.7,19.9 Z"/>
+            <path id="DD" class="state ut" d="M72.2,21.2 L72.5,21.0 L72.4,20.8 L72.1,20.9 Z"/>
+
+          </g>
+
+
+          <g id="landBordersGroup" class="route-layer">
+            <path class="land-border pakistan-border" d="M73.9,34.4 L73.2,33.0 L73.4,32.0 L73.5,31.5 L73.0,30.0 L72.0,29.5 L71.5,28.0 L70.5,27.5" stroke-dasharray="0.3 0.2"/>
+            <path class="land-border china-border" d="M79.3,30.8 L80.5,30.2 L81.2,30.0 L82.0,29.8 L82.8,29.0 L83.5,28.5 L84.5,28.0 L85.2,27.5" stroke-dasharray="0.3 0.2"/>
+            <path class="land-border nepal-border" d="M80.0,29.5 L81.0,29.2 L82.5,29.0 L83.5,28.8 L84.0,28.5 L85.2,27.5 L86.5,27.2 L87.5,27.5"/>
+            <path class="land-border bhutan-border" d="M88.0,27.5 L88.5,27.2 L89.5,27.0 L90.5,27.0 L91.5,27.2"/>
+            <path class="land-border bangladesh-border" d="M88.0,26.0 L88.5,25.5 L89.0,25.0 L89.5,24.5 L90.0,24.0 L90.5,23.5 L91.0,23.0 L91.5,23.5 L91.8,24.0 L92.0,24.5"/>
+            <path class="land-border myanmar-border" d="M95.5,27.0 L96.0,26.5 L96.2,25.5 L95.8,25.0 L95.5,24.0 L95.2,23.5 L94.8,23.0"/>
+          </g>
+
+
+          <g id="seaRoutesGroup" class="route-layer">
+            <path class="sea-route" d="M72.0,22.0 Q68.0,18.0 69.0,10.0 Q70.0,8.0 73.0,8.5"/>
+            <path class="sea-route" d="M73.0,22.0 Q71.0,20.0 70.5,16.0 Q70.2,14.0 71.5,12.0"/>
+            <path class="sea-route" d="M80.5,13.5 Q82.0,12.0 84.0,11.0 Q86.0,10.0 88.0,11.5"/>
+            <path class="sea-route" d="M81.5,15.0 Q84.0,14.0 86.0,13.0 Q88.0,12.0 90.0,13.0"/>
+            <path class="sea-route coastal" d="M72.8,18.9 Q74.0,17.0 75.5,15.5 Q77.0,14.0 79.0,12.8 Q80.5,12.0 80.2,11.5"/>
+            <path class="sea-route" d="M80.2,11.5 Q85.0,10.5 90.0,11.0 Q92.0,11.5 92.5,12.5"/>
+          </g>
+
+          <g id="airRoutesGroup" class="route-layer">
+            <path class="air-route" id="air1" d="M77.1,28.7 Q75.5,25.0 72.8,18.9" marker-end="url(#arrowAir)"/>
+            <path class="air-route" id="air2" d="M77.1,28.7 Q80.0,22.0 80.2,13.1" marker-end="url(#arrowAir)"/>
+            <path class="air-route" id="air3" d="M72.8,18.9 Q76.5,16.0 80.2,13.1" marker-end="url(#arrowAir)"/>
+            <path class="air-route" id="air4" d="M77.1,28.7 Q82.0,27.5 88.3,22.5" marker-end="url(#arrowAir)"/>
+            <path class="air-route" id="air5" d="M72.8,18.9 Q74.5,17.5 77.6,12.9" marker-end="url(#arrowAir)"/>
+            <path class="air-route" id="air6" d="M80.2,13.1 Q79.0,13.0 77.6,12.9" marker-end="url(#arrowAir)"/>
+            <path class="air-route" id="air7" d="M77.1,28.7 Q78.5,24.0 78.5,17.4" marker-end="url(#arrowAir)"/>
+            <path class="air-route" id="air8" d="M88.3,22.5 Q89.5,23.5 91.6,26.1" marker-end="url(#arrowAir)"/>
+            <path class="air-route" id="air9" d="M72.8,18.9 Q73.5,17.2 74.0,15.4" marker-end="url(#arrowAir)"/>
+          </g>
+
+          <g id="citiesGroup">
+            <g class="city-marker" data-city="New Delhi" data-state="DL">
+              <circle cx="77.1" cy="28.7" r="0.2" class="city-dot capital-dot"/>
+              <circle cx="77.1" cy="28.7" r="0.35" class="city-pulse"/>
+              <text x="77.4" y="28.6" class="city-label">New Delhi ★</text>
+            </g>
+            <g class="city-marker" data-city="Mumbai" data-state="MH">
+              <circle cx="72.8" cy="18.9" r="0.18" class="city-dot"/>
+              <text x="73.0" y="18.8" class="city-label">Mumbai</text>
+            </g>
+   
+            <g class="city-marker" data-city="Chennai" data-state="TN">
+              <circle cx="80.2" cy="13.1" r="0.18" class="city-dot"/>
+              <text x="80.4" y="13.0" class="city-label">Chennai</text>
+            </g>
+
+            <g class="city-marker" data-city="Kolkata" data-state="WB">
+              <circle cx="88.3" cy="22.5" r="0.18" class="city-dot"/>
+              <text x="88.5" y="22.4" class="city-label">Kolkata</text>
+            </g>
+
+            <g class="city-marker" data-city="Bengaluru" data-state="KA">
+              <circle cx="77.6" cy="12.9" r="0.18" class="city-dot"/>
+              <text x="77.8" y="12.8" class="city-label">Bengaluru</text>
+            </g>
+
+            <g class="city-marker" data-city="Hyderabad" data-state="TS">
+              <circle cx="78.5" cy="17.4" r="0.18" class="city-dot"/>
+              <text x="78.7" y="17.3" class="city-label">Hyderabad</text>
+            </g>
+
+            <g class="city-marker" data-city="Guwahati" data-state="AS">
+              <circle cx="91.6" cy="26.1" r="0.18" class="city-dot"/>
+              <text x="91.8" y="26.0" class="city-label">Guwahati</text>
+            </g>
+
+            <g class="city-marker" data-city="Ahmedabad" data-state="GJ">
+              <circle cx="72.5" cy="23.0" r="0.18" class="city-dot"/>
+              <text x="72.7" y="22.9" class="city-label">Ahmedabad</text>
+            </g>
+          </g>
+
+        </svg>
+      </div>
+
+      <div id="tooltip" class="tooltip hidden">
+        <span id="tooltipText"></span>
+      </div>
+
+
+      <div id="quizOverlay" class="quiz-overlay hidden">
+        <div class="quiz-card">
+          <div class="quiz-header">
+            <span class="quiz-badge">Quiz Mode</span>
+            <span id="quizScore" class="quiz-score">Score: 0</span>
+          </div>
+          <div id="quizQuestion" class="quiz-question">Click on: <strong id="quizTarget">—</strong></div>
+          <div id="quizFeedback" class="quiz-feedback"></div>
+          <div class="quiz-progress-bar"><div id="quizProgress" class="quiz-progress-fill"></div></div>
+          <div class="quiz-controls">
+            <button class="quiz-btn" onclick="quizNextQuestion()">Next ▶</button>
+            <button class="quiz-btn secondary" onclick="endQuiz()">End Quiz</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <aside class="sidebar right-sidebar" id="infoPanel">
+      <div id="welcomePanel" class="welcome-panel">
+        <div class="welcome-icon">🇮🇳</div>
+        <h2 class="welcome-title">Bharat Darshan</h2>
+        <p class="welcome-text">Click any state on the map to explore its details, geography, and key facts.</p>
+        <div class="stat-chips">
+          <div class="stat-chip"><span class="chip-num">28</span><span class="chip-lbl">States</span></div>
+          <div class="stat-chip"><span class="chip-num">8</span><span class="chip-lbl">UTs</span></div>
+          <div class="stat-chip"><span class="chip-num">1.4B</span><span class="chip-lbl">People</span></div>
+        </div>
+      </div>
+
+      <div id="statePanel" class="state-panel hidden">
+        <button class="close-panel" onclick="closePanelInfo()">✕</button>
+        <div class="state-flag" id="stateEmoji"></div>
+        <h2 class="state-name" id="stateName"></h2>
+        <div class="state-capital"><span class="label-pill">Capital</span><span id="stateCapital"></span></div>
+        <div class="info-grid">
+          <div class="info-cell">
+            <div class="info-label">Area</div>
+            <div class="info-val" id="stateArea"></div>
+          </div>
+          <div class="info-cell">
+            <div class="info-label">Population</div>
+            <div class="info-val" id="statePop"></div>
+          </div>
+          <div class="info-cell">
+            <div class="info-label">Language</div>
+            <div class="info-val" id="stateLang"></div>
+          </div>
+          <div class="info-cell">
+            <div class="info-label">Region</div>
+            <div class="info-val" id="stateRegion"></div>
+          </div>
+        </div>
+        <div class="neighbors-section">
+          <div class="section-label">Neighboring States</div>
+          <div id="stateNeighbors" class="neighbors-wrap"></div>
+        </div>
+        <div class="famous-section">
+          <div class="section-label">Famous For</div>
+          <div id="stateFamous" class="famous-wrap"></div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+
+  <div class="legend-bar">
+    <div class="legend-item"><span class="leg-line air-leg"></span>Air Routes</div>
+    <div class="legend-item"><span class="leg-line sea-leg"></span>Sea Routes</div>
+    <div class="legend-item"><span class="leg-line land-leg"></span>Land Borders</div>
+    <div class="legend-item"><span class="leg-dot city-leg"></span>Major City</div>
+    <div class="legend-item"><span class="leg-dot capital-leg"></span>Capital</div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
