@@ -3,130 +3,241 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CYBER SCANNER PRO X</title>
+  <title>CyberShield — Threat Intelligence Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="top-bar">
-    <div class="brand">
-      <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-      </svg>
-      <h1>CYBER SCANNER PRO <span class="accent">X</span></h1>
+  <div class="bg-grid"></div>
+  <div class="scanline-overlay"></div>
+  <div class="noise-overlay"></div>
+
+
+  <div id="boot-screen">
+    <div class="boot-inner">
+      <div class="boot-logo">
+        <svg viewBox="0 0 60 60" fill="none"><polygon points="30,2 58,16 58,44 30,58 2,44 2,16" stroke="#00ffe0" stroke-width="2" fill="none"/><polygon points="30,10 50,20 50,40 30,50 10,40 10,20" stroke="#00ffe0" stroke-width="1" fill="rgba(0,255,224,0.05)"/><path d="M30 18 L30 30 L20 38" stroke="#00ffe0" stroke-width="2" stroke-linecap="round"/><circle cx="30" cy="30" r="3" fill="#00ffe0"/></svg>
+      </div>
+      <div class="boot-title">CYBERSHIELD</div>
+      <div class="boot-sub">THREAT INTELLIGENCE PLATFORM v3.0</div>
+      <div class="boot-log" id="boot-log"></div>
+      <div class="boot-bar-wrap"><div class="boot-bar" id="boot-bar"></div></div>
     </div>
-    <div class="system-info">
-      <span id="sys-platform">Platform: Detecting...</span>
-      <span class="divider">|</span>
-      <span id="sys-browser">Browser: Detecting...</span>
-      <span class="divider">|</span>
-      <span id="live-clock">00:00:00</span>
-      <div class="radar-container">
-        <div class="radar-ring"></div>
-        <div class="radar-sweep"></div>
-        <span class="status-dot"></span>
-      </div>
-    </div>
-  </header>
+  </div>
 
-  <main class="dashboard">
-    <section class="stats-row">
-      <div class="stat-card">
-        <h3>TOTAL SCANS</h3>
-        <p id="stat-total">0</p>
-      </div>
-      <div class="stat-card warning">
-        <h3>THREATS</h3>
-        <p id="stat-threats">0</p>
-      </div>
-      <div class="stat-card safe">
-        <h3>CLEAN</h3>
-        <p id="stat-clean">0</p>
-      </div>
-      <div class="stat-card info">
-        <h3>LAST VERDICT</h3>
-        <p id="stat-last">--</p>
-      </div>
-    </section>
 
-    <div class="content-grid">
-      <section class="main-panel">
-        <nav class="tabs">
-          <button class="tab-btn active" data-tab="url">🔍 URL Scanner</button>
-          <button class="tab-btn" data-tab="file">📁 File Scanner</button>
-          <button class="tab-btn" data-tab="hash"># Hash Lookup</button>
-          <button class="tab-btn" data-tab="ip">🌐 IP / Domain</button>
-          <button class="tab-btn" data-tab="info">💻 System Info</button>
-        </nav>
-
-        <div class="tab-content active" id="tab-url">
-          <div class="input-group">
-            <label>Target URL</label>
-            <input type="text" id="url-input" placeholder="https://example.com/path...">
-            <button id="btn-scan-url" class="neon-btn">SCAN URL</button>
+  <div id="app" class="hidden">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="logo-mark">
+          <svg viewBox="0 0 40 40" fill="none" width="32" height="32"><polygon points="20,1 39,10.5 39,29.5 20,39 1,29.5 1,10.5" stroke="#00ffe0" stroke-width="1.5" fill="rgba(0,255,224,0.06)"/><path d="M20 12 L20 20 L13 26" stroke="#00ffe0" stroke-width="1.5" stroke-linecap="round"/><circle cx="20" cy="20" r="2.5" fill="#00ffe0"/></svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">CYBERSHIELD</span>
+          <span class="brand-version">THREAT INTEL v3.0</span>
+        </div>
+      </div>
+      <div class="topbar-center">
+        <div class="threat-level-display">
+          <span class="tl-label">THREAT LEVEL</span>
+          <div class="tl-bars">
+            <span class="tl-bar active"></span><span class="tl-bar active"></span><span class="tl-bar active"></span><span class="tl-bar"></span><span class="tl-bar"></span>
           </div>
-          <div id="url-result" class="result-container hidden"></div>
+          <span class="tl-text" id="threat-level-text">GUARDED</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="status-cluster">
+          <div class="status-item online"><span class="status-dot pulse"></span><span>API ONLINE</span></div>
+          <div class="status-item"><span class="status-dot"></span><span id="top-clock">00:00:00</span></div>
+          <div class="status-item"><span id="top-date">---</span></div>
+        </div>
+      </div>
+    </header>
+
+
+    <div class="stats-row">
+      <div class="stat-card" id="sc-total">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="18" height="18"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        </div>
+        <div class="stat-body"><div class="stat-value" id="s-total">0</div><div class="stat-label">TOTAL SCANS</div></div>
+        <div class="stat-graph"><canvas id="graph-total" width="60" height="30"></canvas></div>
+      </div>
+      <div class="stat-card danger-card" id="sc-threats">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="18" height="18"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div class="stat-body"><div class="stat-value" id="s-threats">0</div><div class="stat-label">THREATS FOUND</div></div>
+        <div class="stat-sparkline" id="threat-sparks"></div>
+      </div>
+      <div class="stat-card safe-card" id="sc-clean">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="18" height="18"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="stat-body"><div class="stat-value" id="s-clean">0</div><div class="stat-label">CLEAN</div></div>
+      </div>
+      <div class="stat-card info-card">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="18" height="18"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div class="stat-body"><div class="stat-value verdict-text" id="s-last">---</div><div class="stat-label">LAST VERDICT</div></div>
+      </div>
+      <div class="stat-card accent-card">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="18" height="18"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <div class="stat-body"><div class="stat-value" id="s-browser">--</div><div class="stat-label">BROWSER</div></div>
+      </div>
+    </div>
+
+    <div class="main-grid">
+      <section class="scanner-panel glass-panel">
+        <div class="panel-header-line">
+          <span class="panel-tag">SCANNER ENGINE</span>
+          <div class="scanner-tabs">
+            <button class="stab active" data-tab="url"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="13" height="13"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg> URL</button>
+            <button class="stab" data-tab="file"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="13" height="13"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> FILE</button>
+            <button class="stab" data-tab="hash"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="13" height="13"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg> HASH</button>
+            <button class="stab" data-tab="ip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="13" height="13"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> IP/DOMAIN</button>
+          </div>
         </div>
 
+        <div class="tab-pane active" id="tab-url">
+          <div class="input-complex">
+            <div class="input-label-row"><span class="ilabel">TARGET URL</span><span class="ihint">Press Enter or Ctrl+Shift+S to scan</span></div>
+            <div class="input-row">
+              <div class="input-prefix">https://</div>
+              <input type="text" id="url-input" class="cyber-input" placeholder="example.com/path?query=value">
+              <button id="btn-scan-url" class="scan-btn">
+                <span class="btn-text">SCAN</span>
+                <span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="14" height="14"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
+              </button>
+            </div>
+          </div>
+          <div id="url-result" class="result-area hidden"></div>
+        </div>
 
-        <div class="tab-content" id="tab-file">
-          <div id="drop-zone" class="drop-area">
-            <p>Drag & Drop File Here or Click to Upload</p>
+        <div class="tab-pane" id="tab-file">
+          <div id="drop-zone" class="drop-zone">
+            <div class="dz-inner">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="32" height="32" class="dz-icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <p>Drop file here or <span class="dz-link">click to browse</span></p>
+              <p class="dz-hint">SHA-256 computed locally — file never leaves your machine</p>
+            </div>
             <input type="file" id="file-input" hidden>
           </div>
-          <div id="file-info" class="hidden">
-            <p>File: <span id="fi-name"></span> | Size: <span id="fi-size"></span></p>
-            <button id="btn-scan-file" class="neon-btn">ANALYZE FILE</button>
+          <div id="file-info" class="file-info-bar hidden">
+            <div class="fi-details">
+              <span class="fi-icon">📄</span>
+              <div><div class="fi-name" id="fi-name">--</div><div class="fi-size" id="fi-size">--</div></div>
+            </div>
+            <button id="btn-scan-file" class="scan-btn">ANALYZE FILE</button>
           </div>
-          <div id="file-result" class="result-container hidden"></div>
+          <div id="file-hash-display" class="hash-display hidden">SHA256: <span id="computed-hash">--</span></div>
+          <div id="file-result" class="result-area hidden"></div>
         </div>
 
-        <div class="tab-content" id="tab-hash">
-          <div class="input-group">
-            <label>SHA256 / MD5 / SHA1 Hash</label>
-            <input type="text" id="hash-input" placeholder="e.g., 5d41402abc4b2a76b9719d911017c592">
-            <button id="btn-scan-hash" class="neon-btn">LOOKUP HASH</button>
+        <div class="tab-pane" id="tab-hash">
+          <div class="input-complex">
+            <div class="input-label-row"><span class="ilabel">HASH VALUE</span><span class="ihint">MD5 / SHA1 / SHA256</span></div>
+            <div class="input-row">
+              <input type="text" id="hash-input" class="cyber-input" placeholder="e.g. 5d41402abc4b2a76b9719d911017c592">
+              <button id="btn-scan-hash" class="scan-btn"><span class="btn-text">LOOKUP</span></button>
+            </div>
+            <div class="hash-type-indicator" id="hash-type-indicator"></div>
           </div>
-          <div id="hash-result" class="result-container hidden"></div>
+          <div id="hash-result" class="result-area hidden"></div>
         </div>
-        <div class="tab-content" id="tab-ip">
-          <div class="input-group">
-            <label>IP Address or Domain</label>
-            <input type="text" id="ip-input" placeholder="192.168.1.1 or evil-domain.com">
-            <button id="btn-scan-ip" class="neon-btn">SCAN TARGET</button>
+
+        <div class="tab-pane" id="tab-ip">
+          <div class="input-complex">
+            <div class="input-label-row"><span class="ilabel">IP / DOMAIN</span><span class="ihint">IPv4 or hostname</span></div>
+            <div class="input-row">
+              <input type="text" id="ip-input" class="cyber-input" placeholder="192.168.1.1 or domain.com">
+              <button id="btn-scan-ip" class="scan-btn"><span class="btn-text">SCAN TARGET</span></button>
+            </div>
           </div>
-          <div id="ip-result" class="result-container hidden"></div>
+          <div id="ip-result" class="result-area hidden"></div>
         </div>
-        <div class="tab-content" id="tab-info">
-          <pre id="sys-details" class="info-block"></pre>
-        </div>
-        <div class="progress-container hidden">
-          <div class="progress-bar">
-            <div class="progress-fill" id="scan-progress"></div>
+
+ 
+        <div class="scan-progress-wrap hidden" id="progress-wrap">
+          <div class="progress-track">
+            <div class="progress-fill" id="prog-bar"></div>
+            <div class="progress-glow" id="prog-glow"></div>
           </div>
-          <p id="progress-text">Initializing scan engine...</p>
+          <div class="progress-meta">
+            <span id="prog-status">Initializing...</span>
+            <span id="prog-pct">0%</span>
+          </div>
+          <div class="scan-stages" id="scan-stages"></div>
         </div>
       </section>
-      <aside class="side-panel">
-        <div class="panel-header">
-          <h2>📜 SCAN HISTORY</h2>
-          <button id="btn-export" class="small-btn" title="Export JSON">📥 EXPORT</button>
+
+
+      <div class="center-col">
+        <div class="radar-panel glass-panel">
+          <div class="panel-tag">ACTIVE RADAR</div>
+          <div class="radar-wrap">
+            <canvas id="radar-canvas" width="180" height="180"></canvas>
+            <div class="radar-info">
+              <div class="ri-item"><span class="ri-val" id="ri-malicious">0</span><span class="ri-lbl">Malicious</span></div>
+              <div class="ri-item"><span class="ri-val warn" id="ri-suspicious">0</span><span class="ri-lbl">Suspicious</span></div>
+              <div class="ri-item"><span class="ri-val safe" id="ri-harmless">0</span><span class="ri-lbl">Harmless</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="threat-map-panel glass-panel">
+          <div class="panel-tag">THREAT MATRIX</div>
+          <div id="threat-matrix" class="threat-matrix">
+            <div class="matrix-empty">No threats detected</div>
+          </div>
+        </div>
+      </div>
+
+
+      <aside class="history-panel glass-panel">
+        <div class="panel-header-line">
+          <span class="panel-tag">SCAN HISTORY</span>
+          <div class="hist-controls">
+            <button id="btn-clear" class="icon-btn" title="Clear History">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="13" height="13"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+            </button>
+            <button id="btn-export" class="icon-btn" title="Export JSON">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="13" height="13"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="hist-filter">
+          <button class="hfilt active" data-filter="all">ALL</button>
+          <button class="hfilt" data-filter="url">URL</button>
+          <button class="hfilt" data-filter="file">FILE</button>
+          <button class="hfilt" data-filter="hash">HASH</button>
+          <button class="hfilt" data-filter="ip">IP</button>
         </div>
         <ul id="history-list" class="history-list"></ul>
-        <p id="no-history" class="muted">No scans recorded.</p>
+        <div class="no-hist hidden" id="no-hist">No scans recorded</div>
       </aside>
     </div>
-  </main>
 
-  <section class="terminal-container">
-    <div class="terminal-header">
-      <span>🖥️ SYSTEM TERMINAL</span>
-      <div class="terminal-controls">
-        <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+    <section class="terminal-section">
+      <div class="terminal-topbar">
+        <div class="term-left">
+          <span class="term-dot red"></span><span class="term-dot yellow"></span><span class="term-dot green"></span>
+          <span class="term-title">SYSTEM TERMINAL — CyberShield v3.0</span>
+        </div>
+        <div class="term-right">
+          <button class="term-btn" id="btn-clear-term">CLR</button>
+          <span class="term-info" id="term-line-count">0 lines</span>
+        </div>
       </div>
-    </div>
-    <pre id="terminal-output"><span class="log-info">[SYSTEM] Cyber Scanner Pro X v1.0.0 initialized.</span>
-<span class="log-info">[SYSTEM] Ready for input. Use keyboard shortcuts (Ctrl+Shift+1-4) to navigate.</span></pre>
-  </section>
+      <div class="terminal-body" id="terminal-out"></div>
+    </section>
+  </div>
+
+  <div id="toast-container"></div>
 
   <script src="script.js"></script>
 </body>
