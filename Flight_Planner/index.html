@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AeroCore Flight Operations Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root{
+    --bg:#060a10; --panel:#0d131a; --panel2:#111922; --line:#1e2c38; --line-soft:#152029;
+    --gold:#e8b34d; --gold-dim:#5a441c; --sky:#3aa0ff; --sky-dim:#0f2a42;
+    --text:#dfe7ee; --muted:#63788a; --success:#38d996; --danger:#ff5a67; --warn:#ffcf4d;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse at 15% 0%, #0e1620 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 100%, #0a121a 0%, transparent 50%),
+      var(--bg);
+    color:var(--text); font-family:'Rajdhani',sans-serif; min-height:100vh; letter-spacing:.02em;
+  }
+  .mono{ font-family:'JetBrains Mono', monospace; }
+  a{ color:var(--sky); }
+
+  .overlay{ position:fixed; inset:0; pointer-events:none; z-index:0;
+    background-image:repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 3px); }
+
+  header{
+    position:relative; z-index:1; padding:0; border-bottom:1px solid var(--line); overflow:hidden;
+  }
+  .hero{
+    position:relative; min-height:190px; display:flex; align-items:flex-end;
+    background:#0a1017;
+  }
+  .hero img{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:.32;
+    filter:grayscale(.25) contrast(1.05);
+  }
+  .hero-fade{ position:absolute; inset:0; background:linear-gradient(180deg, rgba(6,10,16,.15) 0%, rgba(6,10,16,.95) 92%); }
+  .hero-content{ position:relative; z-index:1; width:100%; display:flex; align-items:center; justify-content:space-between; padding:20px 30px; }
+  .brand{ display:flex; align-items:center; gap:16px; }
+  .brand .glyph{ width:46px; height:46px; border:1px solid var(--gold); border-radius:50%;
+    display:flex; align-items:center; justify-content:center; background:rgba(232,179,77,.06); }
+  .brand .glyph i{ color:var(--gold); font-size:1.15rem; }
+  .brand h1{ font-size:1.5rem; font-weight:700; margin:0; letter-spacing:.1em; color:#f4ecd9; }
+  .brand h1 span{ color:var(--gold); }
+  .brand .sub{ font-size:.72rem; color:var(--muted); letter-spacing:.18em; margin-top:3px; }
+  .hud-right{ display:flex; align-items:center; gap:22px; }
+  .status{ display:flex; align-items:center; gap:8px; font-size:.72rem; color:var(--muted); letter-spacing:.12em; }
+  .dot{ width:8px; height:8px; border-radius:50%; background:var(--success); box-shadow:0 0 8px var(--success); animation:pulse 1.8s infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.35;} }
+  #clock{ font-size:.95rem; color:var(--sky); }
+
+  nav.tabs{ position:relative; z-index:1; display:flex; gap:2px; padding:0 30px; margin-top:14px; flex-wrap:wrap; }
+  nav.tabs button{
+    background:var(--panel); border:1px solid var(--line); border-bottom:none; color:var(--muted);
+    font-family:'Rajdhani',sans-serif; font-weight:600; font-size:.8rem; letter-spacing:.08em;
+    padding:10px 16px; cursor:pointer; border-radius:3px 3px 0 0; transition:color .2s, background .2s;
+    display:flex; align-items:center; gap:8px;
+  }
+  nav.tabs button.active{ color:var(--gold); background:var(--panel2); border-color:var(--gold-dim); }
+  nav.tabs button:hover{ color:var(--text); }
+
+  main{ position:relative; z-index:1; padding:0 30px 40px; }
+  .stage{ display:none; border:1px solid var(--line); background:var(--panel2); padding:22px; }
+  .stage.active{ display:block; animation:fadein .35s ease; }
+  @keyframes fadein{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);} }
+
+  .grid-2col{ display:grid; grid-template-columns:380px 1fr; gap:20px; }
+  @media (max-width:920px){ .grid-2col{ grid-template-columns:1fr; } }
+
+  .panel{ background:var(--panel); border:1px solid var(--line); padding:18px; }
+  .panel h2{ font-size:.72rem; letter-spacing:.16em; color:var(--muted); margin:0 0 14px;
+    text-transform:uppercase; border-bottom:1px solid var(--line-soft); padding-bottom:8px; display:flex; align-items:center; gap:8px; }
+  .panel h2 i{ color:var(--gold); }
+  .panel h2 b{ color:var(--gold); }
+
+  label{ display:block; font-size:.7rem; color:var(--muted); letter-spacing:.1em; margin:14px 0 6px; text-transform:uppercase; }
+  label:first-of-type{ margin-top:0; }
+  select, input{
+    width:100%; background:#0a0f14; border:1px solid var(--line); color:var(--text);
+    padding:9px 10px; font-family:'JetBrains Mono',monospace; font-size:.85rem; border-radius:2px; outline:none;
+    transition:border-color .15s;
+  }
+  select:focus, input:focus{ border-color:var(--sky); }
+  select{ cursor:pointer; }
+
+  .btn{ margin-top:18px; width:100%; padding:11px; background:transparent; border:1px solid var(--gold);
+    color:var(--gold); font-family:'Rajdhani',sans-serif; font-weight:700; letter-spacing:.12em; font-size:.82rem;
+    cursor:pointer; transition:background .15s, color .15s; display:flex; align-items:center; justify-content:center; gap:9px; }
+  .btn:hover{ background:var(--gold); color:#1a1300; }
+  .btn:disabled{ opacity:.5; cursor:not-allowed; }
+  .btn.alt{ border-color:var(--sky); color:var(--sky); }
+  .btn.alt:hover{ background:var(--sky); color:#04121f; }
+
+  .alert{ margin-top:12px; padding:9px 11px; font-size:.75rem; border-left:3px solid var(--danger);
+    background:rgba(255,90,103,.08); color:#ffb3ba; display:none; }
+  .alert.show{ display:block; }
+
+  svg.map{ width:100%; height:auto; display:block; background:#081019; border:1px solid var(--line-soft); }
+  .map-bg{ opacity:.5; }
+  .city-dot{ fill:#0a1017; stroke:var(--muted); stroke-width:1.4; }
+  .city-dot.active{ stroke:var(--sky); fill:var(--sky); filter:drop-shadow(0 0 4px var(--sky)); }
+  .city-label{ fill:var(--muted); font-family:'JetBrains Mono',monospace; font-size:9px; }
+  .city-label.active{ fill:var(--text); }
+  .route-line{ fill:none; stroke:var(--gold); stroke-width:2; stroke-dasharray:6 4; }
+  .route-blip{ fill:var(--gold); filter:drop-shadow(0 0 5px var(--gold)); }
+  .legend{ display:flex; gap:18px; font-size:.68rem; color:var(--muted); letter-spacing:.06em; margin-top:10px; flex-wrap:wrap; }
+  .legend span{ display:inline-flex; align-items:center; gap:6px; }
+  .legend i.dot-swatch{ width:8px; height:8px; display:inline-block; border-radius:50%; }
+
+  .gauge{ margin-top:6px; }
+  .gauge-track{ width:100%; height:14px; background:#0a0f14; border:1px solid var(--line); position:relative; }
+  .gauge-fill{ height:100%; width:0%; transition:width .5s ease, background .3s; }
+  .gauge-row{ display:flex; justify-content:space-between; font-size:.68rem; color:var(--muted); margin-top:4px; }
+
+  .readout-panel{ margin-top:18px; }
+  .readout-empty{ color:var(--muted); font-size:.82rem; }
+  .readout{ display:none; }
+  .readout.show{ display:block; }
+  .readout-title{ color:var(--gold); font-size:.78rem; letter-spacing:.12em; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+  .kv{ display:grid; grid-template-columns:200px 1fr; gap:6px 14px; font-size:.86rem; margin-bottom:6px; }
+  .kv .k{ color:var(--muted); }
+  .kv .v{ font-family:'JetBrains Mono',monospace; }
+  .v.ok{ color:var(--success); } .v.bad{ color:var(--danger); } .v.warn{ color:var(--warn); }
+  .route-path{ margin-top:12px; font-family:'JetBrains Mono',monospace; font-size:.85rem; color:var(--sky); word-break:break-word; }
+
+  /* fleet */
+  .fleet-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:16px; }
+  .fleet-card{ background:var(--panel); border:1px solid var(--line); padding:16px; position:relative; }
+  .fleet-card .tail{ font-family:'JetBrains Mono',monospace; color:var(--gold); font-size:.95rem; }
+  .fleet-card .model{ font-size:1rem; font-weight:600; margin:4px 0 10px; }
+  .fleet-card .badge{ position:absolute; top:14px; right:14px; font-size:.65rem; letter-spacing:.08em;
+    padding:3px 8px; border-radius:12px; text-transform:uppercase; }
+  .badge.in-service{ background:rgba(56,217,150,.14); color:var(--success); border:1px solid var(--success); }
+  .badge.maintenance{ background:rgba(255,207,77,.14); color:var(--warn); border:1px solid var(--warn); }
+  .badge.standby{ background:rgba(99,120,138,.14); color:var(--muted); border:1px solid var(--muted); }
+  .fleet-meta{ font-size:.78rem; color:var(--muted); display:flex; flex-direction:column; gap:5px; }
+  .fleet-meta i{ width:16px; color:var(--sky); margin-right:6px; }
+
+  /* weather */
+  .weather-result{ margin-top:16px; }
+  .weather-hero{ display:flex; align-items:center; gap:18px; padding:16px; background:var(--panel); border:1px solid var(--line); }
+  .weather-hero i.wicon{ font-size:2.4rem; color:var(--sky); }
+  .weather-hero .wtemp{ font-family:'JetBrains Mono',monospace; font-size:1.8rem; color:var(--text); }
+  .weather-hero .wdesc{ color:var(--muted); font-size:.85rem; }
+
+  /* ai advisor */
+  .ai-box{ background:var(--panel); border:1px solid var(--sky-dim); padding:16px; margin-top:14px; }
+  .ai-box .ai-label{ font-size:.68rem; letter-spacing:.14em; color:var(--sky); text-transform:uppercase; display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+  .ai-text{ font-size:.9rem; line-height:1.6; white-space:pre-wrap; }
+  .ai-note{ margin-top:10px; font-size:.7rem; color:var(--muted); line-height:1.5; }
+  .spinner{ display:inline-block; width:14px; height:14px; border:2px solid var(--sky-dim); border-top-color:var(--sky);
+    border-radius:50%; animation:spin .8s linear infinite; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  /* log */
+  .log-panel{ margin-top:0; }
+  table{ width:100%; border-collapse:collapse; font-size:.78rem; }
+  th, td{ text-align:left; padding:7px 10px; border-bottom:1px solid var(--line-soft); }
+  th{ color:var(--muted); font-weight:600; letter-spacing:.06em; font-size:.68rem; text-transform:uppercase; }
+  td{ font-family:'JetBrains Mono',monospace; color:var(--text); }
+  td.status-ok{ color:var(--success); } td.status-bad{ color:var(--danger); }
+  #log-empty{ color:var(--muted); font-size:.78rem; padding:10px 0; }
+
+  ::selection{ background:var(--gold); color:#1a1300; }
+  @media (prefers-reduced-motion: reduce){ *{ animation-duration:.001ms !important; transition-duration:.001ms !important; } }
+</style>
+</head>
+<body>
+
+<div class="overlay"></div>
+
+<header>
+  <div class="hero">
+    <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1600&q=60"
+         alt="" onerror="this.style.display='none'">
+    <div class="hero-fade"></div>
+    <div class="hero-content">
+      <div class="brand">
+        <div class="glyph"><i class="fa-solid fa-plane"></i></div>
+        <div>
+          <h1>AERO<span>CORE</span> FLIGHT OPERATIONS</h1>
+          <div class="sub">GLOBAL NETWORK PLANNING &amp; ADVISORY SYSTEM</div>
+        </div>
+      </div>
+      <div class="hud-right">
+        <div class="status"><span class="dot"></span>NETWORK ONLINE</div>
+        <div id="clock" class="mono">--:--:--</div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-stage="stage1"><i class="fa-solid fa-route"></i> ROUTE PLANNER</button>
+    <button class="tab-btn" data-stage="stage2"><i class="fa-solid fa-clipboard-list"></i> FLIGHT PLAN BUILDER</button>
+    <button class="tab-btn" data-stage="fleet"><i class="fa-solid fa-plane-departure"></i> FLEET</button>
+    <button class="tab-btn" data-stage="weather"><i class="fa-solid fa-cloud-sun"></i> WEATHER</button>
+    <button class="tab-btn" data-stage="ai"><i class="fa-solid fa-robot"></i> AI ADVISOR</button>
+    <button class="tab-btn" data-stage="log"><i class="fa-solid fa-list-check"></i> FLIGHT LOG</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ===================== ROUTE PLANNER ===================== -->
+  <section id="stage1" class="stage active">
+    <div class="grid-2col">
+      <div class="panel">
+        <h2><i class="fa-solid fa-tower-broadcast"></i> Mission Parameters</h2>
+
+        <label for="s1-start">Origin Airport</label>
+        <select id="s1-start"></select>
+
+        <label for="s1-dest">Destination Airport</label>
+        <select id="s1-dest"></select>
+
+        <label for="s1-fleet">Assigned Aircraft</label>
+        <select id="s1-fleet"></select>
+
+        <label for="s1-fuel">Fuel Load (%)</label>
+        <input id="s1-fuel" type="number" placeholder="e.g. 82" min="0" max="100">
+
+        <div id="s1-alert" class="alert"></div>
+        <button class="btn" id="s1-submit"><i class="fa-solid fa-paper-plane"></i> COMPUTE ROUTE</button>
+      </div>
+
+      <div class="panel">
+        <h2><i class="fa-solid fa-earth-americas"></i> Global Network Map</h2>
+        <svg id="gridmap" class="map" viewBox="0 0 1000 500">
+          <image class="map-bg" href="https://upload.wikimedia.org/wikipedia/commons/8/83/Equirectangular_projection_SW.jpg"
+                 x="0" y="0" width="1000" height="500" onerror="this.remove()"/>
+        </svg>
+        <div class="legend">
+          <span><i class="dot-swatch" style="background:var(--muted)"></i>Airport</span>
+          <span><i class="dot-swatch" style="background:var(--sky)"></i>Selected</span>
+          <span><i class="dot-swatch" style="background:var(--gold)"></i>Active route</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel readout-panel">
+      <h2><i class="fa-solid fa-file-lines"></i> Route Readout</h2>
+      <div class="readout-empty" id="s1-empty">No route computed yet. Select origin, destination, aircraft and fuel load.</div>
+      <div class="readout" id="s1-readout">
+        <div class="readout-title" id="s1-title"><i class="fa-solid fa-circle-check"></i> ROUTE COMPUTED</div>
+        <div class="kv">
+          <div class="k">Route</div><div class="v" id="s1-route"></div>
+          <div class="k">Aircraft</div><div class="v" id="s1-aircraft"></div>
+          <div class="k">Great-Circle Distance</div><div class="v mono" id="s1-dist"></div>
+          <div class="k">Est. Flight Time</div><div class="v mono" id="s1-time"></div>
+          <div class="k">Min. Fuel Required</div><div class="v mono" id="s1-minfuel"></div>
+          <div class="k">Flight Clearance</div><div class="v" id="s1-clearance"></div>
+        </div>
+        <div class="gauge">
+          <div class="gauge-track"><div class="gauge-fill" id="s1-gauge"></div></div>
+          <div class="gauge-row"><span>0%</span><span id="s1-gauge-label">FUEL</span><span>100%</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FLIGHT PLAN BUILDER ===================== -->
+  <section id="stage2" class="stage">
+    <div class="grid-2col">
+      <div class="panel">
+        <h2><i class="fa-solid fa-pen-ruler"></i> Flight Parameters</h2>
+
+        <label for="s2-dep">Departure (IATA code or city)</label>
+        <input id="s2-dep" type="text" placeholder="e.g. BOM or Mumbai" list="airport-list">
+
+        <label for="s2-arr">Destination (IATA code or city)</label>
+        <input id="s2-arr" type="text" placeholder="e.g. DEL or Delhi" list="airport-list">
+        <datalist id="airport-list"></datalist>
+
+        <label for="s2-aircraft">Aircraft Type</label>
+        <select id="s2-aircraft"></select>
+
+        <label for="s2-fuel">Fuel Load (%)</label>
+        <input id="s2-fuel" type="number" placeholder="e.g. 75" min="0" max="100">
+
+        <label for="s2-distance">Distance (km) <span style="color:var(--muted)">— auto-fills if both airports are recognized</span></label>
+        <input id="s2-distance" type="number" step="0.1" placeholder="e.g. 1150">
+
+        <label for="s2-speed">Cruise Speed (km/h) <span style="color:var(--muted)">— auto-fills from aircraft</span></label>
+        <input id="s2-speed" type="number" step="0.1" placeholder="e.g. 828">
+
+        <div id="s2-alert" class="alert"></div>
+        <button class="btn" id="s2-submit"><i class="fa-solid fa-lock"></i> LOCK FLIGHT PLAN</button>
+      </div>
+
+      <div class="panel">
+        <h2><i class="fa-solid fa-chart-line"></i> Flight Profile</h2>
+        <svg id="profile" class="map" viewBox="0 0 400 220"></svg>
+        <div class="gauge">
+          <div class="gauge-track"><div class="gauge-fill" id="s2-gauge"></div></div>
+          <div class="gauge-row"><span>0%</span><span id="s2-gauge-label">FUEL</span><span>100%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel readout-panel">
+      <h2><i class="fa-solid fa-file-signature"></i> Flight Plan Summary</h2>
+      <div class="readout-empty" id="s2-empty">No flight plan locked yet.</div>
+      <div class="readout" id="s2-readout">
+        <div class="readout-title"><i class="fa-solid fa-circle-check"></i> FLIGHT PLAN SUMMARY</div>
+        <div class="kv">
+          <div class="k">Route</div><div class="v" id="s2-route"></div>
+          <div class="k">Distance</div><div class="v mono" id="s2-dist"></div>
+          <div class="k">Estimated Time</div><div class="v mono" id="s2-time"></div>
+          <div class="k">Fuel Status</div><div class="v" id="s2-fuelstatus"></div>
+        </div>
+        <div class="route-path" id="s2-note"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FLEET ===================== -->
+  <section id="fleet" class="stage">
+    <div class="panel">
+      <h2><i class="fa-solid fa-plane-departure"></i> Fleet Status</h2>
+      <div class="fleet-grid" id="fleet-grid"></div>
+    </div>
+  </section>
+
+  <!-- ===================== WEATHER ===================== -->
+  <section id="weather" class="stage">
+    <div class="grid-2col">
+      <div class="panel">
+        <h2><i class="fa-solid fa-cloud-sun"></i> Live Airport Weather</h2>
+        <label for="w-airport">Airport</label>
+        <select id="w-airport"></select>
+        <div id="w-alert" class="alert"></div>
+        <button class="btn alt" id="w-submit"><i class="fa-solid fa-satellite-dish"></i> FETCH LIVE WEATHER</button>
+        <div class="ai-note">Live data from Open-Meteo — a free, public weather API (no key required). Requires internet access.</div>
+      </div>
+      <div class="panel">
+        <h2><i class="fa-solid fa-wind"></i> Current Conditions</h2>
+        <div class="readout-empty" id="w-empty">No weather fetched yet.</div>
+        <div class="weather-result" id="w-result" style="display:none;">
+          <div class="weather-hero">
+            <i class="wicon fa-solid fa-sun" id="w-icon"></i>
+            <div>
+              <div class="wtemp" id="w-temp">--°C</div>
+              <div class="wdesc" id="w-desc">—</div>
+            </div>
+          </div>
+          <div class="kv" style="margin-top:14px;">
+            <div class="k">Wind Speed</div><div class="v mono" id="w-wind"></div>
+            <div class="k">Wind Direction</div><div class="v mono" id="w-winddir"></div>
+            <div class="k">Observation Time</div><div class="v mono" id="w-time"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== AI ADVISOR ===================== -->
+  <section id="ai" class="stage">
+    <div class="grid-2col">
+      <div class="panel">
+        <h2><i class="fa-solid fa-robot"></i> AI Flight Advisor</h2>
+        <label for="ai-distance">Distance (km)</label>
+        <input id="ai-distance" type="number" placeholder="e.g. 1400">
+        <label for="ai-aircraft">Aircraft Type</label>
+        <select id="ai-aircraft"></select>
+        <div id="ai-alert" class="alert"></div>
+        <button class="btn" id="ai-rule-btn"><i class="fa-solid fa-gears"></i> GENERATE ADVISORY</button>
+        <button class="btn alt" id="ai-gen-btn" style="margin-top:10px;"><i class="fa-solid fa-wand-magic-sparkles"></i> GENERATE AI BRIEFING</button>
+        <div class="ai-note">The advisory uses a built-in rules engine (instant, offline). The AI briefing calls a free public generative-text service (pollinations.ai, no key required) — it needs internet access and may occasionally be unavailable, in which case the rules-based advisory below is shown instead.</div>
+      </div>
+      <div class="panel">
+        <h2><i class="fa-solid fa-clipboard-check"></i> Advisory Output</h2>
+        <div class="readout-empty" id="ai-empty">No advisory generated yet.</div>
+        <div id="ai-rule-result" style="display:none;">
+          <div class="kv">
+            <div class="k">Recommended Cruise Altitude</div><div class="v mono" id="ai-alt"></div>
+            <div class="k">Est. Fuel Burn</div><div class="v mono" id="ai-burn"></div>
+            <div class="k">Crew Duty</div><div class="v" id="ai-crew"></div>
+            <div class="k">Alternate Planning</div><div class="v" id="ai-alt2"></div>
+          </div>
+        </div>
+        <div class="ai-box" id="ai-box" style="display:none;">
+          <div class="ai-label"><i class="fa-solid fa-wand-magic-sparkles"></i> AI-Generated Briefing</div>
+          <div class="ai-text" id="ai-text"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FLIGHT LOG ===================== -->
+  <section id="log" class="stage">
+    <div class="panel log-panel">
+      <h2><i class="fa-solid fa-list-check"></i> Flight Log</h2>
+      <div id="log-empty">No missions logged this session.</div>
+      <table id="log-table" style="display:none;">
+        <thead><tr><th>Time</th><th>Stage</th><th>Route</th><th>Result</th></tr></thead>
+        <tbody id="log-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<script>
+/* ============================================================
+   SHARED DATA
+   ============================================================ */
+const AIRPORTS = [
+  { code:"DEL", city:"Delhi",      country:"India",       lat:28.5562, lon:77.1000 },
+  { code:"BOM", city:"Mumbai",     country:"India",       lat:19.0887, lon:72.8679 },
+  { code:"BLR", city:"Bengaluru",  country:"India",       lat:13.1986, lon:77.7066 },
+  { code:"MAA", city:"Chennai",    country:"India",       lat:12.9941, lon:80.1709 },
+  { code:"CCU", city:"Kolkata",    country:"India",       lat:22.6520, lon:88.4463 },
+  { code:"GOI", city:"Goa",        country:"India",       lat:15.3808, lon:73.8314 },
+  { code:"IXC", city:"Chandigarh", country:"India",       lat:30.6735, lon:76.7885 },
+  { code:"JFK", city:"New York",   country:"USA",         lat:40.6413, lon:-73.7781 },
+  { code:"LHR", city:"London",     country:"UK",          lat:51.4700, lon:-0.4543 },
+  { code:"DXB", city:"Dubai",      country:"UAE",         lat:25.2532, lon:55.3657 },
+  { code:"SIN", city:"Singapore",  country:"Singapore",   lat:1.3644,  lon:103.9915 },
+  { code:"NRT", city:"Tokyo",      country:"Japan",       lat:35.7720, lon:140.3929 },
+  { code:"SYD", city:"Sydney",     country:"Australia",   lat:-33.9399,lon:151.1753 },
+  { code:"CDG", city:"Paris",      country:"France",      lat:49.0097, lon:2.5479 },
+  { code:"FRA", city:"Frankfurt",  country:"Germany",     lat:50.0379, lon:8.5622 },
+  { code:"HKG", city:"Hong Kong",  country:"China",       lat:22.3080, lon:113.9185 },
+  { code:"LAX", city:"Los Angeles",country:"USA",         lat:33.9416, lon:-118.4085 },
+  { code:"DOH", city:"Doha",       country:"Qatar",       lat:25.2731, lon:51.6080 },
+  { code:"IST", city:"Istanbul",   country:"Turkey",      lat:41.2753, lon:28.7519 },
+  { code:"AMS", city:"Amsterdam",  country:"Netherlands", lat:52.3105, lon:4.7683 }
+];
+
+const FLEET = [
+  { tail:"VT-ARC1", model:"Airbus A320neo",     cruiseSpeed:828, range:6300,  status:"in-service",  route:"DEL–BOM", nextMaint:"2026-08-14" },
+  { tail:"VT-ARC2", model:"Boeing 737 MAX 8",    cruiseSpeed:839, range:6570,  status:"in-service",  route:"BLR–MAA", nextMaint:"2026-09-02" },
+  { tail:"VT-ARC3", model:"Boeing 777-300ER",    cruiseSpeed:892, range:13650, status:"maintenance", route:"DEL–LHR", nextMaint:"2026-07-30" },
+  { tail:"VT-ARC4", model:"Airbus A350-900",     cruiseSpeed:903, range:15000, status:"standby",     route:"BOM–JFK", nextMaint:"2026-10-11" },
+  { tail:"VT-ARC5", model:"Airbus A321neo",      cruiseSpeed:828, range:7400,  status:"in-service",  route:"CCU–DXB", nextMaint:"2026-08-25" }
+];
+
+const NS = "http://www.w3.org/2000/svg";
+
+function tick(){
+  document.getElementById('clock').textContent = new Date().toTimeString().slice(0,8) + ' LT';
+}
+tick(); setInterval(tick, 1000);
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.stage').forEach(s=>s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.stage).classList.add('active');
+  });
+});
+
+function logMission(stage, route, resultText, ok){
+  document.getElementById('log-empty').style.display = 'none';
+  document.getElementById('log-table').style.display = 'table';
+  const tr = document.createElement('tr');
+  const time = new Date().toTimeString().slice(0,8);
+  tr.innerHTML = `<td>${time}</td><td>${stage}</td><td>${route}</td><td class="${ok?'status-ok':'status-bad'}">${resultText}</td>`;
+  document.getElementById('log-body').prepend(tr);
+}
+
+function gaugeColor(pct){
+  if(pct <= 30) return 'var(--danger)';
+  if(pct <= 60) return 'var(--warn)';
+  return 'var(--success)';
+}
+
+function haversine(lat1, lon1, lat2, lon2){
+  const R = 6371;
+  const toRad = d => d * Math.PI / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+function fmtTime(hoursFloat){
+  const h = Math.floor(hoursFloat);
+  const m = Math.round((hoursFloat - h) * 60);
+  return `${h}h ${m}m`;
+}
+
+function findAirport(query){
+  const q = query.trim().toLowerCase();
+  return AIRPORTS.find(a => a.code.toLowerCase() === q || a.city.toLowerCase() === q);
+}
+
+function populateAirportSelect(sel, defaultIndex){
+  AIRPORTS.forEach((a,i)=>{
+    const o = document.createElement('option');
+    o.value = i; o.textContent = `${a.code} — ${a.city}, ${a.country}`;
+    sel.appendChild(o);
+  });
+  if(defaultIndex!==undefined) sel.selectedIndex = defaultIndex;
+}
+function populateFleetSelect(sel){
+  FLEET.forEach((f,i)=>{
+    const o = document.createElement('option');
+    o.value = i; o.textContent = `${f.model} (${f.tail}) — ${f.cruiseSpeed} km/h cruise`;
+    sel.appendChild(o);
+  });
+}
+
+populateAirportSelect(document.getElementById('s1-start'), 1);
+populateAirportSelect(document.getElementById('s1-dest'), 0);
+populateFleetSelect(document.getElementById('s1-fleet'));
+populateFleetSelect(document.getElementById('s2-aircraft'));
+populateFleetSelect(document.getElementById('ai-aircraft'));
+populateAirportSelect(document.getElementById('w-airport'), 0);
+
+const datalist = document.getElementById('airport-list');
+AIRPORTS.forEach(a=>{
+  const o = document.createElement('option'); o.value = a.code; datalist.appendChild(o);
+  const o2 = document.createElement('option'); o2.value = a.city; datalist.appendChild(o2);
+});
+
+/* ============================================================
+   ROUTE PLANNER MAP (real-world equirectangular projection)
+   ============================================================ */
+const svgMap = document.getElementById('gridmap');
+function project(lat, lon){ return { x: (lon + 180) / 360 * 1000, y: (90 - lat) / 180 * 500 }; }
+
+function buildAirportDots(){
+  AIRPORTS.forEach((a,i)=>{
+    const p = project(a.lat, a.lon);
+    const dot = document.createElementNS(NS,'circle');
+    dot.setAttribute('cx',p.x); dot.setAttribute('cy',p.y); dot.setAttribute('r',4);
+    dot.setAttribute('class','city-dot'); dot.setAttribute('id','airport-dot-'+i);
+    svgMap.appendChild(dot);
+    const label = document.createElementNS(NS,'text');
+    label.setAttribute('x', p.x+6); label.setAttribute('y', p.y-6);
+    label.setAttribute('class','city-label'); label.setAttribute('id','airport-label-'+i);
+    label.textContent = a.code;
+    svgMap.appendChild(label);
+  });
+}
+buildAirportDots();
+
+function drawGreatCircleArc(i, j){
+  document.querySelectorAll('.city-dot').forEach(d=>d.classList.remove('active'));
+  document.querySelectorAll('.city-label').forEach(l=>l.classList.remove('active'));
+  const old = svgMap.querySelector('.route-line'); if(old) old.remove();
+  const oldBlip = svgMap.querySelector('.route-blip'); if(oldBlip) oldBlip.remove();
+
+  const p1 = project(AIRPORTS[i].lat, AIRPORTS[i].lon);
+  const p2 = project(AIRPORTS[j].lat, AIRPORTS[j].lon);
+  const midX = (p1.x+p2.x)/2, midY = (p1.y+p2.y)/2 - 40;
+  const d = `M ${p1.x},${p1.y} Q ${midX},${midY} ${p2.x},${p2.y}`;
+
+  const path = document.createElementNS(NS,'path');
+  path.setAttribute('d', d); path.setAttribute('class','route-line');
+  svgMap.appendChild(path);
+
+  document.getElementById('airport-dot-'+i).classList.add('active');
+  document.getElementById('airport-dot-'+j).classList.add('active');
+  document.getElementById('airport-label-'+i).classList.add('active');
+  document.getElementById('airport-label-'+j).classList.add('active');
+
+  const blip = document.createElementNS(NS,'circle');
+  blip.setAttribute('r', 3.5); blip.setAttribute('class','route-blip');
+  svgMap.appendChild(blip);
+  const anim = document.createElementNS(NS,'animateMotion');
+  anim.setAttribute('dur','3s'); anim.setAttribute('repeatCount','indefinite'); anim.setAttribute('path', d);
+  blip.appendChild(anim);
+}
+
+document.getElementById('s1-submit').addEventListener('click', ()=>{
+  const alertEl = document.getElementById('s1-alert');
+  alertEl.classList.remove('show');
+
+  const i = parseInt(document.getElementById('s1-start').value,10);
+  const j = parseInt(document.getElementById('s1-dest').value,10);
+  const fleetIdx = parseInt(document.getElementById('s1-fleet').value,10);
+  const fuelRaw = document.getElementById('s1-fuel').value;
+
+  if(fuelRaw==='' || isNaN(fuelRaw)){
+    alertEl.textContent = 'Enter a valid fuel load percentage.'; alertEl.classList.add('show'); return;
+  }
+  const fuel = Number(fuelRaw);
+  if(fuel<0 || fuel>100){
+    alertEl.textContent = 'Fuel load must be between 0 and 100%.'; alertEl.classList.add('show'); return;
+  }
+
+  const routeLabel = `${AIRPORTS[i].code} → ${AIRPORTS[j].code}`;
+  document.getElementById('s1-empty').style.display = 'none';
+  document.getElementById('s1-readout').classList.add('show');
+
+  if(i===j){
+    document.getElementById('s1-title').innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> ROUTE NOT FOUND';
+    document.getElementById('s1-route').innerHTML = '<span class="v bad">Same origin and destination selected</span>';
+    document.getElementById('s1-aircraft').textContent='—'; document.getElementById('s1-dist').textContent='—';
+    document.getElementById('s1-time').textContent='—'; document.getElementById('s1-minfuel').textContent='—';
+    document.getElementById('s1-clearance').innerHTML = '<span class="bad">DENIED</span>';
+    document.getElementById('s1-gauge').style.width = fuel+'%'; document.getElementById('s1-gauge').style.background = gaugeColor(fuel);
+    document.getElementById('s1-gauge-label').textContent = 'FUEL ' + fuel + '%';
+    logMission('Route Planner', routeLabel, 'Same destination', false);
+    return;
+  }
+
+  const aircraft = FLEET[fleetIdx];
+  const distKm = haversine(AIRPORTS[i].lat, AIRPORTS[i].lon, AIRPORTS[j].lat, AIRPORTS[j].lon);
+  const hours = distKm / aircraft.cruiseSpeed;
+  const minFuel = distKm > 5000 ? 75 : distKm > 1500 ? 60 : 40;
+  const cleared = fuel >= minFuel;
+
+  document.getElementById('s1-title').innerHTML = '<i class="fa-solid fa-circle-check"></i> ROUTE COMPUTED';
+  document.getElementById('s1-route').textContent = routeLabel;
+  document.getElementById('s1-aircraft').textContent = `${aircraft.model} (${aircraft.tail})`;
+  document.getElementById('s1-dist').textContent = distKm.toFixed(0) + ' km';
+  document.getElementById('s1-time').textContent = fmtTime(hours);
+  document.getElementById('s1-minfuel').textContent = minFuel + '%';
+  document.getElementById('s1-clearance').innerHTML = cleared
+    ? '<span class="ok">CLEARED FOR DEPARTURE</span>' : '<span class="bad">INSUFFICIENT FUEL LOAD</span>';
+  document.getElementById('s1-gauge').style.width = fuel+'%'; document.getElementById('s1-gauge').style.background = gaugeColor(fuel);
+  document.getElementById('s1-gauge-label').textContent = 'FUEL ' + fuel + '%';
+
+  drawGreatCircleArc(i,j);
+  logMission('Route Planner', routeLabel, cleared ? 'Cleared' : 'Insufficient fuel', cleared);
+});
+
+/* ============================================================
+   FLIGHT PLAN BUILDER
+   ============================================================ */
+const profileSvg = document.getElementById('profile');
+function drawProfile(distance, timeLabel, ok){
+  profileSvg.innerHTML = '';
+  const w=400, h=220, padX=30, baseline=170;
+  const ground = document.createElementNS(NS,'line');
+  ground.setAttribute('x1',padX); ground.setAttribute('y1',baseline);
+  ground.setAttribute('x2', w-padX); ground.setAttribute('y2',baseline);
+  ground.setAttribute('class','grid-line'); ground.setAttribute('stroke','var(--line-soft)');
+  profileSvg.appendChild(ground);
+
+  const arc = document.createElementNS(NS,'path');
+  arc.setAttribute('d', `M ${padX} ${baseline} Q ${w/2} 30 ${w-padX} ${baseline}`);
+  arc.setAttribute('class','route-line');
+  profileSvg.appendChild(arc);
+
+  ['DEP','ARR'].forEach((label,idx)=>{
+    const cx = idx===0? padX : w-padX;
+    const dot = document.createElementNS(NS,'circle');
+    dot.setAttribute('cx',cx); dot.setAttribute('cy',baseline); dot.setAttribute('r',5);
+    dot.setAttribute('class', ok ? 'city-dot active' : 'city-dot');
+    profileSvg.appendChild(dot);
+    const txt = document.createElementNS(NS,'text');
+    txt.setAttribute('x',cx); txt.setAttribute('y', baseline+18); txt.setAttribute('text-anchor','middle');
+    txt.setAttribute('class', ok? 'city-label active':'city-label'); txt.textContent = label;
+    profileSvg.appendChild(txt);
+  });
+
+  if(ok){
+    const blip = document.createElementNS(NS,'circle');
+    blip.setAttribute('r',4); blip.setAttribute('class','route-blip');
+    profileSvg.appendChild(blip);
+    const anim = document.createElementNS(NS,'animateMotion');
+    anim.setAttribute('dur','2.6s'); anim.setAttribute('repeatCount','indefinite');
+    anim.setAttribute('path', `M ${padX} ${baseline} Q ${w/2} 30 ${w-padX} ${baseline}`);
+    blip.appendChild(anim);
+  }
+
+  const info = document.createElementNS(NS,'text');
+  info.setAttribute('x', w/2); info.setAttribute('y', 20); info.setAttribute('text-anchor','middle');
+  info.setAttribute('class','city-label active'); info.setAttribute('font-size','9');
+  info.textContent = distance!=null ? `${distance.toFixed(1)} km · ${timeLabel}` : '';
+  profileSvg.appendChild(info);
+}
+drawProfile(null, '', false);
+
+// auto-fill distance / speed as the user types recognizable airports
+function autofillFlightPlan(){
+  const dep = findAirport(document.getElementById('s2-dep').value);
+  const arr = findAirport(document.getElementById('s2-arr').value);
+  const aircraft = FLEET[parseInt(document.getElementById('s2-aircraft').value || 0,10)];
+  if(dep && arr && dep.code !== arr.code){
+    const d = haversine(dep.lat, dep.lon, arr.lat, arr.lon);
+    document.getElementById('s2-distance').value = d.toFixed(1);
+  }
+  if(aircraft) document.getElementById('s2-speed').value = aircraft.cruiseSpeed;
+}
+['s2-dep','s2-arr','s2-aircraft'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', autofillFlightPlan);
+  document.getElementById(id).addEventListener('change', autofillFlightPlan);
+});
+autofillFlightPlan();
+
+document.getElementById('s2-submit').addEventListener('click', ()=>{
+  const alertEl = document.getElementById('s2-alert'); alertEl.classList.remove('show');
+  const dep = document.getElementById('s2-dep').value.trim();
+  const arr = document.getElementById('s2-arr').value.trim();
+  const fuelRaw = document.getElementById('s2-fuel').value;
+  const distRaw = document.getElementById('s2-distance').value;
+  const speedRaw = document.getElementById('s2-speed').value;
+
+  if(!dep || !arr){ alertEl.textContent='Enter both a departure and destination.'; alertEl.classList.add('show'); return; }
+  if(dep.toLowerCase()===arr.toLowerCase()){
+    document.getElementById('s2-empty').style.display='none';
+    document.getElementById('s2-readout').classList.add('show');
+    document.getElementById('s2-route').innerHTML = '<span class="v bad">Same origin and destination</span>';
+    document.getElementById('s2-dist').textContent='—'; document.getElementById('s2-time').textContent='—';
+    document.getElementById('s2-fuelstatus').innerHTML='<span class="bad">N/A</span>';
+    document.getElementById('s2-note').textContent='';
+    drawProfile(null,'',false);
+    logMission('Flight Plan Builder', `${dep} → ${arr}`, 'Same destination', false);
+    return;
+  }
+  if(fuelRaw===''||isNaN(fuelRaw)||distRaw===''||isNaN(distRaw)||speedRaw===''||isNaN(speedRaw)){
+    alertEl.textContent='Invalid input! Fuel, distance and speed must all be numbers.'; alertEl.classList.add('show'); return;
+  }
+  const fuel = Number(fuelRaw), distance = Number(distRaw), speed = Number(speedRaw);
+  if(distance<0){ alertEl.textContent='Distance cannot be negative.'; alertEl.classList.add('show'); return; }
+  if(speed<=0){ alertEl.textContent='Cruise speed must be greater than zero.'; alertEl.classList.add('show'); return; }
+  if(fuel<0||fuel>100){ alertEl.textContent='Fuel load must be between 0 and 100%.'; alertEl.classList.add('show'); return; }
+
+  let fuelOk, fuelMsg;
+  if(distance>300){
+    fuelOk = fuel>=70; fuelMsg = fuelOk? 'Sufficient for long-range leg' : 'Low fuel for a >300km leg (need ≥70%)';
+  } else {
+    fuelOk = true; fuelMsg = 'Sufficient for short-hop leg (≤300km)';
+  }
+
+  const hours = Math.floor(distance/speed);
+  const minutes = Math.round(((distance/speed)-hours)*60);
+  const depTitle = dep.replace(/\b\w/g,c=>c.toUpperCase());
+  const arrTitle = arr.replace(/\b\w/g,c=>c.toUpperCase());
+
+  document.getElementById('s2-empty').style.display='none';
+  document.getElementById('s2-readout').classList.add('show');
+  document.getElementById('s2-route').textContent = `${depTitle} → ${arrTitle}`;
+  document.getElementById('s2-dist').textContent = distance.toFixed(1)+' km';
+  document.getElementById('s2-time').textContent = `${hours}h ${minutes}m`;
+  document.getElementById('s2-fuelstatus').innerHTML = fuelOk ? `<span class="ok">${fuelMsg}</span>` : `<span class="bad">${fuelMsg}</span>`;
+  document.getElementById('s2-note').textContent = fuelOk
+    ? 'Mission parameters successfully locked. Ready for departure!'
+    : 'Recommend refueling before departure, or continue at reduced safety margin.';
+  document.getElementById('s2-gauge').style.width = fuel+'%'; document.getElementById('s2-gauge').style.background = gaugeColor(fuel);
+  document.getElementById('s2-gauge-label').textContent = 'FUEL ' + fuel + '%';
+  drawProfile(distance, `${hours}h ${minutes}m`, fuelOk);
+  logMission('Flight Plan Builder', `${depTitle} → ${arrTitle}`, fuelOk?'Locked':'Low fuel', fuelOk);
+});
+
+/* ============================================================
+   FLEET TAB
+   ============================================================ */
+const statusIcon = { 'in-service':'fa-circle-check', 'maintenance':'fa-wrench', 'standby':'fa-clock' };
+const statusLabel = { 'in-service':'In Service', 'maintenance':'Maintenance', 'standby':'Standby' };
+const fleetGrid = document.getElementById('fleet-grid');
+FLEET.forEach(f=>{
+  const card = document.createElement('div');
+  card.className = 'fleet-card';
+  card.innerHTML = `
+    <div class="badge ${f.status}"><i class="fa-solid ${statusIcon[f.status]}"></i> ${statusLabel[f.status]}</div>
+    <div class="tail">${f.tail}</div>
+    <div class="model">${f.model}</div>
+    <div class="fleet-meta">
+      <div><i class="fa-solid fa-gauge-high"></i>Cruise speed: ${f.cruiseSpeed} km/h</div>
+      <div><i class="fa-solid fa-ruler-horizontal"></i>Range: ${f.range.toLocaleString()} km</div>
+      <div><i class="fa-solid fa-route"></i>Current route: ${f.route}</div>
+      <div><i class="fa-solid fa-screwdriver-wrench"></i>Next maintenance: ${f.nextMaint}</div>
+    </div>`;
+  fleetGrid.appendChild(card);
+});
+
+/* ============================================================
+   WEATHER TAB (Open-Meteo — free, no API key)
+   ============================================================ */
+const weatherIconMap = {
+  0:'fa-sun', 1:'fa-cloud-sun', 2:'fa-cloud-sun', 3:'fa-cloud',
+  45:'fa-smog', 48:'fa-smog',
+  51:'fa-cloud-rain', 53:'fa-cloud-rain', 55:'fa-cloud-rain',
+  61:'fa-cloud-showers-heavy', 63:'fa-cloud-showers-heavy', 65:'fa-cloud-showers-heavy',
+  71:'fa-snowflake', 73:'fa-snowflake', 75:'fa-snowflake',
+  80:'fa-cloud-rain', 81:'fa-cloud-showers-heavy', 82:'fa-cloud-showers-heavy',
+  95:'fa-bolt'
+};
+const weatherDescMap = {
+  0:'Clear sky', 1:'Mainly clear', 2:'Partly cloudy', 3:'Overcast',
+  45:'Fog', 48:'Depositing rime fog',
+  51:'Light drizzle', 53:'Moderate drizzle', 55:'Dense drizzle',
+  61:'Slight rain', 63:'Moderate rain', 65:'Heavy rain',
+  71:'Slight snowfall', 73:'Moderate snowfall', 75:'Heavy snowfall',
+  80:'Slight rain showers', 81:'Moderate rain showers', 82:'Violent rain showers',
+  95:'Thunderstorm'
+};
+
+document.getElementById('w-submit').addEventListener('click', async ()=>{
+  const alertEl = document.getElementById('w-alert'); alertEl.classList.remove('show');
+  const airport = AIRPORTS[parseInt(document.getElementById('w-airport').value,10)];
+  const btn = document.getElementById('w-submit');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> FETCHING...';
+
+  try{
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${airport.lat}&longitude=${airport.lon}&current_weather=true`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('Weather service error');
+    const data = await res.json();
+    const cw = data.current_weather;
+    document.getElementById('w-empty').style.display='none';
+    document.getElementById('w-result').style.display='block';
+    document.getElementById('w-icon').className = 'wicon fa-solid ' + (weatherIconMap[cw.weathercode] || 'fa-cloud');
+    document.getElementById('w-temp').textContent = cw.temperature.toFixed(1) + '°C';
+    document.getElementById('w-desc').textContent = (weatherDescMap[cw.weathercode] || 'Unknown conditions') + ` at ${airport.code} — ${airport.city}`;
+    document.getElementById('w-wind').textContent = cw.windspeed + ' km/h';
+    document.getElementById('w-winddir').textContent = cw.winddirection + '°';
+    document.getElementById('w-time').textContent = cw.time;
+    logMission('Weather', airport.code, 'Fetched live data', true);
+  }catch(err){
+    alertEl.textContent = 'Could not reach the live weather service (check your internet connection). Try again shortly.';
+    alertEl.classList.add('show');
+    logMission('Weather', airport.code, 'Fetch failed', false);
+  }finally{
+    btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-satellite-dish"></i> FETCH LIVE WEATHER';
+  }
+});
+
+/* ============================================================
+   AI ADVISOR TAB
+   ============================================================ */
+function ruleBasedAdvisory(distanceKm, aircraft){
+  const hours = distanceKm / aircraft.cruiseSpeed;
+  const altitude = distanceKm<500 ? 'FL280 (28,000 ft)' : distanceKm<1500 ? 'FL340 (34,000 ft)' : 'FL380–FL400 (38,000–40,000 ft)';
+  const burnRatePerHour = aircraft.cruiseSpeed>870 ? 7500 : aircraft.cruiseSpeed>830 ? 6200 : 5000;
+  const fuelBurn = Math.round(burnRatePerHour * hours);
+  const crewNote = hours>8 ? 'Augmented crew required — duty time exceeds the 8h single-crew limit.' : 'Standard crew duty period applies.';
+  const alternate = distanceKm>4000 ? 'ETOPS / extended-range alternate airport planning required.' : 'Standard alternate airport planning applies.';
+  return { altitude, fuelBurn, crewNote, alternate, hours };
+}
+
+document.getElementById('ai-rule-btn').addEventListener('click', ()=>{
+  const alertEl = document.getElementById('ai-alert'); alertEl.classList.remove('show');
+  const distRaw = document.getElementById('ai-distance').value;
+  if(distRaw===''||isNaN(distRaw)||Number(distRaw)<=0){
+    alertEl.textContent='Enter a valid distance in km.'; alertEl.classList.add('show'); return;
+  }
+  const aircraft = FLEET[parseInt(document.getElementById('ai-aircraft').value,10)];
+  const advisory = ruleBasedAdvisory(Number(distRaw), aircraft);
+
+  document.getElementById('ai-empty').style.display='none';
+  document.getElementById('ai-rule-result').style.display='block';
+  document.getElementById('ai-alt').textContent = advisory.altitude;
+  document.getElementById('ai-burn').textContent = advisory.fuelBurn.toLocaleString() + ' kg';
+  document.getElementById('ai-crew').innerHTML = advisory.hours>8 ? `<span class="warn">${advisory.crewNote}</span>` : `<span class="ok">${advisory.crewNote}</span>`;
+  document.getElementById('ai-alt2').textContent = advisory.alternate;
+
+  logMission('AI Advisor', `${distRaw} km / ${aircraft.model}`, 'Advisory generated', true);
+});
+
+document.getElementById('ai-gen-btn').addEventListener('click', async ()=>{
+  const alertEl = document.getElementById('ai-alert'); alertEl.classList.remove('show');
+  const distRaw = document.getElementById('ai-distance').value;
+  if(distRaw===''||isNaN(distRaw)||Number(distRaw)<=0){
+    alertEl.textContent='Enter a valid distance in km first.'; alertEl.classList.add('show'); return;
+  }
+  const aircraft = FLEET[parseInt(document.getElementById('ai-aircraft').value,10)];
+  const box = document.getElementById('ai-box');
+  const textEl = document.getElementById('ai-text');
+  box.style.display = 'block';
+  textEl.innerHTML = '<span class="spinner"></span> Generating briefing...';
+
+  const prompt = `Write a short professional airline flight-operations briefing (120 words max) for a ${aircraft.model} flying ${distRaw} km at ${aircraft.cruiseSpeed} km/h cruise speed. Cover cruise altitude, fuel planning, and crew duty considerations in plain operational language.`;
+
+  try{
+    const res = await fetch('https://text.pollinations.ai/' + encodeURIComponent(prompt));
+    if(!res.ok) throw new Error('AI service unavailable');
+    const text = await res.text();
+    textEl.textContent = text.trim();
+    logMission('AI Advisor', `${distRaw} km / ${aircraft.model}`, 'AI briefing generated', true);
+  }catch(err){
+    const fallback = ruleBasedAdvisory(Number(distRaw), aircraft);
+    textEl.textContent = `AI briefing service unavailable right now — here is the standard rules-based advisory instead:\n\nRecommended cruise altitude: ${fallback.altitude}. Estimated fuel burn: ${fallback.fuelBurn.toLocaleString()} kg. ${fallback.crewNote} ${fallback.alternate}`;
+    logMission('AI Advisor', `${distRaw} km / ${aircraft.model}`, 'AI briefing failed, showed fallback', false);
+  }
+});
+</script>
+</body>
+</html>
