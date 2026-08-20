@@ -54,9 +54,8 @@ Each file or folder represents a **unique concept or experiment**.
 **PARAS DHIMAN**  
 Founder & Owner of **SoftwareLabs**
 
-### 🏛 Chairpersons – SoftwareLabs
+### 🏛 Chairperson – SoftwareLabs
 - **Paras Dhiman**
-- **Arhan Saha**
 
 This repository is officially maintained under **SoftwareLabs**.
 
